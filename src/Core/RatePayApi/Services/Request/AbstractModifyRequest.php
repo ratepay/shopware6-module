@@ -1,21 +1,21 @@
 <?php
 
 
-namespace RatePay\RatePayPayments\Core\RatePayApi\Services\Request;
+namespace Ratepay\RatepayPayments\Core\RatepayApi\Services\Request;
 
 
 use Doctrine\ORM\OptimisticLockException;
 use Enlight_Components_Db_Adapter_Pdo_Mysql;
-use RpayRatePay\Component\Mapper\BasketArrayBuilder;
-use RpayRatePay\DTO\BasketPosition;
-use RpayRatePay\Enum\PaymentMethods;
-use RpayRatePay\Helper\PositionHelper;
-use RpayRatePay\Models\Position\AbstractPosition;
-use RpayRatePay\Models\ProfileConfig;
-use RpayRatePay\Services\Config\ConfigService;
-use RpayRatePay\Services\Config\ProfileConfigService;
-use RpayRatePay\Services\Logger\HistoryLogger;
-use RpayRatePay\Services\Logger\RequestLogger;
+use RpayRatepay\Component\Mapper\BasketArrayBuilder;
+use RpayRatepay\DTO\BasketPosition;
+use RpayRatepay\Enum\PaymentMethods;
+use RpayRatepay\Helper\PositionHelper;
+use RpayRatepay\Models\Position\AbstractPosition;
+use RpayRatepay\Models\ProfileConfig;
+use RpayRatepay\Services\Config\ConfigService;
+use RpayRatepay\Services\Config\ProfileConfigService;
+use RpayRatepay\Services\Logger\HistoryLogger;
+use RpayRatepay\Services\Logger\RequestLogger;
 use RuntimeException;
 use Shopware\Components\Model\ModelManager;
 use Shopware\Models\Article\Detail;

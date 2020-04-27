@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace RatePay\Tests;
+namespace Ratepay\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;

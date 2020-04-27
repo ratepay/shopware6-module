@@ -1,10 +1,10 @@
 <?php
 
 
-namespace RatePay\RatePayPayments\Core\RatePayApi\Services\Request;
+namespace Ratepay\RatepayPayments\Core\RatepayApi\Services\Request;
 
 
-use RpayRatePay\Models\Position\Product;
+use RpayRatepay\Models\Position\Product;
 
 abstract class AbstractAddRequest extends AbstractModifyRequest
 {

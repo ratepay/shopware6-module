@@ -1,7 +1,7 @@
 <?php
 
 
-namespace RatePay\RatePayPayments\Core\ProfileConfig;
+namespace Ratepay\RatepayPayments\Core\ProfileConfig;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;

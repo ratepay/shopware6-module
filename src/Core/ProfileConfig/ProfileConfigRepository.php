@@ -1,11 +1,11 @@
 <?php
 
 
-namespace RatePay\RatePayPayments\Core\ProfileConfig;
+namespace Ratepay\RatepayPayments\Core\ProfileConfig;
 
 
-use RatePay\RatePayPayments\Core\ProfileConfig\Service\ProfileConfigService;
-use RatePay\RatePayPayments\Core\RatePayApi\Services\Request\ProfileRequestService;
+use Ratepay\RatepayPayments\Core\ProfileConfig\Service\ProfileConfigService;
+use Ratepay\RatepayPayments\Core\RatepayApi\Services\Request\ProfileRequestService;
 use Shopware\Core\Framework\Api\Exception\ResourceNotFoundException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;

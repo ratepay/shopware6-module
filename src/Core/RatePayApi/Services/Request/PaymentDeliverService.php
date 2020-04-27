@@ -1,17 +1,17 @@
 <?php
 
 
-namespace RatePay\RatePayPayments\Core\RatePayApi\Services\Request;
+namespace Ratepay\RatepayPayments\Core\RatepayApi\Services\Request;
 
 
 use Enlight_Components_Db_Adapter_Pdo_Mysql;
-use RpayRatePay\Component\Mapper\BasketArrayBuilder;
-use RpayRatePay\Helper\PositionHelper;
-use RpayRatePay\Services\Config\ConfigService;
-use RpayRatePay\Services\ProfileConfig\ProfileConfigService;
-use RpayRatePay\Services\Factory\InvoiceArrayFactory;
-use RpayRatePay\Services\Logger\HistoryLogger;
-use RpayRatePay\Services\Logger\RequestLogger;
+use RpayRatepay\Component\Mapper\BasketArrayBuilder;
+use RpayRatepay\Helper\PositionHelper;
+use RpayRatepay\Services\Config\ConfigService;
+use RpayRatepay\Services\ProfileConfig\ProfileConfigService;
+use RpayRatepay\Services\Factory\InvoiceArrayFactory;
+use RpayRatepay\Services\Logger\HistoryLogger;
+use RpayRatepay\Services\Logger\RequestLogger;
 use Shopware\Components\Model\ModelManager;
 
 class PaymentDeliverService extends AbstractModifyRequest

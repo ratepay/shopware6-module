@@ -1,14 +1,14 @@
 <?php
 
 
-namespace RatePay\RatePayPayments\Core\RatePayApi\Services\Request;
+namespace Ratepay\RatepayPayments\Core\RatepayApi\Services\Request;
 
 use Enlight_Components_Db_Adapter_Pdo_Mysql;
-use RatePay\RatePayPayments\Core\Config\ProfileConfigEntity;
-use RpayRatePay\Enum\PaymentMethods;
-use RpayRatePay\Services\Config\ConfigService;
-use RpayRatePay\Services\Config\ProfileConfigService;
-use RpayRatePay\Services\Logger\RequestLogger;
+use Ratepay\RatepayPayments\Core\Config\ProfileConfigEntity;
+use RpayRatepay\Enum\PaymentMethods;
+use RpayRatepay\Services\Config\ConfigService;
+use RpayRatepay\Services\Config\ProfileConfigService;
+use RpayRatepay\Services\Logger\RequestLogger;
 use Shopware\Models\Order\Order;
 
 class PaymentConfirmService extends AbstractRequest

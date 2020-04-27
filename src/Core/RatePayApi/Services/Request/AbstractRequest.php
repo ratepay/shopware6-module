@@ -1,15 +1,15 @@
 <?php
 
 
-namespace RatePay\RatePayPayments\Core\RatePayApi\Services\Request;
+namespace Ratepay\RatepayPayments\Core\RatepayApi\Services\Request;
 
 
 use RatePAY\Model\Response\AbstractResponse;
 use RatePAY\ModelBuilder;
-use RatePay\RatePayPayments\Core\PluginConfig\Services\ConfigService;
-use RatePay\RatePayPayments\Core\ProfileConfig\ProfileConfigEntity;
+use Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService;
+use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigEntity;
 use RatePAY\RequestBuilder;
-use RatePay\RatePayPayments\Core\RatePayApi\Services\RequestLogger;
+use Ratepay\RatepayPayments\Core\RatepayApi\Services\RequestLogger;
 
 abstract class AbstractRequest
 {

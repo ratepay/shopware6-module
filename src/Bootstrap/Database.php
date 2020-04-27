@@ -1,7 +1,7 @@
 <?php
 
 
-namespace RatePay\RatePayPayments\Bootstrap;
+namespace Ratepay\RatepayPayments\Bootstrap;
 
 
 use Doctrine\DBAL\Connection;

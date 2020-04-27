@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace RatePay\RatePayPayments\Migration;
+namespace Ratepay\RatepayPayments\Migration;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Migration\MigrationStep;

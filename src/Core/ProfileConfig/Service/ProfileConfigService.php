@@ -1,11 +1,11 @@
 <?php
 
 
-namespace RatePay\RatePayPayments\Core\ProfileConfig\Service;
+namespace Ratepay\RatepayPayments\Core\ProfileConfig\Service;
 
 
-use RatePay\RatePayPayments\Core\ProfileConfig\ProfileConfigCollection;
-use RatePay\RatePayPayments\Core\RatePayApi\Services\Request\ProfileRequestService;
+use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigCollection;
+use Ratepay\RatepayPayments\Core\RatepayApi\Services\Request\ProfileRequestService;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;

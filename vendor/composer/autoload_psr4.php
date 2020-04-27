@@ -6,6 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'RatePay\\RatePayPayments\\' => array($baseDir . '/src'),
+    'Ratepay\\RatepayPayments\\' => array($baseDir . '/src'),
     'RatePAY\\' => array($vendorDir . '/ratepay/php-library/src'),
 );

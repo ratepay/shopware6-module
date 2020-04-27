@@ -1,11 +1,11 @@
 <?php
 
 
-namespace RatePay\RatePayPayments\Core\ProfileConfig\Subscriber;
+namespace Ratepay\RatepayPayments\Core\ProfileConfig\Subscriber;
 
 
-use RatePay\RatePayPayments\Core\ProfileConfig\Service\ProfileConfigService;
-use RatePay\RatePayPayments\Core\ProfileConfig\ProfileConfigDefinition;
+use Ratepay\RatepayPayments\Core\ProfileConfig\Service\ProfileConfigService;
+use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 

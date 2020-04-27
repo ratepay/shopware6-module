@@ -1,28 +1,28 @@
 <?php
 
 
-namespace RatePay\RatePayPayments\Core\RatePayApi\Services\Request;
+namespace Ratepay\RatepayPayments\Core\RatepayApi\Services\Request;
 
 
 use DateTime;
 use Enlight_Components_Db_Adapter_Pdo_Mysql;
 use Monolog\Logger;
 use RatePAY\Model\Response\PaymentRequest as PaymentResponse;
-use RatePay\RatePayPayments\Core\ProfileConfig\ProfileConfigEntity;
+use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigEntity;
 use RatePAY\RequestBuilder;
-use RpayRatePay\Component\Mapper\BasketArrayBuilder;
-use RpayRatePay\Component\Mapper\PaymentRequestData;
-use RpayRatePay\Enum\PaymentMethods;
-use RpayRatePay\Helper\PositionHelper;
-use RpayRatePay\Models\Position\Discount;
-use RpayRatePay\Models\Position\Product;
-use RpayRatePay\Models\Position\Shipping;
-use RpayRatePay\Services\Config\ConfigService;
-use RpayRatePay\Services\Config\ProfileConfigService;
-use RpayRatePay\Services\Factory\BasketArrayFactory;
-use RpayRatePay\Services\Factory\CustomerArrayFactory;
-use RpayRatePay\Services\Factory\PaymentArrayFactory;
-use RpayRatePay\Services\Logger\RequestLogger;
+use RpayRatepay\Component\Mapper\BasketArrayBuilder;
+use RpayRatepay\Component\Mapper\PaymentRequestData;
+use RpayRatepay\Enum\PaymentMethods;
+use RpayRatepay\Helper\PositionHelper;
+use RpayRatepay\Models\Position\Discount;
+use RpayRatepay\Models\Position\Product;
+use RpayRatepay\Models\Position\Shipping;
+use RpayRatepay\Services\Config\ConfigService;
+use RpayRatepay\Services\Config\ProfileConfigService;
+use RpayRatepay\Services\Factory\BasketArrayFactory;
+use RpayRatepay\Services\Factory\CustomerArrayFactory;
+use RpayRatepay\Services\Factory\PaymentArrayFactory;
+use RpayRatepay\Services\Logger\RequestLogger;
 use RuntimeException;
 use Shopware\Components\Model\ModelManager;
 use Shopware\Models\Attribute\Order as OrderAttribute;

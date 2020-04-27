@@ -1,22 +1,22 @@
 {
     "name": "ratepay/shopware6-module",
-    "description": "RatePAY payment methods for Shopware 6",
+    "description": "Ratepay payment methods for Shopware 6",
     "version": "v0.0.3",
     "license": "MIT",
     "authors": [
         {
-            "name": "RatePAY GmbH"
+            "name": "Ratepay GmbH"
         }
     ],
     "type": "shopware-platform-plugin",
     "autoload": {
         "psr-4": {
-            "RatePay\\RatePayPayments\\": "src/"
+            "Ratepay\\RatepayPayments\\": "src/"
         }
     },
     "extra": {
-        "shopware-plugin-class": "RatePay\\RatePayPayments\\RatePayPayments",
-        "copyright": "(c) by RatePAY GmbH",
+        "shopware-plugin-class": "Ratepay\\RatepayPayments\\RatepayPayments",
+        "copyright": "(c) by Ratepay GmbH",
         "label": {
             "de-DE": "Integration der RatePAY Zahlungsmethoden",
             "en-GB": "Integration of the RatePAY payment methods"

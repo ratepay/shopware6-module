@@ -1,10 +1,10 @@
 <?php
 
 
-namespace RatePay\RatePayPayments\Bootstrap;
+namespace Ratepay\RatepayPayments\Bootstrap;
 
 
-use RatePay\RatePayPayments\Core\Checkout\Payment\Cart\PaymentHandler\InvoicePaymentHandler;
+use Ratepay\RatepayPayments\Core\Checkout\Payment\Cart\PaymentHandler\InvoicePaymentHandler;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;

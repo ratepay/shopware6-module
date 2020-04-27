@@ -1,10 +1,10 @@
 <?php
 
-namespace RatePay\RatePayPayments\Core\RatePayApi\Services;
+namespace Ratepay\RatepayPayments\Core\RatepayApi\Services;
 
 use Exception;
 use Monolog\Logger;
-use RatePay\RatePayPayments\Core\PluginConfig\Services\ConfigService;
+use Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 

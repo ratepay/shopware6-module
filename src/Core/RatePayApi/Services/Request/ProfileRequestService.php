@@ -1,10 +1,10 @@
 <?php
 
 
-namespace RatePay\RatePayPayments\Core\RatePayApi\Services\Request;
+namespace Ratepay\RatepayPayments\Core\RatepayApi\Services\Request;
 
 
-use RatePay\RatePayPayments\Core\ProfileConfig\ProfileConfigEntity;
+use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigEntity;
 
 class ProfileRequestService extends AbstractRequest
 {

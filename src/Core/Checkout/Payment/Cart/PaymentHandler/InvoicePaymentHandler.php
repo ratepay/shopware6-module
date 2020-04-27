@@ -1,7 +1,7 @@
 <?php
 
 
-namespace RatePay\RatePayPayments\Core\Checkout\Payment\Cart\PaymentHandler;
+namespace Ratepay\RatepayPayments\Core\Checkout\Payment\Cart\PaymentHandler;
 
 
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;

@@ -1,18 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace RatePay\RatePayPayments;
+namespace Ratepay\RatepayPayments;
 
-use RatePay\RatePayPayments\Bootstrap\AbstractBootstrap;
-use RatePay\RatePayPayments\Bootstrap\Database;
-use RatePay\RatePayPayments\Bootstrap\PaymentMethods;
+use Ratepay\RatepayPayments\Bootstrap\AbstractBootstrap;
+use Ratepay\RatepayPayments\Bootstrap\Database;
+use Ratepay\RatepayPayments\Bootstrap\PaymentMethods;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Plugin;
 
-class RatePayPayments extends Plugin
+class RatepayPayments extends Plugin
 {
     /**
      * @param Plugin\Context\InstallContext $context
@@ -119,7 +119,7 @@ class RatePayPayments extends Plugin
         if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
             require_once __DIR__ . '/../vendor/autoload.php';
         } else {
-            throw new \Exception('RatePAY: the autoloader has not been created! Please run `composer install` in ratepay plugin directory');
+            throw new \Exception('Ratepay: the autoloader has not been created! Please run `composer install` in ratepay plugin directory');
         }
     }
 }

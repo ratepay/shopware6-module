@@ -1,7 +1,7 @@
 <?php
 
 
-namespace RatePay\RatePayPayments\Core\RatePayApi;
+namespace Ratepay\RatepayPayments\Core\RatepayApi;
 
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;

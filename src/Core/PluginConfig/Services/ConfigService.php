@@ -1,10 +1,10 @@
 <?php
 
 
-namespace RatePay\RatePayPayments\Core\PluginConfig\Services;
+namespace Ratepay\RatepayPayments\Core\PluginConfig\Services;
 
 
-use RatePay\RatePayPayments\RatePayPayments as RatePayPayments;
+use Ratepay\RatepayPayments\RatepayPayments as RatepayPayments;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -36,7 +36,7 @@ class ConfigService
         /** @var PluginCollection $plugin */
         $plugins = $this->pluginRepository->search(
             (new Criteria())
-                ->addFilter(new EqualsFilter('baseClass', RatePayPayments::class))
+                ->addFilter(new EqualsFilter('baseClass', RatepayPayments::class))
                 ->setLimit(1),
             $this->getContext()
         );
