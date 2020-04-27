@@ -1,0 +1,24 @@
+{% block ratepay_profile_config_list %}
+<sw-page class="ratepay-profile-config-list">
+    {% block ratepay_profile_config_list_smart_bar_actions %}
+    <template slot="smart-bar-actions">
+        <sw-button variant="primary" :routerLink="{ name: 'ratepay.profileConfig.create' }">
+            {{ $t('ratepay.profile_config.page.list.createButton') }}
+        </sw-button>
+    </template>
+    {% endblock %}
+
+    <template slot="content">
+        {% block ratepay_profile_config_list_content %}
+        <sw-entity-listing
+            v-if="entities"
+            :items="entities"
+            :repository="repository"
+            :showSelection="false"
+            :columns="columns"
+            detailRoute="ratepay.profileConfig.detail">
+        </sw-entity-listing>
+        {% endblock %}
+    </template>
+</sw-page>
+{% endblock %}

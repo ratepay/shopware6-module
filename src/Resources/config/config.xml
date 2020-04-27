@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/master/src/Core/System/SystemConfig/Schema/config.xsd">
+    <card>
+        <title>Profile-Config Germany</title>
+        <title lang="de-DE">Profile-Config Deutschland</title>
+
+        <input-field>
+            <name>DEProfileId</name>
+            <copyable>true</copyable>
+            <label>Profile-ID (invoice, debit, installment)</label>
+            <label lang="de-DE">Profile-ID (Auf Rechnung, Lastschrift, Ratenzahlung)</label>
+        </input-field>
+        <input-field>
+            <name>DESecurityCode</name>
+            <copyable>true</copyable>
+            <label>Security Code (invoice, debit, installment)</label>
+            <label lang="de-DE">Sicherheitsschlüssel (Auf Rechnung, Lastschrift, Ratenzahlung)</label>
+        </input-field>
+
+        <input-field>
+            <name>0PercentInstallmentDEProfileId</name>
+            <copyable>true</copyable>
+            <label>Profile-ID (0% installment)</label>
+            <label lang="de-DE">Profile-ID (0% Finanzierung)</label>
+        </input-field>
+        <input-field>
+            <name>0PercentInstallmentDESecurityCode</name>
+            <copyable>true</copyable>
+            <label>Security Code (0% installment)</label>
+            <label lang="de-DE">Sicherheitsschlüssel (0% Finanzierung)</label>
+        </input-field>
+    </card>
+
+
+    <card>
+        <title>Profile-Config Austria</title>
+        <title lang="de-DE">Profile-Config Österreich</title>
+
+        <input-field>
+            <name>ATProfileId</name>
+            <copyable>true</copyable>
+            <label>Profile-ID (invoice, debit, installment)</label>
+            <label lang="de-DE">Profile-ID (Auf Rechnung, Lastschrift, Ratenzahlung)</label>
+        </input-field>
+        <input-field>
+            <name>ATSecurityCode</name>
+            <copyable>true</copyable>
+            <label>Security Code (invoice, debit, installment)</label>
+            <label lang="de-DE">Sicherheitsschlüssel (Auf Rechnung, Lastschrift, Ratenzahlung)</label>
+        </input-field>
+
+        <input-field>
+            <name>0PercentInstallmentATProfileId</name>
+            <copyable>true</copyable>
+            <label>Profile-ID (0% installment)</label>
+            <label lang="de-DE">Profile-ID (0% Finanzierung)</label>
+        </input-field>
+        <input-field>
+            <name>0PercentInstallmentATSecurityCode</name>
+            <copyable>true</copyable>
+            <label>Security Code (0% installment)</label>
+            <label lang="de-DE">Sicherheitsschlüssel (0% Finanzierung)</label>
+        </input-field>
+    </card>
+
+</config>

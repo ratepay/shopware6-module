@@ -1,0 +1,72 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="RatePay\RatePayPayments\Core\ProfileConfig\Service\ProfileConfigService">
+            <argument id="ratepay_profile_config.repository" type="service"/>
+            <argument id="RatePay\RatePayPayments\Core\RatePayApi\Services\Request\ProfileRequestService"
+                      type="service"/>
+        </service>
+
+        <service id="RatePay\RatePayPayments\Core\ProfileConfig\Subscriber\EntitySaveSubscriber">
+            <argument id="RatePay\RatePayPayments\Core\ProfileConfig\Service\ProfileConfigService" type="service"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="RatePay\RatePayPayments\Core\PluginConfig\Services\ConfigService">
+            <argument id="Shopware\Core\System\SystemConfig\SystemConfigService" type="service"/>
+            <argument id="plugin.repository" type="service"/>
+        </service>
+
+        <service id="RatePay\RatePayPayments\Core\RatePayApi\Services\RequestLogger">
+            <argument id="RatePay\RatePayPayments\Core\PluginConfig\Services\ConfigService" type="service"/>
+            <argument id="ratepay_api_log.repository" type="service"/>
+            <argument id="ratepay.logger" type="service"/>
+        </service>
+
+        <service id="ratepay.logger" class="Monolog\Logger">
+            <factory service="Shopware\Core\Framework\Log\LoggerFactory" method="createRotating"/>
+            <argument type="string">ratepay</argument>
+        </service>
+
+
+        <!-- entities -->
+        <service id="RatePay\RatePayPayments\Core\ProfileConfig\ProfileConfigDefinition">
+            <!--tag name="shopware.composite_search.definition"/-->
+            <tag name="shopware.entity.definition" entity="ratepay_profile_config"/>
+        </service>
+        <service id="RatePay\RatePayPayments\Core\RatePayApi\ApiRequestLogDefinition">
+            <!--tag name="shopware.composite_search.definition"/-->
+            <tag name="shopware.entity.definition" entity="ratepay_api_log"/>
+        </service>
+        <service id="RatePay\RatePayPayments\Core\ProfileConfig\ProfileConfigMethodDefinition">
+            <!--tag name="shopware.composite_search.definition"/-->
+            <tag name="shopware.entity.definition" entity="ratepay_profile_config_method"/>
+        </service>
+
+
+        <!-- repositories -->
+        <service id="RatePay\RatePayPayments\Core\ProfileConfig\ProfileConfigRepository"
+                 decorates="ratepay_profile_config.repository">
+            <argument id="RatePay\RatePayPayments\Core\ProfileConfig\ProfileConfigRepository.inner" type="service"/>
+            <argument id="RatePay\RatePayPayments\Core\RatePayApi\Services\Request\ProfileRequestService" type="service" />
+        </service>
+
+
+        <!-- Requests-->
+        <service id="RatePay\RatePayPayments\Core\RatePayApi\Services\Request\ProfileRequestService">
+            <argument id="RatePay\RatePayPayments\Core\PluginConfig\Services\ConfigService" type="service"/>
+            <argument id="RatePay\RatePayPayments\Core\RatePayApi\Services\RequestLogger" type="service"/>
+            <argument>%kernel.shopware_version%</argument>
+        </service>
+
+        <!-- Payment methods -->
+        <service id="RatePay\RatePayPayments\Core\Checkout\Payment\Cart\PaymentHandler\InvoicePaymentHandler">
+            <tag name="shopware.payment.method.sync"/>
+        </service>
+
+    </services>
+</container>

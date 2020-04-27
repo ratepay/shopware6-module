@@ -1,0 +1,28 @@
+{
+    "ratepay": {
+        "profile_config": {
+            "general": {
+                "mainMenuItemGeneral": "RatePAY Profile Config",
+                "descriptionTextModule": ""
+            },
+            "global": {
+                "labels": {
+                    "profile_id": "Profile ID",
+                    "security_code": "Sicherheitsschlüssel",
+                    "sales_channel" : "Sales Channel"
+                }
+            },
+            "page": {
+                "list": {
+                    "createButton": "Profil hinzufügen"
+                },
+                "detail": {
+                    "cancelButtonText": "Abbrechen",
+                    "saveButtonText": "Speichern",
+                    "errorTitle": "Fehler beim Speichern des Profiles"
+                }
+            }
+
+        }
+    }
+}

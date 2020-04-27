@@ -1,0 +1,44 @@
+{% block ratepay_profile_config_detail %}
+    <sw-page class="ratepay-profile-config-detail">
+        <template slot="smart-bar-actions">
+            <sw-button :routerLink="{ name: 'ratepay.profileConfig.list' }">
+                {{ $t('ratepay.profile_config.page.detail.cancelButtonText') }}
+            </sw-button>
+
+            <sw-button-process
+                :isLoading="isLoading"
+                :processSuccess="processSuccess"
+                variant="primary"
+                @process-finish="saveFinish"
+                @click="onClickSave">
+                {{ $t('ratepay.profile_config.page.detail.saveButtonText') }}
+            </sw-button-process>
+        </template>
+
+        <template slot="content">
+            <sw-card-view>
+                <sw-card v-if="entity" :isLoading="isLoading">
+                    <sw-alert variant="error" appearance="default" :showIcon="true" :closable="false" v-if="entity.isNew() === false && !entity.status">
+                        {{ entity.statusMessage }}
+                    </sw-alert>
+                    <sw-alert variant="success" appearance="default" :showIcon="true" :closable="false" v-if="entity.isNew() === false && entity.status">
+                        {{ entity.statusMessage }}
+                    </sw-alert>
+
+                    <sw-field :label="$t('ratepay.profile_config.global.labels.profile_id')" v-model="entity.profileId"></sw-field>
+                    <sw-field :label="$t('ratepay.profile_config.global.labels.security_code')" v-model="entity.securityCode"></sw-field>
+
+                    <sw-entity-single-select
+                        entity="sales_channel"
+                        :label="$t('ratepay.profile_config.global.labels.sales_channel')"
+                        v-model="entity.salesChannelId"
+                        labelProperty="name"
+                        required
+                    >
+                    </sw-entity-single-select>
+
+                </sw-card>
+            </sw-card-view>
+        </template>
+    </sw-page>
+{% endblock %}
