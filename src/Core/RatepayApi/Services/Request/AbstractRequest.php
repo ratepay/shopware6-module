@@ -87,7 +87,7 @@ abstract class AbstractRequest
         /** @var AbstractResponse $responseModel */
         $responseModel = $rb;
 
-        $this->requestLogger->logRequest($rb->getRequestRaw(), $rb->getResponseRaw());
+        //$this->requestLogger->logRequest($rb->getRequestRaw(), $rb->getResponseRaw());
 
         if ($responseModel->isSuccessful()) {
             return $responseModel;
