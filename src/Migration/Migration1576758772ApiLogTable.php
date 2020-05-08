@@ -20,6 +20,7 @@ class Migration1576758772ApiLogTable extends MigrationStep
                 `version` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
                 `operation` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
                 `suboperation` varchar(255) COLLATE utf8_unicode_ci NULL,
+                `status` varchar(10) COLLATE utf8_unicode_ci NULL,
                 `transaction_id` varchar(255) COLLATE utf8_unicode_ci NULL,
                 `firstname` varchar(255) COLLATE utf8_unicode_ci NULL,
                 `lastname` varchar(255) COLLATE utf8_unicode_ci NULL,

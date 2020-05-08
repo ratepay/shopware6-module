@@ -53,6 +53,9 @@ class RequestLogger
         preg_match("/<transaction-id>(.*)<\/transaction-id>/", $requestXml, $transactionMatches);
         $transactionId = isset($transactionMatches[1]) ? $transactionMatches[1] : null;
 
+        preg_match('/<status code=\"(.*)">(.*)<\/status>/', $responseXml, $operationStatusMatches);
+        $operationStatus = isset($operationStatusMatches[1]) ? $operationStatusMatches[1] : null;
+
         preg_match("/<transaction-id>(.*)<\/transaction-id>/", $responseXml, $transactionMatchesResponse);
         $transactionId = isset($transactionMatchesResponse[1]) ? $transactionMatchesResponse[1] : $transactionId;
 
@@ -66,6 +69,7 @@ class RequestLogger
                     'version' => $this->config->getPluginVersion(),
                     'operation' => $operation,
                     'subOperation' => $operationSubtype,
+                    'status' => $operationStatus,
                     'transactionId' => $transactionId,
                     'request' => $requestXml,
                     'response' => $responseXml

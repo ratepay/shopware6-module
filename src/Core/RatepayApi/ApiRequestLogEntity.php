@@ -29,6 +29,11 @@ class ApiRequestLogEntity extends Entity
     /**
      * @var string
      */
+    protected $status;
+
+    /**
+     * @var string
+     */
     protected $transactionId;
 
     /**
@@ -97,6 +102,14 @@ class ApiRequestLogEntity extends Entity
     public function setSubOperation(string $subOperation): void
     {
         $this->subOperation = $subOperation;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus(): string
+    {
+        return $this->status;
     }
 
     /**
