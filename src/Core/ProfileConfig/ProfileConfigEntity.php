@@ -10,16 +10,30 @@ use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 class ProfileConfigEntity extends Entity
 {
 
+    const FIELD_ID = 'id';
+    const FIELD_PROFILE_ID = 'profileId';
+    const FIELD_SECURITY_CODE = 'securityCode';
+    const FIELD_SANDBOX = 'sandbox';
+    const FIELD_BACKEND = 'backend';
+    const FIELD_SALES_CHANNEL = 'salesChannel';
+    const FIELD_SALES_CHANNEL_ID = 'salesChannelId';
+    const FIELD_COUNTRY_CODE_BILLING = 'countryCodeBilling';
+    const FIELD_COUNTRY_CODE_SHIPPING = 'countryCodeDelivery';
+    const FIELD_CURRENCY = 'currency';
+    const FIELD_STATUS = 'status';
+    const FIELD_ERROR_DEFAULT = 'errorDefault';
+    const FIELD_STATUS_MESSAGE = 'statusMessage';
+
     use EntityIdTrait;
 
     /**
-     * @var boolean
+     * @var string
      */
-    protected $zeroPercentInstallment;
+    protected $profileId;
     /**
      * @var string
      */
-    protected $countryCodeBilling;
+    protected $securityCode;
     /**
      * @var SalesChannelEntity
      */
@@ -31,11 +45,7 @@ class ProfileConfigEntity extends Entity
     /**
      * @var string
      */
-    protected $profileId;
-    /**
-     * @var string
-     */
-    protected $securityCode;
+    protected $countryCodeBilling;
     /**
      * @var string
      */
@@ -45,10 +55,6 @@ class ProfileConfigEntity extends Entity
      */
     protected $currency;
     /**
-     * @var string
-     */
-    protected $errorDefault;
-    /**
      * @var boolean
      */
     protected $sandbox;
@@ -56,27 +62,20 @@ class ProfileConfigEntity extends Entity
     /**
      * @var boolean
      */
+    protected $backend;
+    /**
+     * @var boolean
+     */
     protected $status;
     /**
      * @var string
      */
+    protected $errorDefault;
+
+    /**
+     * @var string
+     */
     protected $statusMessage;
-
-    /**
-     * @return bool
-     */
-    public function isZeroPercentInstallment(): ?bool
-    {
-        return $this->zeroPercentInstallment;
-    }
-
-    /**
-     * @param bool $zeroPercentInstallment
-     */
-    public function setZeroPercentInstallment(bool $zeroPercentInstallment = null): void
-    {
-        $this->zeroPercentInstallment = $zeroPercentInstallment;
-    }
 
     /**
      * @return string
@@ -236,6 +235,38 @@ class ProfileConfigEntity extends Entity
     public function setStatusMessage(string $statusMessage): void
     {
         $this->statusMessage = $statusMessage;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSalesChannelId(): int
+    {
+        return $this->salesChannelId;
+    }
+
+    /**
+     * @param int $salesChannelId
+     */
+    public function setSalesChannelId(int $salesChannelId): void
+    {
+        $this->salesChannelId = $salesChannelId;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBackend(): bool
+    {
+        return $this->backend;
+    }
+
+    /**
+     * @param bool $backend
+     */
+    public function setBackend(bool $backend): void
+    {
+        $this->backend = $backend;
     }
 
 }

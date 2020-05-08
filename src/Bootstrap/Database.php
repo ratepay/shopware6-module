@@ -32,10 +32,12 @@ class Database extends AbstractBootstrap
             return;
         }
 
+        $this->connection->exec("SET FOREIGN_KEY_CHECKS=0;");
         $this->connection->exec('DROP TABLE IF EXISTS `ratepay_profile_config`');
         $this->connection->exec('DROP TABLE IF EXISTS `ratepay_profile_config_method_installment`');
         $this->connection->exec('DROP TABLE IF EXISTS `ratepay_profile_config_method`');
         $this->connection->exec('DROP TABLE IF EXISTS `ratepay_api_log`');
+        $this->connection->exec("SET FOREIGN_KEY_CHECKS=1;");
     }
 
     public function activate()

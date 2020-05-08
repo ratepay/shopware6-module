@@ -9,7 +9,9 @@
                 "labels": {
                     "profile_id": "Profile ID",
                     "security_code": "Sicherheitsschlüssel",
-                    "sales_channel" : "Sales Channel"
+                    "sales_channel" : "Sales Channel",
+                    "sandbox": "Testmodus",
+                    "backend": "Für Adminbestellungen"
                 }
             },
             "page": {
@@ -19,10 +21,19 @@
                 "detail": {
                     "cancelButtonText": "Abbrechen",
                     "saveButtonText": "Speichern",
-                    "errorTitle": "Fehler beim Speichern des Profiles"
+                    "reloadConfig": "Konfiguration neuladen"
+                }
+            },
+            "messages": {
+                "save": {
+                    "success": "Die Profile-Konfiguration wurde erfolgreich gespeichert",
+                    "error": "Beim Speichern der Profile-Konfiguration ist ein Fehler aufgetreten"
+                },
+                "reload": {
+                    "success": "Die Profile-Konfiguration wurde erfolgreich neu geladen",
+                    "error": "Beim Neuladen der Profile-Konfiguration ist ein Fehler aufgetreten"
                 }
             }
-
         }
     }
 }

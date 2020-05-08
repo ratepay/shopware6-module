@@ -39,38 +39,6 @@ class ProfileConfigRepository implements EntityRepositoryInterface
 
     public function update(array $data, Context $context): EntityWrittenContainerEvent
     {
-        foreach($data as &$singleData) {
-
-            $elements = $this->search(new Criteria([$singleData['id']]), $context);
-            /** @var ProfileConfigEntity $profileConfig */
-            $profileConfig = $elements->first();
-
-            if(isset($singleData['profileId'])) {
-                $profileConfig->setProfileId($singleData['profileId']);
-            }
-            if(isset($singleData['securityCode'])) {
-                $profileConfig->setSecurityCode($singleData['securityCode']);
-            }
-            if(isset($singleData['sandbox'])) {
-                $profileConfig->setSandbox($singleData['sandbox'] == 1);
-            }
-
-            $this->profileRequestService->setProfileConfig($profileConfig);
-            $response = $this->profileRequestService->doRequest();
-            if ($response->isSuccessful() == false) {
-                $singleData['status'] = false;
-                $singleData['statusMessage'] = $response->getResultMessage().': '.$response->getReasonMessage();
-            } else {
-                $responseResult = $response->getResult();
-                $singleData['status'] = $responseResult['merchantConfig']['merchant-status'] == 2;
-                $singleData['statusMessage'] = $response->getResultMessage().': '.$response->getReasonMessage() . ($singleData['status'] === false ? ' (Profile is disabled by RatePAY)' : '');
-                //$singleData['profileId'] = $responseResult['merchantConfig']['profile-id'];
-                $singleData['countryCodeBilling'] = strtoupper($responseResult['merchantConfig']['country-code-delivery']);
-                $singleData['countryCodeDelivery'] = strtoupper($responseResult['merchantConfig']['country-code-delivery']);
-                $singleData['currency'] = strtoupper($responseResult['merchantConfig']['currency']);
-            }
-        }
-
         return $this->innerRepo->update($data, $context);
     }
 

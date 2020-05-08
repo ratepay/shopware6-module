@@ -2,6 +2,8 @@ import './page/list';
 import './page/detail';
 import './page/create';
 
+import './init/profile-config-api-service.init';
+
 import deDE from './snippet/de-DE.json';
 import enGB from './snippet/en-GB.json';
 

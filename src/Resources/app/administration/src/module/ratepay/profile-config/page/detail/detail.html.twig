@@ -13,22 +13,29 @@
                 @click="onClickSave">
                 {{ $t('ratepay.profile_config.page.detail.saveButtonText') }}
             </sw-button-process>
+
+            <sw-button-process
+                v-if="entity && entity.isNew() === false && entity.status"
+                :key="entity.status"
+                :isLoading="isLoading"
+                :processSuccess="processSuccess"
+                variant="primary"
+                :disabled="disabledReloadButton"
+                @click="onClickReloadConfig">
+                {{ $t('ratepay.profile_config.page.detail.reloadConfig') }}
+            </sw-button-process>
         </template>
 
         <template slot="content">
             <sw-card-view>
                 <sw-card v-if="entity" :isLoading="isLoading">
-                    <sw-alert variant="error" appearance="default" :showIcon="true" :closable="false" v-if="entity.isNew() === false && !entity.status">
-                        {{ entity.statusMessage }}
-                    </sw-alert>
-                    <sw-alert variant="success" appearance="default" :showIcon="true" :closable="false" v-if="entity.isNew() === false && entity.status">
-                        {{ entity.statusMessage }}
-                    </sw-alert>
-
-                    <sw-field :label="$t('ratepay.profile_config.global.labels.profile_id')" v-model="entity.profileId"></sw-field>
-                    <sw-field :label="$t('ratepay.profile_config.global.labels.security_code')" v-model="entity.securityCode"></sw-field>
+                    <sw-field v-on:change="lockReloadButton" :label="$t('ratepay.profile_config.global.labels.profile_id')" v-model="entity.profileId" required></sw-field>
+                    <sw-field v-on:change="lockReloadButton" :label="$t('ratepay.profile_config.global.labels.security_code')" v-model="entity.securityCode" required></sw-field>
+                    <sw-switch-field v-on:change="lockReloadButton" :label="$t('ratepay.profile_config.global.labels.sandbox')" v-model="entity.sandbox"></sw-switch-field>
+                    <sw-switch-field v-on:change="lockReloadButton" :label="$t('ratepay.profile_config.global.labels.backend')" v-model="entity.backend"></sw-switch-field>
 
                     <sw-entity-single-select
+                        v-on:change="lockReloadButton"
                         entity="sales_channel"
                         :label="$t('ratepay.profile_config.global.labels.sales_channel')"
                         v-model="entity.salesChannelId"
@@ -37,6 +44,8 @@
                     >
                     </sw-entity-single-select>
 
+                </sw-card>
+                <sw-card v-if="entity && entity.status" :isLoading="isLoading">
                 </sw-card>
             </sw-card-view>
         </template>

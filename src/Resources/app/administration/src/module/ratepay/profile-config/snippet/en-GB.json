@@ -9,7 +9,9 @@
                 "labels": {
                     "profile_id": "Profile ID",
                     "security_code": "Security Code",
-                    "sales_channel" : "Sales Channel"
+                    "sales_channel" : "Sales Channel",
+                    "sandbox": "Test-Mode",
+                    "backend": "For admin orders"
                 }
             },
             "page": {
@@ -19,7 +21,17 @@
                 "detail": {
                     "cancelButtonText": "Cancel",
                     "saveButtonText": "Save",
-                    "errorTitle": "Error while saving the data"
+                    "reloadConfig": "Reload config"
+                }
+            },
+            "messages": {
+                "save": {
+                    "success": "The profile configuration has been saved",
+                    "error": "Error while saving the profile configuration"
+                },
+                "reload": {
+                    "success": "The profile configuration has been reloaded",
+                    "error": "Error while reloading the profile configuration"
                 }
             }
 

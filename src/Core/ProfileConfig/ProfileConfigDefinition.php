@@ -41,27 +41,23 @@ class ProfileConfigDefinition extends EntityDefinition
 
         //TODO primary keys over more than one column. Shopware does not support this currently
         return new FieldCollection([
-            (new IdField('id', 'id'))->addFlags(new Required(), new PrimaryKey()),
-            (new StringField('profile_id', 'profileId'))->addFlags(new Required()),
-            (new StringField('security_code', 'securityCode'))->addFlags(new Required()),
+            (new IdField('id', ProfileConfigEntity::FIELD_ID))->addFlags(new Required(), new PrimaryKey()),
+            (new StringField('profile_id', ProfileConfigEntity::FIELD_PROFILE_ID))->addFlags(new Required()),
+            (new StringField('security_code', ProfileConfigEntity::FIELD_SECURITY_CODE))->addFlags(new Required()),
+            (new BoolField('sandbox', ProfileConfigEntity::FIELD_SANDBOX))->addFlags(new Required()/*, new PrimaryKey()*/),
+            (new BoolField('backend', ProfileConfigEntity::FIELD_BACKEND))->addFlags(new Required()/*, new PrimaryKey()*/),
 
-            (new OneToOneAssociationField('salesChannel', 'sales_channel_id', 'id', SalesChannelDefinition::class))->addFlags(new CascadeDelete()),
-            (new IdField('sales_channel_id', 'salesChannelId')),
+            (new OneToOneAssociationField(ProfileConfigEntity::FIELD_SALES_CHANNEL, 'sales_channel_id', 'id', SalesChannelDefinition::class))->addFlags(new CascadeDelete()),
+            (new IdField('sales_channel_id', ProfileConfigEntity::FIELD_SALES_CHANNEL_ID)),
 
-            //(new BoolField('zero_percent_installment', 'zeroPercentInstallment'))->addFlags(new Required()),
-            (new BoolField('zero_percent_installment', 'zeroPercentInstallment'))->addFlags(new Required()),
-            (new StringField('country_code_billing', 'countryCodeBilling')),
-            (new StringField('country_code_delivery', 'countryCodeDelivery')),
-            (new StringField('currency', 'currency')),
+            (new StringField('country_code_billing', ProfileConfigEntity::FIELD_COUNTRY_CODE_BILLING)),
+            (new StringField('country_code_delivery', ProfileConfigEntity::FIELD_COUNTRY_CODE_SHIPPING)),
+            (new StringField('currency', ProfileConfigEntity::FIELD_CURRENCY)),
 
-            //payment configs
-            //(new OneToOneAssociationField(''))
 
-            //(new StringField('error_default', 'errorDefault')),
-            (new BoolField('sandbox', 'sandbox'))->addFlags(new Required()/*, new PrimaryKey()*/),
-
-            (new BoolField('status', 'status')),
-            (new StringField('status_message', 'statusMessage')),
+            (new BoolField('status', ProfileConfigEntity::FIELD_STATUS)),
+            (new StringField('error_default', ProfileConfigEntity::FIELD_ERROR_DEFAULT)),
+            (new StringField('status_message', ProfileConfigEntity::FIELD_STATUS_MESSAGE)),
         ]);
     }
 }

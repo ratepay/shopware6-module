@@ -7,13 +7,10 @@
 
         <service id="Ratepay\RatepayPayments\Core\ProfileConfig\Service\ProfileConfigService">
             <argument id="ratepay_profile_config.repository" type="service"/>
+            <argument id="ratepay_profile_config_method.repository" type="service"/>
+            <argument id="ratepay_profile_config_method_installment.repository" type="service"/>
             <argument id="Ratepay\RatepayPayments\Core\RatepayApi\Services\Request\ProfileRequestService"
                       type="service"/>
-        </service>
-
-        <service id="Ratepay\RatepayPayments\Core\ProfileConfig\Subscriber\EntitySaveSubscriber">
-            <argument id="Ratepay\RatepayPayments\Core\ProfileConfig\Service\ProfileConfigService" type="service"/>
-            <tag name="kernel.event_subscriber"/>
         </service>
 
         <service id="Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService">
@@ -46,6 +43,10 @@
             <!--tag name="shopware.composite_search.definition"/-->
             <tag name="shopware.entity.definition" entity="ratepay_profile_config_method"/>
         </service>
+        <service id="Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigMethodInstallmentDefinition">
+            <!--tag name="shopware.composite_search.definition"/-->
+            <tag name="shopware.entity.definition" entity="ratepay_profile_config_method_installment"/>
+        </service>
 
 
         <!-- repositories -->
@@ -66,6 +67,15 @@
         <!-- Payment methods -->
         <service id="Ratepay\RatepayPayments\Core\Checkout\Payment\Cart\PaymentHandler\InvoicePaymentHandler">
             <tag name="shopware.payment.method.sync"/>
+        </service>
+
+        <!-- Controller -->
+        <service id="Ratepay\RatepayPayments\Core\ProfileConfig\Controller\ProfileConfigController">
+            <argument id="Ratepay\RatepayPayments\Core\ProfileConfig\Service\ProfileConfigService" type="service"/>
+            <tag name="controller.service_arguments" />
+            <call method="setContainer">
+                <argument id="service_container" type="service"/>
+            </call>
         </service>
 
     </services>
