@@ -5,6 +5,7 @@ namespace Ratepay\RatepayPayments\Core\RatepayApi;
 
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\AllowHtml;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
@@ -42,8 +43,8 @@ class ApiRequestLogDefinition extends EntityDefinition
             (new StringField('transaction_id', 'transactionId')),
             (new StringField('firstname', 'firstname')),
             (new StringField('lastname', 'lastname')),
-            (new LongTextField('request', 'request'))->addFlags(new Required()),
-            (new LongTextField('response', 'response'))->addFlags(new Required()),
+            (new LongTextField('request', 'request'))->addFlags(new Required(), new AllowHtml()),
+            (new LongTextField('response', 'response'))->addFlags(new Required(), new AllowHtml()),
         ]);
     }
 }

@@ -86,8 +86,7 @@ abstract class AbstractRequest
         //yes this is "correct" - all functions with "get" or "is" as prefix will piped to this (abstract) model
         /** @var AbstractResponse $responseModel */
         $responseModel = $rb;
-
-        //$this->requestLogger->logRequest($rb->getRequestRaw(), $rb->getResponseRaw());
+        $this->requestLogger->logRequest($rb->getRequestRaw(), $rb->getResponseRaw());
 
         if ($responseModel->isSuccessful()) {
             return $responseModel;

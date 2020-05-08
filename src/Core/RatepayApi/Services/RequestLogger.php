@@ -77,7 +77,7 @@ class RequestLogger
             ], Context::createDefaultContext());
 
         } catch (Exception $exception) {
-            echo $exception->getMessage();die;
+            echo $exception->getMessage();
             $this->logger->error('RatePAY was unable to log order history: ' . $exception->getMessage());
         }
     }
