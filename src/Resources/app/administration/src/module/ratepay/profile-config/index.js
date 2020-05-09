@@ -44,6 +44,7 @@ Module.register('ratepay-profileConfig', {
     },
 
     navigation: [{
+        id: 'sw-ratepay',
         label: 'ratepay.profile_config.general.mainMenuItemGeneral',
         color: '#ff3d58',
         path: 'ratepay.profileConfig.list',

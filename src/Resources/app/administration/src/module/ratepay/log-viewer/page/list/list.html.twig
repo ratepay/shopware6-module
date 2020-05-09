@@ -1,0 +1,15 @@
+{% block ratepay_log_viewer_list %}
+<sw-page class="ratepay-log-viewer-list">
+    <template slot="content">
+        {% block ratepay_log_viewer_list_content %}
+            <sw-entity-listing
+                v-if="entities"
+                :items="entities"
+                :repository="repository"
+                :showSelection="false"
+                :columns="columns">
+            </sw-entity-listing>
+        {% endblock %}
+    </template>
+</sw-page>
+{% endblock %}
