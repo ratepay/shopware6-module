@@ -2,7 +2,7 @@
     "ratepay": {
         "profile_config": {
             "general": {
-                "mainMenuItemGeneral": "RatePAY Profile Config",
+                "mainMenuItemGeneral": "Ratepay Profile Config",
                 "descriptionTextModule": ""
             },
             "global": {
