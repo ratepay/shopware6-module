@@ -3,8 +3,20 @@
         "log_viewer": {
             "general": {
                 "subMenuItemApiLogViewer": "Ratepay API-Logs",
-                "mainMenuItemGeneral": "Ratepay API-Logs",
                 "descriptionTextModule": ""
+            }
+        },
+        "api_log": {
+            "global": {
+                "labels": {
+                    "id": "Id",
+                    "operation": "Operation",
+                    "suboperation": "Suboperation",
+                    "status": "Status",
+                    "created_at": "Created at",
+                    "request": "Request",
+                    "response": "Response"
+                }
             }
         }
     }
