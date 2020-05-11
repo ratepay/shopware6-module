@@ -1,5 +1,4 @@
 import './page/list';
-import './page/detail';
 
 import deDE from './snippet/de-DE.json';
 import enGB from "./snippet/en-GB.json";
@@ -23,10 +22,6 @@ Module.register('ratepay-logViewer', {
         list: {
             component: 'ratepay.logViewer.list',
             path: 'list'
-        },
-        detail: {
-            component: 'ratepay.logViewer.detail',
-            path: 'detail'
         }
     },
 

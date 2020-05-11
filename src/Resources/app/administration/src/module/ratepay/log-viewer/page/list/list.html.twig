@@ -8,7 +8,25 @@
                 :repository="repository"
                 :showSelection="false"
                 :columns="columns"
-                detailRoute="ratepay.logViewer.detail">
+                :showActions="false">
+
+                <template slot="column-response" slot-scope="{ item }">
+                    <sw-button @click="modalItem = item">
+                        {{ $t('ratepay.api_log.modal.openTitle') }}
+                    </sw-button>
+                    <sw-modal title="Modal box title" v-if="modalItem && modalItem.id === item.id" class="ratepay-xml-log-modal" @modal-close="modalItem = null">
+                        <div class="flex-container">
+                            <div>
+                                <span class="heading">{{ $t('ratepay.api_log.modal.request.heading') }}</span>
+                                <pre>{{ formatXml(modalItem.request) }}</pre>
+                            </div>
+                            <div>
+                                <span class="heading">{{ $t('ratepay.api_log.modal.response.heading') }}</span>
+                                <pre>{{ formatXml(modalItem.response) }}</pre>
+                            </div>
+                        </div>
+                    </sw-modal>
+                </template>
             </sw-entity-listing>
         {% endblock %}
     </template>

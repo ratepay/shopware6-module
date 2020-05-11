@@ -20,10 +20,19 @@
                     "status": "Status",
                     "firstname": "First name",
                     "lastname": "Last name",
-                    "created_at": "Created at",
+                    "createdAt": "Created at",
                     "request": "Request",
                     "response": "Response",
                     "viewLog": "Request / Response"
+                }
+            },
+            "modal": {
+                "openTitle": "show request / response",
+                "request": {
+                    "heading": "Request"
+                },
+                "response": {
+                    "heading": "Response"
                 }
             }
         }

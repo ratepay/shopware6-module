@@ -1,0 +1,29 @@
+.ratepay-xml-log-modal.sw-modal {
+    .sw-modal__dialog {
+        max-width: 90%;
+    }
+    .sw-modal__dialog,
+    .sw-modal__body,
+    .flex-container {
+        height: 100%;
+    }
+    .flex-container {
+        display: flex;
+        justify-content: space-between;
+        & > div {
+            flex-basis: calc(50% - 10px);
+            width: calc(50% - 10px);
+            overflow: auto;
+            height: 100%;
+        }
+    }
+    .heading {
+        display: block;
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    pre {
+        font-size: 12px;
+    }
+}

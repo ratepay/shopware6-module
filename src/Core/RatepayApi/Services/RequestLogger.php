@@ -2,6 +2,7 @@
 
 namespace Ratepay\RatepayPayments\Core\RatepayApi\Services;
 
+use DateTime;
 use Exception;
 use Monolog\Logger;
 use Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService;
@@ -72,12 +73,12 @@ class RequestLogger
                     'status' => $operationStatus,
                     'transactionId' => $transactionId,
                     'request' => $requestXml,
-                    'response' => $responseXml
+                    'response' => $responseXml,
+                    'createdAt' => new DateTime()
                 ]
             ], Context::createDefaultContext());
 
         } catch (Exception $exception) {
-            echo $exception->getMessage();
             $this->logger->error('RatePAY was unable to log order history: ' . $exception->getMessage());
         }
     }
