@@ -1,7 +1,5 @@
 import template from './detail.html.twig';
 
-require
-
 const {Component, Mixin} = Shopware;
 
 Component.register('ratepay.logViewer.detail', {
