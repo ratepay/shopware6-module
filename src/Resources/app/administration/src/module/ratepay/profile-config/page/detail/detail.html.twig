@@ -47,101 +47,92 @@
                 </sw-card>
 
                 <sw-card v-if="entity && entity.status" :isLoading="isLoading">
-                    <sw-tabs>
-                        <sw-tabs-item
-                            @click="switchTab('general')"
-                            :active="currentTab === 'general'"
-                        >
-                            {{ $t('ratepay.profile_config.page.tabs.general.title') }}
-                        </sw-tabs-item>
+                        <sw-tabs defaultItem="general">
+                            <template #default="{ active }">
+                                <sw-tabs-item :activeTab="active" name="general">
+                                    {{ $t('ratepay.profile_config.page.tabs.general.title') }}
+                                </sw-tabs-item>
 
-                        <sw-tabs-item v-for="config in paymentConfigs"
-                            @click="switchTab(config.paymentMethod)"
-                            :active="currentTab === config.paymentMethod"
-                            :key="config.id"
-                        >
-                            {{ $t('ratepay.profile_config.page.tabs.' + config.paymentMethod + '.title') }}
-                        </sw-tabs-item>
+                                <sw-tabs-item v-for="config in paymentConfigs" :activeTab="active" :name="config.paymentMethod" :key="config.id">
+                                    {{ $t('ratepay.profile_config.page.tabs.' + config.paymentMethod + '.title') }}
+                                </sw-tabs-item>
+                            </template>
 
-                    </sw-tabs>
+                            <template #content="{ active }">
+                                <table style="text-align: left;" v-show="active === 'general'">
+                                    <tbody>
+                                    <tr>
+                                        <th>{{ $t('ratepay.profile_config.page.tabs.general.table.label.countryCodeBilling') }}</th>
+                                        <td>{{ entity.countryCodeBilling }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>{{ $t('ratepay.profile_config.page.tabs.general.table.label.countryCodeDelivery') }}</th>
+                                        <td>{{ entity.countryCodeDelivery }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>{{ $t('ratepay.profile_config.page.tabs.general.table.label.currency') }}</th>
+                                        <td>{{ entity.currency }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>{{ $t('ratepay.profile_config.page.tabs.general.table.label.errorDefault') }}</th>
+                                        <td>{{ entity.errorDefault }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>{{ $t('ratepay.profile_config.page.tabs.general.table.label.updatedAt') }}</th>
+                                        <td>{{ entity.updatedAt }}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
 
-                    <sw-container v-if="currentTab == 'general'" :isLoading="isLoading">
-                        <table style="text-align: left;">
-                            <tbody>
-                                <tr>
-                                    <th>{{ $t('ratepay.profile_config.page.tabs.general.table.label.countryCodeBilling') }}</th>
-                                    <td>{{ entity.countryCodeBilling }}</td>
-                                </tr>
-                                <tr>
-                                    <th>{{ $t('ratepay.profile_config.page.tabs.general.table.label.countryCodeDelivery') }}</th>
-                                    <td>{{ entity.countryCodeDelivery }}</td>
-                                </tr>
-                                <tr>
-                                    <th>{{ $t('ratepay.profile_config.page.tabs.general.table.label.currency') }}</th>
-                                    <td>{{ entity.currency }}</td>
-                                </tr>
-                                <tr>
-                                    <th>{{ $t('ratepay.profile_config.page.tabs.general.table.label.errorDefault') }}</th>
-                                    <td>{{ entity.errorDefault }}</td>
-                                </tr>
-                                <tr>
-                                    <th>{{ $t('ratepay.profile_config.page.tabs.general.table.label.updatedAt') }}</th>
-                                    <td>{{ entity.updatedAt }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </sw-container>
+                                <table style="text-align: left;"
+                                       v-for="config in paymentConfigs" v-show="active === config.paymentMethod">
+                                    <tbody>
+                                        <tr>
+                                            <th>{{ $t('ratepay.profile_config.page.paymentConfig.table.label.allowB2b') }}</th>
+                                            <td>{{ config.allowB2b ? $t('global.default.yes') : $t('global.default.no') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>{{ $t('ratepay.profile_config.page.paymentConfig.table.label.limitMin') }}</th>
+                                            <td>{{ config.limitMin }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>{{ $t('ratepay.profile_config.page.paymentConfig.table.label.limitMax') }}</th>
+                                            <td>{{ config.limitMax }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>{{ $t('ratepay.profile_config.page.paymentConfig.table.label.limitMaxB2b') }}</th>
+                                            <td>{{ config.limitMaxB2b }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>{{ $t('ratepay.profile_config.page.paymentConfig.table.label.allowDifferentAddresses') }}</th>
+                                            <td>{{ config.allowDifferentAddresses ? $t('global.default.yes') : $t('global.default.no') }}</td>
+                                        </tr>
+                                        <tr v-if="installmentConfigs[config.paymentMethod]">
+                                            <th colspan="2" style="padding-top: 15px; border-bottom: 1px solid #ccc;">{{ $t('ratepay.profile_config.page.paymentConfig.table.label.installmentHeading') }}</th>
+                                        </tr>
+                                        <tr v-if="installmentConfigs[config.paymentMethod]">
+                                            <th>{{ $t('ratepay.profile_config.page.paymentConfig.table.label.installment.allowedMonths') }}</th>
+                                            <td>{{ installmentConfigs[config.paymentMethod].allowedMonths.join(', ') }}</td>
+                                        </tr>
+                                        <tr v-if="installmentConfigs[config.paymentMethod]">
+                                            <th>{{ $t('ratepay.profile_config.page.paymentConfig.table.label.installment.isBankTransferAllowed') }}</th>
+                                            <td>{{ installmentConfigs[config.paymentMethod].isBankTransferAllowed ? $t('global.default.yes') : $t('global.default.no') }}</td>
+                                        </tr>
+                                        <tr v-if="installmentConfigs[config.paymentMethod]">
+                                            <th>{{ $t('ratepay.profile_config.page.paymentConfig.table.label.installment.isDebitAllowed') }}</th>
+                                            <td>{{ installmentConfigs[config.paymentMethod].isDebitAllowed ? $t('global.default.yes') : $t('global.default.no') }}</td>
+                                        </tr>
+                                        <tr v-if="installmentConfigs[config.paymentMethod]">
+                                            <th>{{ $t('ratepay.profile_config.page.paymentConfig.table.label.installment.rateMin') }}</th>
+                                            <td>{{ installmentConfigs[config.paymentMethod].rateMin }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </template>
+                        </sw-tabs>
 
-                    <sw-container v-for="config in paymentConfigs"
-                      :key="config.id"
-                      v-if="currentTab == config.paymentMethod"
-                    >
-                        <table style="text-align: left;">
-                            <tbody>
-                                <tr>
-                                    <th>{{ $t('ratepay.profile_config.page.paymentConfig.table.label.allowB2b') }}</th>
-                                    <td>{{ config.allowB2b ? $t('global.default.yes') : $t('global.default.no') }}</td>
-                                </tr>
-                                <tr>
-                                    <th>{{ $t('ratepay.profile_config.page.paymentConfig.table.label.limitMin') }}</th>
-                                    <td>{{ config.limitMin }}</td>
-                                </tr>
-                                <tr>
-                                    <th>{{ $t('ratepay.profile_config.page.paymentConfig.table.label.limitMax') }}</th>
-                                    <td>{{ config.limitMax }}</td>
-                                </tr>
-                                <tr>
-                                    <th>{{ $t('ratepay.profile_config.page.paymentConfig.table.label.limitMaxB2b') }}</th>
-                                    <td>{{ config.limitMaxB2b }}</td>
-                                </tr>
-                                <tr>
-                                    <th>{{ $t('ratepay.profile_config.page.paymentConfig.table.label.allowDifferentAddresses') }}</th>
-                                    <td>{{ config.allowDifferentAddresses ? $t('global.default.yes') : $t('global.default.no') }}</td>
-                                </tr>
-                                <slot v-if="installmentConfigs[config.paymentMethod]">
-                                    <tr>
-                                        <th colspan="2" style="padding-top: 15px; border-bottom: 1px solid #ccc;">{{ $t('ratepay.profile_config.page.paymentConfig.table.label.installmentHeading') }}</th>
-                                    </tr>
-                                    <tr>
-                                        <th>{{ $t('ratepay.profile_config.page.paymentConfig.table.label.installment.allowedMonths') }}</th>
-                                        <td>{{ installmentConfigs[config.paymentMethod].allowedMonths.join(', ') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>{{ $t('ratepay.profile_config.page.paymentConfig.table.label.installment.isBankTransferAllowed') }}</th>
-                                        <td>{{ installmentConfigs[config.paymentMethod].isBankTransferAllowed ? $t('global.default.yes') : $t('global.default.no') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>{{ $t('ratepay.profile_config.page.paymentConfig.table.label.installment.isDebitAllowed') }}</th>
-                                        <td>{{ installmentConfigs[config.paymentMethod].isDebitAllowed ? $t('global.default.yes') : $t('global.default.no') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>{{ $t('ratepay.profile_config.page.paymentConfig.table.label.installment.rateMin') }}</th>
-                                        <td>{{ installmentConfigs[config.paymentMethod].rateMin }}</td>
-                                    </tr>
-                                </slot>
-                            </tbody>
-                        </table>
-                    </sw-container>
+
+
                 </sw-card>
             </sw-card-view>
         </template>
