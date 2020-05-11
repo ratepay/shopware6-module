@@ -4,6 +4,11 @@
             "general": {
                 "subMenuItemApiLogViewer": "Ratepay API-Logs",
                 "descriptionTextModule": ""
+            },
+            "page": {
+                "detail": {
+                    "cancelButtonText": "Back"
+                }
             }
         },
         "api_log": {
@@ -13,9 +18,12 @@
                     "operation": "Operation",
                     "suboperation": "Suboperation",
                     "status": "Status",
+                    "firstname": "First name",
+                    "lastname": "Last name",
                     "created_at": "Created at",
                     "request": "Request",
-                    "response": "Response"
+                    "response": "Response",
+                    "viewLog": "Request / Response"
                 }
             }
         }

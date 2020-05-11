@@ -29,8 +29,8 @@ Component.register('ratepay.logViewer.list', {
                 property: 'id',
                 dataIndex: 'id',
                 label: this.$t('ratepay.api_log.global.labels.id'),
-                allowResize: true
-                //primary: true
+                allowResize: true,
+                routerLink: 'ratepay.logViewer.detail',
             }, {
                 property: 'operation',
                 dataIndex: 'operation',
@@ -52,16 +52,15 @@ Component.register('ratepay.logViewer.list', {
                 label: this.$t('ratepay.api_log.global.labels.created_at'),
                 allowResize: true
             }, {
-                property: 'request',
-                dataIndex: 'request',
-                label: this.$t('ratepay.api_log.global.labels.request'),
-                allowResize: false,
+                property: 'firstname',
+                dataIndex: 'firstname',
+                label: this.$t('ratepay.api_log.global.labels.firstname'),
+                allowResize: true
             }, {
-                property: 'response',
-                dataIndex: 'response',
-                label: this.$t('ratepay.api_log.global.labels.response'),
-                allowResize: false,
-                width: 100
+                property: 'lastname',
+                dataIndex: 'lastname',
+                label: this.$t('ratepay.api_log.global.labels.lastname'),
+                allowResize: true
             }];
         }
     },
