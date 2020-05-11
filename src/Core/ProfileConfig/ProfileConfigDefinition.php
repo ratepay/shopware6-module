@@ -56,7 +56,6 @@ class ProfileConfigDefinition extends EntityDefinition
 
 
             (new BoolField('status', ProfileConfigEntity::FIELD_STATUS)),
-            (new StringField('error_default', ProfileConfigEntity::FIELD_ERROR_DEFAULT)),
             (new StringField('status_message', ProfileConfigEntity::FIELD_STATUS_MESSAGE)),
         ]);
     }

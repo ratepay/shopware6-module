@@ -22,6 +22,53 @@
                     "cancelButtonText": "Abbrechen",
                     "saveButtonText": "Speichern",
                     "reloadConfig": "Konfiguration neuladen"
+                },
+                "tabs": {
+                    "general": {
+                        "title": "Allgemein",
+                        "table": {
+                            "label": {
+                                "countryCodeBilling": "erlaube Länder (Rechnungsadresse)",
+                                "countryCodeDelivery": "erlaube Länder (Lieferadresse)",
+                                "currency": "Währung",
+                                "errorDefault": "Standardfehlermeldung",
+                                "updatedAt": "Zuletzt aktualisiert"
+                            }
+                        }
+                    },
+                    "invoice": {
+                        "title": "Kauf auf Rechnung"
+                    },
+                    "prepayment": {
+                        "title": "Vorkasse"
+                    },
+                    "debit": {
+                        "title": "Lastschrift"
+                    },
+                    "installment": {
+                        "title": "Ratenzahlung"
+                    },
+                    "installment_zero_percent": {
+                        "title": "0% Finanzierung"
+                    }
+                },
+                "paymentConfig": {
+                    "table": {
+                        "label": {
+                            "allowB2b": "Erlaube B2B",
+                            "limitMin": "Mindestbestellwert",
+                            "limitMax": "Maximalbestellwert",
+                            "limitMaxB2b": "Maximalbestellwert (B2B)",
+                            "allowDifferentAddresses": "Erlaube unterschiedliche Adressen",
+                            "installmentHeading": "Ratenzahlung",
+                            "installment": {
+                                "allowedMonths": "Verfügbare Monate",
+                                "isBankTransferAllowed": "Erlaube Überweisung",
+                                "isDebitAllowed": "Erlaube Lastschrift",
+                                "rateMin": "min. monatliche Rate"
+                            }
+                        }
+                    }
                 }
             },
             "messages": {

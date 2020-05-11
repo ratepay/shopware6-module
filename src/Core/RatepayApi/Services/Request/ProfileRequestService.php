@@ -14,7 +14,6 @@ class ProfileRequestService extends AbstractRequest
     protected $profileConfig = null;
 
     /**
-     * @param $isBackend
      * @return ProfileConfigEntity
      */
     public function getProfileConfig()
@@ -24,15 +23,6 @@ class ProfileRequestService extends AbstractRequest
 
     public function setProfileConfig(ProfileConfigEntity $profileConfig)
     {
-        if ($profileConfig->isSandbox() == null) {
-            if (strpos($profileConfig->getProfileId(), '_TE_')) {
-                $profileConfig->setSandbox(true);
-            } elseif (strpos($profileConfig->getProfileId(), '_PR_')) {
-                $profileConfig->setSandbox(false);
-            } else {
-                $profileConfig->setSandbox(true);
-            }
-        }
         $this->profileConfig = $profileConfig;
     }
 
@@ -49,10 +39,10 @@ class ProfileRequestService extends AbstractRequest
      */
     protected function getRequestContent()
     {
+        return [];
     }
 
     protected function processSuccess()
     {
-        // TODO: Implement processSuccess() method.
     }
 }

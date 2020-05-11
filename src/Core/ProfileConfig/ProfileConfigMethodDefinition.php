@@ -10,12 +10,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FloatField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\IntField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
-use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 
 class ProfileConfigMethodDefinition extends EntityDefinition
 {
@@ -44,8 +41,8 @@ class ProfileConfigMethodDefinition extends EntityDefinition
             (new ManyToOneAssociationField(ProfileConfigMethodEntity::FIELD_PROFILE, 'profile_id', ProfileConfigDefinition::class, ProfileConfigEntity::FIELD_ID))->addFlags(new CascadeDelete()),
             (new IdField('profile_id', ProfileConfigMethodEntity::FIELD_PROFILE_ID)),
             (new StringField('payment_method', ProfileConfigMethodEntity::FIELD_PAYMENT_METHOD))->addFlags(new Required()/*, new PrimaryKey()*/), // shopware does not support multiple primary keys
-            (new FloatField('limit_min', ProfileConfigMethodEntity::FIELD_LIMIT_MIN))->addFlags(new Required()),
-            (new FloatField('limit_max', ProfileConfigMethodEntity::FIELD_LIMIT_MAX))->addFlags(new Required()),
+            (new FloatField('limit_min', ProfileConfigMethodEntity::FIELD_LIMIT_MIN)),
+            (new FloatField('limit_max', ProfileConfigMethodEntity::FIELD_LIMIT_MAX)),
             (new FloatField('limit_max_b2b', ProfileConfigMethodEntity::FIELD_LIMIT_MAX_B2B)),
             (new BoolField('allow_b2b', ProfileConfigMethodEntity::FIELD_ALLOW_B2B))->addFlags(new Required()),
             (new BoolField('allow_different_addresses', ProfileConfigMethodEntity::FIELD_ALLOW_DIFFERENT_ADDRESSES)),

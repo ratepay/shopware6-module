@@ -21,7 +21,6 @@ class ProfileConfigEntity extends Entity
     const FIELD_COUNTRY_CODE_SHIPPING = 'countryCodeDelivery';
     const FIELD_CURRENCY = 'currency';
     const FIELD_STATUS = 'status';
-    const FIELD_ERROR_DEFAULT = 'errorDefault';
     const FIELD_STATUS_MESSAGE = 'statusMessage';
 
     use EntityIdTrait;
@@ -67,10 +66,6 @@ class ProfileConfigEntity extends Entity
      * @var boolean
      */
     protected $status;
-    /**
-     * @var string
-     */
-    protected $errorDefault;
 
     /**
      * @var string
@@ -171,22 +166,6 @@ class ProfileConfigEntity extends Entity
     public function setCurrency(string $currency = null): void
     {
         $this->currency = $currency;
-    }
-
-    /**
-     * @return string
-     */
-    public function getErrorDefault(): ?string
-    {
-        return $this->errorDefault;
-    }
-
-    /**
-     * @param string $errorDefault
-     */
-    public function setErrorDefault(string $errorDefault = null): void
-    {
-        $this->errorDefault = $errorDefault;
     }
 
     /**

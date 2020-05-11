@@ -22,6 +22,53 @@
                     "cancelButtonText": "Cancel",
                     "saveButtonText": "Save",
                     "reloadConfig": "Reload config"
+                },
+                "tabs": {
+                    "general": {
+                        "title": "General",
+                        "table": {
+                            "label": {
+                                "countryCodeBilling": "allowed countries (billing address)",
+                                "countryCodeDelivery": "allowed countries (delivery address)",
+                                "currency": "currency",
+                                "errorDefault": "default error message",
+                                "updatedAt": "last update"
+                            }
+                        }
+                    },
+                    "invoice": {
+                        "title": "Invoice"
+                    },
+                    "prepayment": {
+                        "title": "Prepayment"
+                    },
+                    "debit": {
+                        "title": "Debit"
+                    },
+                    "installment": {
+                        "title": "Installment"
+                    },
+                    "installment_zero_percent": {
+                        "title": "0% financing"
+                    }
+                },
+                "paymentConfig": {
+                    "table": {
+                        "label": {
+                            "allowB2b": "allow B2B",
+                            "limitMin": "min. amount",
+                            "limitMax": "max. amount",
+                            "limitMaxB2b": "max. amount (B2B)",
+                            "allowDifferentAddresses": "allow different addresses",
+                            "installmentHeading": "Installment",
+                            "installment": {
+                                "allowedMonths": "available months",
+                                "isBankTransferAllowed": "is bank transfer allowed",
+                                "isDebitAllowed": "is debit allowed",
+                                "rateMin": "min. monthly rate"
+                            }
+                        }
+                    }
                 }
             },
             "messages": {
