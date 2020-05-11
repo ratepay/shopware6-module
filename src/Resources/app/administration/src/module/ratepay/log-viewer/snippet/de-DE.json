@@ -5,6 +5,19 @@
                 "subMenuItemApiLogViewer": "Ratepay API-Logs",
                 "descriptionTextModule": ""
             }
+        },
+        "api_log": {
+            "global": {
+                "labels": {
+                    "id": "Id",
+                    "operation": "Operation",
+                    "suboperation": "Suboperation",
+                    "status": "Status",
+                    "created_at": "Erstellt am",
+                    "request": "Request",
+                    "response": "Response"
+                }
+            }
         }
     }
 }
