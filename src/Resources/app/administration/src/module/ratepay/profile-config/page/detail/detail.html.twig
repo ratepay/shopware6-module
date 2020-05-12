@@ -30,7 +30,7 @@
             <sw-card-view>
                 <sw-card v-if="entity" :isLoading="isLoading">
                     <sw-field v-on:change="lockReloadButton" :label="$t('ratepay.profile_config.global.labels.profile_id')" v-model="entity.profileId" required></sw-field>
-                    <sw-field v-on:change="lockReloadButton" :label="$t('ratepay.profile_config.global.labels.security_code')" v-model="entity.securityCode" required></sw-field>
+                    <sw-password-field type="password" v-on:change="lockReloadButton" :label="$t('ratepay.profile_config.global.labels.security_code')" v-model="entity.securityCode" required></sw-password-field>
                     <sw-switch-field v-on:change="lockReloadButton" :label="$t('ratepay.profile_config.global.labels.sandbox')" v-model="entity.sandbox"></sw-switch-field>
                     <sw-switch-field v-on:change="lockReloadButton" :label="$t('ratepay.profile_config.global.labels.backend')" v-model="entity.backend"></sw-switch-field>
 

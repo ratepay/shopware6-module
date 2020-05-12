@@ -11,7 +11,10 @@
                     "security_code": "Security Code",
                     "sales_channel" : "Sales Channel",
                     "sandbox": "Test-Mode",
-                    "backend": "For admin orders"
+                    "backend": "For admin orders",
+                    "status": "Status",
+                    "active": "Active",
+                    "inactive": "Inactive"
                 }
             },
             "page": {

@@ -17,6 +17,17 @@
             :showSelection="false"
             :columns="columns"
             detailRoute="ratepay.profileConfig.detail">
+
+            <template slot="column-status" slot-scope="{ item }">
+                <sw-color-badge color="red" v-if="item.status === false" ></sw-color-badge>
+                <span v-if="item.status === false">&nbsp;&nbsp;{{ $t('ratepay.profile_config.global.labels.active') }}</span>
+                <sw-color-badge color="green" v-if="item.status === true"></sw-color-badge>
+                <span v-if="item.status === true">&nbsp;&nbsp;{{ $t('ratepay.profile_config.global.labels.inactive') }}</span>
+            </template>
+
+            <template slot="column-backend" slot-scope="{ item }">
+                <sw-icon name="default-basic-checkmark-line" v-if="item.backend" ></sw-icon>
+            </template>
         </sw-entity-listing>
         {% endblock %}
     </template>

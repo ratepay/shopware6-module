@@ -84,11 +84,14 @@ class ProfileConfigService
                 ProfileConfigEntity::FIELD_ID => $profileConfig->getId()
             ];
 
+            $responseData = $response->getResult();
             if ($response->isSuccessful() == false) {
                 $data[ProfileConfigEntity::FIELD_STATUS] = false;
                 $data[ProfileConfigEntity::FIELD_STATUS_MESSAGE] = $response->getReasonMessage();
+            } else if($responseData['merchantConfig']['merchant-status'] == 1) {
+                $data[ProfileConfigEntity::FIELD_STATUS] = false;
+                $data[ProfileConfigEntity::FIELD_STATUS_MESSAGE] = 'The profile is disabled. Please contact your account manager.';
             } else {
-                $responseData = $response->getResult();
                 $data[ProfileConfigEntity::FIELD_STATUS] = true;
                 $data[ProfileConfigEntity::FIELD_COUNTRY_CODE_BILLING] = $responseData['merchantConfig']['country-code-billing'];
                 $data[ProfileConfigEntity::FIELD_COUNTRY_CODE_SHIPPING] = $responseData['merchantConfig']['country-code-delivery'];
@@ -98,6 +101,18 @@ class ProfileConfigService
                 $methodConfigs = [];
                 $installmentConfigs = [];
                 foreach (self::PAYMENT_METHOD_MAPPING as $method => $arrayKey) {
+                    if($responseData['merchantConfig']['activation-status-'.$arrayKey] == 1) {
+                        // method is disabled.
+                        continue;
+                    }
+                    if($method === ProfileConfigMethodEntity::PAYMENT_METHOD_INSTALLMENT_0 && $responseData['installmentConfig']['interestrate-min'] > 0) {
+                        // this is not a zero percent installment profile.
+                        continue;
+                    }
+                    if($method === ProfileConfigMethodEntity::PAYMENT_METHOD_INSTALLMENT && $responseData['installmentConfig']['interestrate-min'] == 0) {
+                        // this is a zero percent installment profile, not a standard installment.
+                        continue;
+                    }
                     $id = Uuid::randomHex();
                     $methodConfigs[] = [
                         ProfileConfigMethodEntity::FIELD_ID => $id,
