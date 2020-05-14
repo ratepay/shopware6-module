@@ -46,6 +46,11 @@ Component.register('ratepay.logViewer.list', {
                     label: this.$t('ratepay.api_log.global.labels.suboperation'),
                     allowResize: true
                 }, {
+                    property: 'transactionId',
+                    dataIndex: 'transactionId',
+                    label: this.$t('ratepay.api_log.global.labels.transactionId'),
+                    allowResize: true
+                }, {
                     property: 'status',
                     dataIndex: 'status',
                     label: this.$t('ratepay.api_log.global.labels.status'),

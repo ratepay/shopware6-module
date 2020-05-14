@@ -18,6 +18,7 @@
                     "operation": "Operation",
                     "suboperation": "Suboperation",
                     "status": "Status",
+                    "transactionId": "Transaction ID",
                     "firstname": "First name",
                     "lastname": "Last name",
                     "createdAt": "Created at",
