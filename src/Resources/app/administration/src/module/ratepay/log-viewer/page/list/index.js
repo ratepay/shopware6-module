@@ -63,7 +63,7 @@ Component.register('ratepay.logViewer.list', {
                 }, {
                     property: 'response',
                     dataIndex: 'response',
-                    label: this.$t('ratepay.api_log.global.labels.response'),
+                    label: this.$t('ratepay.api_log.global.labels.viewLog'),
                     allowResize: true
                 }];
         }

@@ -21,9 +21,9 @@
                     "firstname": "Vorname",
                     "lastname": "Nachname",
                     "createdAt": "Erstellt am",
-                    "request": "Request",
-                    "response": "Response",
-                    "viewLog": "Request / Response"
+                    "request": "Anfrage",
+                    "response": "Antwort",
+                    "viewLog": "Anfrage / Antwort"
                 }
             },
             "modal": {
