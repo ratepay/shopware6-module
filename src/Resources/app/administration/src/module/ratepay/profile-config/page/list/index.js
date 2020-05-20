@@ -55,8 +55,10 @@ Component.register('ratepay.profileConfig.list', {
     created() {
         this.repository = this.repositoryFactory.create('ratepay_profile_config');
 
+        let criteria = new Criteria();
+        criteria.addAssociation('salesChannel');
         this.repository
-            .search(new Criteria(), Shopware.Context.api)
+            .search(criteria, Shopware.Context.api)
             .then((result) => {
                 this.entities = result;
             });

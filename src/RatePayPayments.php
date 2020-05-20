@@ -11,6 +11,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Plugin;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
 class RatepayPayments extends Plugin
 {
@@ -120,6 +123,27 @@ class RatepayPayments extends Plugin
             require_once __DIR__ . '/../vendor/autoload.php';
         } else {
             throw new \Exception('Ratepay: the autoloader has not been created! Please run `composer install` in ratepay plugin directory');
+        }
+    }
+
+    public function build(ContainerBuilder $containerBuilder): void
+    {
+        parent::build($containerBuilder);
+
+        $componentContainerFiles = [
+            'services.xml',
+            'models.xml',
+            'controller.xml'
+        ];
+
+        $loader = new XmlFileLoader($containerBuilder, new FileLocator(__DIR__));
+        foreach(array_filter(glob(__DIR__.'/Components/*'), 'is_dir') as $dir) {
+            foreach($componentContainerFiles as $fileName) {
+                $file = $dir.'/DependencyInjection/'.$fileName;
+                if(file_exists($file)) {
+                    $loader->load($file);
+                }
+            }
         }
     }
 }

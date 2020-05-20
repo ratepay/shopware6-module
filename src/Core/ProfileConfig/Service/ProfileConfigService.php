@@ -4,12 +4,18 @@
 namespace Ratepay\RatepayPayments\Core\ProfileConfig\Service;
 
 
+use RatePAY\Model\Request\AbstractRequest;
+use Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
+use Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigCollection;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigEntity;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigMethodEntity;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigMethodInstallmentEntity;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigRepository;
-use Ratepay\RatepayPayments\Core\RatepayApi\Services\Request\ProfileRequestService;
+use Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\ProfileRequestService;
+use Ratepay\RatepayPayments\RatepayPayments;
+use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
+use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -18,14 +24,6 @@ use Shopware\Core\Framework\Uuid\Uuid;
 
 class ProfileConfigService
 {
-
-    const PAYMENT_METHOD_MAPPING = [
-        ProfileConfigMethodEntity::PAYMENT_METHOD_PREPAYMENT => 'prepayment',
-        ProfileConfigMethodEntity::PAYMENT_METHOD_DEBIT => 'elv',
-        ProfileConfigMethodEntity::PAYMENT_METHOD_INVOICE => 'invoice',
-        ProfileConfigMethodEntity::PAYMENT_METHOD_INSTALLMENT => 'installment',
-        ProfileConfigMethodEntity::PAYMENT_METHOD_INSTALLMENT_0 => 'installment'
-    ];
 
     /**
      * @var ProfileConfigRepository
@@ -43,31 +41,43 @@ class ProfileConfigService
      * @var EntityRepositoryInterface
      */
     private $methodConfigInstallmentRepository;
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $paymentRepository;
+    /**
+     * @var Context
+     */
+    protected $context;
 
     public function __construct(
+        EntityRepositoryInterface $paymentRepository,
         EntityRepositoryInterface $repository,
         EntityRepositoryInterface $methodConfigRepository,
         EntityRepositoryInterface $methodConfigInstallmentRepository,
         ProfileRequestService $profileRequestService
     )
     {
+        $this->paymentRepository = $paymentRepository;
         $this->repository = $repository;
         $this->methodConfigRepository = $methodConfigRepository;
         $this->methodConfigInstallmentRepository = $methodConfigInstallmentRepository;
         $this->profileRequestService = $profileRequestService;
+
+        $this->context = Context::createDefaultContext();
     }
 
     public function refreshProfileConfigs(array $ids)
     {
-        $context = Context::createDefaultContext();
+
         /** @var ProfileConfigCollection|ProfileConfigEntity[] $profileConfigs */
-        $profileConfigs = $this->repository->search(new Criteria($ids), $context);
+        $profileConfigs = $this->repository->search(new Criteria($ids), $this->context);
 
         foreach ($profileConfigs as $profileConfig) {
             // truncate payment configurations
             $entitiesToDelete = $this->methodConfigRepository->search(
                 (new Criteria())->addFilter(new EqualsFilter(ProfileConfigMethodEntity::FIELD_PROFILE_ID, $profileConfig->getId())),
-                $context
+                $this->context
             );
             $deleteIds = $entitiesToDelete->getIds();
             if (count($deleteIds)) {
@@ -75,7 +85,7 @@ class ProfileConfigService
                     return [
                         ProfileConfigMethodEntity::FIELD_ID => $id
                     ];
-                }, $deleteIds)), $context);
+                }, $deleteIds)), $this->context);
             }
 
             $this->profileRequestService->setProfileConfig($profileConfig);
@@ -100,16 +110,22 @@ class ProfileConfigService
 
                 $methodConfigs = [];
                 $installmentConfigs = [];
-                foreach (self::PAYMENT_METHOD_MAPPING as $method => $arrayKey) {
+
+
+                $paymentMethods = $this->getPaymentMethods();
+
+                /** @var PaymentMethodEntity $paymentMethod */
+                foreach ($paymentMethods as $paymentMethod) {
+                    $arrayKey = strtolower(constant($paymentMethod->getHandlerIdentifier().'::RATEPAY_METHOD'));
                     if($responseData['merchantConfig']['activation-status-'.$arrayKey] == 1) {
                         // method is disabled.
                         continue;
                     }
-                    if($method === ProfileConfigMethodEntity::PAYMENT_METHOD_INSTALLMENT_0 && $responseData['installmentConfig']['interestrate-min'] > 0) {
+                    if($paymentMethod->getHandlerIdentifier() === InstallmentZeroPercentPaymentHandler::class  && $responseData['installmentConfig']['interestrate-min'] > 0) {
                         // this is not a zero percent installment profile.
                         continue;
                     }
-                    if($method === ProfileConfigMethodEntity::PAYMENT_METHOD_INSTALLMENT && $responseData['installmentConfig']['interestrate-min'] == 0) {
+                    if($paymentMethod->getHandlerIdentifier() === InstallmentPaymentHandler::class && $responseData['installmentConfig']['interestrate-min'] == 0) {
                         // this is a zero percent installment profile, not a standard installment.
                         continue;
                     }
@@ -117,7 +133,7 @@ class ProfileConfigService
                     $methodConfigs[] = [
                         ProfileConfigMethodEntity::FIELD_ID => $id,
                         ProfileConfigMethodEntity::FIELD_PROFILE_ID => $profileConfig->getId(),
-                        ProfileConfigMethodEntity::FIELD_PAYMENT_METHOD => $method,
+                        ProfileConfigMethodEntity::FIELD_PAYMENT_METHOD_ID => $paymentMethod->getId(),
                         ProfileConfigMethodEntity::FIELD_LIMIT_MIN => floatval($responseData['merchantConfig']['tx-limit-' . $arrayKey . '-min']) ? : null,
                         ProfileConfigMethodEntity::FIELD_LIMIT_MAX => floatval($responseData['merchantConfig']['tx-limit-' . $arrayKey . '-max']) ? : null,
                         ProfileConfigMethodEntity::FIELD_LIMIT_MAX_B2B => floatval($responseData['merchantConfig']['tx-limit-' . $arrayKey . '-max-b2b']) ? : null,
@@ -136,16 +152,27 @@ class ProfileConfigService
                     }
                 }
             }
-            $this->repository->upsert([$data], $context);
+            $this->repository->upsert([$data], $this->context);
 
-            if (isset($methodConfigs)) {
-                $this->methodConfigRepository->upsert($methodConfigs, $context);
+            if (isset($methodConfigs) && count($methodConfigs)) {
+                $this->methodConfigRepository->upsert($methodConfigs, $this->context);
             }
-            if (isset($installmentConfigs)) {
-                $this->methodConfigInstallmentRepository->upsert($installmentConfigs, $context);
+            if (isset($installmentConfigs) && count($installmentConfigs)) {
+                $this->methodConfigInstallmentRepository->upsert($installmentConfigs, $this->context);
             }
         }
-        return $this->repository->search(new Criteria($ids), $context);
+        return $this->repository->search(new Criteria($ids), $this->context);
+    }
+
+    /**
+     * @returns PaymentMethodCollection
+     */
+    private function getPaymentMethods()
+    {
+        $criteria = new Criteria();
+        $criteria->addAssociation('plugin');
+        $criteria->addFilter(new EqualsFilter('plugin.baseClass', RatepayPayments::class));
+        return $this->paymentRepository->search($criteria, $this->context);
     }
 
 }

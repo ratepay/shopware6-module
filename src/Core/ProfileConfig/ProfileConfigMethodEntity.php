@@ -4,6 +4,7 @@
 namespace Ratepay\RatepayPayments\Core\ProfileConfig;
 
 
+use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 
@@ -14,32 +15,25 @@ class ProfileConfigMethodEntity extends Entity
     const FIELD_PROFILE = 'profile';
     const FIELD_PROFILE_ID = 'profileId';
     const FIELD_PAYMENT_METHOD = 'paymentMethod';
+    const FIELD_PAYMENT_METHOD_ID = 'paymentMethodId';
     const FIELD_LIMIT_MIN = 'limitMin';
     const FIELD_LIMIT_MAX = 'limitMax';
     const FIELD_LIMIT_MAX_B2B = 'limitMaxB2b';
     const FIELD_ALLOW_DIFFERENT_ADDRESSES = 'allowDifferentAddresses';
     const FIELD_ALLOW_B2B = 'allowB2b';
-
-    const PAYMENT_METHOD_PREPAYMENT = 'prepayment';
-    const PAYMENT_METHOD_DEBIT = 'debit';
-    const PAYMENT_METHOD_INVOICE = 'invoice';
-    const PAYMENT_METHOD_INSTALLMENT = 'installment';
-    const PAYMENT_METHOD_INSTALLMENT_0 = 'installment_zero_percent';
-
-    const PAYMENT_METHODS = [
-        self::PAYMENT_METHOD_PREPAYMENT,
-        self::PAYMENT_METHOD_DEBIT,
-        self::PAYMENT_METHOD_INVOICE,
-        self::PAYMENT_METHOD_INSTALLMENT,
-        self::PAYMENT_METHOD_INSTALLMENT_0
-    ];
+    const FIELD_INSTALLMENT_CONFIG = 'installmentConfig';
 
     use EntityIdTrait;
 
     /**
-     * @var string
+     * @var PaymentMethodEntity
      */
     protected $paymentMethod;
+
+    /**
+     * @var string
+     */
+    protected $paymentMethodId;
 
     /**
      * @var ProfileConfigEntity
@@ -75,6 +69,11 @@ class ProfileConfigMethodEntity extends Entity
      * @var boolean
      */
     protected $allowB2b;
+
+    /**
+     * @var ProfileConfigMethodInstallmentEntity
+     */
+    protected $installmentConfig;
 
     /**
      * @return string
@@ -202,6 +201,38 @@ class ProfileConfigMethodEntity extends Entity
     public function setProfileId(string $profileId): void
     {
         $this->profileId = $profileId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPaymentMethodId(): string
+    {
+        return $this->paymentMethodId;
+    }
+
+    /**
+     * @param string $paymentMethodId
+     */
+    public function setPaymentMethodId(string $paymentMethodId): void
+    {
+        $this->paymentMethodId = $paymentMethodId;
+    }
+
+    /**
+     * @return ProfileConfigMethodInstallmentEntity|null
+     */
+    public function getInstallmentConfig(): ?ProfileConfigMethodInstallmentEntity
+    {
+        return $this->installmentConfig;
+    }
+
+    /**
+     * @param ProfileConfigMethodInstallmentEntity|null $installmentConfig
+     */
+    public function setInstallmentConfig(?ProfileConfigMethodInstallmentEntity $installmentConfig): void
+    {
+        $this->installmentConfig = $installmentConfig;
     }
 
 }

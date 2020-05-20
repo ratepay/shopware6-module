@@ -11,18 +11,12 @@ class ProfileConfigMethodInstallmentEntity extends Entity
 {
 
     const FIELD_ID = 'id';
-    const FIELD_CONFIG = 'config';
     const FIELD_ALLOWED_MONTHS = 'allowedMonths';
     const FIELD_IS_BANKTRANSFER_ALLOWED = 'isBankTransferAllowed';
     const FIELD_IS_DEBIT_ALLOWED = 'isDebitAllowed';
     const FIELD_RATE_MIN = 'rateMin';
 
     use EntityIdTrait;
-
-    /**
-     * @var ProfileConfigMethodEntity
-     */
-    protected $config;
 
     /**
      * @var string
@@ -43,23 +37,6 @@ class ProfileConfigMethodInstallmentEntity extends Entity
      * @var int
      */
     protected $rateMin;
-
-    /**
-     * @return ProfileConfigMethodEntity
-     */
-    public function getConfig(): ProfileConfigMethodEntity
-    {
-        return $this->config;
-    }
-
-    /**
-     * @param ProfileConfigMethodEntity $config
-     */
-    public function setConfig(ProfileConfigMethodEntity $config): void
-    {
-        $this->config = $config;
-        $this->setId($config->getId());
-    }
 
     /**
      * @return string

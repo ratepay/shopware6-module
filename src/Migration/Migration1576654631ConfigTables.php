@@ -37,16 +37,17 @@ class Migration1576654631ConfigTables extends MigrationStep
             CREATE TABLE `ratepay_profile_config_method` (
               `id` binary(16) NOT NULL,
               `profile_id` binary(16) NOT NULL,
-              `payment_method` enum(\'prepayment\',\'debit\',\'invoice\',\'installment\',\'installment_zero_percent\') COLLATE utf8_unicode_ci NOT NULL,
+              `payment_method_id` binary(16) NOT NULL,
               `allow_b2b` tinyint(1) DEFAULT 0,
-              `limit_min` int(11) NULL DEFAULT NULL;,
-              `limit_max` int(11) NULL DEFAULT NULL;,
-              `limit_max_b2b` int(11) NULL DEFAULT NULL;,
+              `limit_min` int(11) NULL DEFAULT NULL,
+              `limit_max` int(11) NULL DEFAULT NULL,
+              `limit_max_b2b` int(11) NULL DEFAULT NULL,
               `allow_different_addresses` tinyint(1) NOT NULL,
               `created_at` datetime NOT NULL,
               `updated_at` datetime DEFAULT NULL,
                 PRIMARY KEY (`id`),
-                FOREIGN KEY (`profile_id`) REFERENCES `ratepay_profile_config` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+                FOREIGN KEY (`profile_id`) REFERENCES `ratepay_profile_config` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+                FOREIGN KEY (`payment_method_id`) REFERENCES `payment_method` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
         ');
 
