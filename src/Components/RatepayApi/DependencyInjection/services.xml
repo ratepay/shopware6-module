@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <imports>
+        <import resource="services/factories.xml"/>
+        <import resource="services/requests.xml"/>
+    </imports>
+
+    <services>
+        <service id="Ratepay\RatepayPayments\Components\RatepayApi\Services\RequestLogger">
+            <argument id="Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService" type="service"/>
+            <argument id="ratepay_api_log.repository" type="service"/>
+            <argument id="ratepay.logger" type="service"/>
+        </service>
+    </services>
+
+</container>

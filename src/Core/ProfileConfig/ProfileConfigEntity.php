@@ -22,6 +22,7 @@ class ProfileConfigEntity extends Entity
     const FIELD_CURRENCY = 'currency';
     const FIELD_STATUS = 'status';
     const FIELD_STATUS_MESSAGE = 'statusMessage';
+    const FIELD_PAYMENT_METHOD_CONFIGS = 'paymentMethodConfigs';
 
     use EntityIdTrait;
 
@@ -71,6 +72,11 @@ class ProfileConfigEntity extends Entity
      * @var string
      */
     protected $statusMessage;
+
+    /**
+     * @var ProfileConfigMethodCollection
+     */
+    protected $paymentMethodConfigs;
 
     /**
      * @return string
@@ -246,6 +252,22 @@ class ProfileConfigEntity extends Entity
     public function setBackend(bool $backend): void
     {
         $this->backend = $backend;
+    }
+
+    /**
+     * @param ProfileConfigMethodCollection $paymentMethodConfigs
+     */
+    public function setPaymentMethodConfigs(ProfileConfigMethodCollection $paymentMethodConfigs): void
+    {
+        $this->paymentMethodConfigs = $paymentMethodConfigs;
+    }
+
+    /**
+     * @return ProfileConfigMethodCollection
+     */
+    public function getPaymentMethodConfigs(): ProfileConfigMethodCollection
+    {
+        return $this->paymentMethodConfigs;
     }
 
 }

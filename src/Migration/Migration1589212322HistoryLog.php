@@ -23,7 +23,7 @@ class Migration1589212322HistoryLog extends MigrationStep
                 `event` varchar(100) COLLATE utf8_unicode_ci NULL,
                 `articlename` varchar(100) COLLATE utf8_unicode_ci NULL,
                 `articlenumber` varchar(100) COLLATE utf8_unicode_ci NULL,
-                `quantity` varchar(100) COLLATE utf8_unicode_ci NULL
+                `quantity` varchar(100) COLLATE utf8_unicode_ci NULL,
                 PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
         ");

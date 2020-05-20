@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\ProfileRequestService">
+            <argument id="Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\RequestLogger" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory" type="service"/>
+        </service>
+
+        <service id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentRequestService">
+            <argument id="Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\RequestLogger" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory" type="service"/>
+            <argument id="ratepay_profile_config.repository" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Factory\CustomerFactory" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Factory\PaymentFactory" type="service"/>
+            <argument id="order.repository" type="service"/>
+            <argument id="order_line_item.repository" type="service"/>
+        </service>
+    </services>
+</container>

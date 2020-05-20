@@ -4,7 +4,11 @@
 namespace Ratepay\RatepayPayments\Bootstrap;
 
 
-use Ratepay\RatepayPayments\Core\Checkout\Payment\Cart\PaymentHandler\InvoicePaymentHandler;
+use Ratepay\RatepayPayments\Components\PaymentHandler\DebitPaymentHandler;
+use Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
+use Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
+use Ratepay\RatepayPayments\Components\PaymentHandler\InvoicePaymentHandler;
+use Ratepay\RatepayPayments\Components\PaymentHandler\PrepaymentPaymentHandler;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -35,10 +39,32 @@ class PaymentMethods extends AbstractBootstrap
                 'name' => 'RatePAY Kauf auf Rechnung',
                 'description' => 'Zahlen Sie erst nach Erhalt der Ware',
                 'pluginId' => $this->plugin->getId()
+            ],
+            [
+                'handlerIdentifier' => PrepaymentPaymentHandler::class,
+                'name' => 'RatePAY Vorkasse',
+                'description' => 'TEXT TEXT TEXT TEXT',
+                'pluginId' => $this->plugin->getId()
+            ],
+            [
+                'handlerIdentifier' => DebitPaymentHandler::class,
+                'name' => 'RatePAY Lastschrift',
+                'description' => 'TEXT TEXT TEXT TEXT',
+                'pluginId' => $this->plugin->getId()
+            ],
+            [
+                'handlerIdentifier' => InstallmentPaymentHandler::class,
+                'name' => 'RatePAY Ratenzahlung',
+                'description' => 'TEXT TEXT TEXT TEXT',
+                'pluginId' => $this->plugin->getId()
+            ],
+            [
+                'handlerIdentifier' => InstallmentZeroPercentPaymentHandler::class,
+                'name' => 'RatePAY 0% Finanzierung',
+                'description' => 'TEXT TEXT TEXT TEXT',
+                'pluginId' => $this->plugin->getId()
             ]
         ];
-
-        $createPayments = [];
 
         foreach ($payments as $index => $payment) {
             $paymentEntities = $this->paymentRepository->search(
@@ -55,7 +81,7 @@ class PaymentMethods extends AbstractBootstrap
             }
         }
         if(count($payments) > 0) {
-            $this->paymentRepository->create($payments, $this->defaultContext);
+            $this->paymentRepository->upsert(array_values($payments), $this->defaultContext);
         }
         $this->setActiveFlags(true);
     }

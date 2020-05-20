@@ -53,8 +53,8 @@
                                     {{ $t('ratepay.profile_config.page.tabs.general.title') }}
                                 </sw-tabs-item>
 
-                                <sw-tabs-item v-for="config in paymentConfigs" :activeTab="active" :name="config.paymentMethod" :key="config.id">
-                                    {{ $t('ratepay.profile_config.page.tabs.' + config.paymentMethod + '.title') }}
+                                <sw-tabs-item v-for="config in entity.paymentMethodConfigs" :activeTab="active" :name="config.paymentMethod.id" :key="config.id">
+                                    {{ config.paymentMethod.name }}
                                 </sw-tabs-item>
                             </template>
 
@@ -85,7 +85,7 @@
                                 </table>
 
                                 <table style="text-align: left;"
-                                       v-for="config in paymentConfigs" v-show="active === config.paymentMethod">
+                                       v-for="config in entity.paymentMethodConfigs" v-show="active === config.paymentMethod.id">
                                     <tbody>
                                         <tr>
                                             <th>{{ $t('ratepay.profile_config.page.paymentConfig.table.label.allowB2b') }}</th>
@@ -107,24 +107,24 @@
                                             <th>{{ $t('ratepay.profile_config.page.paymentConfig.table.label.allowDifferentAddresses') }}</th>
                                             <td>{{ config.allowDifferentAddresses ? $t('global.default.yes') : $t('global.default.no') }}</td>
                                         </tr>
-                                        <tr v-if="installmentConfigs[config.paymentMethod]">
+                                        <tr v-if="config.installmentConfig">
                                             <th colspan="2" style="padding-top: 15px; border-bottom: 1px solid #ccc;">{{ $t('ratepay.profile_config.page.paymentConfig.table.label.installmentHeading') }}</th>
                                         </tr>
-                                        <tr v-if="installmentConfigs[config.paymentMethod]">
+                                        <tr v-if="config.installmentConfig">
                                             <th>{{ $t('ratepay.profile_config.page.paymentConfig.table.label.installment.allowedMonths') }}</th>
-                                            <td>{{ installmentConfigs[config.paymentMethod].allowedMonths.join(', ') }}</td>
+                                            <td>{{ config.installmentConfig.allowedMonths.join(', ') }}</td>
                                         </tr>
-                                        <tr v-if="installmentConfigs[config.paymentMethod]">
+                                        <tr v-if="config.installmentConfig">
                                             <th>{{ $t('ratepay.profile_config.page.paymentConfig.table.label.installment.isBankTransferAllowed') }}</th>
-                                            <td>{{ installmentConfigs[config.paymentMethod].isBankTransferAllowed ? $t('global.default.yes') : $t('global.default.no') }}</td>
+                                            <td>{{ config.installmentConfig.isBankTransferAllowed ? $t('global.default.yes') : $t('global.default.no') }}</td>
                                         </tr>
-                                        <tr v-if="installmentConfigs[config.paymentMethod]">
+                                        <tr v-if="config.installmentConfig">
                                             <th>{{ $t('ratepay.profile_config.page.paymentConfig.table.label.installment.isDebitAllowed') }}</th>
-                                            <td>{{ installmentConfigs[config.paymentMethod].isDebitAllowed ? $t('global.default.yes') : $t('global.default.no') }}</td>
+                                            <td>{{ config.installmentConfig.isDebitAllowed ? $t('global.default.yes') : $t('global.default.no') }}</td>
                                         </tr>
-                                        <tr v-if="installmentConfigs[config.paymentMethod]">
+                                        <tr v-if="config.installmentConfig">
                                             <th>{{ $t('ratepay.profile_config.page.paymentConfig.table.label.installment.rateMin') }}</th>
-                                            <td>{{ installmentConfigs[config.paymentMethod].rateMin }}</td>
+                                            <td>{{ config.installmentConfig.rateMin }}</td>
                                         </tr>
                                     </tbody>
                                 </table>

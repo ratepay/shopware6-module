@@ -24,8 +24,6 @@ Component.register('ratepay.profileConfig.detail', {
     data() {
         return {
             entity: null,
-            paymentConfigs: {},
-            installmentConfigs: {},
             isLoading: false,
             processSuccess: false,
             repository: null,
@@ -54,55 +52,27 @@ Component.register('ratepay.profileConfig.detail', {
         },
         loadEntity() {
             var me = this;
-            me.paymentConfigs = {};
-            me.installmentConfigs = {};
-            return this.repository
-                .get(this.$route.params.id, Shopware.Context.api)
+            let entityCriteria = new Criteria();
+            entityCriteria.addAssociation('paymentMethodConfigs.paymentMethod');
+            entityCriteria.addAssociation('paymentMethodConfigs.installmentConfig');
+            entityCriteria.setIds([this.$route.params.id]);
+            return this.repository.search(entityCriteria, Shopware.Context.api)
                 .then((entity) => {
                     return new Promise((resolve, reject) => {
-
-                        // load the payment configs
-                        let criteria = new Criteria();
-                        criteria.addFilter(Criteria.equals('profileId', entity.id));
-                        this.paymentConfigRepository.search(criteria, Shopware.Context.api).then((response) => {
-                            let installmentMapping = {};
-                            response.forEach((config) => {
-                                me.paymentConfigs[config.paymentMethod] = config;
-                                if (config.paymentMethod.indexOf('installment') >= 0) {
-                                    installmentMapping[config.id] = config.paymentMethod;
-                                }
-                            });
-
-                            return new Promise(() => {
-
-                                // load the installment configs
-                                let criteriaInstallment = new Criteria();
-                                criteriaInstallment.setIds(Object.keys(installmentMapping));
-                                this.paymentConfigInstallmentRepository.search(criteriaInstallment, Shopware.Context.api).then((response) => {
-                                    response.forEach(installmentConfig => me.installmentConfigs[installmentMapping[installmentConfig.id]] = installmentConfig);
-                                    return new Promise(() => {
-
-                                        // when this field get updated, the component will be reload
-                                        this.entity = entity;
-                                        resolve(me.entity)
-                                    });
-                                });
-
-                            });
-                        });
-
+                        // when this field get updated, the component will be reload
+                        this.entity = entity.first();
+                        resolve(this.entity)
                     });
                 });
         },
 
         onClickSave() {
-            let me = this;
             this.isLoading = true;
 
             this.repository
                 .save(this.entity, Shopware.Context.api)
                 .then(() => {
-                    me.loadEntity();
+                    this.loadEntity();
 
                     this.onClickReloadConfig();
                     this.createNotificationSuccess({
@@ -110,15 +80,15 @@ Component.register('ratepay.profileConfig.detail', {
                         message: this.$tc('ratepay.profile_config.messages.save.success')
                     });
 
-                    me.isLoading = false;
-                    me.processSuccess = true;
-                }).catch((exception) => {
                     this.isLoading = false;
-                    this.createNotificationError({
-                        title: this.$t('ratepay.profile_config.messages.save.error'),
-                        message: exception
-                    });
+                    this.processSuccess = true;
+                }).catch((exception) => {
+                this.isLoading = false;
+                this.createNotificationError({
+                    title: this.$t('ratepay.profile_config.messages.save.error'),
+                    message: exception
                 });
+            });
         },
 
         saveFinish() {
