@@ -12,6 +12,18 @@
             <label lang="de-DE">Debug-Modus aktivieren</label>
         </input-field>
 
+        <input-field  type="bool">
+            <name>ratepayDevicefingerprintingButton</name>
+            <label>Device fingerprinting</label>
+            <label lang="de-DE">Device fingerprinting</label>
+        </input-field >
+        <input-field type="text">
+            <name>ratepayDevicefingerprintingSnippetId</name>
+            <label>Snippet ID</label>
+            <label lang="de-DE">Snippet ID</label>
+            <value>ratepay</value>
+        </input-field >
+
     </card>
 
 </config>
