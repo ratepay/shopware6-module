@@ -47,9 +47,6 @@
             <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\ProfileRequestService" type="service" />
         </service>
 
-
-
-
         <!-- Controller -->
         <service id="Ratepay\RatepayPayments\Core\ProfileConfig\Controller\ProfileConfigController">
             <argument id="Ratepay\RatepayPayments\Core\ProfileConfig\Service\ProfileConfigService" type="service"/>
@@ -58,6 +55,22 @@
                 <argument id="service_container" type="service"/>
             </call>
         </service>
+
+
+        <service id="Ratepay\RatepayPayments\Helper\SessionHelper" public="true">
+        </service>
+
+        <service id="Ratepay\RatepayPayments\Components\DeviceFingerprint\DfpService" public="true">
+            <argument id="Ratepay\RatepayPayments\Helper\SessionHelper" type="service"/>
+        </service>
+
+        <service id="Ratepay\RatepayPayments\Storefront\Subscriber\RatepayStorefrontSubscriber" public="true">
+            <tag name="kernel.event_subscriber"/>
+            <argument id="Ratepay\RatepayPayments\Components\DeviceFingerprint\DfpService" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Helper\SessionHelper" type="service"/>
+        </service>
+        <!-- /Controller -->
+
 
     </services>
 </container>
