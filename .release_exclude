@@ -1,0 +1,13 @@
+.git
+.github
+.gitignore
+build
+build.sh
+Jenkinsfile
+phpunit.xml.dist
+phpunit.xml
+sonar-project.properties
+tests
+.release_exclude
+.DS_Store
+vendor
