@@ -16,11 +16,11 @@ use RatePAY\RequestBuilder;
 abstract class AbstractRequest
 {
 
-    const CALL_PAYMENT_REQUEST = "PaymentRequest"; // yes, first letter is uppercase. The sdk expect that
-    const CALL_PAYMENT_CONFIRM = "paymentConfirm";
-    const CALL_DELIVER = "confirmationDeliver";
-    const CALL_CHANGE = "paymentChange";
-    const CALL_PROFILE_REQUEST = "profileRequest";
+    const CALL_PAYMENT_REQUEST = "PaymentRequest";
+    const CALL_PAYMENT_CONFIRM = "PaymentConfirm";
+    const CALL_DELIVER = "ConfirmationDeliver";
+    const CALL_CHANGE = "PaymentChange";
+    const CALL_PROFILE_REQUEST = "ProfileRequest";
     /**
      * @var ConfigService
      */
