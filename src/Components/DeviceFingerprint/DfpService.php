@@ -3,7 +3,8 @@
 namespace Ratepay\RatepayPayments\Components\DeviceFingerprint;
 
 use RatePAY\Service\DeviceFingerprint;
-use Ratepay\RatepayPayments\Helper\Sessionhelper;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * ServiceClass for device fingerprinting
@@ -12,28 +13,33 @@ use Ratepay\RatepayPayments\Helper\Sessionhelper;
  */
 class DfpService
 {
-
     const SESSION_VAR_NAME = 'dfpToken';
 
     /**
-     * @var SessionHelper
+     * @var RequestStack
      */
-    private $sessionHelper;
+    private $requestStack;
 
-    public function __construct(SessionHelper $sessionHelper)
+    public function __construct(
+        RequestStack $requestStack
+    )
     {
-        $this->sessionHelper = $sessionHelper;
+        $this->requestStack = $requestStack;
     }
 
     public function getDfpId($backend = false)
     {
         if ($backend === false) {
             // storefront request
-            $sessionValue = $this->sessionHelper->getData(self::SESSION_VAR_NAME);
-            if ($sessionValue) {
-                return $sessionValue;
+            $sessionValue = $this->requestStack->getCurrentRequest()->getSession()->get(self::SESSION_VAR_NAME);
+            if ($sessionValue && array_key_exists('0', $sessionValue)) {
+                return $sessionValue[0];
             }
-            $sessionId = $this->sessionHelper->getSession()->get('sessionId');
+
+            if ($this->requestStack->getCurrentRequest()->getSession() !== null) {
+                $sessionId = $this->requestStack->getCurrentRequest()->getSession()->get('sessionId');
+            }
+
         } else {
             // admin or console request
             $sessionId = rand();
@@ -44,24 +50,17 @@ class DfpService
         if ($backend === false) {
             // if it is a storefront request we will safe the token to the session for later access
             // in the admin we only need it once
-            $this->sessionHelper->setData(self::SESSION_VAR_NAME, $token);
+            
+
+            // TODO add session handler einfügen
+            $this->requestStack->getCurrentRequest()->setSession(self::SESSION_VAR_NAME, $token);
         }
         return $token;
     }
 
     public function isDfpIdAlreadyGenerated()
     {
-        return $this->sessionHelper->getData(self::SESSION_VAR_NAME) !== null;
-    }
-
-    public function deleteDfpId()
-    {
-        $this->sessionHelper->setData(self::SESSION_VAR_NAME, null);
-    }
-
-    protected function getSession()
-    {
-        return $this->sessionHelper->getSession();
+        return $this->requestStack->getCurrentRequest()->getSession()->get(self::SESSION_VAR_NAME) !== null;
     }
 
 }
