@@ -3,7 +3,7 @@
 namespace Ratepay\RatepayPayments\Components\DeviceFingerprint;
 
 use RatePAY\Service\DeviceFingerprint;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
@@ -20,11 +20,18 @@ class DfpService
      */
     private $requestStack;
 
+    /*
+     * @var SessionInterface
+     */
+    private $sessionInterface;
+
     public function __construct(
-        RequestStack $requestStack
+        RequestStack $requestStack,
+        SessionInterface $sessionInterface
     )
     {
         $this->requestStack = $requestStack;
+        $this->sessionInterface = $sessionInterface;
     }
 
     public function getDfpId($backend = false)
@@ -50,7 +57,7 @@ class DfpService
         if ($backend === false) {
             // if it is a storefront request we will safe the token to the session for later access
             // in the admin we only need it once
-            $this->requestStack->getCurrentRequest()->setSession(self::SESSION_VAR_NAME, $token);
+            $this->sessionInterface->set(self::SESSION_VAR_NAME, $token);
         }
         return $token;
     }

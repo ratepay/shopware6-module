@@ -53,8 +53,7 @@ class RatepayStorefrontSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if (strpos($event->getView(), 'storefront/page/checkout/confirm/index.html.twig') !== false &&
-            $this->dfpService->isDfpIdAlreadyGenerated() == false)
+        if (strpos($event->getView(), 'storefront/page/checkout/confirm/index.html.twig') !== false && $this->dfpService->isDfpIdAlreadyGenerated() == false)
         {
             $dfpHelper = new DeviceFingerprint($config['ratepayDevicefingerprintingSnippetId']);
             $event->setParameter('dpf', str_replace('\"', '"', $dfpHelper->getDeviceIdentSnippet($this->dfpService->getDfpId())));
