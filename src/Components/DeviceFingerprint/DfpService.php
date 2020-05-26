@@ -50,9 +50,6 @@ class DfpService
         if ($backend === false) {
             // if it is a storefront request we will safe the token to the session for later access
             // in the admin we only need it once
-            
-
-            // TODO add session handler einfügen
             $this->requestStack->getCurrentRequest()->setSession(self::SESSION_VAR_NAME, $token);
         }
         return $token;
