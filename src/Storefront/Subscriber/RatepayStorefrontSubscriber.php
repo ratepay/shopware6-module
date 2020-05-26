@@ -2,9 +2,12 @@
 
 namespace Ratepay\RatepayPayments\Storefront\Subscriber;
 
+use RatePAY\Service\DeviceFingerprint;
 use Ratepay\RatepayPayments\Helper\SessionHelper;
 use Ratepay\RatepayPayments\Components\DeviceFingerprint\DfpService;
+use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Event\StorefrontRenderEvent;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class RatepayStorefrontSubscriber implements EventSubscriberInterface
@@ -16,18 +19,17 @@ class RatepayStorefrontSubscriber implements EventSubscriberInterface
     protected $dfpService;
 
     /**
-     * @var SessionHelper
+     * @var SystemConfigService
      */
-    private $sessionHelper;
-
+    private $systemConfigService;
 
     public function __construct(
         DfpService $dfpService,
-        SessionHelper $sessionHelper
+        SystemConfigService $systemConfigService
     )
     {
         $this->dfpService = $dfpService;
-        $this->sessionHelper = $sessionHelper;
+        $this->systemConfigService = $systemConfigService;
     }
 
 
@@ -40,9 +42,29 @@ class RatepayStorefrontSubscriber implements EventSubscriberInterface
 
     /**
      * @param StorefrontRenderEvent $event
+     * @throws \Shopware\Core\Framework\DataAbstractionLayer\Exception\InconsistentCriteriaIdsException
+     * @codeCoverageIgnore
      */
     public function onStorefrontRender(StorefrontRenderEvent $event): void
     {
-        
+        $config = $this->getPluginConfiguration($event->getSalesChannelContext());
+
+        if (!$config['ratepayDevicefingerprintingButton']) {
+            return;
+        }
+
+        if (strpos($event->getView(), 'storefront/page/checkout/confirm/index.html.twig') !== false &&
+            $this->dfpService->isDfpIdAlreadyGenerated() == false)
+        {
+            $dfpHelper = new DeviceFingerprint($config['ratepayDevicefingerprintingSnippetId']);
+            $event->setParameter('dpf', str_replace('\"', '"', $dfpHelper->getDeviceIdentSnippet($this->dfpService->getDfpId())));
+        }
     }
+
+
+    protected function getPluginConfiguration(?SalesChannelContext $context): array
+    {
+        return $this->systemConfigService->get( 'RatepayPayments.config', $context ? $context->getSalesChannel()->getId() : null);
+    }
+
 }
