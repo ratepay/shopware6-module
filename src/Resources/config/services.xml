@@ -57,7 +57,6 @@
         </service>
 
         <service id="Ratepay\RatepayPayments\Components\DeviceFingerprint\DfpService" public="true">
-            <argument type="service" id="Symfony\Component\HttpFoundation\RequestStack"/>
             <argument type="service" id="Symfony\Component\HttpFoundation\Session\SessionInterface"/>
         </service>
 

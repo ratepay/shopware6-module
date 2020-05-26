@@ -4,7 +4,6 @@ namespace Ratepay\RatepayPayments\Components\DeviceFingerprint;
 
 use RatePAY\Service\DeviceFingerprint;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * ServiceClass for device fingerprinting
@@ -15,22 +14,15 @@ class DfpService
 {
     const SESSION_VAR_NAME = 'dfpToken';
 
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
     /*
      * @var SessionInterface
      */
     private $sessionInterface;
 
     public function __construct(
-        RequestStack $requestStack,
         SessionInterface $sessionInterface
     )
     {
-        $this->requestStack = $requestStack;
         $this->sessionInterface = $sessionInterface;
     }
 
@@ -38,20 +30,20 @@ class DfpService
     {
         if ($backend === false) {
             // storefront request
-            $sessionValue = $this->requestStack->getCurrentRequest()->getSession()->get(self::SESSION_VAR_NAME);
+            $sessionValue = $this->sessionInterface->get(self::SESSION_VAR_NAME);
+
             if ($sessionValue && array_key_exists('0', $sessionValue)) {
                 return $sessionValue[0];
             }
 
-            if ($this->requestStack->getCurrentRequest()->getSession() !== null) {
-                $sessionId = $this->requestStack->getCurrentRequest()->getSession()->get('sessionId');
+            if ($this->sessionInterface->get(self::SESSION_VAR_NAME) !== null) {
+                $sessionId = $this->sessionInterface->get('sessionId');
             }
 
         } else {
             // admin or console request
             $sessionId = rand();
         }
-
         $token = DeviceFingerprint::createDeviceIdentToken($sessionId);
 
         if ($backend === false) {
@@ -64,7 +56,7 @@ class DfpService
 
     public function isDfpIdAlreadyGenerated()
     {
-        return $this->requestStack->getCurrentRequest()->getSession()->get(self::SESSION_VAR_NAME) !== null;
+        return $this->sessionInterface->get(self::SESSION_VAR_NAME) !== null;
     }
 
 }
