@@ -58,8 +58,15 @@ class CheckoutEventListener implements EventSubscriberInterface
             $event->setParameter('dpf', str_replace('\"', '"', $dfpHelper->getDeviceIdentSnippet($this->dfpService->getDfpId())));
         }
 
+        $customerBirthday = $event->getSalesChannelContext()->getCustomer()->getBirthday();
+        $customerBillingAddress = $event->getSalesChannelContext()->getCustomer()->getActiveBillingAddress();
+        $customerVatId = $customerBillingAddress->getVatId();
+        $customerPhoneNumber = $customerBillingAddress->getPhoneNumber();
+
         $event->getPage()->addExtension('ratepay', new ArrayStruct([
-            'birthday' => new \DateTime()
+            'birthday' => $customerBirthday,
+            'vatId' => $customerVatId,
+            'phoneNumber' => $customerPhoneNumber
         ]));
 
     }

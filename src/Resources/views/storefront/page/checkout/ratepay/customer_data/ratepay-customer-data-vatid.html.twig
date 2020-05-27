@@ -1,12 +1,12 @@
 <div class="form-row">
     <div class="form-group col-sm-12">
         <label class="form-label">
-            {{ "Ratepay.RatepayPayments.formLabelVatid" | trans }}
+            {{ "address.companyVatLabel"|trans|sw_sanitize }}
         </label>
     </div>
 </div>
 <div class="form-row">
     <div class="form-group col-sm-4">
-        <input type="text" class="form-control" placeholder="{{ "Ratepay.RatepayPayments.fieldVatid" | trans }}" name="ratepay[vatid]" form="confirmOrderForm" required="required">
+        <input type="text" class="form-control" placeholder="{{ "address.companyVatPlaceholder"|trans|sw_sanitize }}" name="ratepay[vatid]" form="confirmOrderForm" value="{{ vatId }}" required="required">
     </div>
 </div>
