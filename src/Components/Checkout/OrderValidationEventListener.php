@@ -43,6 +43,26 @@ class OrderValidationEventListener implements EventSubscriberInterface
             return;
         }
 
+        $ratepayData = $request->request->get('ratepay');
+
+        foreach ($ratepayData as $customerData) {
+            // can be an array, ex. birthday
+            if (!is_array($customerData)){
+                if ($customerData === ''){
+                    return;
+                }
+            }
+            else {
+                foreach ($customerData as $singleValue) {
+                    if (!is_array($singleValue)) {
+                        if ($singleValue === ''){
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
         $context = $this->getContextFromRequest($request);
 
         $cart = $this->cartService->getCart($context->getToken(), $context);
