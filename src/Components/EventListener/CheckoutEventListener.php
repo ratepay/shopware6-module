@@ -1,15 +1,15 @@
 <?php
 
-namespace Ratepay\RatepayPayments\Storefront\Subscriber;
+namespace Ratepay\RatepayPayments\Components\EventListener;
 
 use RatePAY\Service\DeviceFingerprint;
 use Ratepay\RatepayPayments\Components\DeviceFingerprint\DfpService;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
-use Shopware\Storefront\Event\StorefrontRenderEvent;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class RatepayStorefrontSubscriber implements EventSubscriberInterface
+class CheckoutEventListener implements EventSubscriberInterface
 {
 
     /**
@@ -35,7 +35,7 @@ class RatepayStorefrontSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            StorefrontRenderEvent::class => 'onStorefrontRender'
+            CheckoutConfirmPageLoadedEvent::class => 'addRatepayTemplateData'
         ];
     }
 
@@ -44,20 +44,19 @@ class RatepayStorefrontSubscriber implements EventSubscriberInterface
      * @throws \Shopware\Core\Framework\DataAbstractionLayer\Exception\InconsistentCriteriaIdsException
      * @codeCoverageIgnore
      */
-    public function onStorefrontRender(StorefrontRenderEvent $event): void
+    public function addRatepayTemplateData(CheckoutConfirmPageLoadedEvent $event): void
     {
         $config = $this->getPluginConfiguration($event->getSalesChannelContext());
 
         if (!$config['ratepayDevicefingerprintingButton']) {
             return;
         }
-
-        if (strpos($event->getView(), 'storefront/page/checkout/confirm/index.html.twig') !== false) {
-            if ($this->dfpService->isDfpIdAlreadyGenerated() == false) {
-                $dfpHelper = new DeviceFingerprint($config['ratepayDevicefingerprintingSnippetId']);
-                $event->setParameter('dpf', str_replace('\"', '"', $dfpHelper->getDeviceIdentSnippet($this->dfpService->getDfpId())));
-            }
+        
+        if ($this->dfpService->isDfpIdAlreadyGenerated() == false) {
+            $dfpHelper = new DeviceFingerprint($config['ratepayDevicefingerprintingSnippetId']);
+            $event->setParameter('dpf', str_replace('\"', '"', $dfpHelper->getDeviceIdentSnippet($this->dfpService->getDfpId())));
         }
+
     }
 
 
