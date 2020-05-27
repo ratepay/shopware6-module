@@ -1,0 +1,57 @@
+{% block ratepay_birthday_selects %}
+
+    {% set birthday = page.cart.extensions.ratepay.birthday|date('d') %}
+    {% set birthmonth = page.cart.extensions.ratepay.birthday|date('m') %}
+    {% set birthyear = page.cart.extensions.ratepay.birthday|date('Y') %}
+
+    <div class="form-row">
+        <div class="form-group col-sm-12">
+            <label class="form-label">
+                {{ "Ratepay.RatepayPayments.formLabel.birthday" | trans }} *
+            </label>
+        </div>
+    </div>
+    <div class="form-row">
+
+        {% block page_account_profile_personal_fields_birthday_select_day %}
+           <div class="form-group col-4 col-md-4">
+                <select name="ratepay[birthday][day]" class="custom-select" required="required" form="confirmOrderForm">
+                    <option value="" disabled>{{ "account.personalBirthdaySelectDay"|trans|sw_sanitize }}</option>
+                    {% for day in range(1, 31) %}
+                        <option value="{{ day }}"{% if day == birthday %} selected="selected"{% endif %}>{{ day }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        {% endblock %}
+
+        {% block page_account_profile_personal_fields_birthday_select_month %}
+            <div class="form-group col-4 col-md-4">
+                <select name="ratepay[birthday][month]" class="custom-select" required="required" form="confirmOrderForm">
+                    <option selected="selected" value="" disabled>{{ "account.personalBirthdaySelectMonth"|trans|sw_sanitize }}</option>
+                    {% for month in range(1, 12) %}
+                        <option value="{{ month }}" {% if month == birthmonth %} selected="selected"{% endif %}>{{ month }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        {% endblock %}
+
+        {% block page_account_profile_personal_fields_birthday_select_year %}
+            <div class="form-group col-4 col-md-4">
+                {% set currentYear = "now"|date('Y') %}
+                {% set startYear = currentYear - 120 %}
+                <select name="ratepay[birthday][year]" class="custom-select" required="required" form="confirmOrderForm">
+                    <option selected="selected" value=""  disabled>{{ "account.personalBirthdaySelectYear"|trans|sw_sanitize }}</option>
+                    {% for year in range(currentYear, startYear) %}
+                        <option value="{{ year }}" {% if year == birthyear %} selected="selected"{% endif %}>{{ year }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        {% endblock %}
+
+    </div>
+    <div class="form-row">
+        <div class="form-group col-sm-12">
+            {{ "Ratepay.RatepayPayments.hints.birthdayHint"|trans }}
+        </div>
+    </div>
+{% endblock %}
