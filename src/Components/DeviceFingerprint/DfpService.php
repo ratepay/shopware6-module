@@ -35,7 +35,7 @@ class DfpService
             if ($sessionValue && array_key_exists('0', $sessionValue)) {
                 return $sessionValue[0];
             }
-            
+
             $sessionId = $this->sessionInterface->get('sessionId');
 
         } else {
