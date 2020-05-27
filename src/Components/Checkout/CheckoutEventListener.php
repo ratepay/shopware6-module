@@ -7,6 +7,7 @@ use Ratepay\RatepayPayments\Components\DeviceFingerprint\DfpService;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
+use Shopware\Core\Framework\Struct\ArrayStruct;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutEventListener implements EventSubscriberInterface
@@ -56,6 +57,10 @@ class CheckoutEventListener implements EventSubscriberInterface
             $dfpHelper = new DeviceFingerprint($config['ratepayDevicefingerprintingSnippetId']);
             $event->setParameter('dpf', str_replace('\"', '"', $dfpHelper->getDeviceIdentSnippet($this->dfpService->getDfpId())));
         }
+
+        $event->getPage()->addExtension('ratepay', new ArrayStruct([
+            'birthday' => new \DateTime()
+        ]));
 
     }
 

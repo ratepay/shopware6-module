@@ -145,5 +145,6 @@ class RatepayPayments extends Plugin
                 }
             }
         }
+
     }
 }
