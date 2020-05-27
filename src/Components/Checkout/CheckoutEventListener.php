@@ -1,6 +1,6 @@
 <?php
 
-namespace Ratepay\RatepayPayments\Components\EventListener;
+namespace Ratepay\RatepayPayments\Components\Checkout;
 
 use RatePAY\Service\DeviceFingerprint;
 use Ratepay\RatepayPayments\Components\DeviceFingerprint\DfpService;
@@ -51,7 +51,7 @@ class CheckoutEventListener implements EventSubscriberInterface
         if (!$config['ratepayDevicefingerprintingButton']) {
             return;
         }
-        
+
         if ($this->dfpService->isDfpIdAlreadyGenerated() == false) {
             $dfpHelper = new DeviceFingerprint($config['ratepayDevicefingerprintingSnippetId']);
             $event->setParameter('dpf', str_replace('\"', '"', $dfpHelper->getDeviceIdentSnippet($this->dfpService->getDfpId())));
