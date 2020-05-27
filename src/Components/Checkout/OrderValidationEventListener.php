@@ -11,8 +11,6 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 class OrderValidationEventListener implements EventSubscriberInterface
 {

@@ -1,3 +1,10 @@
+{% set userData = page.extensions.ratepay.all() %}
+{% set birthday = userData.birthday|date('d') %}
+{% set birthmonth = userData.birthday|date('m') %}
+{% set birthyear = userData.birthday|date('Y') %}
+{% set vatId = userData.vatId %}
+{% set phoneNumber = userData.phoneNumber %}
+
 <div class="ratepay--billing-form">
     <div class="row">
         <div class="col-md-12">

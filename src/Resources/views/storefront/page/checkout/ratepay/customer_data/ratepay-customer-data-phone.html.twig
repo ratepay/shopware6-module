@@ -1,17 +1,17 @@
 <div class="form-row">
     <div class="form-group col-sm-12">
         <label class="form-label">
-            {{ "Ratepay.RatepayPayments.formLabelPhone" | trans }}
+            {{ "account.personalPhoneLabel"|trans|sw_sanitize }}
         </label>
     </div>
 </div>
 <div class="form-row">
     <div class="form-group col-sm-4">
-        <input type="text" class="form-control" placeholder="{{ "Ratepay.RatepayPayments.fieldPhone" | trans }}" name="ratepay[phone]" form="confirmOrderForm" required="required">
+        <input type="text" class="form-control" placeholder="{{ "account.personalPhonePlaceholder"|trans|sw_sanitize }}" value="{{ phoneNumber }}" name="ratepay[phone]" form="confirmOrderForm" required="required">
     </div>
 </div>
 <div class="form-row">
     <div class="form-group col-sm-12">
-        {{ "Ratepay.RatepayPayments.phoneHint" | trans }}
+        {{ "Ratepay.RatepayPayments.hints.phoneHint"|trans|sw_sanitize }}
     </div>
 </div>

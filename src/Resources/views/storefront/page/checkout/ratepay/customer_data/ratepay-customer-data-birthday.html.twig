@@ -1,9 +1,5 @@
 {% block ratepay_birthday_selects %}
 
-    {% set birthday = page.cart.extensions.ratepay.birthday|date('d') %}
-    {% set birthmonth = page.cart.extensions.ratepay.birthday|date('m') %}
-    {% set birthyear = page.cart.extensions.ratepay.birthday|date('Y') %}
-
     <div class="form-row">
         <div class="form-group col-sm-12">
             <label class="form-label">
@@ -51,7 +47,7 @@
     </div>
     <div class="form-row">
         <div class="form-group col-sm-12">
-            {{ "Ratepay.RatepayPayments.hints.birthdayHint"|trans }}
+            {{ "Ratepay.RatepayPayments.hints.birthdayHint"|trans|sw_sanitize }}
         </div>
     </div>
 {% endblock %}
