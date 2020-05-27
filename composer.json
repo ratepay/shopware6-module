@@ -20,9 +20,15 @@
         "label": {
             "de-DE": "Integration der RatePAY Zahlungsmethoden",
             "en-GB": "Integration of the RatePAY payment methods"
+        },
+        "patches": {
+            "ratepay/php-library": {
+                "PR #7: Task/getter and setters": "https://patch-diff.githubusercontent.com/raw/ratepay/php-library/pull/7.patch"
+            }
         }
     },
     "require": {
-        "ratepay/php-library": "^0.10.1"
+        "ratepay/php-library": "^1.0",
+        "cweagans/composer-patches": "~1.0"
     }
 }

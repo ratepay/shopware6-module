@@ -4,26 +4,75 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dce03db384d61f23f66ee232e1f04caa",
+    "content-hash": "cef59b2f412125a78e5fefd681edc68f",
     "packages": [
         {
-            "name": "ratepay/php-library",
-            "version": "0.10.1",
+            "name": "cweagans/composer-patches",
+            "version": "1.6.7",
             "source": {
                 "type": "git",
-                "url": "https://github.com/ratepay/php-library.git",
-                "reference": "ad1e0c52af4108dfba6bcb9ff2abb4c4cab6ecb1"
+                "url": "https://github.com/cweagans/composer-patches.git",
+                "reference": "2e6f72a2ad8d59cd7e2b729f218bf42adb14f590"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ratepay/php-library/zipball/ad1e0c52af4108dfba6bcb9ff2abb4c4cab6ecb1",
-                "reference": "ad1e0c52af4108dfba6bcb9ff2abb4c4cab6ecb1",
+                "url": "https://api.github.com/repos/cweagans/composer-patches/zipball/2e6f72a2ad8d59cd7e2b729f218bf42adb14f590",
+                "reference": "2e6f72a2ad8d59cd7e2b729f218bf42adb14f590",
                 "shasum": ""
             },
             "require": {
+                "composer-plugin-api": "^1.0",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "composer/composer": "~1.0",
+                "phpunit/phpunit": "~4.6"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "cweagans\\Composer\\Patches"
+            },
+            "autoload": {
+                "psr-4": {
+                    "cweagans\\Composer\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Cameron Eagans",
+                    "email": "me@cweagans.net"
+                }
+            ],
+            "description": "Provides a way to patch Composer packages.",
+            "time": "2019-08-29T20:11:49+00:00"
+        },
+        {
+            "name": "ratepay/php-library",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ratepay/php-library.git",
+                "reference": "4304eb613ab035519718cc809ba7b2a3a466ecd6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ratepay/php-library/zipball/4304eb613ab035519718cc809ba7b2a3a466ecd6",
+                "reference": "4304eb613ab035519718cc809ba7b2a3a466ecd6",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-simplexml": "*",
                 "php": ">=5.4"
             },
             "require-dev": {
+                "donatj/mock-webserver": "v2.1.0",
+                "friendsofphp/php-cs-fixer": "^2.17@dev",
                 "phpunit/phpunit": "5.7.*"
             },
             "type": "library",
@@ -38,13 +87,13 @@
             ],
             "authors": [
                 {
-                    "name": "Aarne Welschlau",
-                    "email": "aarne.welschlau@ratepay.com"
+                    "name": "Eduardo Iriarte",
+                    "email": "eduardo.iriarte-mendez@ratepay.com"
                 }
             ],
             "description": "RatePAY API PHP Library",
             "homepage": "https://ratepay.gitbook.io/docs/",
-            "time": "2019-12-19T09:17:58+00:00"
+            "time": "2020-04-08T10:00:42+00:00"
         }
     ],
     "packages-dev": [],
