@@ -1,26 +1,34 @@
 {% set userData = page.extensions.ratepay.all() %}
-{% set birthday = userData.birthday|date('d') %}
-{% set birthmonth = userData.birthday|date('m') %}
-{% set birthyear = userData.birthday|date('Y') %}
-{% set vatId = userData.vatId %}
-{% set phoneNumber = userData.phoneNumber %}
 
-<div class="ratepay--billing-form">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card checkout-card">
-                <div class="card-body">
-                    <div class="card-title">
-                        {{ context.paymentMethod.translated.name }}
-                    </div>
-                    <div class="card-body">
-                        {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/customer_data/ratepay-customer-data-birthday.html.twig' %}
-                        {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/customer_data/ratepay-customer-data-phone.html.twig' %}
-                        {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/customer_data/ratepay-customer-data-vatid.html.twig' %}
-                        {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/ratepay-bank-account.html.twig' %}
+{% for allowedPaymentHandler in userData.allowedPaymentHandler %}
+    {%  if context.paymentMethod.getFormattedHandlerIdentifier() == allowedPaymentHandler %}
+
+        {% set birthday = userData.birthday|date('d') %}
+        {% set birthmonth = userData.birthday|date('m') %}
+        {% set birthyear = userData.birthday|date('Y') %}
+        {% set vatId = userData.vatId %}
+        {% set phoneNumber = userData.phoneNumber %}
+
+        <div class="ratepay--billing-form">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card checkout-card">
+                        <div class="card-body">
+                            <div class="card-title">
+                                {{ context.paymentMethod.translated.name }}
+                            </div>
+                            <div class="card-body">
+                                {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/customer_data/ratepay-customer-data-birthday.html.twig' %}
+                                {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/customer_data/ratepay-customer-data-phone.html.twig' %}
+                                {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/customer_data/ratepay-customer-data-vatid.html.twig' %}
+                                {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/ratepay-bank-account.html.twig' %}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
+
+    {%  endif %}
+{% endfor %}
+

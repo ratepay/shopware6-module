@@ -12,6 +12,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutEventListener implements EventSubscriberInterface
 {
+    public const RATEPAY_INVOICE_PAYMENT_HANDLER = 'handler_ratepay_invoicepaymenthandler';
+    public const RATEPAY_PREPAYMENT_PAYMENT_HANDLER = 'handler_ratepay_prepaymentpaymenthandler';
+    public const RATEPAY_DEBIT_PAYMENT_HANDLER = 'handler_ratepay_debitpaymenthandler';
 
     /**
      * @var DfpService
@@ -66,7 +69,12 @@ class CheckoutEventListener implements EventSubscriberInterface
         $event->getPage()->addExtension('ratepay', new ArrayStruct([
             'birthday' => $customerBirthday,
             'vatId' => $customerVatId,
-            'phoneNumber' => $customerPhoneNumber
+            'phoneNumber' => $customerPhoneNumber,
+            'allowedPaymentHandler' => array(
+                self::RATEPAY_PREPAYMENT_PAYMENT_HANDLER,
+                self::RATEPAY_INVOICE_PAYMENT_HANDLER,
+                self::RATEPAY_DEBIT_PAYMENT_HANDLER
+            )
         ]));
 
     }
