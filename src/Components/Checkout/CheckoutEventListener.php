@@ -7,6 +7,7 @@ use Ratepay\RatepayPayments\Components\DeviceFingerprint\DfpService;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
+use Shopware\Storefront\Event\StorefrontRenderEvent;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -44,7 +45,7 @@ class CheckoutEventListener implements EventSubscriberInterface
     }
 
     /**
-     * @param StorefrontRenderEvent $event
+     * @param CheckoutConfirmPageLoadedEvent $event
      * @throws \Shopware\Core\Framework\DataAbstractionLayer\Exception\InconsistentCriteriaIdsException
      * @codeCoverageIgnore
      */
@@ -58,7 +59,9 @@ class CheckoutEventListener implements EventSubscriberInterface
 
         if ($this->dfpService->isDfpIdAlreadyGenerated() == false) {
             $dfpHelper = new DeviceFingerprint($config['ratepayDevicefingerprintingSnippetId']);
-            $event->setParameter('dpf', str_replace('\"', '"', $dfpHelper->getDeviceIdentSnippet($this->dfpService->getDfpId())));
+            $event->getPage()->addExtension('dfp', new ArrayStruct([
+                'dfp' => str_replace('\"', '"', $dfpHelper->getDeviceIdentSnippet($this->dfpService->getDfpId()))
+            ]));
         }
 
         $customerBirthday = $event->getSalesChannelContext()->getCustomer()->getBirthday();

@@ -32,8 +32,8 @@ class DfpService
             // storefront request
             $sessionValue = $this->sessionInterface->get(self::SESSION_VAR_NAME);
 
-            if ($sessionValue && array_key_exists('0', $sessionValue)) {
-                return $sessionValue[0];
+            if ($sessionValue) {
+                return $sessionValue;
             }
 
             $sessionId = $this->sessionInterface->get('sessionId');
