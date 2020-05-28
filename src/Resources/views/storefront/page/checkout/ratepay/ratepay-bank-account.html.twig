@@ -7,10 +7,10 @@
 </div>
 <div class="form-row">
     <div class="form-group col-sm-4">
-        <input type="text" class="form-control" placeholder="{{ "Ratepay.RatepayPayments.fields.iban"|trans }}" name="ratepay[iban]" form="confirmOrderForm" required="required">
+        <input type="text" class="form-control" id="rp-iban-account-number" placeholder="{{ "Ratepay.RatepayPayments.fields.iban"|trans }}" name="ratepay[iban]" form="confirmOrderForm" required="required">
     </div>
-    <div class="form-group col-sm-4">
-        <input type="text" class="form-control" placeholder="{{ "Ratepay.RatepayPayments.fields.bic"|trans }}" name="ratepay[bic]" form="confirmOrderForm" required="required">
+    <div class="form-group col-sm-4" id="rp-form-bank-code">
+        <input type="text" class="form-control" id="rp-bank-code" placeholder="{{ "Ratepay.RatepayPayments.fields.bic"|trans }}" name="ratepay[bic]" form="confirmOrderForm" required="required">
     </div>
 </div>
 <div class="form-row">

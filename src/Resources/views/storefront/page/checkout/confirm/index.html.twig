@@ -7,5 +7,5 @@
 
 {% block base_footer %}
     {{ parent() }}
-    {{ dpf|raw }}
+    {{ page.extensions.dfp.all().dfp|raw }}
 {% endblock %}
