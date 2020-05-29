@@ -15,8 +15,8 @@
         </service>
 
         <service id="Ratepay\RatepayPayments\Components\Checkout\OrderValidationEventListener">
+            <argument type="service" id="Shopware\Core\Framework\Validation\DataValidator"/>
             <argument type="service" id="request_stack" />
-            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
             <tag name="kernel.event_subscriber"/>
         </service>
 
