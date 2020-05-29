@@ -7,7 +7,6 @@ use Ratepay\RatepayPayments\Components\DeviceFingerprint\DfpService;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
-use Shopware\Storefront\Event\StorefrontRenderEvent;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -46,7 +45,7 @@ class CheckoutEventListener implements EventSubscriberInterface
 
     /**
      * @param CheckoutConfirmPageLoadedEvent $event
-     * @throws \Shopware\Core\Framework\DataAbstractionLayer\Exception\InconsistentCriteriaIdsException
+     * @throws InconsistentCriteriaIdsException
      * @codeCoverageIgnore
      */
     public function addRatepayTemplateData(CheckoutConfirmPageLoadedEvent $event): void
@@ -85,7 +84,7 @@ class CheckoutEventListener implements EventSubscriberInterface
 
     protected function getPluginConfiguration(?SalesChannelContext $context): array
     {
-        return $this->systemConfigService->get( 'RatepayPayments.config', $context ? $context->getSalesChannel()->getId() : null);
+        return $this->systemConfigService->get('RatepayPayments.config', $context ? $context->getSalesChannel()->getId() : null);
     }
 
 }
