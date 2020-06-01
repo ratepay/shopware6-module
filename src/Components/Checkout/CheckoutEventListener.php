@@ -3,10 +3,12 @@
 namespace Ratepay\RatepayPayments\Components\Checkout;
 
 use RatePAY\Service\DeviceFingerprint;
+use RatePAY\Service\LanguageService;
 use Ratepay\RatepayPayments\Components\DeviceFingerprint\DfpService;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
+use Shopware\Core\Checkout\Cart\Event\CheckoutOrderPlacedEvent;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -15,6 +17,8 @@ class CheckoutEventListener implements EventSubscriberInterface
     public const RATEPAY_INVOICE_PAYMENT_HANDLER = 'handler_ratepay_invoicepaymenthandler';
     public const RATEPAY_PREPAYMENT_PAYMENT_HANDLER = 'handler_ratepay_prepaymentpaymenthandler';
     public const RATEPAY_DEBIT_PAYMENT_HANDLER = 'handler_ratepay_debitpaymenthandler';
+    public const RATEPAY_INSTALLMENT_PAYMENT_HANDLER = 'handler_ratepay_installmentpaymenthandler';
+    public const RATEPAY_INSTALLMENTZEROPERCENT_PAYMENT_HANDLER = 'handler_ratepay_installmentzeropercentpaymenthandler';
 
     /**
      * @var DfpService
@@ -39,13 +43,13 @@ class CheckoutEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class => 'addRatepayTemplateData'
+            CheckoutConfirmPageLoadedEvent::class => 'addRatepayTemplateData',
+            CheckoutOrderPlacedEvent::class => 'onCheckoutOrderPlaced'
         ];
     }
 
     /**
      * @param CheckoutConfirmPageLoadedEvent $event
-     * @throws InconsistentCriteriaIdsException
      * @codeCoverageIgnore
      */
     public function addRatepayTemplateData(CheckoutConfirmPageLoadedEvent $event): void
@@ -63,6 +67,11 @@ class CheckoutEventListener implements EventSubscriberInterface
             ]));
         }
 
+        /* Get translations from SDK */
+        $ratepayLanguageService = new LanguageService();
+        $ratepayLocaleArray = $ratepayLanguageService->getArray();
+
+        /* Get customer data for checkout form */
         $customerBirthday = $event->getSalesChannelContext()->getCustomer()->getBirthday();
         $customerBillingAddress = $event->getSalesChannelContext()->getCustomer()->getActiveBillingAddress();
         $customerVatId = $customerBillingAddress->getVatId();
@@ -75,12 +84,22 @@ class CheckoutEventListener implements EventSubscriberInterface
             'allowedPaymentHandler' => array(
                 self::RATEPAY_PREPAYMENT_PAYMENT_HANDLER,
                 self::RATEPAY_INVOICE_PAYMENT_HANDLER,
-                self::RATEPAY_DEBIT_PAYMENT_HANDLER
-            )
+                self::RATEPAY_DEBIT_PAYMENT_HANDLER,
+                self::RATEPAY_INSTALLMENT_PAYMENT_HANDLER,
+                self::RATEPAY_INSTALLMENTZEROPERCENT_PAYMENT_HANDLER
+            ),
+            'locale' => $ratepayLocaleArray
         ]));
-
     }
 
+    /**
+     * @param CheckoutOrderPlacedEvent $event
+     * @codeCoverageIgnore
+     */
+    public function onCheckoutOrderPlaced(CheckoutOrderPlacedEvent $event): void
+    {
+        return;
+    }
 
     protected function getPluginConfiguration(?SalesChannelContext $context): array
     {
