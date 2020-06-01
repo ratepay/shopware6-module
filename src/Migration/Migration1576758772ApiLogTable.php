@@ -35,6 +35,6 @@ class Migration1576758772ApiLogTable extends MigrationStep
 
     public function updateDestructive(Connection $connection): void
     {
-        // implement update destructive
+        $connection->executeQuery("DROP TABLE ratepay_api_log");
     }
 }
