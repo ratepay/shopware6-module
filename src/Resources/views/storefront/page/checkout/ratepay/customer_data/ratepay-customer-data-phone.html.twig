@@ -1,17 +1,21 @@
-<div class="form-row">
-    <div class="form-group col-sm-12">
-        <label class="form-label">
-            {{ "account.personalPhoneLabel"|trans|sw_sanitize }}
-        </label>
+{% block ratepay_personal_data_phone %}
+
+    <div class="form-row">
+        <div class="form-group col-sm-12">
+            <label class="form-label">
+                {{ "account.personalPhoneLabel"|trans|sw_sanitize }}
+            </label>
+        </div>
     </div>
-</div>
-<div class="form-row">
-    <div class="form-group col-sm-4">
-        <input type="text" class="form-control" placeholder="{{ "account.personalPhonePlaceholder"|trans|sw_sanitize }}" value="{{ phoneNumber }}" name="ratepay[phone]" form="confirmOrderForm" required="required">
+    <div class="form-row">
+        <div class="form-group col-sm-4">
+            <input type="text" class="form-control" placeholder="{{ "account.personalPhonePlaceholder"|trans|sw_sanitize }}" value="{{ phoneNumber }}" name="ratepay[phone]" form="confirmOrderForm" required="required">
+        </div>
     </div>
-</div>
-<div class="form-row">
-    <div class="form-group col-sm-12">
-        {{ "Ratepay.RatepayPayments.hints.phoneHint"|trans|sw_sanitize }}
+    <div class="form-row">
+        <div class="form-group col-sm-12">
+            {{ "Ratepay.RatepayPayments.hints.phoneHint"|trans|sw_sanitize }}
+        </div>
     </div>
-</div>
+
+{% endblock %}

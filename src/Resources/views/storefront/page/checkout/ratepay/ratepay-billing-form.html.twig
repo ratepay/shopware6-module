@@ -1,34 +1,49 @@
-{% set userData = page.extensions.ratepay.all() %}
+{% set ratepayData = page.extensions.ratepay.all() %}
 
-{% for allowedPaymentHandler in userData.allowedPaymentHandler %}
+{% for allowedPaymentHandler in ratepayData.allowedPaymentHandler %}
     {%  if context.paymentMethod.getFormattedHandlerIdentifier() == allowedPaymentHandler %}
 
-        {% set birthday = userData.birthday|date('d') %}
-        {% set birthmonth = userData.birthday|date('m') %}
-        {% set birthyear = userData.birthday|date('Y') %}
-        {% set vatId = userData.vatId %}
-        {% set phoneNumber = userData.phoneNumber %}
+        {% set birthday = ratepayData.birthday|date('d') %}
+        {% set birthmonth = ratepayData.birthday|date('m') %}
+        {% set birthyear = ratepayData.birthday|date('Y') %}
+        {% set vatId = ratepayData.vatId %}
+        {% set phoneNumber = ratepayData.phoneNumber %}
+        {% set ratepayStaticTexts = ratepayData.locale %}
 
-        <div class="ratepay--billing-form">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card checkout-card">
-                        <div class="card-body">
-                            <div class="card-title">
-                                {{ context.paymentMethod.translated.name }}
-                            </div>
+        {% block ratepay_billing_form %}
+            <div class="ratepay--billing-form">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card checkout-card">
                             <div class="card-body">
-                                {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/customer_data/ratepay-customer-data-birthday.html.twig' %}
-                                {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/customer_data/ratepay-customer-data-phone.html.twig' %}
-                                {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/customer_data/ratepay-customer-data-vatid.html.twig' %}
-                                {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/ratepay-bank-account.html.twig' %}
+                                <div class="card-title">
+                                    {{ context.paymentMethod.translated.name }}
+                                </div>
+                                <div class="card-body">
+                                    {% block ratepay_payment_content %}
+
+                                        {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/customer_data/ratepay-customer-data-birthday.html.twig' %}
+                                        {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/customer_data/ratepay-customer-data-phone.html.twig' %}
+                                        {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/customer_data/ratepay-customer-data-vatid.html.twig' %}
+
+                                        {%  if context.paymentMethod.getFormattedHandlerIdentifier() == 'handler_ratepay_debitpaymenthandler' %}
+                                            {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/ratepay-bank-account.html.twig' %}
+                                        {%  endif %}
+
+                                        {%  if context.paymentMethod.getFormattedHandlerIdentifier() == 'handler_ratepay_installmentpaymenthandler' %}
+                                            {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/ratepay-installment-calculator.html.twig' %}
+                                        {%  endif %}
+
+                                    {% endblock %}
+
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+            {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/ratepay-modals.html.twig' %}
+        {% endblock %}
 
     {%  endif %}
 {% endfor %}
-
