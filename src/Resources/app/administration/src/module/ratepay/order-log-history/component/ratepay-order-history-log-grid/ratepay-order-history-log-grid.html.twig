@@ -1,0 +1,22 @@
+<sw-card :title="$tc('ratepay.order-log-history.detailBase.ratepayHistoryPanelTitle')">
+
+        <sw-container :isLoading="isLoading()"
+                      slot="grid"
+                      type="row">
+            {% block sw_order_detail_base_history_ratepay_panel_card_grid %}
+                <sw-data-grid
+                    :dataSource="data"
+                    :columns="columns"
+                    :fullPage="false"
+                    :showSettings="false"
+                    :showSelection="false"
+                    :showActions="false"
+                    :isLoading="isLoading()"
+                    :allowColumnEdit="false"
+                    :allowInlineEdit="false"
+                    :compactMode="true">
+                </sw-data-grid>
+            {% endblock %}
+        </sw-container>
+
+</sw-card>
