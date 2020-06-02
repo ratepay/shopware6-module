@@ -1,8 +1,10 @@
-{% set ratepayData = page.extensions.ratepay.all() %}
+{% set ratepayData = page.extensions.ratepay.all() %} {#  // TODO @aarends `.all()` kann weg #}
 
+{#  // TODO @aarends wäre schön wenn diese Abfrage im Backend vorgenommen wird, und dann einfach die extension `page.extension.ratepay` geprüft wird, ob diese gesetzt wird. #}
 {% for allowedPaymentHandler in ratepayData.allowedPaymentHandler %}
     {%  if context.paymentMethod.getFormattedHandlerIdentifier() == allowedPaymentHandler %}
 
+        {# // TODO @aarends ich denke das ist nicht schlimm, dass du das so gemacht hast, allerdings habe ich ein bisschen schiss, dass irgendeine andere extension ebenfalls die gleichen variablen nutzt. deswegen wäre es schön, wenn du diese variablen streichst, und die Werte einfach direkt abruftst, wenn du sie benötigst.#}
         {% set birthday = ratepayData.birthday|date('d') %}
         {% set birthmonth = ratepayData.birthday|date('m') %}
         {% set birthyear = ratepayData.birthday|date('Y') %}
@@ -24,6 +26,8 @@
 
                                         {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/customer_data/ratepay-customer-data-birthday.html.twig' %}
                                         {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/customer_data/ratepay-customer-data-phone.html.twig' %}
+
+                                        {#  // TODO @aarends vat-id nur, wenn der Kunde auch ein Firmenkunde ist. #}
                                         {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/customer_data/ratepay-customer-data-vatid.html.twig' %}
 
                                         {%  if context.paymentMethod.getFormattedHandlerIdentifier() == 'handler_ratepay_debitpaymenthandler' %}
@@ -42,6 +46,7 @@
                     </div>
                 </div>
             </div>
+            {# // TODO @aarends ist zwar eine schöne sache, allerdings sollten die Modals nur eingebunden werden, wenn diese auch benötigt werden. Und dieses Modal wird nur benötigt, wenn die Zahlart Lastschrift ausgewählt ist. #}
             {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/ratepay-modals.html.twig' %}
         {% endblock %}
 

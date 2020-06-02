@@ -3,7 +3,7 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-
+        <!-- // TODO @aarends sollte das nicht dann in der globalen translations.xml sein? oder du ziehst die Ressourcen in die Component. -->
         <service id="Ratepay\RatepayPayments\Resources\snippet\de_DE\SnippetFile_de_DE" public="true">
             <tag name="shopware.snippet.file"/>
         </service>

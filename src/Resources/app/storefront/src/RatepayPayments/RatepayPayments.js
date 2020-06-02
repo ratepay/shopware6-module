@@ -1,5 +1,6 @@
 import Plugin from 'src/plugin-system/plugin.class';
 
+// TODO @aarends den Namen "RatepayCheckout" finde ich ein bisschen passender....
 export default class RatepayPayments extends Plugin {
 
     init() {
@@ -16,6 +17,7 @@ export default class RatepayPayments extends Plugin {
     _registerEvents() {
         if (this.ibanAccountNumberInput.length) {
             this.ibanAccountNumberInput.on('blur keyup change click', () => {
+                // TODO @aarends nichts besonderes: bitte `===`
                 if (this._getIbanCountryCode(this.ibanAccountNumberInput.val()) == 'de') {
                     this._hideBankCode();
                 }

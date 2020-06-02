@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  */
 class DfpService
 {
+    // TODO @aarends sollte noch irgendwas mit `ratepay` beinhalten - ála `ratepay_dfp_token`
     const SESSION_VAR_NAME = 'dfpToken';
 
     /*
@@ -26,6 +27,7 @@ class DfpService
         $this->sessionInterface = $sessionInterface;
     }
 
+    // TODO @aarends das mit dem backend kannst du eigentlich komplett rausmachen. das brauchen wir nicht mehr.
     public function getDfpId($backend = false)
     {
         if ($backend === false) {
