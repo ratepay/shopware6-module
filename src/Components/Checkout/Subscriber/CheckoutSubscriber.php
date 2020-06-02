@@ -8,22 +8,15 @@
 
 namespace Ratepay\RatepayPayments\Components\Checkout\Subscriber;
 
+use Ratepay\RatepayPayments\Components\PaymentHandler\DebitPaymentHandler;
+use Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
+use Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use  Ratepay\RatepayPayments\Components\PaymentHandler\PaymentHelper;
 
 class CheckoutSubscriber implements EventSubscriberInterface
 {
-    /** @var PaymentHelper */
-    private $paymentHelper;
-
-    public function __construct(
-        PaymentHelper $paymentHelper
-    )
-    {
-        $this->paymentHelper = $paymentHelper;
-    }
 
     public static function getSubscribedEvents()
     {
@@ -38,28 +31,24 @@ class CheckoutSubscriber implements EventSubscriberInterface
      */
     public function addRatepayTemplateData(CheckoutConfirmPageLoadedEvent $event): void
     {
-        /* Get customer data for checkout form */
-        $customerBirthday = $event->getSalesChannelContext()->getCustomer()->getBirthday();
-        $customerBillingAddress = $event->getSalesChannelContext()->getCustomer()->getActiveBillingAddress();
-        $customerVatId = $customerBillingAddress->getVatId();
-        $customerPhoneNumber = $customerBillingAddress->getPhoneNumber();
-        $customerCompany = $customerBillingAddress->getCompany();
+        if (strpos($event->getSalesChannelContext()->getPaymentMethod()->getHandlerIdentifier(),'RatepayPayments') !== false){
+            /* Get customer data for checkout form */
+            $customerBirthday = $event->getSalesChannelContext()->getCustomer()->getBirthday();
+            $customerBillingAddress = $event->getSalesChannelContext()->getCustomer()->getActiveBillingAddress();
+            $customerVatId = $customerBillingAddress->getVatId();
+            $customerPhoneNumber = $customerBillingAddress->getPhoneNumber();
+            $customerCompany = $customerBillingAddress->getCompany();
 
-        $ratepayMethodIsSelected = $this->paymentHelper->isRatepayPaymentsSelected($event->getSalesChannelContext());
-        $bankAccountRequired = $this->paymentHelper->bankAccountRequired($event->getSalesChannelContext());
-        $isInstallmentMethod = $this->paymentHelper->isInstallmentMethod($event->getSalesChannelContext());
-        $isZeroPercentInstallment = $this->paymentHelper->isZeroPercentInstallment($event->getSalesChannelContext());
-
-        $event->getPage()->addExtension('ratepay', new ArrayStruct([
-            'ratepayMethodIsSelected' => $ratepayMethodIsSelected,
-            'birthday' => $customerBirthday,
-            'vatId' => $customerVatId,
-            'phoneNumber' => $customerPhoneNumber,
-            'company' => $customerCompany,
-            'bankAccountRequired' => $bankAccountRequired,
-            'isInstallmentMethod' => $isInstallmentMethod,
-            'isZeroPercentInstallment' => $isZeroPercentInstallment
-        ]));
+            $event->getPage()->addExtension('ratepay', new ArrayStruct([
+                'birthday' => $customerBirthday,
+                'vatId' => $customerVatId,
+                'phoneNumber' => $customerPhoneNumber,
+                'company' => $customerCompany,
+                'bankAccountRequired' => $event->getSalesChannelContext()->getPaymentMethod()->getHandlerIdentifier() == DebitPaymentHandler::class,
+                'isInstallmentMethod' => $event->getSalesChannelContext()->getPaymentMethod()->getHandlerIdentifier() == InstallmentPaymentHandler::class,
+                'isZeroPercentInstallment' => $event->getSalesChannelContext()->getPaymentMethod()->getHandlerIdentifier() == InstallmentZeroPercentPaymentHandler::class
+            ]));
+        }
 
     }
 

@@ -45,9 +45,5 @@
             <tag name="shopware.payment.method.sync"/>
         </service>
 
-        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\PaymentHelper">
-        </service>
-
-
     </services>
 </container>
