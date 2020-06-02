@@ -5,6 +5,7 @@
 
     <services>
         <service id="Ratepay\RatepayPayments\Components\Checkout\Subscriber\CheckoutSubscriber" public="true">
+            <argument type="service" id="Ratepay\RatepayPayments\Components\PaymentHandler\PaymentHelper"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 
