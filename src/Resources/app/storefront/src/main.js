@@ -1,6 +1,6 @@
 // Import all necessary Storefront plugins and scss files
-import RatepayPayments from './RatepayPayments/RatepayPayments';
+import RatepayCheckout from './RatepayCheckout/RatepayCheckout';
 
 // Register them via the existing PluginManager
 const PluginManager = window.PluginManager;
-PluginManager.register('RatepayPayments', RatepayPayments);
+PluginManager.register('RatepayCheckout', RatepayCheckout);
