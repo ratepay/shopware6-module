@@ -7,6 +7,7 @@
 
 {% block base_footer %}
     {{ parent() }}
-    {{ page.extensions.dfp.all().dfp|raw }} {# // TODO @aarends `.all()` kann weg. Zudem musst du aufpassen, da dieser Wert ja nicht immer vorhanden ist
-     .#}
+    {% if page.extensions.ratepay.get('dfp') %}
+        {{ page.extensions.ratepay.get('dfp')|raw }}
+    {% endif %}
 {% endblock %}

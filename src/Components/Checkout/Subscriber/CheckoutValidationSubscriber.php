@@ -2,20 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Ratepay\RatepayPayments\Components\Checkout;
+namespace Ratepay\RatepayPayments\Components\Checkout\Subscriber;
 
 use Shopware\Core\Framework\Validation\DataValidator;
 use Shopware\Core\Framework\Validation\DataValidationDefinition;
 use Shopware\Core\Framework\Validation\Exception\ConstraintViolationException;
 use Shopware\Core\Framework\Validation\BuildValidationEvent;
-use Shopware\Core\PlatformRequest;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Validator\Constraints\NotBlank;
-// TODO @aarends bitte in einen Ordner+Namespace ála `Subscriber`
-class OrderValidationEventListener implements EventSubscriberInterface
+
+class CheckoutValidationSubscriber implements EventSubscriberInterface
 {
 
     /** @var Validator */
@@ -71,12 +68,5 @@ class OrderValidationEventListener implements EventSubscriberInterface
         throw new ConstraintViolationException($violations, $ratepayData);
 
     }
-
-    // TODO @aarends wenn nicht benötigt: dann bitte entfernen.
-    private function getContextFromRequest(Request $request): SalesChannelContext
-    {
-        return $request->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_CONTEXT_OBJECT);
-    }
-
 
 }
