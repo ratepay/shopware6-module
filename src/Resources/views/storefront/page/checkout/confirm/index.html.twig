@@ -7,7 +7,7 @@
 
 {% block base_footer %}
     {{ parent() }}
-    {% if page.extensions.ratepay.get('dfp') %}
-        {{ page.extensions.ratepay.get('dfp')|raw }}
+    {% if page.extensions.ratepay.dfp %}
+        {{ page.extensions.ratepay.dfp|raw }}
     {% endif %}
 {% endblock %}
