@@ -23,11 +23,6 @@ class HistoryLogEntity extends Entity
     /**
      * @var string
      */
-    protected $date;
-
-    /**
-     * @var string
-     */
     protected $event;
 
     /**
@@ -79,22 +74,6 @@ class HistoryLogEntity extends Entity
     /**
      * @return string
      */
-    public function getDate(): string
-    {
-        return $this->date;
-    }
-
-    /**
-     * @param string $date
-     */
-    public function setDate(string $date): void
-    {
-        $this->date = $date;
-    }
-
-    /**
-     * @return string
-     */
     public function getEvent(): string
     {
         return $this->event;
@@ -141,17 +120,17 @@ class HistoryLogEntity extends Entity
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getQuantity(): string
+    public function getQuantity(): int
     {
         return $this->quantity;
     }
 
     /**
-     * @param string $quantity
+     * @param int $quantity
      */
-    public function setQuantity(string $quantity): void
+    public function setQuantity(int $quantity): void
     {
         $this->quantity = $quantity;
     }

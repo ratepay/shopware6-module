@@ -7,6 +7,10 @@
             <!--tag name="shopware.composite_search.definition"/-->
             <tag name="shopware.entity.definition" entity="ratepay_api_log"/>
         </service>
+        <service id="Ratepay\RatepayPayments\Components\RatepayApi\Model\Definition\HistoryLogDefinition">
+            <!--tag name="shopware.composite_search.definition"/-->
+            <tag name="shopware.entity.definition" entity="ratepay_order_history"/>
+        </service>
 
     </services>
 </container>

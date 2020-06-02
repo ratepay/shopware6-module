@@ -19,11 +19,12 @@ class Migration1589212322HistoryLog extends MigrationStep
             CREATE TABLE `ratepay_order_history` (
                 `id` binary(16) NOT NULL,
                 `orderId` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-                `date` datetime NOT NULL,
                 `event` varchar(100) COLLATE utf8_unicode_ci NULL,
                 `articlename` varchar(100) COLLATE utf8_unicode_ci NULL,
                 `articlenumber` varchar(100) COLLATE utf8_unicode_ci NULL,
-                `quantity` varchar(100) COLLATE utf8_unicode_ci NULL,
+                `quantity` int(5) COLLATE utf8_unicode_ci NULL,
+                `created_at` datetime NOT NULL,
+                `updated_at` datetime NULL,
                 PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
         ");

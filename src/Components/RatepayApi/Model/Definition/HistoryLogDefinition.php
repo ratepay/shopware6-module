@@ -9,6 +9,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\IntField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 class HistoryLogDefinition extends EntityDefinition
@@ -35,12 +36,10 @@ class HistoryLogDefinition extends EntityDefinition
         return new FieldCollection([
             (new IdField('id', 'id'))->addFlags(new Required(), new PrimaryKey()),
             (new StringField('orderId', 'orderId'))->addFlags(new Required()),
-            (new StringField('date', 'date'))->addFlags(new Required()),
             (new StringField('event', 'event')),
-            (new StringField('status', 'status')),
             (new StringField('articlename', 'articlename')),
             (new StringField('articlenumber', 'articlenumber')),
-            (new StringField('quantity', 'quantity'))
+            (new IntField('quantity', 'quantity'))
         ]);
     }
 }
