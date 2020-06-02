@@ -27,8 +27,7 @@ class RatepayPayments extends Plugin
         /** @var AbstractBootstrap[] $bootstrapper */
         $bootstrapper = [
             new Database(),
-            new PaymentMethods(),
-            new CustomFields()
+            new PaymentMethods()
         ];
 
         /** @var EntityRepositoryInterface $pluginRepository */
