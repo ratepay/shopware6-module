@@ -12,8 +12,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  */
 class DfpService
 {
-    // TODO @aarends sollte noch irgendwas mit `ratepay` beinhalten - ála `ratepay_dfp_token`
-    const SESSION_VAR_NAME = 'dfpToken';
+    const SESSION_VAR_NAME = 'ratepay_dfp_token';
 
     /*
      * @var SessionInterface
@@ -27,31 +26,21 @@ class DfpService
         $this->sessionInterface = $sessionInterface;
     }
 
-    // TODO @aarends das mit dem backend kannst du eigentlich komplett rausmachen. das brauchen wir nicht mehr.
-    public function getDfpId($backend = false)
+    public function getDfpId()
     {
-        if ($backend === false) {
-            // storefront request
-            $sessionValue = $this->sessionInterface->get(self::SESSION_VAR_NAME);
+        $sessionValue = $this->sessionInterface->get(self::SESSION_VAR_NAME);
 
-            if ($sessionValue) {
-                return $sessionValue;
-            }
-
-            $sessionId = $this->sessionInterface->get('sessionId');
-
-        } else {
-            // admin or console request
-            $sessionId = rand();
+        if ($sessionValue) {
+            $token = $sessionValue;
         }
-        $token = DeviceFingerprint::createDeviceIdentToken($sessionId);
-
-        if ($backend === false) {
-            // if it is a storefront request we will safe the token to the session for later access
-            // in the admin we only need it once
+        else {
+            $sessionId = $this->sessionInterface->get('sessionId');
+            $token = DeviceFingerprint::createDeviceIdentToken($sessionId);
             $this->sessionInterface->set(self::SESSION_VAR_NAME, $token);
         }
+
         return $token;
+
     }
 
     public function isDfpIdAlreadyGenerated()
