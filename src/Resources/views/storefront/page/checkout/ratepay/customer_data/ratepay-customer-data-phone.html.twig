@@ -9,11 +9,13 @@
     </div>
     <div class="form-row">
         <div class="form-group col-sm-4">
+            {# // TODO @aarends dieses feld ist nicht erforderlich. Im Hintergrund wird dieses Feld aufgefüllt wenn es nicht gesetzt ist. Vor dem API Request (ist bereits umgesetzt) #}
             <input type="text" class="form-control" placeholder="{{ "account.personalPhonePlaceholder"|trans|sw_sanitize }}" value="{{ phoneNumber }}" name="ratepay[phone]" form="confirmOrderForm" required="required">
         </div>
     </div>
     <div class="form-row">
         <div class="form-group col-sm-12">
+            {# // TODO @aarends groß/kleinschreibung? wieso hast du die wörter groß geschrieben? hier wäre sowas schöner: `ratepay.storefront.checkout.fields.iban` (wenn storefront nicht benötigt wird, ist auch ohne ok. (gilt natürlich für alle snippets) #}
             {{ "Ratepay.RatepayPayments.hints.phoneHint"|trans|sw_sanitize }}
         </div>
     </div>
