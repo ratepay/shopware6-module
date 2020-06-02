@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2020 RatePAY GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 const {Component} = Shopware;
 
 Component.extend('ratepay.profileConfig.create', 'ratepay.profileConfig.detail', {
