@@ -1,54 +1,42 @@
-{% set ratepayData = page.extensions.ratepay.all() %} {#  // TODO @aarends `.all()` kann weg #}
-
-{#  // TODO @aarends wäre schön wenn diese Abfrage im Backend vorgenommen wird, und dann einfach die extension `page.extension.ratepay` geprüft wird, ob diese gesetzt wird. #}
-{% for allowedPaymentHandler in ratepayData.allowedPaymentHandler %}
-    {%  if context.paymentMethod.getFormattedHandlerIdentifier() == allowedPaymentHandler %}
-
-        {# // TODO @aarends ich denke das ist nicht schlimm, dass du das so gemacht hast, allerdings habe ich ein bisschen schiss, dass irgendeine andere extension ebenfalls die gleichen variablen nutzt. deswegen wäre es schön, wenn du diese variablen streichst, und die Werte einfach direkt abruftst, wenn du sie benötigst.#}
-        {% set birthday = ratepayData.birthday|date('d') %}
-        {% set birthmonth = ratepayData.birthday|date('m') %}
-        {% set birthyear = ratepayData.birthday|date('Y') %}
-        {% set vatId = ratepayData.vatId %}
-        {% set phoneNumber = ratepayData.phoneNumber %}
-        {% set ratepayStaticTexts = ratepayData.locale %}
-
-        {% block ratepay_billing_form %}
-            <div class="ratepay--billing-form">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card checkout-card">
+{% block ratepay_billing_form %}
+    {%  if (page.extensions.ratepay.ratepayMethodIsSelected) %}
+        <div class="ratepay--billing-form">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card checkout-card">
+                        <div class="card-body">
+                            <div class="card-title">
+                                {{ context.paymentMethod.translated.name }}
+                            </div>
                             <div class="card-body">
-                                <div class="card-title">
-                                    {{ context.paymentMethod.translated.name }}
-                                </div>
-                                <div class="card-body">
-                                    {% block ratepay_payment_content %}
+                                {% block ratepay_payment_content %}
 
-                                        {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/customer_data/ratepay-customer-data-birthday.html.twig' %}
-                                        {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/customer_data/ratepay-customer-data-phone.html.twig' %}
+                                    {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/customer_data/ratepay-customer-data-birthday.html.twig' %}
+                                    {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/customer_data/ratepay-customer-data-phone.html.twig' %}
 
-                                        {#  // TODO @aarends vat-id nur, wenn der Kunde auch ein Firmenkunde ist. #}
+                                    {%  if (page.extensions.ratepay.company) %}
                                         {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/customer_data/ratepay-customer-data-vatid.html.twig' %}
+                                    {% endif %}
 
-                                        {%  if context.paymentMethod.getFormattedHandlerIdentifier() == 'handler_ratepay_debitpaymenthandler' %}
-                                            {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/ratepay-bank-account.html.twig' %}
-                                        {%  endif %}
+                                    {%  if (page.extensions.ratepay.bankAccountRequired) %}
+                                        {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/ratepay-bank-account.html.twig' %}
+                                    {%  endif %}
 
-                                        {%  if context.paymentMethod.getFormattedHandlerIdentifier() == 'handler_ratepay_installmentpaymenthandler' %}
-                                            {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/ratepay-installment-calculator.html.twig' %}
-                                        {%  endif %}
+                                    {%  if (page.extensions.ratepay.isInstallmentMethod) %}
+                                        {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/ratepay-installment-calculator.html.twig' %}
+                                    {%  endif %}
 
-                                    {% endblock %}
+                                    {%  if (page.extensions.ratepay.isZeroPercentInstallment) %}
 
-                                </div>
+                                    {%  endif %}
+
+                                {% endblock %}
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            {# // TODO @aarends ist zwar eine schöne sache, allerdings sollten die Modals nur eingebunden werden, wenn diese auch benötigt werden. Und dieses Modal wird nur benötigt, wenn die Zahlart Lastschrift ausgewählt ist. #}
-            {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/ratepay-modals.html.twig' %}
-        {% endblock %}
-
+        </div>
     {%  endif %}
-{% endfor %}
+{% endblock %}
