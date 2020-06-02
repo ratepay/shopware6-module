@@ -13,6 +13,11 @@
             <argument id="ratepay_api_log.repository" type="service"/>
             <argument id="ratepay.logger" type="service"/>
         </service>
+
+        <service id="Ratepay\RatepayPayments\Components\RatepayApi\Services\HistoryLogger">
+            <argument id="ratepay_order_history.repository" type="service"/>
+            <argument id="ratepay.logger" type="service"/>
+        </service>
     </services>
 
 </container>
