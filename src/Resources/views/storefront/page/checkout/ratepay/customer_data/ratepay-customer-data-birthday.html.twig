@@ -3,7 +3,7 @@
     <div class="form-row">
         <div class="form-group col-sm-12">
             <label class="form-label">
-                {{ "Ratepay.RatepayPayments.formLabel.birthday" | trans }} *
+                {{ "ratepay.storefront.checkout.label.birthday"|trans|sw_sanitize }} *
             </label>
         </div>
     </div>
@@ -14,7 +14,7 @@
                 <select name="ratepay[birthday][day]" class="custom-select" required="required" form="confirmOrderForm">
                     <option value="" disabled>{{ "account.personalBirthdaySelectDay"|trans|sw_sanitize }}</option>
                     {% for day in range(1, 31) %}
-                        <option value="{{ day }}"{% if day == birthday %} selected="selected"{% endif %}>{{ day }}</option>
+                        <option value="{{ day }}"{% if day == page.extensions.ratepay.birthday|date('d') %} selected="selected"{% endif %}>{{ day }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -25,7 +25,7 @@
                 <select name="ratepay[birthday][month]" class="custom-select" required="required" form="confirmOrderForm">
                     <option selected="selected" value="" disabled>{{ "account.personalBirthdaySelectMonth"|trans|sw_sanitize }}</option>
                     {% for month in range(1, 12) %}
-                        <option value="{{ month }}" {% if month == birthmonth %} selected="selected"{% endif %}>{{ month }}</option>
+                        <option value="{{ month }}" {% if month == page.extensions.ratepay.birthday|date('m') %} selected="selected"{% endif %}>{{ month }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -38,7 +38,7 @@
                 <select name="ratepay[birthday][year]" class="custom-select" required="required" form="confirmOrderForm">
                     <option selected="selected" value=""  disabled>{{ "account.personalBirthdaySelectYear"|trans|sw_sanitize }}</option>
                     {% for year in range(currentYear, startYear) %}
-                        <option value="{{ year }}" {% if year == birthyear %} selected="selected"{% endif %}>{{ year }}</option>
+                        <option value="{{ year }}" {% if year ==  page.extensions.ratepay.birthday|date('Y') %}  selected="selected"{% endif %}>{{ year }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -47,8 +47,7 @@
     </div>
     <div class="form-row">
         <div class="form-group col-sm-12">
-            {# // TODO @aarends groß/kleinschreibung? wieso hast du die wörter groß geschrieben? hier wäre sowas schöner: `ratepay.storefront.checkout.fields.iban` (wenn storefront nicht benötigt wird, ist auch ohne ok. (gilt natürlich für alle snippets) #}
-            {{ "Ratepay.RatepayPayments.hints.birthdayHint"|trans|sw_sanitize }}
+            {{ "ratepay.storefront.checkout.hints.birthdayHint"|trans|sw_sanitize }}
         </div>
     </div>
 {% endblock %}
