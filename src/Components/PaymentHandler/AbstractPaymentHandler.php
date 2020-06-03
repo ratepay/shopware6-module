@@ -10,6 +10,7 @@ namespace Ratepay\RatepayPayments\Components\PaymentHandler;
 
 
 use Exception;
+use Ratepay\RatepayPayments\Components\PaymentHandler\Constraint\BirthdayConstraint;
 use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
 use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
 use Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentRequestService;
@@ -17,6 +18,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStat
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
+use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -24,7 +26,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterface
 {
@@ -64,6 +66,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
         $order = $this->getOrderWithAssociations($transaction->getOrder(), $salesChannelContext->getContext());
         try {
             $this->paymentRequestService->setTransaction($order, $transaction);
+            $this->paymentRequestService->setRequestDataBag($dataBag);
             $response = $this->paymentRequestService->doRequest();
             if ($response->getResponse()->isSuccessful()) {
                 $this->eventDispatcher->dispatch(new PaymentSuccessfulEvent($transaction, $dataBag, $salesChannelContext, $response->getResponse()));
@@ -106,6 +109,15 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
         return $this->orderRepository->search($criteria, $context)->first();
     }
 
-    abstract protected function getValidationDefinitions();
+    public function getValidationDefinitions(SalesChannelContext $salesChannelContext)
+    {
+        $validations = [];
+        $validations['birthday'] = [new NotBlank(), new BirthdayConstraint('-18 years')];
+
+        if (empty($salesChannelContext->getCustomer()->getActiveBillingAddress()->getCompany())) {
+            $validations['phone'] = [new NotBlank()];
+        }
+        return $validations;
+    }
 
 }
