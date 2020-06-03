@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace Ratepay\RatepayPayments\Components\Checkout\Subscriber;
 
 use Shopware\Core\Framework\Validation\DataValidator;
-use Shopware\Core\Framework\Validation\Exception\ConstraintViolationException;
 use Shopware\Core\Framework\Validation\BuildValidationEvent;
 use Shopware\Core\PlatformRequest;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -73,14 +72,7 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
                 }
             }
 
-            $violations = $this->validator->validate($flattenOrderData, $event->getDefinition());
-
-            if ($violations === null) {
-                return;
-            }
-
-            throw new ConstraintViolationException($violations, $ratepayData);
-
+            $this->validator->validate($flattenOrderData, $event->getDefinition());
         }
 
     }
