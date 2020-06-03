@@ -32,4 +32,10 @@ class InvoicePaymentHandler extends AbstractPaymentHandler
         // TODO: Implement pay() method.
         throw new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'hihi bestellung abgebrochen');
     }
+
+    public function getValidationDefinitions()
+    {
+        return array(
+        );
+    }
 }

@@ -11,14 +11,14 @@ declare(strict_types=1);
 namespace Ratepay\RatepayPayments\Components\Checkout\Subscriber;
 
 use Shopware\Core\Framework\Validation\DataValidator;
-use Shopware\Core\Framework\Validation\DataValidationDefinition;
 use Shopware\Core\Framework\Validation\Exception\ConstraintViolationException;
 use Shopware\Core\Framework\Validation\BuildValidationEvent;
 use Shopware\Core\PlatformRequest;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\MultiConstraint;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class CheckoutValidationSubscriber implements EventSubscriberInterface
 {
@@ -29,13 +29,17 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
     /** @var RequestStack */
     private $requestStack;
 
+    /** @var ContainerInterface */
+    private $container;
 
     public function __construct(
         DataValidator $validator,
-        RequestStack $requestStack
+        RequestStack $requestStack,
+        ContainerInterface $container
     ) {
         $this->validator = $validator;
         $this->requestStack  = $requestStack;
+        $this->container = $container;
     }
 
     public static function getSubscribedEvents(): array
@@ -48,28 +52,29 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
     public function validateOrderData(BuildValidationEvent $event): void
     {
         $request = $this->requestStack->getCurrentRequest();
-        $paymentHandlerIdentifier = $request->attributes->get('sw-sales-channel-context')->getPaymentMethod()->getHandlerIdentifier();
 
         if (null === $request) {
             return;
         }
 
+        $context = $this->getContextFromRequest($request);
+        $formattedPaymentHandlerIdentifier = $context->getPaymentMethod()->getFormattedHandlerIdentifier();
+        $paymentHandlerIdentifier = $context->getPaymentMethod()->getHandlerIdentifier();
+
         if (strpos( $paymentHandlerIdentifier, 'RatepayPayments') !== false){
 
-            $context = $this->getContextFromRequest($request);
-            $formattedPaymentHandlerIdentifier = $context->getPaymentMethod()->getFormattedHandlerIdentifier();
+            $paymentHandler = $this->container->get($formattedPaymentHandlerIdentifier);
+            $paymentMethodValidationDefinitions = $paymentHandler->getValidationDefinitions();
 
-            $ratepayData = $request->request->all();
+            $orderData = $request->request->all();
 
-            $definition = new DataValidationDefinition('ratepay.validate.checkout');
-
-            foreach ($ratepayData['ratepay'] as $key => $value) {
-                if ($key !== 'phone'){
-                    $definition->add($key, new NotBlank());
+            foreach ($paymentMethodValidationDefinitions as $key => $value){
+                foreach ($value as $singleConstraint){
+                    $event->getDefinition()->add($key, $singleConstraint);
                 }
             }
 
-            $violations = $this->validator->validate($ratepayData['ratepay'], $definition);
+            $violations = $this->validator->validate($orderData, $event->getDefinition());
 
             if ($violations === null) {
                 return;

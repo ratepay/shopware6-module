@@ -106,4 +106,6 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
         return $this->orderRepository->search($criteria, $context)->first();
     }
 
+    abstract protected function getValidationDefinitions();
+
 }

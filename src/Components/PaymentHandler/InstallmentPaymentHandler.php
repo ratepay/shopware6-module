@@ -19,4 +19,9 @@ class InstallmentPaymentHandler extends AbstractPaymentHandler
 
     const RATEPAY_METHOD = 'INSTALLMENT';
 
+    public function getValidationDefinitions()
+    {
+        return array(
+        );
+    }
 }
