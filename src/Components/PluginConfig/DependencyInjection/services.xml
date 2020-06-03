@@ -13,7 +13,6 @@
 
         <service id="Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService">
             <argument id="Shopware\Core\System\SystemConfig\SystemConfigService" type="service"/>
-            <argument id="Shopware\Core\Content\Media\DataAbstractionLayer\MediaRepositoryDecorator" type="service"/>
         </service>
 
     </services>

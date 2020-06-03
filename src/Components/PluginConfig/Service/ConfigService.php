@@ -9,7 +9,6 @@
 namespace Ratepay\RatepayPayments\Components\PluginConfig\Service;
 
 
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class ConfigService
@@ -19,15 +18,10 @@ class ConfigService
      * @var SystemConfigService
      */
     private $systemConfigService;
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $pluginRepository;
 
-    public function __construct(SystemConfigService $systemConfigService, EntityRepositoryInterface $pluginRepository)
+    public function __construct(SystemConfigService $systemConfigService)
     {
         $this->systemConfigService = $systemConfigService;
-        $this->pluginRepository = $pluginRepository;
     }
 
     public function getDeviceFingerprintSnippetId()
