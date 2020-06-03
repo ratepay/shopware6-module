@@ -9,8 +9,7 @@
     </div>
     <div class="form-row">
         <div class="form-group col-sm-4">
-            {# // TODO @aarends dieses feld ist nicht erforderlich. Im Hintergrund wird dieses Feld aufgefüllt wenn es nicht gesetzt ist. Vor dem API Request (ist bereits umgesetzt) #}
-            <input type="text" class="form-control" placeholder="{{ "account.personalPhonePlaceholder"|trans|sw_sanitize }}" value="{{ page.extensions.ratepay.phoneNumber }}" name="ratepay[phone]" form="confirmOrderForm" required="required">
+            <input type="text" class="form-control" placeholder="{{ "account.personalPhonePlaceholder"|trans|sw_sanitize }}" value="{{ page.extensions.ratepay.phoneNumber }}" name="ratepay[phone]" form="confirmOrderForm">
         </div>
     </div>
     <div class="form-row">

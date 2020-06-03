@@ -60,7 +60,9 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
             // TODO @aarends getValidationDefinitions für die Felder anlegen und in PaymentHandler auslagern, vorerst NotBlank
 
             foreach ($ratepayData['ratepay'] as $key => $value) {
-                $definition->add($key, new NotBlank());
+                if ($key !== 'phone'){
+                    $definition->add($key, new NotBlank());
+                }
             }
 
             $violations = $this->validator->validate($ratepayData['ratepay'], $definition);
