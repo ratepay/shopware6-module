@@ -57,17 +57,15 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
         }
 
         $context = $this->getContextFromRequest($request);
-        $formattedPaymentHandlerIdentifier = $context->getPaymentMethod()->getFormattedHandlerIdentifier();
         $paymentHandlerIdentifier = $context->getPaymentMethod()->getHandlerIdentifier();
-
+        
         if (strpos( $paymentHandlerIdentifier, 'RatepayPayments') !== false){
 
-            $paymentHandler = $this->container->get($formattedPaymentHandlerIdentifier);
-            $paymentMethodValidationDefinitions = $paymentHandler->getValidationDefinitions();
+            $validationDefinitions = $this->container->get($paymentHandlerIdentifier)->getValidationDefinitions();
 
             $orderData = $request->request->all();
 
-            foreach ($paymentMethodValidationDefinitions as $key => $value){
+            foreach ($validationDefinitions as $key => $value){
                 foreach ($value as $singleConstraint){
                     $event->getDefinition()->add($key, $singleConstraint);
                 }
