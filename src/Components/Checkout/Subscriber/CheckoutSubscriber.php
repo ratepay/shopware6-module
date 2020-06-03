@@ -44,6 +44,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
                 'vatId' => $customerVatId,
                 'phoneNumber' => $customerPhoneNumber,
                 'company' => $customerCompany,
+                'accountHolder' => $customerBillingAddress->getFirstName() . " " . $customerBillingAddress->getLastName(),
                 'bankAccountRequired' => $event->getSalesChannelContext()->getPaymentMethod()->getHandlerIdentifier() == DebitPaymentHandler::class,
                 'isInstallmentMethod' => $event->getSalesChannelContext()->getPaymentMethod()->getHandlerIdentifier() == InstallmentPaymentHandler::class,
                 'isZeroPercentInstallment' => $event->getSalesChannelContext()->getPaymentMethod()->getHandlerIdentifier() == InstallmentZeroPercentPaymentHandler::class
