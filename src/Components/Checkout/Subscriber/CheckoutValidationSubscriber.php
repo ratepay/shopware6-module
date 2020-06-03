@@ -35,9 +35,10 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
         DataValidator $validator,
         RequestStack $requestStack,
         ContainerInterface $container
-    ) {
+    )
+    {
         $this->validator = $validator;
-        $this->requestStack  = $requestStack;
+        $this->requestStack = $requestStack;
         $this->container = $container;
     }
 
@@ -58,20 +59,21 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
 
         $context = $this->getContextFromRequest($request);
         $paymentHandlerIdentifier = $context->getPaymentMethod()->getHandlerIdentifier();
-        
-        if (strpos( $paymentHandlerIdentifier, 'RatepayPayments') !== false){
 
+        if (strpos($paymentHandlerIdentifier, 'RatepayPayments') !== false) {
+
+            $flattenOrderData = $this->getFlattenArray($request->request->all());
+
+            /** @var $validationDefinitions array */
             $validationDefinitions = $this->container->get($paymentHandlerIdentifier)->getValidationDefinitions();
 
-            $orderData = $request->request->all();
-
-            foreach ($validationDefinitions as $key => $value){
-                foreach ($value as $singleConstraint){
+            foreach ($validationDefinitions as $key => $value) {
+                foreach ($value as $singleConstraint) {
                     $event->getDefinition()->add($key, $singleConstraint);
                 }
             }
 
-            $violations = $this->validator->validate($orderData, $event->getDefinition());
+            $violations = $this->validator->validate($flattenOrderData, $event->getDefinition());
 
             if ($violations === null) {
                 return;
@@ -88,4 +90,19 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
         return $request->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_CONTEXT_OBJECT);
     }
 
+    private function getFlattenArray($array)
+    {
+        if (!is_array($array)) {
+            return FALSE;
+        }
+        $result = array();
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $result = array_merge($result, $this->getFlattenArray($value));
+            } else {
+                $result[$key] = $value;
+            }
+        }
+        return $result;
+    }
 }

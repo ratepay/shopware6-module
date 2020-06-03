@@ -9,13 +9,18 @@
 namespace Ratepay\RatepayPayments\Components\PaymentHandler;
 
 
+use Symfony\Component\Validator\Constraints\Positive;
+
 class PrepaymentPaymentHandler extends AbstractPaymentHandler
 {
     const RATEPAY_METHOD = 'PREPAYMENT';
 
     public function getValidationDefinitions()
     {
-        return array(
-        );
+        return [
+            'day' => [new Positive()],
+            'month' => [new Positive()],
+            'year' => [new Positive()]
+        ];
     }
 }
