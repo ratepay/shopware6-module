@@ -38,8 +38,7 @@ class DfpService
 
         if ($sessionValue) {
             $token = $sessionValue;
-        }
-        else {
+        } else {
             $sessionId = $this->sessionInterface->get('sessionId');
             $token = DeviceFingerprint::createDeviceIdentToken($sessionId);
             $this->sessionInterface->set(self::SESSION_VAR_NAME, $token);
@@ -52,6 +51,11 @@ class DfpService
     public function isDfpIdAlreadyGenerated()
     {
         return $this->sessionInterface->get(self::SESSION_VAR_NAME) !== null;
+    }
+
+    public function deleteToken()
+    {
+        $this->sessionInterface->remove(self::SESSION_VAR_NAME);
     }
 
 }
