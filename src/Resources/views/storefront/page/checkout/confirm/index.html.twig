@@ -1,7 +1,43 @@
 {% sw_extends '@Storefront/storefront/page/checkout/confirm/index.html.twig' %}
 
 {% block page_checkout_confirm_product_table %}
-    {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/ratepay-billing-form.html.twig' %}
+    {%  if (page.extensions.ratepay) %}
+        <div class="ratepay--billing-form">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card checkout-card">
+                        <div class="card-body">
+                            <div class="card-title">
+                                {{ context.paymentMethod.translated.name }}
+                            </div>
+                            <div class="card-body">
+                                {% block ratepay_payment_fields %}
+                                    {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/'~page.extensions.ratepay.paymentMethod~'.html.twig' %}
+                                    {#
+                                    {%  if (page.extensions.ratepay.company) %}
+                                        {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/customer-data/vatid.html.twig' %}
+                                    {% else %}
+                                        {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/customer-data/birthday.html.twig' %}
+                                    {% endif %}
+
+                                    {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/customer-data/phone.html.twig' %}
+
+                                    {%  if (page.extensions.ratepay.bankAccountRequired) %}
+                                        {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/bank-account.html.twig' %}
+                                    {%  endif %}
+
+                                    {%  if (page.extensions.ratepay.installment) %}
+                                        {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/installment-calculator.html.twig' %}
+                                    {%  endif %}
+                                    #}
+                                {% endblock %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
     {{ parent() }}
 {% endblock %}
 

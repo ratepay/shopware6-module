@@ -31,7 +31,8 @@ class CheckoutSubscriber implements EventSubscriberInterface
      */
     public function addRatepayTemplateData(CheckoutConfirmPageLoadedEvent $event): void
     {
-        if (strpos($event->getSalesChannelContext()->getPaymentMethod()->getHandlerIdentifier(),'RatepayPayments') !== false){
+        $paymentMethod = $event->getSalesChannelContext()->getPaymentMethod();
+        if (strpos($paymentMethod->getHandlerIdentifier(),'RatepayPayments') !== false){
             /* Get customer data for checkout form */
             $customerBirthday = $event->getSalesChannelContext()->getCustomer()->getBirthday();
             $customerBillingAddress = $event->getSalesChannelContext()->getCustomer()->getActiveBillingAddress();
@@ -40,6 +41,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
             $customerCompany = $customerBillingAddress->getCompany();
 
             $event->getPage()->addExtension('ratepay', new ArrayStruct([
+                'paymentMethod' => strtolower(constant($paymentMethod->getHandlerIdentifier().'::RATEPAY_METHOD')),
                 'birthday' => $customerBirthday,
                 'vatId' => $customerVatId,
                 'phoneNumber' => $customerPhoneNumber,
