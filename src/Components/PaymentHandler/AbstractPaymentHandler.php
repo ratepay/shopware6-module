@@ -24,6 +24,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 
 abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterface
 {

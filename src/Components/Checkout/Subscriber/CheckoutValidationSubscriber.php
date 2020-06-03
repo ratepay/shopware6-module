@@ -14,9 +14,11 @@ use Shopware\Core\Framework\Validation\DataValidator;
 use Shopware\Core\Framework\Validation\DataValidationDefinition;
 use Shopware\Core\Framework\Validation\Exception\ConstraintViolationException;
 use Shopware\Core\Framework\Validation\BuildValidationEvent;
+use Shopware\Core\PlatformRequest;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class CheckoutValidationSubscriber implements EventSubscriberInterface
 {
@@ -26,6 +28,7 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
 
     /** @var RequestStack */
     private $requestStack;
+
 
     public function __construct(
         DataValidator $validator,
@@ -53,11 +56,12 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
 
         if (strpos( $paymentHandlerIdentifier, 'RatepayPayments') !== false){
 
+            $context = $this->getContextFromRequest($request);
+            $formattedPaymentHandlerIdentifier = $context->getPaymentMethod()->getFormattedHandlerIdentifier();
+
             $ratepayData = $request->request->all();
 
             $definition = new DataValidationDefinition('ratepay.validate.checkout');
-
-            // TODO @aarends getValidationDefinitions für die Felder anlegen und in PaymentHandler auslagern, vorerst NotBlank
 
             foreach ($ratepayData['ratepay'] as $key => $value) {
                 if ($key !== 'phone'){
@@ -75,6 +79,11 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
 
         }
 
+    }
+
+    private function getContextFromRequest($request): SalesChannelContext
+    {
+        return $request->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_CONTEXT_OBJECT);
     }
 
 }
