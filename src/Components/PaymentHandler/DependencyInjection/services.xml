@@ -10,6 +10,7 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
+
         <service id="Ratepay\RatepayPayments\Components\PaymentHandler\InvoicePaymentHandler">
             <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <argument type="service" id="order.repository"/>
@@ -18,7 +19,7 @@
             <tag name="shopware.payment.method.sync"/>
         </service>
 
-        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\DebitPaymentHandler">
+        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\DebitPaymentHandler" public="true">
             <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <argument type="service" id="order.repository"/>
             <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentRequestService" type="service"/>

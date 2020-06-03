@@ -13,6 +13,7 @@ use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\Validator\Constraints\Positive;
 
 class InvoicePaymentHandler extends AbstractPaymentHandler
 {
@@ -31,5 +32,14 @@ class InvoicePaymentHandler extends AbstractPaymentHandler
     {
         // TODO: Implement pay() method.
         throw new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'hihi bestellung abgebrochen');
+    }
+
+    public function getValidationDefinitions()
+    {
+        return [
+            'day' => [new Positive()],
+            'month' => [new Positive()],
+            'year' => [new Positive()]
+        ];
     }
 }

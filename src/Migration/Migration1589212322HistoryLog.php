@@ -26,6 +26,7 @@ class Migration1589212322HistoryLog extends MigrationStep
                 `id` binary(16) NOT NULL,
                 `orderId` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
                 `event` varchar(100) COLLATE utf8_unicode_ci NULL,
+                `user` varchar(100) COLLATE utf8_unicode_ci NULL,
                 `articlename` varchar(100) COLLATE utf8_unicode_ci NULL,
                 `articlenumber` varchar(100) COLLATE utf8_unicode_ci NULL,
                 `quantity` int(5) COLLATE utf8_unicode_ci NULL,

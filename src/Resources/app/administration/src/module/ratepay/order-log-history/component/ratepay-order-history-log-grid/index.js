@@ -7,14 +7,20 @@
 
 import template from './ratepay-order-history-log-grid.html.twig';
 
-const { Component } = Shopware;
+const {Component} = Shopware;
+const {Criteria} = Shopware.Data;
 
 Component.register('ratepay-order-history-log-grid', {
     template,
 
+    inject: [
+        'repositoryFactory'
+    ],
+
     data() {
         return {
-            data: []
+            repository: null,
+            entities: null
         };
     },
 
@@ -22,56 +28,40 @@ Component.register('ratepay-order-history-log-grid', {
         columns() {
             return [
                 {
-                    property: 'date',
+                    property: 'createdAt',
+                    dataIndex: 'createdAt',
                     label: this.$tc('ratepay.order-log-history.detailBase.column.date'),
                     allowResize: false
                 },
                 {
                     property: 'user',
+                    dataIndex: 'user',
                     label: this.$tc('ratepay.order-log-history.detailBase.column.user'),
-                    allowResize: true
-                },
-                {
-                    property: 'event',
-                    label: this.$tc('ratepay.order-log-history.detailBase.column.event'),
                     allowResize: false
                 },
                 {
-                    property: 'name',
-                    label: this.$tc('ratepay.order-log-history.detailBase.column.name'),
-                    allowResize: true
-                },
-                {
-                    property: 'number',
-                    label: this.$tc('ratepay.order-log-history.detailBase.column.number'),
-                    allowResize: true
-                },
-                {
-                    property: 'count',
-                    label: this.$tc('ratepay.order-log-history.detailBase.column.count'),
-                    allowResize: true
-                },
+                    property: 'event',
+                    dataIndex: 'event',
+                    label: this.$tc('ratepay.order-log-history.detailBase.column.event'),
+                    allowResize: false
+                }
             ];
         }
     },
 
+
     created() {
-        this.createdComponent();
+        this.repository = this.repositoryFactory.create('ratepay_order_history');
+        let criteria = new Criteria();
+        criteria.addFilter(Criteria.equals('orderId', this.$route.params.id));
+        this.repository
+            .search(criteria, Shopware.Context.api)
+            .then((result) => {
+                this.entities = result;
+            });
     },
 
     methods: {
-        createdComponent() {
-            this.data = [];
-            this.data.push({
-                date: 'bind data',
-                user: 'bind data',
-                event: 'bind data',
-                name: 'bind data',
-                number: 'bind data',
-                count: 'bind data'
-            });
-        },
-
         isLoading() {
             return this.$parent.isLoading;
         }

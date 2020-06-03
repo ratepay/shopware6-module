@@ -59,18 +59,18 @@ class DeviceFingerprintSubscriber implements EventSubscriberInterface
      */
     public function addRatepayTemplateData(CheckoutConfirmPageLoadedEvent $event): void
     {
-        // TODO @aarends auch hier brauchst du die Prüfung, ob es sich hier um eine RatePay Zahlung handelt.
+        if (strpos($event->getSalesChannelContext()->getPaymentMethod()->getHandlerIdentifier(), 'RatepayPayments') !== false) {
+            $snippetId = $this->configService->getDeviceFingerprintSnippetId();
+            if ($snippetId == null) {
+                return;
+            }
 
-        $snippetId = $this->configService->getDeviceFingerprintSnippetId();
-        if ($snippetId == null) {
-            return;
-        }
-
-        if ($this->dfpService->isDfpIdAlreadyGenerated() == false) {
-            $dfpHelper = new DeviceFingerprint($snippetId);
-            $event->getPage()->addExtension('ratepay', new ArrayStruct([
-                'dfp' => str_replace('\"', '"', $dfpHelper->getDeviceIdentSnippet($this->dfpService->getDfpId()))
-            ]));
+            if ($this->dfpService->isDfpIdAlreadyGenerated() == false) {
+                $dfpHelper = new DeviceFingerprint($snippetId);
+                $event->getPage()->addExtension('ratepay', new ArrayStruct([
+                    'dfp' => str_replace('\"', '"', $dfpHelper->getDeviceIdentSnippet($this->dfpService->getDfpId()))
+                ]));
+            }
         }
 
     }

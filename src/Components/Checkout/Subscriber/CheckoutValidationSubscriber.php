@@ -11,12 +11,12 @@ declare(strict_types=1);
 namespace Ratepay\RatepayPayments\Components\Checkout\Subscriber;
 
 use Shopware\Core\Framework\Validation\DataValidator;
-use Shopware\Core\Framework\Validation\DataValidationDefinition;
-use Shopware\Core\Framework\Validation\Exception\ConstraintViolationException;
 use Shopware\Core\Framework\Validation\BuildValidationEvent;
+use Shopware\Core\PlatformRequest;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class CheckoutValidationSubscriber implements EventSubscriberInterface
 {
@@ -27,12 +27,18 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
     /** @var RequestStack */
     private $requestStack;
 
+    /** @var ContainerInterface */
+    private $container;
+
     public function __construct(
         DataValidator $validator,
-        RequestStack $requestStack
-    ) {
+        RequestStack $requestStack,
+        ContainerInterface $container
+    )
+    {
         $this->validator = $validator;
-        $this->requestStack  = $requestStack;
+        $this->requestStack = $requestStack;
+        $this->container = $container;
     }
 
     public static function getSubscribedEvents(): array
@@ -45,36 +51,50 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
     public function validateOrderData(BuildValidationEvent $event): void
     {
         $request = $this->requestStack->getCurrentRequest();
-        $paymentHandlerIdentifier = $request->attributes->get('sw-sales-channel-context')->getPaymentMethod()->getHandlerIdentifier();
 
         if (null === $request) {
             return;
         }
 
-        if (strpos( $paymentHandlerIdentifier, 'RatepayPayments') !== false){
+        $context = $this->getContextFromRequest($request);
+        $paymentHandlerIdentifier = $context->getPaymentMethod()->getHandlerIdentifier();
 
-            $ratepayData = $request->request->all();
+        if (strpos($paymentHandlerIdentifier, 'RatepayPayments') !== false) {
 
-            $definition = new DataValidationDefinition('ratepay.validate.checkout');
+            $flattenOrderData = $this->getFlattenArray($request->request->all());
 
-            // TODO @aarends getValidationDefinitions für die Felder anlegen und in PaymentHandler auslagern, vorerst NotBlank
+            /** @var $validationDefinitions array */
+            $validationDefinitions = $this->container->get($paymentHandlerIdentifier)->getValidationDefinitions();
 
-            foreach ($ratepayData['ratepay'] as $key => $value) {
-                if ($key !== 'phone'){
-                    $definition->add($key, new NotBlank());
+            foreach ($validationDefinitions as $key => $value) {
+                foreach ($value as $singleConstraint) {
+                    $event->getDefinition()->add($key, $singleConstraint);
                 }
             }
 
-            $violations = $this->validator->validate($ratepayData['ratepay'], $definition);
-
-            if ($violations === null) {
-                return;
-            }
-
-            throw new ConstraintViolationException($violations, $ratepayData);
-
+            $this->validator->validate($flattenOrderData, $event->getDefinition());
         }
 
     }
 
+    private function getContextFromRequest($request): SalesChannelContext
+    {
+        return $request->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_CONTEXT_OBJECT);
+    }
+
+    private function getFlattenArray($array)
+    {
+        if (!is_array($array)) {
+            return FALSE;
+        }
+        $result = array();
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $result = array_merge($result, $this->getFlattenArray($value));
+            } else {
+                $result[$key] = $value;
+            }
+        }
+        return $result;
+    }
 }

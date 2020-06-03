@@ -14,13 +14,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 class HistoryLogEntity extends Entity
 {
 
-    use EntityIdTrait;
-
-    /**
-     * @var int
-     */
-    protected $id;
-
     /**
      * @var string
      */
@@ -30,6 +23,11 @@ class HistoryLogEntity extends Entity
      * @var string
      */
     protected $event;
+
+    /**
+     * @var string
+     */
+    protected $user;
 
     /**
      * @var string
@@ -44,22 +42,6 @@ class HistoryLogEntity extends Entity
      * @var string
      */
     protected $quantity;
-
-    /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
 
     /**
      * @return string
@@ -91,6 +73,22 @@ class HistoryLogEntity extends Entity
     public function setEvent(string $event): void
     {
         $this->event = $event;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUser(): string
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param string $user
+     */
+    public function setUser(string $user): void
+    {
+        $this->user = $user;
     }
 
     /**
