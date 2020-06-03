@@ -43,6 +43,7 @@ class HistoryLogDefinition extends EntityDefinition
             (new IdField('id', 'id'))->addFlags(new Required(), new PrimaryKey()),
             (new StringField('orderId', 'orderId'))->addFlags(new Required()),
             (new StringField('event', 'event')),
+            (new StringField('user', 'user')),
             (new StringField('articlename', 'articlename')),
             (new StringField('articlenumber', 'articlenumber')),
             (new IntField('quantity', 'quantity'))

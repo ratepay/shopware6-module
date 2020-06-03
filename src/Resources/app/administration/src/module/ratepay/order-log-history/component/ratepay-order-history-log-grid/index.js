@@ -34,22 +34,16 @@ Component.register('ratepay-order-history-log-grid', {
                     allowResize: false
                 },
                 {
+                    property: 'user',
+                    dataIndex: 'user',
+                    label: this.$tc('ratepay.order-log-history.detailBase.column.user'),
+                    allowResize: false
+                },
+                {
                     property: 'event',
                     dataIndex: 'event',
                     label: this.$tc('ratepay.order-log-history.detailBase.column.event'),
                     allowResize: false
-                },
-                {
-                    property: 'articlename',
-                    dataIndex: 'articlename',
-                    label: this.$tc('ratepay.order-log-history.detailBase.column.name'),
-                    allowResize: true
-                },
-                {
-                    property: 'quantity',
-                    dataIndex: 'quantity',
-                    label: this.$tc('ratepay.order-log-history.detailBase.column.count'),
-                    allowResize: true
                 }
             ];
         }

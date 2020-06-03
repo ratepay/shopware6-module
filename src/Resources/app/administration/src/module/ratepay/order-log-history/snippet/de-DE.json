@@ -5,7 +5,7 @@
                 "ratepayHistoryPanelTitle": "Ratepay History-Log",
                 "column": {
                     "date": "Datum",
-                    "user": "Benutzer",
+                    "user": "Durchgeführt von",
                     "name": "Name",
                     "event": "Ereignis",
                     "number": "Nummer",
