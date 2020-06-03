@@ -1,2 +1,7 @@
 {% sw_extends '@RatepayPaments/storefront/page/checkout/ratepay/abstract.html.twig' %}
-{% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/common/installment-calculator.html.twig' %}
+
+{% block ratepay_additional_fields %}
+    {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/common/installment-calculator.html.twig' %}
+{% endblock %}
+
+
