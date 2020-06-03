@@ -112,10 +112,12 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
     public function getValidationDefinitions(SalesChannelContext $salesChannelContext)
     {
         $validations = [];
-        $validations['birthday'] = [new NotBlank(), new BirthdayConstraint('-18 years')];
-
+        
         if (empty($salesChannelContext->getCustomer()->getActiveBillingAddress()->getCompany())) {
             $validations['phone'] = [new NotBlank()];
+            $validations['vatid'] = [new NotBlank()];
+        } else {
+            $validations['birthday'] = [new NotBlank(), new BirthdayConstraint('-18 years')];
         }
         return $validations;
     }
