@@ -40,17 +40,14 @@ class CheckoutSubscriber implements EventSubscriberInterface
             $customerPhoneNumber = $customerBillingAddress->getPhoneNumber();
             $customerCompany = $customerBillingAddress->getCompany();
 
-            $event->getPage()->addExtension('ratepay', new ArrayStruct([
-                'paymentMethod' => strtolower(constant($paymentMethod->getHandlerIdentifier().'::RATEPAY_METHOD')),
-                'birthday' => $customerBirthday,
-                'vatId' => $customerVatId,
-                'phoneNumber' => $customerPhoneNumber,
-                'company' => $customerCompany,
-                'accountHolder' => $customerBillingAddress->getFirstName() . " " . $customerBillingAddress->getLastName(),
-                'bankAccountRequired' => $event->getSalesChannelContext()->getPaymentMethod()->getHandlerIdentifier() == DebitPaymentHandler::class,
-                'isInstallmentMethod' => $event->getSalesChannelContext()->getPaymentMethod()->getHandlerIdentifier() == InstallmentPaymentHandler::class,
-                'isZeroPercentInstallment' => $event->getSalesChannelContext()->getPaymentMethod()->getHandlerIdentifier() == InstallmentZeroPercentPaymentHandler::class
-            ]));
+            $extension = $event->getPage()->getExtension('ratepay') ?? new ArrayStruct();
+            $extension->set('paymentMethod', strtolower(constant($paymentMethod->getHandlerIdentifier().'::RATEPAY_METHOD')));
+            $extension->set('birthday', $customerBirthday);
+            $extension->set('vatId', $customerVatId);
+            $extension->set('phoneNumber', $customerPhoneNumber);
+            $extension->set('company', $customerCompany);
+            $extension->set('accountHolder', $customerBillingAddress->getFirstName() . " " . $customerBillingAddress->getLastName());
+            $event->getPage()->addExtension('ratepay', $extension);
         }
 
     }
