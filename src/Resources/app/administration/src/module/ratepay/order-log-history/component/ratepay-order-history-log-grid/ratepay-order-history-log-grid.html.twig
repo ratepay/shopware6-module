@@ -4,8 +4,9 @@
                       slot="grid"
                       type="row">
             {% block sw_order_detail_base_history_ratepay_panel_card_grid %}
-                <sw-data-grid
-                    :dataSource="data"
+                <sw-entity-listing
+                    :items="entities"
+                    :repository="repository"
                     :columns="columns"
                     :fullPage="false"
                     :showSettings="false"
@@ -15,7 +16,7 @@
                     :allowColumnEdit="false"
                     :allowInlineEdit="false"
                     :compactMode="true">
-                </sw-data-grid>
+                </sw-entity-listing>
             {% endblock %}
         </sw-container>
 
