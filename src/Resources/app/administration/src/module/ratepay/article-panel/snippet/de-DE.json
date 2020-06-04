@@ -9,6 +9,7 @@
             "adddebit": "Nachbelastung hinzufügen",
             "deliver": "Auswahl versenden",
             "cancel": "Auswahl stornieren",
+            "doreturn": "Auswahl retournieren",
             "cancelStock": "Auswahl stornieren, Inventar aktualisieren",
             "labels": {
                 "count": "Anzahl",

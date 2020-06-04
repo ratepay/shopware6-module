@@ -71,11 +71,48 @@
                     </template>
                 </sw-entity-listing>
             </sw-card>
-        </sw-card>
         </template>
 
         <template v-if="activeTab === 'return'">
+            <sw-card
+                class="button-card">
+                <sw-button-group>
+                    <sw-button class="sw-button--small">{{ $t('ratepay.article_panel.setzero') }}</sw-button>
+                </sw-button-group>
+            </sw-card>
+            <sw-card
+                class="grid-card">
+                <sw-entity-listing
+                    :dataSource="data"
+                    :columns="columns"
+                    :fullPage="false"
+                    :showSelection="false"
+                    :showActions="true"
+                    :allowColumnEdit="false"
+                    :allowInlineEdit="false"
+                    :compactMode="false">
 
+                    <template slot="column-count">
+                        <sw-select-field>
+                            <option selected>0</option>
+                            <option v-for="n in 10">{{ n }}</option>
+                        </sw-select-field>
+                    </template>
+
+                    <template slot="actions">
+                        <slot name="actions" :item="item" :itemIndex="itemIndex">
+                            <div class="sw-context-menu__group">
+                                <sw-context-menu-item>
+                                    {{ $t('ratepay.article_panel.doreturn') }}
+                                </sw-context-menu-item>
+                                <sw-context-menu-item variant="danger">
+                                    {{ $t('ratepay.article_panel.cancelStock') }}
+                                </sw-context-menu-item>
+                            </div>
+                        </slot>
+                    </template>
+                </sw-entity-listing>
+            </sw-card>
         </template>
 
     </sw-container>

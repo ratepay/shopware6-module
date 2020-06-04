@@ -9,6 +9,7 @@
             "adddebit": "Add debit",
             "deliver": "Provide shipment",
             "cancel": "Provide cancellation",
+            "doreturn": "Provide return",
             "cancelStock": "Cancel selection, update inventory",
             "labels": {
                 "count": "Count",
