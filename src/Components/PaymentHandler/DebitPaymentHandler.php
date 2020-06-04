@@ -8,23 +8,23 @@
 
 namespace Ratepay\RatepayPayments\Components\PaymentHandler;
 
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\Validator\Constraints\Iban;
-use Symfony\Component\Validator\Constraints\Positive;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class DebitPaymentHandler extends AbstractPaymentHandler
 {
     const RATEPAY_METHOD = 'ELV';
 
-    public function getValidationDefinitions(): array
+    public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
     {
-        return [
-            'day' => [new Positive()],
-            'month' => [new Positive()],
-            'year' => [new Positive()],
-            'accountholder' => [new NotBlank()],
-            'sepaconfirmation' => [new NotBlank()],
-            'iban' => [new NotBlank(), new Iban()]
-        ];
+        $validations = parent::getValidationDefinitions($salesChannelContext);
+
+        $validations['accountholder'] = [new NotBlank()]; // Not required, it will be overridden by the customerFactory
+        $validations['iban'] = [new NotBlank(), new Iban()];
+        $validations['sepaconfirmation'] = [new NotBlank()];
+
+        return $validations;
     }
+
 }

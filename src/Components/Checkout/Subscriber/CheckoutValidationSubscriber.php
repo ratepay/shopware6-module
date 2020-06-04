@@ -10,19 +10,18 @@ declare(strict_types=1);
 
 namespace Ratepay\RatepayPayments\Components\Checkout\Subscriber;
 
-use Shopware\Core\Framework\Validation\DataValidator;
+use Ratepay\RatepayPayments\Components\PaymentHandler\AbstractPaymentHandler;
 use Shopware\Core\Framework\Validation\BuildValidationEvent;
+use Shopware\Core\Framework\Validation\DataValidationDefinition;
+use Shopware\Core\Framework\Validation\DataValidator;
 use Shopware\Core\PlatformRequest;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class CheckoutValidationSubscriber implements EventSubscriberInterface
 {
-
-    /** @var Validator */
-    private $validator;
 
     /** @var RequestStack */
     private $requestStack;
@@ -61,18 +60,16 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
 
         if (strpos($paymentHandlerIdentifier, 'RatepayPayments') !== false) {
 
-            $flattenOrderData = $this->getFlattenArray($request->request->all());
+            /** @var $paymentHandler AbstractPaymentHandler */
+            $paymentHandler = $this->container->get($paymentHandlerIdentifier);
 
-            /** @var $validationDefinitions array */
-            $validationDefinitions = $this->container->get($paymentHandlerIdentifier)->getValidationDefinitions();
+            $validationDefinitions = $paymentHandler->getValidationDefinitions($context);
 
-            foreach ($validationDefinitions as $key => $value) {
-                foreach ($value as $singleConstraint) {
-                    $event->getDefinition()->add($key, $singleConstraint);
-                }
+            $definitions = new DataValidationDefinition();
+            foreach ($validationDefinitions as $key => $constraints) {
+                call_user_func_array([$definitions, 'add'], [$key] + $constraints);
             }
-
-            $this->validator->validate($flattenOrderData, $event->getDefinition());
+            $event->getDefinition()->addSub('ratepay', $definitions);
         }
 
     }
@@ -80,21 +77,5 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
     private function getContextFromRequest($request): SalesChannelContext
     {
         return $request->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_CONTEXT_OBJECT);
-    }
-
-    private function getFlattenArray($array)
-    {
-        if (!is_array($array)) {
-            return FALSE;
-        }
-        $result = array();
-        foreach ($array as $key => $value) {
-            if (is_array($value)) {
-                $result = array_merge($result, $this->getFlattenArray($value));
-            } else {
-                $result[$key] = $value;
-            }
-        }
-        return $result;
     }
 }

@@ -57,6 +57,10 @@ class PaymentRequestService extends AbstractOrderOperationRequest
      * @var Context
      */
     private $context;
+    /**
+     * @var \Shopware\Core\Framework\Validation\DataBag\RequestDataBag
+     */
+    private $requestDataBag;
 
 
     public function __construct(
@@ -87,6 +91,11 @@ class PaymentRequestService extends AbstractOrderOperationRequest
         $this->transaction = $transaction->getOrderTransaction();
     }
 
+    public function setRequestDataBag(\Shopware\Core\Framework\Validation\DataBag\RequestDataBag $dataBag)
+    {
+        $this->requestDataBag = $dataBag;
+    }
+
     protected function getRequestHead(ProfileConfigEntity $profileConfig): Head
     {
         $head = parent::getRequestHead($profileConfig);
@@ -109,8 +118,8 @@ class PaymentRequestService extends AbstractOrderOperationRequest
     {
         return (new Content())
             ->setShoppingBasket($this->shoppingBasketFactory->getData($this->order))
-            ->setCustomer($this->customerFactory->getData($this->order))
-            ->setPayment($this->paymentFactory->getData($this->transaction));
+            ->setCustomer($this->customerFactory->getData($this->order, $this->requestDataBag))
+            ->setPayment($this->paymentFactory->getData($this->transaction, $this->requestDataBag));
     }
 
     protected function processSuccess(RequestBuilder $response)
