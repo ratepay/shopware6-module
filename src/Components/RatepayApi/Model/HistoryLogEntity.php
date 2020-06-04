@@ -9,17 +9,9 @@
 namespace Ratepay\RatepayPayments\Components\RatepayApi\Model;
 
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 
 class HistoryLogEntity extends Entity
 {
-
-    use EntityIdTrait;
-
-    /**
-     * @var int
-     */
-    protected $id;
 
     /**
      * @var string
@@ -29,12 +21,12 @@ class HistoryLogEntity extends Entity
     /**
      * @var string
      */
-    protected $date;
+    protected $event;
 
     /**
      * @var string
      */
-    protected $event;
+    protected $user;
 
     /**
      * @var string
@@ -49,22 +41,6 @@ class HistoryLogEntity extends Entity
      * @var string
      */
     protected $quantity;
-
-    /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
 
     /**
      * @return string
@@ -85,22 +61,6 @@ class HistoryLogEntity extends Entity
     /**
      * @return string
      */
-    public function getDate(): string
-    {
-        return $this->date;
-    }
-
-    /**
-     * @param string $date
-     */
-    public function setDate(string $date): void
-    {
-        $this->date = $date;
-    }
-
-    /**
-     * @return string
-     */
     public function getEvent(): string
     {
         return $this->event;
@@ -112,6 +72,22 @@ class HistoryLogEntity extends Entity
     public function setEvent(string $event): void
     {
         $this->event = $event;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUser(): string
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param string $user
+     */
+    public function setUser(string $user): void
+    {
+        $this->user = $user;
     }
 
     /**
@@ -147,17 +123,17 @@ class HistoryLogEntity extends Entity
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getQuantity(): string
+    public function getQuantity(): int
     {
         return $this->quantity;
     }
 
     /**
-     * @param string $quantity
+     * @param int $quantity
      */
-    public function setQuantity(string $quantity): void
+    public function setQuantity(int $quantity): void
     {
         $this->quantity = $quantity;
     }

@@ -1,0 +1,17 @@
+{
+    "ratepay": {
+        "order-log-history": {
+            "detailBase": {
+                "ratepayHistoryPanelTitle": "Ratepay History-Log",
+                "column": {
+                    "date": "Date",
+                    "user": "User",
+                    "name": "Name",
+                    "event": "Event",
+                    "number": "Number",
+                    "count": "Count"
+                }
+            }
+        }
+    }
+}

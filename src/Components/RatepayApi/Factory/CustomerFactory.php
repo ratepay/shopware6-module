@@ -12,12 +12,12 @@ namespace Ratepay\RatepayPayments\Components\RatepayApi\Factory;
 use RatePAY\Model\Request\SubModel\Content\Customer;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 
 class CustomerFactory
 {
 
-    public function getData(OrderEntity $order)
+    public function getData(OrderEntity $order, RequestDataBag $requestDataBag)
     {
 
         $customer = new Customer();
@@ -25,7 +25,7 @@ class CustomerFactory
         $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
         $shippingAddress = $order->getDeliveries()->first()->getShippingOrderAddress();
 
-        switch($billingAddress->getSalutation()->getSalutationKey()) {
+        switch ($billingAddress->getSalutation()->getSalutationKey()) {
             case 'mrs':
                 $gender = 'f';
                 break;
@@ -43,7 +43,6 @@ class CustomerFactory
             ->setFirstName($billingAddress->getFirstName())
             ->setLastName($billingAddress->getLastName())
             ->setLanguage(strtolower(explode('-', $order->getLanguage()->getLocale()->getCode())[0]))
-            ->setDateOfBirth($billingAddress->getCompany() ? null : $order->getOrderCustomer()->getCustomer()->getBirthday()->format('Y-m-d'))
             ->setIpAddress($this->_getCustomerIP())
             ->setAddresses(
                 (new Customer\Addresses())
@@ -55,7 +54,24 @@ class CustomerFactory
                     ->setEmail($order->getOrderCustomer()->getEmail())
             );
 
-        if ($billingAddress->getPhoneNumber()) {
+        /** @var RequestDataBag $requestData */
+        $requestData = $requestDataBag->get('ratepay');
+        if ($billingAddress->getCompany() == null) {
+            if ($requestData->has('birthday')) {
+                /** @var RequestDataBag $birthday */
+                $birthday = $requestData->get('birthday');
+                $customer->setDateOfBirth($birthday->getInt('year') . '-' . $birthday->getInt('month') . '-' . $birthday->getInt('day'));
+            } else {
+                $customer->setDateOfBirth($order->getOrderCustomer()->getCustomer()->getBirthday()->format('Y-m-d'));
+            }
+        }
+
+        if ($requestData->has('phone') && !empty($requestData->get('phone'))) {
+            $customer->getContacts()->setPhone(
+                (new Customer\Contacts\Phone())
+                    ->setDirectDial($requestData->get('phone'))
+            );
+        } else if ($billingAddress->getPhoneNumber()) {
             $customer->getContacts()->setPhone(
                 (new Customer\Contacts\Phone())
                     ->setDirectDial($billingAddress->getPhoneNumber())
@@ -71,19 +87,19 @@ class CustomerFactory
 
         if ($billingAddress->getCompany()) {
             $customer->setCompanyName($billingAddress->getCompany());
-            $customer->setVatId($billingAddress->getVatId());
+            if ($requestData->has('vatId')) {
+                $customer->setVatId($requestData->get('vatId'));
+            } else if ($billingAddress->getVatId()) {
+                $customer->setVatId($billingAddress->getVatId());
+            }
         }
 
-        // TODO create DTO
-        if (false && $paymentRequestData->getBankData()) {
+        if ($requestData->has('bankData')) {
+            /** @var RequestDataBag $bankData */
+            $bankData = $requestData->get('bankData');
             $bankAccount = new Customer\BankAccount();
-            $bankAccount->setOwner(null);
-            if ($bankDataDTO->getBankCode() !== null) {
-                $bankAccount->setBankAccountNumber(null);
-                $bankAccount->setBankCode(null);
-            } else {
-                $bankAccount->setIban(null);
-            }
+            $bankAccount->setOwner($billingAddress->getFirstName() . ' ' . $billingAddress->getLastName());
+            $bankAccount->setIban($bankData->get('iban'));
             $customer->setBankAccount($bankAccount);
         }
 
@@ -97,9 +113,9 @@ class CustomerFactory
      */
     private function _getCustomerIP()
     {
-        if(isset($_SERVER['REMOTE_ADDR'])) {
+        if (isset($_SERVER['REMOTE_ADDR'])) {
             return $_SERVER['REMOTE_ADDR'];
-        } else if(isset($_SERVER['SERVER_ADDR'])) {
+        } else if (isset($_SERVER['SERVER_ADDR'])) {
             return $_SERVER['SERVER_ADDR'];
         }
         return null;

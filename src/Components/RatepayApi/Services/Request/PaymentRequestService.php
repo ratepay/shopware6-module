@@ -27,6 +27,7 @@ use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 
 class PaymentRequestService extends AbstractOrderOperationRequest
 {
@@ -57,6 +58,10 @@ class PaymentRequestService extends AbstractOrderOperationRequest
      * @var Context
      */
     private $context;
+    /**
+     * @var RequestDataBag
+     */
+    private $requestDataBag;
 
 
     public function __construct(
@@ -87,6 +92,11 @@ class PaymentRequestService extends AbstractOrderOperationRequest
         $this->transaction = $transaction->getOrderTransaction();
     }
 
+    public function setRequestDataBag(RequestDataBag $dataBag)
+    {
+        $this->requestDataBag = $dataBag;
+    }
+
     protected function getRequestHead(ProfileConfigEntity $profileConfig): Head
     {
         $head = parent::getRequestHead($profileConfig);
@@ -109,8 +119,8 @@ class PaymentRequestService extends AbstractOrderOperationRequest
     {
         return (new Content())
             ->setShoppingBasket($this->shoppingBasketFactory->getData($this->order))
-            ->setCustomer($this->customerFactory->getData($this->order))
-            ->setPayment($this->paymentFactory->getData($this->transaction));
+            ->setCustomer($this->customerFactory->getData($this->order, $this->requestDataBag))
+            ->setPayment($this->paymentFactory->getData($this->transaction, $this->requestDataBag));
     }
 
     protected function processSuccess(RequestBuilder $response)

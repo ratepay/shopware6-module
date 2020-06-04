@@ -13,6 +13,7 @@ namespace Ratepay\RatepayPayments;
 use Ratepay\RatepayPayments\Bootstrap\AbstractBootstrap;
 use Ratepay\RatepayPayments\Bootstrap\Database;
 use Ratepay\RatepayPayments\Bootstrap\PaymentMethods;
+use Ratepay\RatepayPayments\Bootstrap\CustomFields;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -152,5 +153,6 @@ class RatepayPayments extends Plugin
                 }
             }
         }
+
     }
 }

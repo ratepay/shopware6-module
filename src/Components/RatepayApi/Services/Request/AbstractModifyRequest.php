@@ -11,6 +11,7 @@ namespace Ratepay\RatepayPayments\Components\RatepayApi\Services\Request;
 
 use Doctrine\ORM\OptimisticLockException;
 use Enlight_Components_Db_Adapter_Pdo_Mysql;
+use Exception;
 use RpayRatepay\Component\Mapper\BasketArrayBuilder;
 use RpayRatepay\DTO\BasketPosition;
 use RpayRatepay\Enum\PaymentMethods;
@@ -105,9 +106,9 @@ abstract class AbstractModifyRequest extends AbstractRequest
             $this->items = $this->basketArrayBuilder->getSimpleItems();
         } else if (is_array($items)) {
             $this->basketArrayBuilder = null;
-            foreach($items as $basketPosition) {
-                if($basketPosition->getProductNumber() !== BasketPosition::SHIPPING_NUMBER && $basketPosition->getOrderDetail() instanceof OrderDetail === false) {
-                    throw new \Exception('You are doing a modify on a existing order. Please set the '.OrderDetail::class.' object to the '.BasketPosition::class.' instead of the productNumber!');
+            foreach ($items as $basketPosition) {
+                if ($basketPosition->getProductNumber() !== BasketPosition::SHIPPING_NUMBER && $basketPosition->getOrderDetail() instanceof OrderDetail === false) {
+                    throw new Exception('You are doing a modify on a existing order. Please set the ' . OrderDetail::class . ' object to the ' . BasketPosition::class . ' instead of the productNumber!');
                 }
             }
             $this->items = $items;
@@ -150,9 +151,9 @@ abstract class AbstractModifyRequest extends AbstractRequest
 
         if ($this->basketArrayBuilder !== null) {
             $basketFactory = $this->basketArrayBuilder;
-            foreach($basketFactory->getSimpleItems() as $basketPosition) {
-                if($basketPosition->getProductNumber() !== BasketPosition::SHIPPING_NUMBER && $basketPosition->getOrderDetail() instanceof OrderDetail === false) {
-                    throw new \Exception('You are doing a modify on a existing order. Please set the '.OrderDetail::class.' object to the '.BasketPosition::class.' instead of the productNumber!');
+            foreach ($basketFactory->getSimpleItems() as $basketPosition) {
+                if ($basketPosition->getProductNumber() !== BasketPosition::SHIPPING_NUMBER && $basketPosition->getOrderDetail() instanceof OrderDetail === false) {
+                    throw new Exception('You are doing a modify on a existing order. Please set the ' . OrderDetail::class . ' object to the ' . BasketPosition::class . ' instead of the productNumber!');
                 }
             }
         } else {
@@ -189,14 +190,14 @@ abstract class AbstractModifyRequest extends AbstractRequest
     protected function updateArticleStock($basketPosition)
     {
         $detail = $basketPosition->getOrderDetail();
-        if($detail === null) {
+        if ($detail === null) {
             // this is not a product/voucher. maybe shipping position.
             return;
         }
         try {
             $article = $detail->getArticleDetail();
             $article->getInStock(); // lazy load call
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // entity does not exist anymore
             return;
         }

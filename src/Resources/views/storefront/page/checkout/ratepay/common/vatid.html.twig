@@ -1,0 +1,23 @@
+{% block ratepay_personal_data_vatid %}
+
+    <div class="form-row">
+        <div class="form-group col-sm-12">
+            <label class="form-label">
+                {{ "address.companyVatLabel"|trans|sw_sanitize }}
+            </label>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-sm-4">
+            <input type="text"
+               class="form-control{% if formViolations.getViolations('/ratepay/vatId') is not empty %} is-invalid{% endif %}"
+               placeholder="{{ "address.companyVatPlaceholder"|trans|sw_sanitize }}"
+               name="ratepay[vatId]"
+               form="confirmOrderForm"
+               value="{{ page.extensions.ratepay.vatId }}"
+               required="required"
+            >
+        </div>
+    </div>
+
+{% endblock %}

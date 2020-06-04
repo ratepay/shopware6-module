@@ -9,12 +9,12 @@
 namespace Ratepay\RatepayPayments\Components\RatepayApi\Services\Request;
 
 
+use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
+use Ratepay\RatepayPayments\Components\RatepayApi\Services\RequestLogger;
 use Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigEntity;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigMethodEntity;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigRepository;
-use Ratepay\RatepayPayments\Components\RatepayApi\Services\RequestLogger;
-use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
@@ -57,7 +57,7 @@ abstract class AbstractOrderOperationRequest extends AbstractRequest
 
         // payment method
         $criteria->addFilter(new EqualsFilter(
-            ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS.'.'.ProfileConfigMethodEntity::FIELD_PAYMENT_METHOD_ID,
+            ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_PAYMENT_METHOD_ID,
             $this->transaction->getPaymentMethod()->getId()
         ));
 
@@ -68,7 +68,7 @@ abstract class AbstractOrderOperationRequest extends AbstractRequest
         ));
 
         // delivery country
-        if($delivery = $this->order->getDeliveries()->first()) {
+        if ($delivery = $this->order->getDeliveries()->first()) {
             $criteria->addFilter(new EqualsFilter(
                 ProfileConfigEntity::FIELD_COUNTRY_CODE_SHIPPING,
                 $delivery->getShippingOrderAddress()->getCountry()->getIso()

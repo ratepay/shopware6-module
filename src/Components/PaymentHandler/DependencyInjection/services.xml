@@ -10,41 +10,57 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\InvoicePaymentHandler">
-            <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
+
+        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\InvoicePaymentHandler" public="true">
+            <argument type="service"
+                      id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <argument type="service" id="order.repository"/>
-            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentRequestService" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentRequestService"
+                      type="service"/>
+            <argument id="event_dispatcher" type="service"/>
             <tag name="shopware.payment.method.sync"/>
         </service>
 
-        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\DebitPaymentHandler">
-            <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
+        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\DebitPaymentHandler" public="true">
+            <argument type="service"
+                      id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <argument type="service" id="order.repository"/>
-            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentRequestService" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentRequestService"
+                      type="service"/>
+            <argument id="event_dispatcher" type="service"/>
             <tag name="shopware.payment.method.sync"/>
         </service>
 
-        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\PrepaymentPaymentHandler">
-            <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
+        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\PrepaymentPaymentHandler" public="true">
+            <argument type="service"
+                      id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <argument type="service" id="order.repository"/>
-            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentRequestService" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentRequestService"
+                      type="service"/>
+            <argument id="event_dispatcher" type="service"/>
             <tag name="shopware.payment.method.sync"/>
         </service>
 
-        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentPaymentHandler">
-            <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
+        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentPaymentHandler" public="true">
+            <argument type="service"
+                      id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <argument type="service" id="order.repository"/>
-            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentRequestService" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentRequestService"
+                      type="service"/>
+            <argument id="event_dispatcher" type="service"/>
             <tag name="shopware.payment.method.sync"/>
         </service>
 
-        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler">
-            <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
+        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler"
+                 public="true">
+            <argument type="service"
+                      id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <argument type="service" id="order.repository"/>
-            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentRequestService" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentRequestService"
+                      type="service"/>
+            <argument id="event_dispatcher" type="service"/>
             <tag name="shopware.payment.method.sync"/>
         </service>
-
 
     </services>
 </container>

@@ -13,10 +13,10 @@ use Enlight_Components_Db_Adapter_Pdo_Mysql;
 use RpayRatepay\Component\Mapper\BasketArrayBuilder;
 use RpayRatepay\Helper\PositionHelper;
 use RpayRatepay\Services\Config\ConfigService;
-use RpayRatepay\Services\ProfileConfig\ProfileConfigService;
 use RpayRatepay\Services\Factory\InvoiceArrayFactory;
 use RpayRatepay\Services\Logger\HistoryLogger;
 use RpayRatepay\Services\Logger\RequestLogger;
+use RpayRatepay\Services\ProfileConfig\ProfileConfigService;
 use Shopware\Components\Model\ModelManager;
 
 class PaymentDeliverService extends AbstractModifyRequest

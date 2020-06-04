@@ -1,0 +1,32 @@
+{% sw_extends '@Storefront/storefront/page/checkout/confirm/index.html.twig' %}
+
+{% block page_checkout_confirm_product_table %}
+    {%  if (page.extensions.ratepay) %}
+        <div class="ratepay--billing-form">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card checkout-card">
+                        <div class="card-body">
+                            <div class="card-title">
+                                {{ context.paymentMethod.translated.name }}
+                            </div>
+                            <div class="card-body">
+                                {% block ratepay_payment_fields %}
+                                    {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/'~page.extensions.ratepay.paymentMethod~'.html.twig' %}
+                                {% endblock %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    {{ parent() }}
+{% endblock %}
+
+{% block base_footer %}
+    {{ parent() }}
+    {% if page.extensions.ratepay.dfp %}
+        {{ page.extensions.ratepay.dfp|raw }}
+    {% endif %}
+{% endblock %}
