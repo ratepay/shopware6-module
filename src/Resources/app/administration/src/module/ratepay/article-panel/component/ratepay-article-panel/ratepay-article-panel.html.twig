@@ -1,0 +1,50 @@
+/*!
+* Copyright (c) 2020 RatePAY GmbH
+*
+* For the full copyright and license information, please view the LICENSE
+* file that was distributed with this source code.
+*/
+
+<sw-card
+    title="Ratepay Artikelverwaltung"
+    class="ratepay-article-panel">
+    <sw-container>
+        <sw-card
+            class="tabs-card">
+            <sw-tabs>
+                <sw-tabs-item active>Versand/Stornierung</sw-tabs-item>
+                <sw-tabs-item>Retoure</sw-tabs-item>
+            </sw-tabs>
+            </sw-card>
+            <sw-card
+                class="button-card">
+                <sw-button-group>
+                    <sw-button class="sw-button--small">Anzahl auf 0 setzen</sw-button>
+                    <sw-button class="sw-button--small">Nachlass hinzufügen</sw-button>
+                    <sw-button class="sw-button--small">Nachbelastung hinzufügen</sw-button>
+                </sw-button-group>
+            </sw-card>
+            <sw-card
+                class="grid-card">
+                <sw-entity-listing
+                    :dataSource="data"
+                    :columns="columns"
+                    :fullPage="false"
+                    :showSelection="false"
+                    :showActions="true"
+                    :allowColumnEdit="false"
+                    :allowInlineEdit="false"
+                    :compactMode="false">
+
+                    <template slot="column-count">
+                        <sw-select-field>
+                            <option v-for="n in 10">{{ n }}</option>
+                        </sw-select-field>
+                    </template>
+
+                </sw-entity-listing>
+            </sw-card>
+        </sw-card>
+
+    </sw-container>
+</sw-card>

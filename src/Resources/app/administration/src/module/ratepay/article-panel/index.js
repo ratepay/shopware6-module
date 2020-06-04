@@ -5,7 +5,5 @@
  * file that was distributed with this source code.
  */
 
-import './module/ratepay/profile-config';
-import './module/ratepay/log-viewer';
-import './module/ratepay/order-log-history';
-import './module/ratepay/article-panel';
+import './component/ratepay-article-panel';
+import './view/sw-order-detail-base';
