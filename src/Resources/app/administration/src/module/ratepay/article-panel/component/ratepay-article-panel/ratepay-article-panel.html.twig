@@ -12,10 +12,21 @@
         <sw-card
             class="tabs-card">
             <sw-tabs>
-                <sw-tabs-item active>Versand/Stornierung</sw-tabs-item>
-                <sw-tabs-item>Retoure</sw-tabs-item>
+                <sw-tabs-item
+                    name="shipping"
+                    @click="activeTab = 'shipping'"
+                    :activeTab="active">
+                    Versand/Stornierung
+                </sw-tabs-item>
+                <sw-tabs-item
+                    name="retoure"
+                    @click="activeTab = 'retoure'"
+                    :activeTab="active">
+                    Retoure
+                </sw-tabs-item>
             </sw-tabs>
-            </sw-card>
+        </sw-card>
+        <template v-if="activeTab === 'shipping'">
             <sw-card
                 class="button-card">
                 <sw-button-group>
@@ -38,6 +49,7 @@
 
                     <template slot="column-count">
                         <sw-select-field>
+                            <option selected>0</option>
                             <option v-for="n in 10">{{ n }}</option>
                         </sw-select-field>
                     </template>
@@ -60,6 +72,11 @@
                 </sw-entity-listing>
             </sw-card>
         </sw-card>
+        </template>
+
+        <template v-if="activeTab === 'retoure'">
+            
+        </template>
 
     </sw-container>
 </sw-card>

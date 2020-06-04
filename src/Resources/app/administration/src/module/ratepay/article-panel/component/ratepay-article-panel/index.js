@@ -15,7 +15,8 @@ Component.register('ratepay-article-panel', {
 
     data() {
         return {
-            data: []
+            data: [],
+            activeTab: 'shipping'
         };
     },
 
