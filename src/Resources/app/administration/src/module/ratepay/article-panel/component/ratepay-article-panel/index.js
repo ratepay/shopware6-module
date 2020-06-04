@@ -35,7 +35,7 @@ Component.register('ratepay-article-panel', {
                 {
                     property: 'price',
                     label: 'price',
-                    allowResize: true
+                    allowResize: false
                 },
                 {
                     property: 'ordered',
