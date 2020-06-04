@@ -44,6 +44,11 @@ Component.register('ratepay-article-panel', {
                     allowResize: false
                 },
                 {
+                    property: 'ordered',
+                    label: 'ordered',
+                    allowResize: false
+                },
+                {
                     property: 'shipped',
                     label: this.$t('ratepay.article_panel.labels.shipped'),
                     allowResize: false

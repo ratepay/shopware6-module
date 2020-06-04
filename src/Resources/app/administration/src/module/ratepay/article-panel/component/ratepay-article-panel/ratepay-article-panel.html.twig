@@ -53,7 +53,6 @@
                             <option v-for="n in 10">{{ n }}</option>
                         </sw-select-field>
                     </template>
-
                     <template slot="actions">
                         <slot name="actions" :item="item" :itemIndex="itemIndex">
                             <div class="sw-context-menu__group">
@@ -77,6 +76,11 @@
         <template v-if="activeTab === 'return'">
 
         </template>
+
+                </sw-entity-listing>
+            </sw-card>
+        </sw-card>
+
 
     </sw-container>
 </sw-card>
