@@ -25,37 +25,37 @@ Component.register('ratepay-article-panel', {
             return [
                 {
                     property: 'count',
-                    label: 'count',
+                    label: this.$t('ratepay.article_panel.labels.count'),
                     allowResize: false
                 },
                 {
                     property: 'articlename',
-                    label: 'articlename',
+                    label: this.$t('ratepay.article_panel.labels.articlename'),
                     allowResize: false
                 },
                 {
                     property: 'price',
-                    label: 'price',
+                    label: this.$t('ratepay.article_panel.labels.price'),
                     allowResize: false
                 },
                 {
                     property: 'ordered',
-                    label: 'ordered',
+                    label: this.$t('ratepay.article_panel.labels.ordered'),
                     allowResize: false
                 },
                 {
                     property: 'shipped',
-                    label: 'shipped',
+                    label: this.$t('ratepay.article_panel.labels.shipped'),
                     allowResize: false
                 },
                 {
                     property: 'canceled',
-                    label: 'canceled',
+                    label: this.$t('ratepay.article_panel.labels.canceled'),
                     allowResize: false
                 },
                 {
                     property: 'returned',
-                    label: 'returned',
+                    label: this.$t('ratepay.article_panel.labels.returned'),
                     allowResize: false
                 }
             ];
