@@ -9,9 +9,9 @@
 namespace Ratepay\RatepayPayments\Components\RatepayApi\Services\Request;
 
 
+use Exception;
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
-use RatePAY\Model\Response\AbstractResponse;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RatepayPayments\Components\RatepayApi\Services\RequestLogger;
 use Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService;
@@ -78,7 +78,7 @@ abstract class AbstractRequest
     {
         $profileConfig = $this->getProfileConfig();
         if ($profileConfig == null) {
-            throw new \Exception('Transaction can not performed, cause no profile was found.');
+            throw new Exception('Transaction can not performed, cause no profile was found.');
         }
 
         $head = $this->getRequestHead($profileConfig);

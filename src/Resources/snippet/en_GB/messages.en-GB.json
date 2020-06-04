@@ -2,6 +2,13 @@
     "ratepay": {
         "storefront": {
             "checkout": {
+                "errors": {
+                    "missingSepaConfirm": "Please confirm the SEPA mandate",
+                    "missingIban": "Please provide your IBAN.",
+                    "missingBirthday": "Please provide your birthday. You must be at least 18 years old to order with Ratepay.",
+                    "missingVatId": "Please provide your vat-id.",
+                    "missingPhone": "Please provide your phone number."
+                },
                 "label": {
                     "birthday": "Birthday"
                 },
@@ -11,7 +18,7 @@
                     "bic": "BIC"
                 },
                 "hints": {
-                    "birthdayHint": "You must be at least 18 years old to pay using  {{ context.paymentMethod.translated.name }}.",
+                    "birthdayHint": "You must be at least 18 years old to pay using %method%.",
                     "legalText": "For this payment method <a href=\"//ratepay.com/legal\" title=\"Legal - RatePAY\" target=\"_blank\">additional GTC and data protection notices</a> apply.",
                     "sepaLegalText": "RatePAY GmbH, Franklinstraße 28-29, D-10587 Berlin, Germany<br>Creditor ID: DE39RPY00000568463<br>Mandate Reference: WILL BE COMMUNICATED SEPARATELY",
                     "sepaAuthorize": "I hereby authorise RatePAY GmbH to collect payments from my account by direct debit. At the same time, I authorise my bank to debit my account in accordance with the instructions from RatePAY GmbH.",

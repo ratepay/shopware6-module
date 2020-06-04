@@ -15,7 +15,8 @@
             <argument type="service" id="Symfony\Component\HttpFoundation\Session\SessionInterface"/>
         </service>
 
-        <service id="Ratepay\RatepayPayments\Components\DeviceFingerprint\Subscriber\DeviceFingerprintSubscriber" public="true">
+        <service id="Ratepay\RatepayPayments\Components\DeviceFingerprint\Subscriber\DeviceFingerprintSubscriber"
+                 public="true">
             <tag name="kernel.event_subscriber"/>
             <argument id="Ratepay\RatepayPayments\Components\DeviceFingerprint\DfpService" type="service"/>
             <argument id="Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService" type="service"/>

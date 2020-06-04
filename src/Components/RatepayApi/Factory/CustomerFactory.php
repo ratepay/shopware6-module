@@ -87,23 +87,19 @@ class CustomerFactory
 
         if ($billingAddress->getCompany()) {
             $customer->setCompanyName($billingAddress->getCompany());
-            if ($requestData['vatid']) {
-                $customer->setVatId($requestData['vatid']);
+            if ($requestData->has('vatId')) {
+                $customer->setVatId($requestData->get('vatId'));
             } else if ($billingAddress->getVatId()) {
                 $customer->setVatId($billingAddress->getVatId());
             }
         }
 
-        // TODO create DTO
-        if (false && $paymentRequestData->getBankData()) {
+        if ($requestData->has('bankData')) {
+            /** @var RequestDataBag $bankData */
+            $bankData = $requestData->get('bankData');
             $bankAccount = new Customer\BankAccount();
-            $bankAccount->setOwner(null);
-            if ($bankDataDTO->getBankCode() !== null) {
-                $bankAccount->setBankAccountNumber(null);
-                $bankAccount->setBankCode(null);
-            } else {
-                $bankAccount->setIban(null);
-            }
+            $bankAccount->setOwner($billingAddress->getFirstName() . ' ' . $billingAddress->getLastName());
+            $bankAccount->setIban($bankData->get('iban'));
             $customer->setBankAccount($bankAccount);
         }
 

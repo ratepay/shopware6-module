@@ -9,10 +9,8 @@
 namespace Ratepay\RatepayPayments\Components\RatepayApi\Factory;
 
 
-use Exception;
 use RatePAY\Model\Request\SubModel\Content\Payment;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
-use Shopware\Core\Checkout\Order\OrderEntity;
 
 class PaymentFactory
 {
@@ -23,7 +21,7 @@ class PaymentFactory
         $payment = new Payment();
 
         $handler = $transaction->getPaymentMethod()->getHandlerIdentifier();
-        $ratepayMethod = constant($handler.'::RATEPAY_METHOD');
+        $ratepayMethod = constant($handler . '::RATEPAY_METHOD');
         $payment->setMethod($ratepayMethod);
         $payment->setAmount($transaction->getAmount()->getTotalPrice());
 

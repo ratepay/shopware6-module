@@ -8,11 +8,8 @@
 
 namespace Ratepay\RatepayPayments\Components\Checkout\Subscriber;
 
-use Ratepay\RatepayPayments\Components\PaymentHandler\DebitPaymentHandler;
-use Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
-use Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
-use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Shopware\Core\Framework\Struct\ArrayStruct;
+use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutSubscriber implements EventSubscriberInterface
@@ -32,7 +29,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
     public function addRatepayTemplateData(CheckoutConfirmPageLoadedEvent $event): void
     {
         $paymentMethod = $event->getSalesChannelContext()->getPaymentMethod();
-        if (strpos($paymentMethod->getHandlerIdentifier(),'RatepayPayments') !== false){
+        if (strpos($paymentMethod->getHandlerIdentifier(), 'RatepayPayments') !== false) {
             /* Get customer data for checkout form */
             $customerBirthday = $event->getSalesChannelContext()->getCustomer()->getBirthday();
             $customerBillingAddress = $event->getSalesChannelContext()->getCustomer()->getActiveBillingAddress();
@@ -41,7 +38,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
             $customerCompany = $customerBillingAddress->getCompany();
 
             $extension = $event->getPage()->getExtension('ratepay') ?? new ArrayStruct();
-            $extension->set('paymentMethod', strtolower(constant($paymentMethod->getHandlerIdentifier().'::RATEPAY_METHOD')));
+            $extension->set('paymentMethod', strtolower(constant($paymentMethod->getHandlerIdentifier() . '::RATEPAY_METHOD')));
             $extension->set('birthday', $customerBirthday);
             $extension->set('vatId', $customerVatId);
             $extension->set('phoneNumber', $customerPhoneNumber);

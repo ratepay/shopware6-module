@@ -13,8 +13,6 @@ use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEve
 use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
 use RatePAY\Service\DeviceFingerprint;
 use Shopware\Core\Framework\Struct\ArrayStruct;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 

@@ -66,9 +66,7 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
             $validationDefinitions = $paymentHandler->getValidationDefinitions($context);
 
             $definitions = new DataValidationDefinition();
-            foreach ($validationDefinitions as $key => $constraints) {
-                call_user_func_array([$definitions, 'add'], [$key] + $constraints);
-            }
+            $this->addSubConstraints($definitions, $validationDefinitions);
             $event->getDefinition()->addSub('ratepay', $definitions);
         }
 
@@ -77,5 +75,16 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
     private function getContextFromRequest($request): SalesChannelContext
     {
         return $request->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_CONTEXT_OBJECT);
+    }
+
+    protected function addSubConstraints(DataValidationDefinition $parent, array $children)
+    {
+        foreach ($children as $key => $constraints) {
+            if ($constraints instanceof DataValidationDefinition) {
+                $parent->addSub($key, $constraints);
+            } else {
+                call_user_func_array([$parent, 'add'], [$key] + $constraints);
+            }
+        }
     }
 }
