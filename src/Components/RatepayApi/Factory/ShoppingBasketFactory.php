@@ -35,7 +35,7 @@ class ShoppingBasketFactory
                         ->setDescription($item->getLabel())
                         ->setQuantity($sendAll ? $item->getQuantity() : $itemsToSend[$item->getId()])
                         ->setUnitPriceGross($item->getPrice()->getUnitPrice())
-                        ->setTaxRate(0)                                                                         // TODO how to get Tax
+                        ->setTaxRate($item->getPrice()->getCalculatedTaxes()->first()->getTaxRate())                                                                         // TODO how to get Tax
                 );
             } else {
                 $discount = $basket->getDiscount() ?: new ShoppingBasket\Discount();
@@ -50,7 +50,7 @@ class ShoppingBasketFactory
                 (new ShoppingBasket\Shipping())
                     ->setDescription('shipping')
                     ->setUnitPriceGross($order->getShippingCosts()->getTotalPrice())
-                    ->setTaxRate(0)                                                                             // TODO how to get Tax
+                    ->setTaxRate($order->getShippingCosts()->getCalculatedTaxes()->first()->getTaxRate())                                                                             // TODO how to get Tax
             );
         }
 
