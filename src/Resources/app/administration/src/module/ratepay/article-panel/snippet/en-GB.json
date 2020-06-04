@@ -1,0 +1,24 @@
+{
+    "ratepay": {
+        "article_panel": {
+            "title": "Ratepay Article management",
+            "shipping": "Shipping/cancellation",
+            "return": "Return",
+            "setzero": "Set count to 0",
+            "addcredit": "Add credit",
+            "adddebit": "Add debit",
+            "deliver": "Provide shipment",
+            "cancel": "Provide cancellation",
+            "cancelStock": "Cancel selection, update inventory",
+            "labels": {
+                "count": "Count",
+                "articlename": "Articlename",
+                "price": "Price",
+                "ordered": "Ordered",
+                "shipped": "Sent",
+                "canceled": "Canceled",
+                "returned": "Returned"
+            }
+        }
+    }
+}

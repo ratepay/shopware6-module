@@ -6,7 +6,7 @@
 */
 
 <sw-card
-    title="Ratepay Artikelverwaltung"
+    :title="$tc('ratepay.article_panel.title')"
     class="ratepay-article-panel">
     <sw-container>
         <sw-card
@@ -16,13 +16,13 @@
                     name="shipping"
                     @click="activeTab = 'shipping'"
                     :activeTab="active">
-                    Versand/Stornierung
+                    {{ $t('ratepay.article_panel.shipping') }}
                 </sw-tabs-item>
                 <sw-tabs-item
                     name="retoure"
-                    @click="activeTab = 'retoure'"
+                    @click="activeTab = 'return'"
                     :activeTab="active">
-                    Retoure
+                    {{ $t('ratepay.article_panel.return') }}
                 </sw-tabs-item>
             </sw-tabs>
         </sw-card>
@@ -30,9 +30,9 @@
             <sw-card
                 class="button-card">
                 <sw-button-group>
-                    <sw-button class="sw-button--small">Anzahl auf 0 setzen</sw-button>
-                    <sw-button class="sw-button--small">Nachlass hinzufügen</sw-button>
-                    <sw-button class="sw-button--small">Nachbelastung hinzufügen</sw-button>
+                    <sw-button class="sw-button--small">{{ $t('ratepay.article_panel.setzero') }}</sw-button>
+                    <sw-button class="sw-button--small">{{ $t('ratepay.article_panel.addcredit') }}</sw-button>
+                    <sw-button class="sw-button--small">{{ $t('ratepay.article_panel.adddebit') }}</sw-button>
                 </sw-button-group>
             </sw-card>
             <sw-card
@@ -58,13 +58,13 @@
                         <slot name="actions" :item="item" :itemIndex="itemIndex">
                             <div class="sw-context-menu__group">
                                 <sw-context-menu-item>
-                                    Versenden
+                                    {{ $t('ratepay.article_panel.deliver') }}
                                 </sw-context-menu-item>
                                 <sw-context-menu-item>
-                                    Stornieren
+                                    {{ $t('ratepay.article_panel.cancel') }}
                                 </sw-context-menu-item>
                                 <sw-context-menu-item variant="danger">
-                                    Auswahl stornieren, Inventar aktualisieren
+                                    {{ $t('ratepay.article_panel.cancelStock') }}
                                 </sw-context-menu-item>
                             </div>
                         </slot>
@@ -74,8 +74,8 @@
         </sw-card>
         </template>
 
-        <template v-if="activeTab === 'retoure'">
-            
+        <template v-if="activeTab === 'return'">
+
         </template>
 
     </sw-container>

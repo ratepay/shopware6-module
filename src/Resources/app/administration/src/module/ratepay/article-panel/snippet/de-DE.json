@@ -1,0 +1,24 @@
+{
+    "ratepay": {
+        "article_panel": {
+            "title": "Ratepay Artikelverwaltung",
+            "shipping": "Versand/Stornierung",
+            "return": "Retoure",
+            "setzero": "Anzahl auf 0 setzen",
+            "addcredit": "Nachlass hinzufügen",
+            "adddebit": "Nachbelastung hinzufügen",
+            "deliver": "Auswahl versenden",
+            "cancel": "Auswahl stornieren",
+            "cancelStock": "Auswahl stornieren, Inventar aktualisieren",
+            "labels": {
+                "count": "Anzahl",
+                "articlename": "Artikelname",
+                "price": "Preis",
+                "ordered": "Bestellt",
+                "shipped": "Versendet",
+                "canceled": "Storniert",
+                "returned": "Retourniert"
+            }
+        }
+    }
+}
