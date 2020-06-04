@@ -9,7 +9,6 @@
 namespace Ratepay\RatepayPayments\Components\RatepayApi\Model;
 
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 
 class HistoryLogEntity extends Entity
 {

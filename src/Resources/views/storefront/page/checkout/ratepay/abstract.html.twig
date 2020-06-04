@@ -1,10 +1,8 @@
-{%  if (page.extensions.ratepay.company) %}
-    {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/common/vatid.html.twig' %}
-{% else %}
-    {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/common/birthday.html.twig' %}
-{% endif %}
-
-{% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/common/phone.html.twig' %}
-
-{% block ratepay_additional_fields %}
+{% block ratepay_checkout_fields %}
+    {% if (page.extensions.ratepay.company) %}
+        {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/common/vatid.html.twig' %}
+    {% else %}
+        {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/common/birthday.html.twig' %}
+    {% endif %}
+    {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/common/phone.html.twig' %}
 {% endblock %}
