@@ -5,7 +5,10 @@
  * file that was distributed with this source code.
  */
 
-import './module/ratepay/profile-config';
-import './module/ratepay/log-viewer';
-import './module/ratepay/order-log-history';
-import './module/ratepay/article-panel';
+import template from './sw-order-detail-base.html.twig';
+
+const { Component } = Shopware;
+
+Component.override('sw-order-detail-base', {
+    template
+});

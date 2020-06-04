@@ -1,0 +1,40 @@
+/*!
+ * Copyright (c) 2020 RatePAY GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+.ratepay-article-panel {
+    padding: 0;
+
+    .sw-card__content {
+        padding: 0;
+    }
+
+    .sw-tabs__custom-content {
+        display: none;
+    }
+
+    .tabs-card,
+    .button-card,
+    .grid-card {
+        margin: 0;
+
+        .sw-card__content {
+            border: none;
+        }
+    }
+
+    .grid-card {
+        .sw-card__content {
+            border-top: 1px solid #D1D9E0;
+        }
+    }
+
+    .button-card {
+        .sw-card__content {
+            padding: 30px;
+        }
+    }
+}
