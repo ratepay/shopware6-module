@@ -113,31 +113,5 @@
                 </sw-entity-listing>
             </sw-card>
         </template>
-
-                    <template slot="actions">
-                        <slot name="actions" :item="item" :itemIndex="itemIndex">
-                            <div class="sw-context-menu__group">
-                                <sw-context-menu-item>
-                                    Versenden
-                                </sw-context-menu-item>
-                                <sw-context-menu-item>
-                                    Stornieren
-                                </sw-context-menu-item>
-                                <sw-context-menu-item variant="danger">
-                                    Auswahl stornieren, Inventar aktualisieren
-                                </sw-context-menu-item>
-                            </div>
-                        </slot>
-                    </template>
-                </sw-entity-listing>
-            </sw-card>
-        </sw-card>
-        </template>
-
-        <template v-if="activeTab === 'retoure'">
-            
-        </template>
-
-
     </sw-container>
 </sw-card>
