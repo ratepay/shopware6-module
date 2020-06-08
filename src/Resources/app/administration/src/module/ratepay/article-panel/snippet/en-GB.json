@@ -23,6 +23,19 @@
                 "delivered": "Delivered",
                 "canceled": "Canceled",
                 "returned": "Returned"
+            },
+            "messages": {
+                "successTitle": "Successful",
+                "failedTitle": "Error",
+                "deliver": {
+                    "success": "The articles has been marked as delivered"
+                },
+                "cancel": {
+                    "success": "The articles has been successfully canceled."
+                },
+                "return": {
+                    "success": "The articles has been marked as returned."
+                }
             }
         }
     }

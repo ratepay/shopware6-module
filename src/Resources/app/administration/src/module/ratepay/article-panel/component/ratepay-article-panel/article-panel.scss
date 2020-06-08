@@ -6,41 +6,31 @@
  */
 
 .ratepay-article-panel {
-    padding: 0;
+    .sw-data-grid {
+        border-top: 1px solid #D1D9E0;
 
-    .sw-card__content {
+        &__cell--quantity {
+            select {
+                padding: 5px;
+                text-align: center;
+            }
+        }
+    }
+
+    & > .sw-card__content {
         padding: 0;
+
+        .button-group {
+            margin-bottom: 15px;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
     }
 
     .sw-tabs__custom-content {
-        display: none;
+        padding-bottom: 0;
     }
 
-    .sw-data-grid__cell--quantity {
-        select {
-            padding: 5px;
-        }
-    }
 
-    .tabs-card,
-    .button-card,
-    .grid-card {
-        margin: 0;
-
-        .sw-card__content {
-            border: none;
-        }
-    }
-
-    .grid-card {
-        .sw-card__content {
-            border-top: 1px solid #D1D9E0;
-        }
-    }
-
-    .button-card {
-        .sw-card__content {
-            padding: 30px;
-        }
-    }
 }

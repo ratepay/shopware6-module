@@ -68,4 +68,87 @@ class ProductPanel extends AbstractController
             ], 400);
         }
     }
+
+    /**
+     * @RouteScope(scopes={"administration"})
+     * @Route("/deliver/{orderId}", name="ratepay.order_management.product_panel.deliver", methods={"POST"})
+     * @return JsonResponse
+     */
+    public function deliver($orderId, Request $request, Context $context)
+    {
+        $criteria = new Criteria([$orderId]);
+        $criteria->addAssociation('lineItems');
+
+        /** @var OrderEntity $order */
+        $order = $this->orderRepository->search($criteria, $context)->first();
+
+        if ($order) {
+            $items = $request->request->get('items');
+            // TODO call DeliverRequestService
+            return $this->json([
+                'success' => true,
+            ], 200);
+        } else {
+            return $this->json([
+                'success' => false,
+                'message' => 'Order not found'
+            ], 400);
+        }
+    }
+
+    /**
+     * @RouteScope(scopes={"administration"})
+     * @Route("/cancel/{orderId}", name="ratepay.order_management.product_panel.cancel", methods={"POST"})
+     * @return JsonResponse
+     */
+    public function cancel($orderId, Request $request, Context $context)
+    {
+        $criteria = new Criteria([$orderId]);
+        $criteria->addAssociation('lineItems');
+
+        /** @var OrderEntity $order */
+        $order = $this->orderRepository->search($criteria, $context)->first();
+
+        if ($order) {
+            $updateStock = $request->request->get('updateStock') == true;
+            $items = $request->request->get('items');
+            // TODO call ReturnRequestService
+            return $this->json([
+                'success' => true,
+            ], 200);
+        } else {
+            return $this->json([
+                'success' => false,
+                'message' => 'Order not found'
+            ], 400);
+        }
+    }
+
+    /**
+     * @RouteScope(scopes={"administration"})
+     * @Route("/return/{orderId}", name="ratepay.order_management.product_panel.return", methods={"POST"})
+     * @return JsonResponse
+     */
+    public function return($orderId, Request $request, Context $context)
+    {
+        $criteria = new Criteria([$orderId]);
+        $criteria->addAssociation('lineItems');
+
+        /** @var OrderEntity $order */
+        $order = $this->orderRepository->search($criteria, $context)->first();
+
+        if ($order) {
+            $updateStock = $request->request->get('updateStock') == true;
+            $items = $request->request->get('items');
+            // TODO call CancelRequestService
+            return $this->json([
+                'success' => true
+            ], 200);
+        } else {
+            return $this->json([
+                'success' => false,
+                'message' => 'Order not found'
+            ], 400);
+        }
+    }
 }

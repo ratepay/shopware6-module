@@ -23,6 +23,19 @@
                 "delivered": "Versendet",
                 "canceled": "Storniert",
                 "returned": "Retourniert"
+            },
+            "messages": {
+                "successTitle": "Erfolgreich",
+                "failedTitle": "Fehlgeschlagen",
+                "deliver": {
+                    "success": "Die Artikel wurden erfolgreich als versendet markiert."
+                },
+                "cancel": {
+                    "success": "Die Artikel wurden erfolgreich storniert."
+                },
+                "return": {
+                    "success": "Die Artikel wurden erfolgreich als retourniert markiert."
+                }
             }
         }
     }

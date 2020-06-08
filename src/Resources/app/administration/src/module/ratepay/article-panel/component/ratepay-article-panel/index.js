@@ -8,7 +8,7 @@
 import template from './ratepay-article-panel.html.twig';
 import './article-panel.scss';
 
-const {Component} = Shopware;
+const {Component, Mixin} = Shopware;
 const {Criteria} = Shopware.Data;
 
 Component.register('ratepay-article-panel', {
@@ -18,10 +18,25 @@ Component.register('ratepay-article-panel', {
         "orderManagementService": "ratepay-order-management"
     },
 
+    mixins: [
+        Mixin.getByName('notification')
+    ],
+
     data() {
         return {
             items: [],
-            activeTab: 'shipping'
+            activeTab: 'shipping',
+            processSuccess: false,
+            loading: {
+                list: true,
+                deliver: false,
+                cancel: false,
+                cancelWithStock: false,
+                rtn: false, // do not use `return`. it is a js key
+                rtnWithStock: false,
+                reload: false
+            },
+            orderId: null,
         };
     },
 
@@ -68,16 +83,107 @@ Component.register('ratepay-article-panel', {
     },
 
     created() {
-        this.orderManagementService.load(this.$route.params.id).then(response => {
-            if (response.data) {
-                this.items = Object.values(response.data);
-            }
-        });
+        this.orderId = this.$route.params.id;
+        this.loadList();
     },
 
     methods: {
-        isLoading() {
-            return this.$parent.isLoading;
-        }
+        loadList() {
+            this.loading.list = true;
+            return this.orderManagementService.load(this.orderId).then(response => {
+                return new Promise((resolve, reject) => {
+                    if (response.data) {
+                        this.items = Object.values(response.data);
+                        this.items.map(item => {
+                            item.processDeliveryCancel = "0";
+                            item.processReturn = "0";
+                        });
+                        this.loading.list = false;
+                    }
+                    resolve()
+                });
+            });
+        },
+        onClickButtonDeliver() {
+            this.loading.deliver = true;
+            this.orderManagementService
+                .doAction('deliver', this.orderId, this.getProcessShippingCancelData())
+                .then(response => {
+                    this.showMessage(response, 'deliver');
+                    this.loadList().then(() => {
+                        this.loading.deliver = false;
+                    });
+                });
+        },
+        onClickButtonCancel(updateStock) {
+            if (updateStock === false) {
+                this.loading.cancel = true;
+            } else {
+                this.loading.cancelWithStock = true;
+            }
+            this.orderManagementService
+                .doAction('cancel', this.orderId, this.getProcessShippingCancelData(), updateStock)
+                .then(response => {
+                    this.showMessage(response, 'cancel');
+                    this.loadList().then(() => {
+                        this.loading.cancel = false;
+                        this.loading.cancelWithStock = false;
+                    });
+                });
+        },
+        onClickButtonReturn(updateStock) {
+            if (updateStock === false) {
+                this.loading.rtn = true;
+            } else {
+                this.loading.rtnWithStock = true;
+            }
+            this.orderManagementService
+                .doAction('return', this.orderId, this.getProcessReturnData(), updateStock)
+                .then(response => {
+                    this.showMessage(response, 'return');
+                    this.loadList().then(() => {
+                        this.loading.rtn = false;
+                        this.loading.rtnWithStock = false;
+                    });
+                });
+        },
+        onClickResetSelections() {
+            this.loading.reload = true;
+            this.loadList().then(() => {
+                this.loading.reload = false;
+            });
+        },
+
+        showMessage(response, type) {
+            if (response.success) {
+                this.createNotificationSuccess({
+                    title: this.$tc('ratepay.articlePanel.messages.successTitle'),
+                    message: this.$tc('ratepay.articlePanel.messages.' + type + '.success')
+                });
+            } else {
+                this.createNotificationError({
+                    title: this.$tc('ratepay.articlePanel.messages.failedTitle'),
+                    message: response.message
+                });
+            }
+        },
+        getProcessShippingCancelData() {
+            let items = [];
+            this.items.forEach(function (item, index) {
+                if (typeof item.processDeliveryCancel != 'undefined' && item.processDeliveryCancel > 0) {
+                    items.push({'id': item.id, 'quantity': item.processDeliveryCancel});
+                }
+            });
+            return items;
+        },
+        getProcessReturnData() {
+            let items = [];
+            this.items.forEach(function (item, index) {
+                if (typeof item.processReturn != 'undefined' && item.processReturn > 0) {
+                    items.push({'id': item.id, 'quantity': item.processReturn});
+                }
+            });
+            return items;
+        },
     },
 });
