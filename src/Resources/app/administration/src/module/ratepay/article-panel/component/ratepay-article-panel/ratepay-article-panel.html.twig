@@ -1,9 +1,3 @@
-/*!
-* Copyright (c) 2020 RatePAY GmbH
-*
-* For the full copyright and license information, please view the LICENSE
-* file that was distributed with this source code.
-*/
 
 <sw-card
     :title="$tc('ratepay.article_panel.title')"
@@ -14,15 +8,12 @@
             <sw-tabs>
                 <sw-tabs-item
                     name="shipping"
-                    @click="activeTab = 'shipping'"
-                    :activeTab="active"
-                    active>
+                    @click="activeTab = 'shipping'">
                     {{ $t('ratepay.article_panel.shipping') }}
                 </sw-tabs-item>
                 <sw-tabs-item
                     name="retoure"
-                    @click="activeTab = 'return'"
-                    :activeTab="active">
+                    @click="activeTab = 'return'">
                     {{ $t('ratepay.article_panel.return') }}
                 </sw-tabs-item>
             </sw-tabs>
@@ -55,8 +46,9 @@
                             <option v-for="n in 10">{{ n }}</option>
                         </sw-select-field>
                     </template>
+
                     <template slot="actions">
-                        <slot name="actions" :item="item" :itemIndex="itemIndex">
+                        <slot name="actions">
                             <div class="sw-context-menu__group">
                                 <sw-context-menu-item>
                                     {{ $t('ratepay.article_panel.deliver') }}
@@ -102,7 +94,7 @@
                     </template>
 
                     <template slot="actions">
-                        <slot name="actions" :item="item" :itemIndex="itemIndex">
+                        <slot name="actions">
                             <div class="sw-context-menu__group">
                                 <sw-context-menu-item>
                                     {{ $t('ratepay.article_panel.doreturn') }}
