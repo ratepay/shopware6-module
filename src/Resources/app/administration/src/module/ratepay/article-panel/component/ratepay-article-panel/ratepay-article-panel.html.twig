@@ -1,12 +1,5 @@
-/*!
-* Copyright (c) 2020 RatePAY GmbH
-*
-* For the full copyright and license information, please view the LICENSE
-* file that was distributed with this source code.
-*/
-
 <sw-card
-    :title="$tc('ratepay.article_panel.title')"
+    :title="$tc('ratepay.articlePanel.title')"
     class="ratepay-article-panel">
     <sw-container>
         <sw-card
@@ -17,13 +10,13 @@
                     @click="activeTab = 'shipping'"
                     :activeTab="active"
                     active>
-                    {{ $t('ratepay.article_panel.shipping') }}
+                    {{ $t('ratepay.articlePanel.tab.shippingCancel') }}
                 </sw-tabs-item>
                 <sw-tabs-item
                     name="retoure"
                     @click="activeTab = 'return'"
                     :activeTab="active">
-                    {{ $t('ratepay.article_panel.return') }}
+                    {{ $t('ratepay.articlePanel.tab.return') }}
                 </sw-tabs-item>
             </sw-tabs>
         </sw-card>
@@ -31,46 +24,33 @@
             <sw-card
                 class="button-card">
                 <sw-button-group>
-                    <sw-button class="sw-button--small">{{ $t('ratepay.article_panel.setzero') }}</sw-button>
-                    <sw-button class="sw-button--small">{{ $t('ratepay.article_panel.addcredit') }}</sw-button>
-                    <sw-button class="sw-button--small">{{ $t('ratepay.article_panel.adddebit') }}</sw-button>
+                    <sw-button class="sw-button--small">{{ $t('ratepay.articlePanel.action.setZero') }}</sw-button>
+                    <sw-button class="sw-button--small">{{ $t('ratepay.articlePanel.action.deliverSelection') }}</sw-button>
+                    <sw-button class="sw-button--small">{{ $t('ratepay.articlePanel.action.cancelSelection') }}</sw-button>
+                    <sw-button class="sw-button--small">{{ $t('ratepay.articlePanel.action.cancelSelectionWithStock') }}</sw-button>
+                </sw-button-group>
+                <sw-button-group>
+                    <sw-button class="sw-button--small">{{ $t('ratepay.articlePanel.action.addCredit') }}</sw-button>
+                    <sw-button class="sw-button--small">{{ $t('ratepay.articlePanel.action.addDebit') }}</sw-button>
                 </sw-button-group>
             </sw-card>
             <sw-card
                 class="grid-card">
-                <sw-entity-listing
-                    :items="entities"
-                    :repository="repository"
+                <sw-data-grid
+                    :dataSource="items"
                     :columns="columns"
-                    :fullPage="false"
                     :showSelection="false"
-                    :showActions="true"
-                    :allowColumnEdit="false"
-                    :allowInlineEdit="false"
-                    :compactMode="false">
-
-                    <template slot="column-count">
-                        <sw-select-field>
-                            <option selected>0</option>
-                            <option v-for="n in 10">{{ n }}</option>
+                    :showActions="false"
+                    :showSettings="false"
+                >
+                    <template slot="column-quantity" slot-scope="{ item }">
+                        <sw-select-field v-if="item.maxDelivery > 0" value="0">
+                            <option value="0">0</option>
+                            <option v-for="n in item.maxDelivery">{{ n }}</option>
                         </sw-select-field>
+                        <span v-if="item.maxDelivery == 0">0</span>
                     </template>
-                    <template slot="actions">
-                        <slot name="actions" :item="item" :itemIndex="itemIndex">
-                            <div class="sw-context-menu__group">
-                                <sw-context-menu-item>
-                                    {{ $t('ratepay.article_panel.deliver') }}
-                                </sw-context-menu-item>
-                                <sw-context-menu-item>
-                                    {{ $t('ratepay.article_panel.cancel') }}
-                                </sw-context-menu-item>
-                                <sw-context-menu-item variant="danger">
-                                    {{ $t('ratepay.article_panel.cancelStock') }}
-                                </sw-context-menu-item>
-                            </div>
-                        </slot>
-                    </template>
-                </sw-entity-listing>
+                </sw-data-grid>
             </sw-card>
         </template>
 
@@ -78,42 +58,28 @@
             <sw-card
                 class="button-card">
                 <sw-button-group>
-                    <sw-button class="sw-button--small">{{ $t('ratepay.article_panel.setzero') }}</sw-button>
+                    <sw-button class="sw-button--small">{{ $t('ratepay.articlePanel.action.setZero') }}</sw-button>
+                    <sw-button class="sw-button--small">{{ $t('ratepay.articlePanel.action.returnSelection') }}</sw-button>
+                    <sw-button class="sw-button--small">{{ $t('ratepay.articlePanel.action.returnSelectionWithStock') }}</sw-button>
                 </sw-button-group>
             </sw-card>
             <sw-card
                 class="grid-card">
-                <sw-entity-listing
-                    :items="entities"
-                    :repository="repository"
+                <sw-data-grid
+                    :dataSource="items"
                     :columns="columns"
-                    :fullPage="false"
                     :showSelection="false"
-                    :showActions="true"
-                    :allowColumnEdit="false"
-                    :allowInlineEdit="false"
-                    :compactMode="false">
-
-                    <template slot="column-count">
-                        <sw-select-field>
-                            <option selected>0</option>
-                            <option v-for="n in 10">{{ n }}</option>
+                    :showActions="false"
+                    :showSettings="false"
+                >
+                    <template slot="column-quantity" slot-scope="{ item }">
+                        <sw-select-field v-if="item.maxReturn > 0" value="0">
+                            <option value="0">0</option>
+                            <option v-for="n in item.maxReturn">{{ n }}</option>
                         </sw-select-field>
+                        <span v-if="item.maxReturn == 0">0</span>
                     </template>
-
-                    <template slot="actions">
-                        <slot name="actions" :item="item" :itemIndex="itemIndex">
-                            <div class="sw-context-menu__group">
-                                <sw-context-menu-item>
-                                    {{ $t('ratepay.article_panel.doreturn') }}
-                                </sw-context-menu-item>
-                                <sw-context-menu-item variant="danger">
-                                    {{ $t('ratepay.article_panel.cancelStock') }}
-                                </sw-context-menu-item>
-                            </div>
-                        </slot>
-                    </template>
-                </sw-entity-listing>
+                </sw-data-grid>
             </sw-card>
         </template>
     </sw-container>

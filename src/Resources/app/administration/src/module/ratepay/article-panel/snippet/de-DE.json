@@ -1,22 +1,26 @@
 {
     "ratepay": {
-        "article_panel": {
+        "articlePanel": {
             "title": "Ratepay Artikelverwaltung",
-            "shipping": "Versand/Stornierung",
-            "return": "Retoure",
-            "setzero": "Anzahl auf 0 setzen",
-            "addcredit": "Nachlass hinzufügen",
-            "adddebit": "Nachbelastung hinzufügen",
-            "deliver": "Auswahl versenden",
-            "cancel": "Auswahl stornieren",
-            "doreturn": "Auswahl retournieren",
-            "cancelStock": "Auswahl stornieren, Inventar aktualisieren",
-            "labels": {
+            "tab": {
+                "shippingCancel": "Versand/Stornierung",
+                "return": "Retoure"
+            },
+            "action": {
+                "setZero": "Anzahl auf 0 setzen",
+                "addCredit": "Nachlass hinzufügen",
+                "addDebit": "Nachbelastung hinzufügen",
+                "deliverSelection": "Auswahl versenden",
+                "cancelSelection": "Auswahl stornieren",
+                "cancelSelectionWithStock": "Auswahl stornieren & Inventar aktualisieren",
+                "returnSelection": "Auswahl retournieren",
+                "returnSelectionWithStock": "Auswahl retournieren & Inventar aktualisieren"
+            },
+            "table": {
                 "count": "Anzahl",
-                "articlename": "Artikelname",
-                "price": "Preis",
+                "articleName": "Artikelname",
                 "ordered": "Bestellt",
-                "shipped": "Versendet",
+                "delivered": "Versendet",
                 "canceled": "Storniert",
                 "returned": "Retourniert"
             }
