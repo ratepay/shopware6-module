@@ -32,7 +32,7 @@ class ConfigService
 
     protected function getPluginConfiguration(): array
     {
-        return $this->systemConfigService->get('RatepayPayments.config', null);
+        return $this->systemConfigService->get('RatepayPayments.config', null) ? : [];
     }
 
 

@@ -11,20 +11,36 @@ declare(strict_types=1);
 namespace Ratepay\RatepayPayments;
 
 use Ratepay\RatepayPayments\Bootstrap\AbstractBootstrap;
+use Ratepay\RatepayPayments\Bootstrap\CustomFields;
 use Ratepay\RatepayPayments\Bootstrap\Database;
 use Ratepay\RatepayPayments\Bootstrap\PaymentMethods;
-use Ratepay\RatepayPayments\Bootstrap\CustomFields;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Plugin;
+use Shopware\Core\Kernel;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\Routing\RouteCollectionBuilder;
 
 class RatepayPayments extends Plugin
 {
+    public function install(Plugin\Context\InstallContext $context): void
+    {
+        $bootstrapper = $this->getBootstrapClasses($context);
+        foreach ($bootstrapper as $bootstrap) {
+            $bootstrap->preInstall();
+        }
+        foreach ($bootstrapper as $bootstrap) {
+            $bootstrap->install();
+        }
+        foreach ($bootstrapper as $bootstrap) {
+            $bootstrap->postInstall();
+        }
+    }
+
     /**
      * @param Plugin\Context\InstallContext $context
      * @return AbstractBootstrap[]
@@ -51,20 +67,6 @@ class RatepayPayments extends Plugin
 
         }
         return $bootstrapper;
-    }
-
-    public function install(Plugin\Context\InstallContext $context): void
-    {
-        $bootstrapper = $this->getBootstrapClasses($context);
-        foreach ($bootstrapper as $bootstrap) {
-            $bootstrap->preInstall();
-        }
-        foreach ($bootstrapper as $bootstrap) {
-            $bootstrap->install();
-        }
-        foreach ($bootstrapper as $bootstrap) {
-            $bootstrap->postInstall();
-        }
     }
 
     public function update(Plugin\Context\UpdateContext $context): void
@@ -134,6 +136,12 @@ class RatepayPayments extends Plugin
         }
     }
 
+    public function configureRoutes(RouteCollectionBuilder $routes, string $environment): void
+    {
+        parent::configureRoutes($routes, $environment);
+        $routes->import(__DIR__ . '/Components/**/DependencyInjection/routes' . Kernel::CONFIG_EXTS, '/', 'glob');
+    }
+
     public function build(ContainerBuilder $containerBuilder): void
     {
         parent::build($containerBuilder);
@@ -141,14 +149,14 @@ class RatepayPayments extends Plugin
         $componentContainerFiles = [
             'services.xml',
             'models.xml',
-            'controller.xml'
+            'controller.xml',
         ];
 
         $loader = new XmlFileLoader($containerBuilder, new FileLocator(__DIR__));
-        foreach(array_filter(glob(__DIR__.'/Components/*'), 'is_dir') as $dir) {
-            foreach($componentContainerFiles as $fileName) {
-                $file = $dir.'/DependencyInjection/'.$fileName;
-                if(file_exists($file)) {
+        foreach (array_filter(glob(__DIR__ . '/Components/*'), 'is_dir') as $dir) {
+            foreach ($componentContainerFiles as $fileName) {
+                $file = $dir . '/DependencyInjection/' . $fileName;
+                if (file_exists($file)) {
                     $loader->load($file);
                 }
             }

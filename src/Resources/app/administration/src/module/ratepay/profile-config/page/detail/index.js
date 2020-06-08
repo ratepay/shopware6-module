@@ -58,7 +58,6 @@ Component.register('ratepay.profileConfig.detail', {
             this.disabledReloadButton = true;
         },
         loadEntity() {
-            var me = this;
             let entityCriteria = new Criteria();
             entityCriteria.addAssociation('paymentMethodConfigs.paymentMethod');
             entityCriteria.addAssociation('paymentMethodConfigs.installmentConfig');

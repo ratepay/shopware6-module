@@ -1,0 +1,42 @@
+{
+    "ratepay": {
+        "articlePanel": {
+            "title": "Ratepay Article management",
+            "tab": {
+                "shippingCancel": "Shipping/cancellation",
+                "return": "Return"
+            },
+            "action": {
+                "setZero": "Set count to 0",
+                "addCredit": "Add credit",
+                "addDebit": "Add debit",
+                "deliverSelection": "Ship selection",
+                "cancelSelection": "Cancel selection",
+                "cancelSelectionWithStock": "Cancel selection & update inventory",
+                "returnSelection": "Return selection",
+                "returnSelectionWithStock": "Return selection & update inventory"
+            },
+            "table": {
+                "count": "Quantity",
+                "articleName": "Article name",
+                "ordered": "Ordered",
+                "delivered": "Delivered",
+                "canceled": "Canceled",
+                "returned": "Returned"
+            },
+            "messages": {
+                "successTitle": "Successful",
+                "failedTitle": "Error",
+                "deliver": {
+                    "success": "The articles has been marked as delivered"
+                },
+                "cancel": {
+                    "success": "The articles has been successfully canceled."
+                },
+                "return": {
+                    "success": "The articles has been marked as returned."
+                }
+            }
+        }
+    }
+}
