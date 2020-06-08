@@ -5,17 +5,10 @@
         <sw-card
             class="tabs-card">
             <sw-tabs>
-                <sw-tabs-item
-                    name="shipping"
-                    @click="activeTab = 'shipping'"
-                    :activeTab="active"
-                    active>
+                <sw-tabs-item name="shipping" @click="activeTab = 'shipping'">
                     {{ $t('ratepay.articlePanel.tab.shippingCancel') }}
                 </sw-tabs-item>
-                <sw-tabs-item
-                    name="retoure"
-                    @click="activeTab = 'return'"
-                    :activeTab="active">
+                <sw-tabs-item name="retoure" @click="activeTab = 'return'">
                     {{ $t('ratepay.articlePanel.tab.return') }}
                 </sw-tabs-item>
             </sw-tabs>
