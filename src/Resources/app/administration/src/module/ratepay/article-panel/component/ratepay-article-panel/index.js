@@ -9,13 +9,20 @@ import template from './ratepay-article-panel.html.twig';
 import './article-panel.scss';
 
 const { Component } = Shopware;
+const {Criteria} = Shopware.Data;
 
 Component.register('ratepay-article-panel', {
     template,
 
+    inject: [
+        'repositoryFactory'
+    ],
+
     data() {
         return {
             data: [],
+            repository: null,
+            entities: null,
             activeTab: 'shipping'
         };
     },
@@ -29,17 +36,17 @@ Component.register('ratepay-article-panel', {
                     allowResize: false
                 },
                 {
-                    property: 'articlename',
+                    property: 'label',
                     label: this.$t('ratepay.article_panel.labels.articlename'),
                     allowResize: false
                 },
                 {
-                    property: 'price',
+                    property: 'totalPrice',
                     label: this.$t('ratepay.article_panel.labels.price'),
                     allowResize: false
                 },
                 {
-                    property: 'ordered',
+                    property: 'quantity',
                     label: this.$t('ratepay.article_panel.labels.ordered'),
                     allowResize: false
                 },
@@ -63,29 +70,18 @@ Component.register('ratepay-article-panel', {
     },
 
     created() {
-        this.createdComponent();
+
+        this.repository = this.repositoryFactory.create('order_line_item');
+        let criteria = new Criteria();
+        criteria.addFilter(Criteria.equals('orderId', this.$route.params.id));
+        this.repository
+            .search(criteria, Shopware.Context.api)
+            .then((result) => {
+                this.entities = result;
+            });
     },
 
     methods: {
-        createdComponent() {
-            this.data = [];
-            this.data.push({
-                articlename: 'Article 1',
-                price: '1200',
-                ordered: '1',
-                shipped: '1',
-                canceled: '0',
-                returned: '0'
-            },{
-                articlename: 'Article 2',
-                price: '1200',
-                ordered: '1',
-                shipped: '1',
-                canceled: '0',
-                returned: '0'
-            });
-        },
-
         isLoading() {
             return this.$parent.isLoading;
         }
