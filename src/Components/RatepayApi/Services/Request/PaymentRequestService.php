@@ -23,8 +23,6 @@ use Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigEntity;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigRepository;
 use RatePAY\RequestBuilder;
-use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -84,12 +82,6 @@ class PaymentRequestService extends AbstractOrderOperationRequest
         $this->orderItemRepository = $orderItemRepository;
 
         $this->context = Context::createDefaultContext();
-    }
-
-    public function setTransaction(OrderEntity $orderEntity, SyncPaymentTransactionStruct $transaction)
-    {
-        $this->order = $orderEntity;
-        $this->transaction = $transaction->getOrderTransaction();
     }
 
     public function setRequestDataBag(RequestDataBag $dataBag)

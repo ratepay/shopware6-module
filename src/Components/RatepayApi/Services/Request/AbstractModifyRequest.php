@@ -9,221 +9,185 @@
 namespace Ratepay\RatepayPayments\Components\RatepayApi\Services\Request;
 
 
-use Doctrine\ORM\OptimisticLockException;
-use Enlight_Components_Db_Adapter_Pdo_Mysql;
-use Exception;
-use RpayRatepay\Component\Mapper\BasketArrayBuilder;
-use RpayRatepay\DTO\BasketPosition;
-use RpayRatepay\Enum\PaymentMethods;
-use RpayRatepay\Helper\PositionHelper;
-use RpayRatepay\Models\Position\AbstractPosition;
-use RpayRatepay\Models\ProfileConfig;
-use RpayRatepay\Services\Config\ConfigService;
-use RpayRatepay\Services\Config\ProfileConfigService;
-use RpayRatepay\Services\Logger\HistoryLogger;
-use RpayRatepay\Services\Logger\RequestLogger;
-use RuntimeException;
-use Shopware\Components\Model\ModelManager;
-use Shopware\Models\Article\Detail;
-use Shopware\Models\Attribute\Order as OrderAttribute;
-use Shopware\Models\Order\Detail as OrderDetail;
-use Shopware\Models\Order\Order;
+use RatePAY\Model\Request\SubModel\Content;
+use RatePAY\Model\Request\SubModel\Head;
+use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
+use Ratepay\RatepayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
+use Ratepay\RatepayPayments\Components\RatepayApi\Services\FileLogger;
+use Ratepay\RatepayPayments\Components\RatepayApi\Services\HistoryLogger;
+use Ratepay\RatepayPayments\Components\RatepayApi\Services\RequestLogger;
+use Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService;
+use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigEntity;
+use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigRepository;
+use RatePAY\RequestBuilder;
+use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 
-abstract class AbstractModifyRequest extends AbstractRequest
+abstract class AbstractModifyRequest extends AbstractOrderOperationRequest
 {
+
+    protected $_operation = self::CALL_CHANGE;
     /**
-     * @var Order
+     * @var array
      */
-    protected $_order;
+    protected $items;
 
     /**
-     * @var BasketPosition[]
+     * @var string
      */
-    protected $items = null;
+    protected $eventName = null;
 
     /**
-     * @var BasketArrayBuilder
+     * @var bool
      */
-    protected $basketArrayBuilder;
+    protected $updateStock = false;
 
     /**
-     * @var ModelManager
+     * @var ShoppingBasketFactory
      */
-    protected $modelManager;
+    private $shoppingBasketFactory;
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $productRepository;
+    /**
+     * @var FileLogger
+     */
+    private $fileLogger;
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $lineItemsRepository;
     /**
      * @var HistoryLogger
      */
-    protected $historyLogger;
+    private $historyLogger;
     /**
-     * @var PositionHelper
+     * @var EntityRepositoryInterface
      */
-    protected $positionHelper;
-    /**
-     * @var ProfileConfigService
-     */
-    protected $profileConfigService;
+    private $orderRepository;
 
     public function __construct(
-        Enlight_Components_Db_Adapter_Pdo_Mysql $db,
         ConfigService $configService,
+        HeadFactory $headFactory,
+        ShoppingBasketFactory $shoppingBasketFactory,
+        ProfileConfigRepository $profileConfigRepository,
+        EntityRepositoryInterface $productRepository,
+        EntityRepositoryInterface $orderRepository,
+        EntityRepositoryInterface $lineItemsRepository,
         RequestLogger $requestLogger,
-        ProfileConfigService $profileConfigService,
-        HistoryLogger $historyLogger,
-        ModelManager $modelManager,
-        PositionHelper $positionHelper
+        FileLogger $fileLogger,
+        HistoryLogger $historyLogger
     )
     {
-        parent::__construct($db, $configService, $requestLogger);
+        parent::__construct($configService, $requestLogger, $headFactory, $profileConfigRepository);
+        $this->shoppingBasketFactory = $shoppingBasketFactory;
+        $this->productRepository = $productRepository;
+        $this->fileLogger = $fileLogger;
+        $this->lineItemsRepository = $lineItemsRepository;
         $this->historyLogger = $historyLogger;
-        $this->modelManager = $modelManager;
-        $this->positionHelper = $positionHelper;
-        $this->profileConfigService = $profileConfigService;
-    }
-
-    /**
-     * @param Order|int $order
-     */
-    public final function setOrder($order = null)
-    {
-        if (is_numeric($order)) {
-            $order = $this->modelManager->find(Order::class, $order);
-        }
-        if ($order == null) {
-            throw new RuntimeException('The order should not be null or the order could not found!');
-        }
-        $this->_order = $order;
+        $this->orderRepository = $orderRepository;
     }
 
     /**
      * key: product number
      * value: quantity
-     * @param BasketArrayBuilder|BasketPosition[] $items
+     * @param array $items
      */
     public final function setItems($items)
     {
-        if ($items instanceof BasketArrayBuilder) {
-            $this->basketArrayBuilder = $items;
-            $this->items = $this->basketArrayBuilder->getSimpleItems();
-        } else if (is_array($items)) {
-            $this->basketArrayBuilder = null;
-            foreach ($items as $basketPosition) {
-                if ($basketPosition->getProductNumber() !== BasketPosition::SHIPPING_NUMBER && $basketPosition->getOrderDetail() instanceof OrderDetail === false) {
-                    throw new Exception('You are doing a modify on a existing order. Please set the ' . OrderDetail::class . ' object to the ' . BasketPosition::class . ' instead of the productNumber!');
-                }
-            }
-            $this->items = $items;
-        } else {
-            throw new RuntimeException('invalid argument');
+        $this->items = $items;
+    }
+
+    protected function getRequestHead(ProfileConfigEntity $profileConfig): Head
+    {
+        $head = parent::getRequestHead($profileConfig);
+
+        $head->setExternal($head->getExternal() ?: new Head\External());
+        $head->getExternal()->setOrderId($this->order->getOrderNumber());
+        $head->setTransactionId($this->order->getCustomFields()['ratepay_transaction_id']);
+        return $head;
+    }
+
+    protected function getRequestContent(): Content
+    {
+        $content = new Content();
+        $content->setShoppingBasket($this->shoppingBasketFactory->getData($this->order, $this->items));
+        return $content;
+    }
+
+    protected function processSuccess(RequestBuilder $response)
+    {
+        $context = Context::createDefaultContext();
+        $lineItems = $this->order->getLineItems()->getList(array_keys($this->items));
+        $data = [];
+        /** @var OrderLineItemEntity $item */
+        foreach ($lineItems as $item) {
+            $this->historyLogger->logHistory(
+                $this->order->getId(),
+                $this->eventName,
+                $item->getLabel(),
+                $item->getPayload()['productNumber'],
+                $this->items[$item->getId()]
+            );
+
+            $newCustomFields = $this->getLineItemsCustomFieldChanges($item, $this->items[$item->getId()]);
+            $data[] = [
+                'id' => $item->getId(),
+                'customFields' => array_replace($item->getCustomFields(), $newCustomFields)
+            ];
+        }
+        if($data) {
+            $this->lineItemsRepository->update($data, $context);
+        }
+
+        if(isset($this->items['shipping'])) {
+            $orderCustomFields = $this->order->getCustomFields();
+            $newCustomFields = $this->getShippingCustomFields($this->items['shipping']);
+            $this->orderRepository->update([
+                [
+                    'id' => $this->order->getId(),
+                    'customFields' => array_replace($orderCustomFields, $newCustomFields)
+                ]
+            ], $context);
+        }
+
+        if($this->updateStock) {
+            $this->updateProductStocks();
         }
     }
 
-    protected function getProfileConfig()
+    protected abstract function getLineItemsCustomFieldChanges(OrderLineItemEntity $lineItem, $qty);
+    protected abstract function getShippingCustomFields($qty);
+
+    protected function updateProductStocks()
     {
-        /** @var OrderAttribute $orderAttribute */
-        $orderAttribute = $this->_order->getAttribute();
-        return $this->profileConfigService->getProfileConfig(
-            $this->_order->getBilling()->getCountry()->getIso(),
-            $this->_order->getShop()->getId(),
-            $orderAttribute->getRatepayBackend() == 1,
-            $this->_order->getPayment()->getName() == PaymentMethods::PAYMENT_INSTALLMENT0
-        );
-    }
-
-    protected function getRequestHead(ProfileConfig $profileConfig)
-    {
-        $data = parent::getRequestHead($profileConfig);
-        if (!empty($orderId)) {
-            $data['External']['OrderId'] = $this->_order->getId();
-        }
-
-        $data['TransactionId'] = $this->_order->getTransactionId();
-        return $data;
-    }
-
-    protected function getRequestContent()
-    {
-        if ($this->items == null) {
-            throw new RuntimeException('please set $items with function `setItems()`');
-        }
-        if ($this->_order == null) {
-            throw new RuntimeException('please set $order with function `setOrder()`');
-        }
-
-        if ($this->basketArrayBuilder !== null) {
-            $basketFactory = $this->basketArrayBuilder;
-            foreach ($basketFactory->getSimpleItems() as $basketPosition) {
-                if ($basketPosition->getProductNumber() !== BasketPosition::SHIPPING_NUMBER && $basketPosition->getOrderDetail() instanceof OrderDetail === false) {
-                    throw new Exception('You are doing a modify on a existing order. Please set the ' . OrderDetail::class . ' object to the ' . BasketPosition::class . ' instead of the productNumber!');
-                }
-            }
-        } else {
-            $basketFactory = new BasketArrayBuilder($this->_order);
-            foreach ($this->items as $basketPosition) {
-                $detail = $basketPosition->getOrderDetail();
-                $basketFactory->addItem($detail ? $detail : $basketPosition->getProductNumber(), $basketPosition->getQuantity());
-            }
-        }
-        $requestContent = [];
-        $requestContent['ShoppingBasket'] = $basketFactory->toArray();
-        return $requestContent;
-    }
-
-    /**
-     * @param Order $order
-     * @param $productNumber
-     * @return OrderDetail
-     */
-    protected function getOrderDetailByNumber($productNumber)
-    {
-        /** @var OrderDetail $detail */
-        foreach ($this->_order->getDetails() as $detail) {
-            if ($detail->getArticleNumber() === $productNumber) {
-                return $detail;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param BasketPosition $basketPosition
-     */
-    protected function updateArticleStock($basketPosition)
-    {
-        $detail = $basketPosition->getOrderDetail();
-        if ($detail === null) {
-            // this is not a product/voucher. maybe shipping position.
-            return;
+        $lineItems = $this->order->getLineItems()->getList(array_keys($this->items));
+        $data = [];
+        /** @var OrderLineItemEntity $item */
+        foreach ($lineItems as $item) {
+            $data[] = [
+                'id' => $item->getProduct()->getId(),
+                'stock' => $item->getProduct()->getStock() + $this->items[$item->getId()],
+            ];
         }
         try {
-            $article = $detail->getArticleDetail();
-            $article->getInStock(); // lazy load call
-        } catch (Exception $e) {
-            // entity does not exist anymore
-            return;
+            $this->productRepository->update($data, Context::createDefaultContext());
+        } catch (\Exception $e) {
+            $this->fileLogger->addError('Error during the updating of the stock (Exception: ' . $e->getMessage() . ')', [
+                'orderId' => $this->order->getId(),
+                'orderNumber' => $this->order->getOrderNumber(),
+                'items' => $this->items
+            ]);
         }
-        if ($article) {
-            // article still exist
-            $article->setInStock($article->getInStock() + $basketPosition->getQuantity());
-            $this->modelManager->persist($article);
-            $this->modelManager->flush($article);
-        }
-    }
-
-    protected function processSuccess()
-    {
-        //TODO RATEPLUG-23
     }
 
     /**
-     * @param BasketPosition $basketPosition
-     * @return AbstractPosition
+     * @param bool $updateStock
      */
-    protected function getOrderPosition($basketPosition)
+    public function setUpdateStock(bool $updateStock): void
     {
-        if ($basketPosition->getProductNumber() === BasketPosition::SHIPPING_NUMBER) {
-            return $this->positionHelper->getShippingPositionForOrder($this->_order);
-        } else {
-            return $this->positionHelper->getPositionForDetail($basketPosition->getOrderDetail());
-        }
+        $this->updateStock = $updateStock;
     }
 }

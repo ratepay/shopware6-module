@@ -9,37 +9,25 @@
 namespace Ratepay\RatepayPayments\Components\RatepayApi\Services\Request;
 
 
+use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
+
 class PaymentReturnService extends AbstractModifyRequest
 {
 
     protected $_subType = 'return';
-    /**
-     * @var boolean
-     */
-    protected $updateStock;
+    protected $eventName = 'return';
 
-    public function setUpdateStock($updateStock)
+    protected function getLineItemsCustomFieldChanges(OrderLineItemEntity $lineItem, $qty)
     {
-        $this->updateStock = $updateStock;
+        return [
+            'ratepay_returned' => $lineItem->getCustomFields()['ratepay_returned'] + $qty
+        ];
     }
 
-    protected function getCallName()
+    protected function getShippingCustomFields($qty)
     {
-        return self::CALL_CHANGE;
-    }
-
-    protected function processSuccess()
-    {
-        foreach ($this->items as $basketPosition) {
-            $position = $this->getOrderPosition($basketPosition);
-            $position->setReturned($position->getReturned() + $basketPosition->getQuantity());
-            $this->modelManager->flush($position);
-
-            $this->historyLogger->logHistory($position, $basketPosition->getQuantity(), 'Artikel wurde retourniert.');
-            if ($this->updateStock) {
-                $this->updateArticleStock($basketPosition);
-            }
-        }
-        parent::processSuccess();
+        return [
+            'ratepay_shipping_returned' => $qty
+        ];
     }
 }

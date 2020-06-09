@@ -25,6 +25,10 @@
             <argument id="ratepay_order_history.repository" type="service"/>
             <argument id="ratepay.logger" type="service"/>
         </service>
+
+        <service id="Ratepay\RatepayPayments\Components\RatepayApi\Services\FileLogger">
+            <argument>%kernel.root_dir%/var/log/</argument>
+        </service>
     </services>
 
 </container>

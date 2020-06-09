@@ -31,7 +31,7 @@ class ShoppingBasketFactory
             if ($item->getTotalPrice() > 0) {
                 $basket->getItems()->addItem(
                     (new ShoppingBasket\Items\Item())
-                        ->setArticleNumber($item->getUniqueIdentifier())
+                        ->setArticleNumber($item->getPayload()['productNumber'])
                         ->setDescription($item->getLabel())
                         ->setQuantity($sendAll ? $item->getQuantity() : $itemsToSend[$item->getId()])
                         ->setUnitPriceGross($item->getPrice()->getUnitPrice())
@@ -45,7 +45,7 @@ class ShoppingBasketFactory
             }
         }
 
-        if ($order->getShippingCosts()->getTotalPrice()) {
+        if (($sendAll || isset($itemsToSend['shipping'])) && $order->getShippingCosts()->getTotalPrice()) {
             $basket->setShipping(
                 (new ShoppingBasket\Shipping())
                     ->setDescription('shipping')

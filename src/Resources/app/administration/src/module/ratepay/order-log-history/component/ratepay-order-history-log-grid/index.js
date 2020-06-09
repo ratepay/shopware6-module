@@ -70,12 +70,11 @@ Component.register('ratepay-order-history-log-grid', {
             .search(criteria, Shopware.Context.api)
             .then((result) => {
                 this.entities = result;
+                this.reload = false;
             });
     },
 
     methods: {
-        isLoading() {
-            return this.$parent.isLoading;
-        }
+
     },
 });

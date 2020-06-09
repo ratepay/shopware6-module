@@ -10,6 +10,12 @@ namespace Ratepay\RatepayPayments\Components\OrderManagement\Controller;
 
 
 use Ratepay\RatepayPayments\Components\OrderManagement\Util\LineItemUtil;
+use Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\AbstractModifyRequest;
+use Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentCancelService;
+use Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentDeliverService;
+use Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentRequestService;
+use Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentReturnService;
+use Ratepay\RatepayPayments\Util\CriteriaHelper;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -30,10 +36,30 @@ class ProductPanel extends AbstractController
      * @var EntityRepositoryInterface
      */
     private $orderRepository;
+    /**
+     * @var PaymentDeliverService
+     */
+    private $paymentDeliverService;
+    /**
+     * @var PaymentReturnService
+     */
+    private $paymentReturnService;
+    /**
+     * @var PaymentCancelService
+     */
+    private $paymentCancelService;
 
-    public function __construct(EntityRepositoryInterface $orderRepository)
+    public function __construct(
+        EntityRepositoryInterface $orderRepository,
+        PaymentDeliverService $paymentDeliverService,
+        PaymentReturnService $paymentReturnService,
+        PaymentCancelService $paymentCancelService
+    )
     {
         $this->orderRepository = $orderRepository;
+        $this->paymentDeliverService = $paymentDeliverService;
+        $this->paymentReturnService = $paymentReturnService;
+        $this->paymentCancelService = $paymentCancelService;
     }
 
     /**
@@ -69,24 +95,22 @@ class ProductPanel extends AbstractController
         }
     }
 
-    /**
-     * @RouteScope(scopes={"administration"})
-     * @Route("/deliver/{orderId}", name="ratepay.order_management.product_panel.deliver", methods={"POST"})
-     * @return JsonResponse
-     */
-    public function deliver($orderId, Request $request, Context $context)
-    {
-        $criteria = new Criteria([$orderId]);
-        $criteria->addAssociation('lineItems');
-
+    protected function processModify(Request $request, Context $context, AbstractModifyRequest $service, $orderId) {
         /** @var OrderEntity $order */
-        $order = $this->orderRepository->search($criteria, $context)->first();
+        $order = $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($orderId), $context)->first();
 
         if ($order) {
-            $items = $request->request->get('items');
-            // TODO call DeliverRequestService
+            $items = [];
+            foreach($request->request->get('items') ?? [] as $data) {
+                $items[$data['id']] = intval($data['quantity']);
+            }
+
+            $service->setTransaction($order);
+            $service->setItems($items);
+            $response = $service->doRequest();
             return $this->json([
-                'success' => true,
+                'success' => $response->getResponse()->isSuccessful(),
+                'message' => $response->getResponse()->getReasonMessage()
             ], 200);
         } else {
             return $this->json([
@@ -94,6 +118,16 @@ class ProductPanel extends AbstractController
                 'message' => 'Order not found'
             ], 400);
         }
+    }
+
+    /**
+     * @RouteScope(scopes={"administration"})
+     * @Route("/deliver/{orderId}", name="ratepay.order_management.product_panel.deliver", methods={"POST"})
+     * @return JsonResponse
+     */
+    public function deliver($orderId, Request $request, Context $context)
+    {
+        return $this->processModify($request, $context, $this->paymentDeliverService, $orderId);
     }
 
     /**
@@ -103,25 +137,8 @@ class ProductPanel extends AbstractController
      */
     public function cancel($orderId, Request $request, Context $context)
     {
-        $criteria = new Criteria([$orderId]);
-        $criteria->addAssociation('lineItems');
-
-        /** @var OrderEntity $order */
-        $order = $this->orderRepository->search($criteria, $context)->first();
-
-        if ($order) {
-            $updateStock = $request->request->get('updateStock') == true;
-            $items = $request->request->get('items');
-            // TODO call ReturnRequestService
-            return $this->json([
-                'success' => true,
-            ], 200);
-        } else {
-            return $this->json([
-                'success' => false,
-                'message' => 'Order not found'
-            ], 400);
-        }
+        $this->paymentCancelService->setUpdateStock($request->request->get('updateStock') == true);
+        return $this->processModify($request, $context, $this->paymentCancelService, $orderId);
     }
 
     /**
@@ -131,24 +148,7 @@ class ProductPanel extends AbstractController
      */
     public function return($orderId, Request $request, Context $context)
     {
-        $criteria = new Criteria([$orderId]);
-        $criteria->addAssociation('lineItems');
-
-        /** @var OrderEntity $order */
-        $order = $this->orderRepository->search($criteria, $context)->first();
-
-        if ($order) {
-            $updateStock = $request->request->get('updateStock') == true;
-            $items = $request->request->get('items');
-            // TODO call CancelRequestService
-            return $this->json([
-                'success' => true
-            ], 200);
-        } else {
-            return $this->json([
-                'success' => false,
-                'message' => 'Order not found'
-            ], 400);
-        }
+        $this->paymentReturnService->setUpdateStock($request->request->get('updateStock') == true);
+        return $this->processModify($request, $context, $this->paymentReturnService, $orderId);
     }
 }

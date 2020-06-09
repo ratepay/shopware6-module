@@ -42,7 +42,7 @@ class LineItemUtil
                 'canceled' => $customFields['ratepay_shipping_canceled'],
                 'returned' => $customFields['ratepay_shipping_returned'],
                 'maxDelivery' => $customFields['ratepay_shipping_delivered'] == 0 ? 1 : 0,
-                'maxReturn' => $customFields['ratepay_shipping_delivered'] > 1 ? 1 : 0
+                'maxReturn' => ($customFields['ratepay_shipping_delivered'] - $customFields['ratepay_shipping_returned']) >= 1 ? 1 : 0
             ];
         }
         return null;
