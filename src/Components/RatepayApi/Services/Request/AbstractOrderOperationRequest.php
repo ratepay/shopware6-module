@@ -17,8 +17,6 @@ use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigMethodEntity;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigRepository;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 
@@ -54,7 +52,7 @@ abstract class AbstractOrderOperationRequest extends AbstractRequest
     public final function setTransaction(OrderEntity $orderEntity, OrderTransactionEntity $transaction = null)
     {
         $this->order = $orderEntity;
-        if($transaction !== null) {
+        if ($transaction !== null) {
             $this->transaction = $transaction;
         } else {
             $this->transaction = $this->order->getTransactions()->first();
@@ -104,7 +102,7 @@ abstract class AbstractOrderOperationRequest extends AbstractRequest
             true
         ));
 
-        return $this->profileConfigRepository->search($criteria, Context::createDefaultContext())->first();
+        return $this->profileConfigRepository->search($criteria, $this->context)->first();
     }
 
 }

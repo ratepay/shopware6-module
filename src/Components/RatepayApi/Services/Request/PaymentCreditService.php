@@ -14,22 +14,11 @@ class PaymentCreditService extends AbstractAddRequest
 
     protected $_subType = 'credit';
 
-    /**
-     * @return string
-     */
-    protected function getCallName()
+    protected $eventName = 'credit';
+
+    public function setAmount(string $label, float $amount): void
     {
-        return self::CALL_CHANGE;
+        parent::setAmount($label, $amount > 0 ? $amount * -1 : $amount);
     }
 
-    protected function processSuccess()
-    {
-        foreach ($this->items as $basketPosition) {
-            $position = $this->getOrderPosition($basketPosition);
-            $position->setDelivered($position->getOrderedQuantity());
-            $this->modelManager->flush($position);
-
-            $this->historyLogger->logHistory($position, $basketPosition->getQuantity(), 'Nachlass wurde hinzugefügt');
-        }
-    }
 }

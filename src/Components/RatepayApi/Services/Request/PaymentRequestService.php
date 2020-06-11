@@ -23,7 +23,6 @@ use Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigEntity;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigRepository;
 use RatePAY\RequestBuilder;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 
@@ -53,10 +52,6 @@ class PaymentRequestService extends AbstractOrderOperationRequest
      */
     private $orderItemRepository;
     /**
-     * @var Context
-     */
-    private $context;
-    /**
      * @var RequestDataBag
      */
     private $requestDataBag;
@@ -80,8 +75,6 @@ class PaymentRequestService extends AbstractOrderOperationRequest
         $this->paymentFactory = $paymentFactory;
         $this->orderRepository = $orderRepository;
         $this->orderItemRepository = $orderItemRepository;
-
-        $this->context = Context::createDefaultContext();
     }
 
     public function setRequestDataBag(RequestDataBag $dataBag)
@@ -121,14 +114,10 @@ class PaymentRequestService extends AbstractOrderOperationRequest
         $responseModel = $response->getResponse();
 
         $customFields = $this->order->getCustomFields() ?? [];
-        $customFields['ratepay_transaction_id'] = $responseModel->getTransactionId();
-        $customFields['ratepay_shipping_delivered'] = 0;
-        $customFields['ratepay_shipping_returned'] = 0;
-        $customFields['ratepay_shipping_canceled'] = 0;
-
-        $customFields['ratepay_discount_delivered'] = 0;
-        $customFields['ratepay_discount_returned'] = 0;
-        $customFields['ratepay_discount_canceled'] = 0;
+        $customFields['ratepay']['transaction_id'] = $responseModel->getTransactionId();
+        $customFields['ratepay']['shipping']['delivered'] = 0;
+        $customFields['ratepay']['shipping']['returned'] = 0;
+        $customFields['ratepay']['shipping']['canceled'] = 0;
 
         $this->orderRepository->upsert([
             [
@@ -140,9 +129,9 @@ class PaymentRequestService extends AbstractOrderOperationRequest
         $lineItems = [];
         foreach ($this->order->getLineItems() as $item) {
             $itemCustomFields = $item->getCustomFields() ?? [];
-            $itemCustomFields['ratepay_delivered'] = 0;
-            $itemCustomFields['ratepay_returned'] = 0;
-            $itemCustomFields['ratepay_canceled'] = 0;
+            $itemCustomFields['ratepay']['delivered'] = 0;
+            $itemCustomFields['ratepay']['returned'] = 0;
+            $itemCustomFields['ratepay']['canceled'] = 0;
 
             $lineItems[] = [
                 'id' => $item->getId(),

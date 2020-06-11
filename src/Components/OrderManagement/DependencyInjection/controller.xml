@@ -13,9 +13,13 @@
     <services>
         <service id="Ratepay\RatepayPayments\Components\OrderManagement\Controller\ProductPanel">
             <argument id="order.repository" type="service"/>
+            <argument id="order_line_item.repository" type="service"/>
+            <argument id="Shopware\Core\Checkout\Cart\Order\RecalculationService" type="service"/>
             <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentDeliverService" type="service"/>
             <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentReturnService" type="service"/>
             <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentCancelService" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentDebitService" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentCreditService" type="service"/>
             <call method="setContainer">
                 <argument id="service_container" type="service"/>
             </call>

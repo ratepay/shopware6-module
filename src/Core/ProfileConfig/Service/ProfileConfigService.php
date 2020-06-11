@@ -94,6 +94,7 @@ class ProfileConfigService
             }
 
             $this->profileRequestService->setProfileConfig($profileConfig);
+            $this->profileRequestService->setContext($this->context);
             $response = $this->profileRequestService->doRequest()->getResponse();
             $data = [
                 ProfileConfigEntity::FIELD_ID => $profileConfig->getId()

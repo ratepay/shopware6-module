@@ -9,8 +9,10 @@
 namespace Ratepay\RatepayPayments\Components\RatepayApi\Services\Request;
 
 
+use Exception;
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
+use Ratepay\RatepayPayments\Components\OrderManagement\Util\LineItemUtil;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
 use Ratepay\RatepayPayments\Components\RatepayApi\Services\FileLogger;
@@ -21,8 +23,8 @@ use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigEntity;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigRepository;
 use RatePAY\RequestBuilder;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 
 abstract class AbstractModifyRequest extends AbstractOrderOperationRequest
 {
@@ -50,7 +52,7 @@ abstract class AbstractModifyRequest extends AbstractOrderOperationRequest
     /**
      * @var EntityRepositoryInterface
      */
-    private $productRepository;
+    protected $productRepository;
     /**
      * @var FileLogger
      */
@@ -58,7 +60,7 @@ abstract class AbstractModifyRequest extends AbstractOrderOperationRequest
     /**
      * @var EntityRepositoryInterface
      */
-    private $lineItemsRepository;
+    protected $lineItemsRepository;
     /**
      * @var HistoryLogger
      */
@@ -66,7 +68,7 @@ abstract class AbstractModifyRequest extends AbstractOrderOperationRequest
     /**
      * @var EntityRepositoryInterface
      */
-    private $orderRepository;
+    protected $orderRepository;
 
     public function __construct(
         ConfigService $configService,
@@ -95,7 +97,7 @@ abstract class AbstractModifyRequest extends AbstractOrderOperationRequest
      * value: quantity
      * @param array $items
      */
-    public final function setItems($items)
+    public function setItems(array $items)
     {
         $this->items = $items;
     }
@@ -106,7 +108,7 @@ abstract class AbstractModifyRequest extends AbstractOrderOperationRequest
 
         $head->setExternal($head->getExternal() ?: new Head\External());
         $head->getExternal()->setOrderId($this->order->getOrderNumber());
-        $head->setTransactionId($this->order->getCustomFields()['ratepay_transaction_id']);
+        $head->setTransactionId($this->order->getCustomFields()['ratepay']['transaction_id']);
         return $head;
     }
 
@@ -119,47 +121,52 @@ abstract class AbstractModifyRequest extends AbstractOrderOperationRequest
 
     protected function processSuccess(RequestBuilder $response)
     {
-        $context = Context::createDefaultContext();
-        $lineItems = $this->order->getLineItems()->getList(array_keys($this->items));
+        $lineItems = $this->lineItemsRepository->search(new Criteria(array_keys($this->items)), $this->context);
         $data = [];
         /** @var OrderLineItemEntity $item */
         foreach ($lineItems as $item) {
+
             $this->historyLogger->logHistory(
                 $this->order->getId(),
                 $this->eventName,
                 $item->getLabel(),
-                $item->getPayload()['productNumber'],
+                $item->getPayload()['productNumber'] ?? '',
                 $this->items[$item->getId()]
             );
 
-            $newCustomFields = $this->getLineItemsCustomFieldChanges($item, $this->items[$item->getId()]);
+            $customFields = $item->getCustomFields();
+            $ratepayCustomFields = $item->getCustomFields()['ratepay'] ?? LineItemUtil::getEmptyCustomFields();
+            $this->updateCustomField($ratepayCustomFields, $this->items[$item->getId()]);
+            $customFields['ratepay'] = $ratepayCustomFields;
             $data[] = [
                 'id' => $item->getId(),
-                'customFields' => array_replace($item->getCustomFields(), $newCustomFields)
+                'customFields' => $customFields
             ];
         }
-        if($data) {
-            $this->lineItemsRepository->update($data, $context);
+        if ($data) {
+            $this->lineItemsRepository->update($data, $this->context);
         }
 
-        if(isset($this->items['shipping'])) {
-            $orderCustomFields = $this->order->getCustomFields();
-            $newCustomFields = $this->getShippingCustomFields($this->items['shipping']);
+        if (isset($this->items['shipping'])) {
+            $customFields = $this->order->getCustomFields();
+            $ratepayCustomFields = $customFields['ratepay']['shipping'] ?? LineItemUtil::getEmptyCustomFields();
+            $this->updateCustomField($ratepayCustomFields, $this->items['shipping']);
+            $customFields['ratepay']['shipping'] = $ratepayCustomFields;
+
             $this->orderRepository->update([
                 [
                     'id' => $this->order->getId(),
-                    'customFields' => array_replace($orderCustomFields, $newCustomFields)
+                    'customFields' => $customFields
                 ]
-            ], $context);
+            ], $this->context);
         }
 
-        if($this->updateStock) {
+        if ($this->updateStock) {
             $this->updateProductStocks();
         }
     }
 
-    protected abstract function getLineItemsCustomFieldChanges(OrderLineItemEntity $lineItem, $qty);
-    protected abstract function getShippingCustomFields($qty);
+    protected abstract function updateCustomField(array &$customFields, $qty);
 
     protected function updateProductStocks()
     {
@@ -173,8 +180,8 @@ abstract class AbstractModifyRequest extends AbstractOrderOperationRequest
             ];
         }
         try {
-            $this->productRepository->update($data, Context::createDefaultContext());
-        } catch (\Exception $e) {
+            $this->productRepository->update($data, $this->context);
+        } catch (Exception $e) {
             $this->fileLogger->addError('Error during the updating of the stock (Exception: ' . $e->getMessage() . ')', [
                 'orderId' => $this->order->getId(),
                 'orderNumber' => $this->order->getOrderNumber(),

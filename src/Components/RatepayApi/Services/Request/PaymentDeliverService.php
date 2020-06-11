@@ -18,7 +18,6 @@ use Ratepay\RatepayPayments\Components\RatepayApi\Services\HistoryLogger;
 use Ratepay\RatepayPayments\Components\RatepayApi\Services\RequestLogger;
 use Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigRepository;
-use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 
 class PaymentDeliverService extends AbstractModifyRequest
@@ -59,17 +58,8 @@ class PaymentDeliverService extends AbstractModifyRequest
         return $content;
     }
 
-    protected function getLineItemsCustomFieldChanges(OrderLineItemEntity $lineItem, $qty)
+    protected function updateCustomField(array &$customFields, $qty)
     {
-        return [
-            'ratepay_delivered' => $lineItem->getCustomFields()['ratepay_delivered'] + $qty
-        ];
-    }
-
-    protected function getShippingCustomFields($qty)
-    {
-        return [
-            'ratepay_shipping_delivered' => $qty
-        ];
+        $customFields['delivered'] = $customFields['delivered'] + $qty;
     }
 }

@@ -42,9 +42,9 @@
                         </sw-button-process>
                     </sw-button-group>
                     <sw-button-group>
-                        <sw-button class="sw-button--small">{{ $t('ratepay.articlePanel.action.addCredit') }}
+                        <sw-button class="sw-button--small" @click="addCredit.showModal = true">{{ $t('ratepay.articlePanel.action.addCredit') }}
                         </sw-button>
-                        <sw-button class="sw-button--small">{{ $t('ratepay.articlePanel.action.addDebit') }}</sw-button>
+                        <sw-button class="sw-button--small" @click="addDebit.showModal = true">{{ $t('ratepay.articlePanel.action.addDebit') }}</sw-button>
                     </sw-button-group>
                 </div>
                 <sw-data-grid
@@ -108,4 +108,49 @@
             </template>
         </template>
     </sw-tabs>
+
+
+    <sw-modal :title="$t('ratepay.articlePanel.action.addDebit')"
+              v-if="addDebit.showModal"
+              @modal-close="addDebit.showModal = false">
+        <template>
+            <label>{{ $t('ratepay.articlePanel.modal.addDebit.label.name') }}</label>
+            <sw-text-field :value="addDebit.name" v-model="addDebit.name"></sw-text-field>
+            <label>{{ $t('ratepay.articlePanel.modal.addDebit.label.amount') }}</label>
+            <sw-number-field numberType="float" :step="0.01" :min="addDebit.min" :max="addDebit.maxValue" :digits="2" :value="addDebit.value" v-model="addDebit.value">
+            </sw-number-field>
+        </template>
+        <template slot="modal-footer">
+            <sw-button-process
+                class="sw-button--small"
+                :isLoading="loading.addDebit"
+                :processSuccess="processSuccess"
+                @click="onClickButtonAddDebit">
+                {{ $t('ratepay.articlePanel.action.addDebit') }}
+            </sw-button-process>
+        </template>
+    </sw-modal>
+
+    <sw-modal :title="$t('ratepay.articlePanel.action.addCredit')"
+              v-if="addCredit.showModal"
+              @modal-close="addCredit.showModal = false">
+        <template>
+            <label>{{ $t('ratepay.articlePanel.modal.addCredit.label.name') }}</label>
+            <sw-text-field :value="addCredit.name" v-model="addCredit.name"></sw-text-field>
+            <label>{{ $t('ratepay.articlePanel.modal.addCredit.label.amount') }}</label>
+            <sw-number-field numberType="float" :step="0.01" :min="addCredit.min" :max="addCredit.maxValue" :digits="2" :value="addCredit.value" v-model="addCredit.value">
+            </sw-number-field>
+        </template>
+        <template slot="modal-footer">
+            <sw-button-process
+                class="sw-button--small"
+                :isLoading="loading.addCredit"
+                :processSuccess="processSuccess"
+                @click="onClickButtonAddCredit">
+                {{ $t('ratepay.articlePanel.action.addCredit') }}
+            </sw-button-process>
+        </template>
+    </sw-modal>
+
 </sw-card>
+
