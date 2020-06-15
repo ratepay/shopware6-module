@@ -12,11 +12,8 @@ namespace Ratepay\RatepayPayments\Components\RatepayApi\Services\Request;
 class PaymentReturnService extends AbstractModifyRequest
 {
 
-    protected $_subType = 'return';
-    protected $eventName = 'return';
+    const EVENT_SUCCESSFUL = self::class . parent::EVENT_SUCCESSFUL;
+    const EVENT_FAILED = self::class . parent::EVENT_FAILED;
 
-    protected function updateCustomField(array &$customFields, $qty)
-    {
-        $customFields['returned'] = $customFields['returned'] + $qty;
-    }
+    protected $_subType = 'return';
 }

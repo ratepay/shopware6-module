@@ -1,0 +1,26 @@
+<!--
+  ~ Copyright (c) 2020 RatePAY GmbH
+  ~
+  ~ For the full copyright and license information, please view the LICENSE
+  ~ file that was distributed with this source code.
+  -->
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <defaults>
+            <bind key="$orderRepository" id="order.repository" type="service"/>
+            <bind key="$lineItemsRepository" id="order_line_item.repository" type="service"/>
+            <bind key="$productRepository" id="product.repository" type="service"/>
+        </defaults>
+
+        <service id="Ratepay\RatepayPayments\Components\RatepayApi\Subscriber\PaymentRequestSubscriber" autowire="true">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="Ratepay\RatepayPayments\Components\RatepayApi\Subscriber\PaymentChangeSubscriber" autowire="true">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+    </services>
+</container>

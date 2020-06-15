@@ -10,6 +10,8 @@ namespace Ratepay\RatepayPayments\Components\OrderManagement\Controller;
 
 
 use Ratepay\RatepayPayments\Components\OrderManagement\Util\LineItemUtil;
+use Ratepay\RatepayPayments\Components\RatepayApi\Dto\AddCreditData;
+use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\AbstractAddRequest;
 use Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\AbstractModifyRequest;
 use Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentCancelService;
@@ -60,13 +62,14 @@ class ProductPanel extends AbstractController
      */
     private $recalculationService;
     /**
-     * @var PaymentDebitService
-     */
-    private $debitService;
-    /**
      * @var PaymentCreditService
      */
     private $creditService;
+
+    /**
+     * @var AbstractModifyRequest[]
+     */
+    private $requestServicesByOperation = [];
 
     public function __construct(
         EntityRepositoryInterface $orderRepository,
@@ -75,7 +78,6 @@ class ProductPanel extends AbstractController
         PaymentDeliverService $paymentDeliverService,
         PaymentReturnService $paymentReturnService,
         PaymentCancelService $paymentCancelService,
-        PaymentDebitService $debitService,
         PaymentCreditService $creditService
     )
     {
@@ -85,8 +87,13 @@ class ProductPanel extends AbstractController
         $this->paymentReturnService = $paymentReturnService;
         $this->paymentCancelService = $paymentCancelService;
         $this->recalculationService = $recalculationService;
-        $this->debitService = $debitService;
         $this->creditService = $creditService;
+
+        $this->requestServicesByOperation = [
+            OrderOperationData::OPERATION_DELIVER => $this->paymentDeliverService,
+            OrderOperationData::OPERATION_CANCEL => $this->paymentCancelService,
+            OrderOperationData::OPERATION_RETURN => $this->paymentReturnService
+        ];
     }
 
     /**
@@ -134,10 +141,10 @@ class ProductPanel extends AbstractController
      */
     public function deliver($orderId, Request $request, Context $context)
     {
-        return $this->processModify($request, $context, $this->paymentDeliverService, $orderId);
+        return $this->processModify($request, $context, OrderOperationData::OPERATION_DELIVER, $orderId);
     }
 
-    protected function processModify(Request $request, Context $context, AbstractModifyRequest $service, $orderId)
+    protected function processModify(Request $request, Context $context, string $operation, $orderId)
     {
         $order = $this->fetchOrder($context, $orderId);
 
@@ -147,11 +154,10 @@ class ProductPanel extends AbstractController
                 $items[$data['id']] = intval($data['quantity']);
             }
 
-            $service->setUpdateStock($request->request->get('updateStock') == true);
-            $service->setTransaction($order);
-            $service->setItems($items);
-            $service->setContext($context);
-            $response = $service->doRequest();
+            $response = $this->requestServicesByOperation[$operation]->doRequest(
+                $context,
+                new OrderOperationData($order, $operation, $items, $request->request->get('updateStock') == true)
+            );
             return $this->json([
                 'success' => $response->getResponse()->isSuccessful(),
                 'message' => $response->getResponse()->getReasonMessage()
@@ -174,7 +180,7 @@ class ProductPanel extends AbstractController
      */
     public function cancel($orderId, Request $request, Context $context)
     {
-        return $this->processModify($request, $context, $this->paymentCancelService, $orderId);
+        return $this->processModify($request, $context, OrderOperationData::OPERATION_CANCEL, $orderId);
     }
 
     /**
@@ -187,7 +193,7 @@ class ProductPanel extends AbstractController
      */
     public function return($orderId, Request $request, Context $context)
     {
-        return $this->processModify($request, $context, $this->paymentReturnService, $orderId);
+        return $this->processModify($request, $context, OrderOperationData::OPERATION_RETURN, $orderId);
     }
 
     /**
@@ -200,27 +206,12 @@ class ProductPanel extends AbstractController
      */
     public function addItem($orderId, Request $request, Context $context)
     {
-        $action = $request->request->get('action');
         $amount = $request->request->get('amount');
         $label = $request->request->get('label');
 
-        /** @var AbstractAddRequest $service */
-        switch ($action) {
-            case 'debit':
-                $service = $this->debitService;
-                break;
-            case 'credit':
-                $service = $this->creditService;
-                break;
-            default:
-                return null;
-        }
-
         $order = $this->fetchOrder($context, $orderId);
-        $service->setContext($context);
-        $service->setTransaction($order);
-        $service->setAmount($label, $amount);
-        $response = $service->doRequest();
+
+        $response = $this->creditService->doRequest($context, new AddCreditData($order, $label, $amount));
 
         if ($response->getResponse()->isSuccessful()) {
             return $this->json([

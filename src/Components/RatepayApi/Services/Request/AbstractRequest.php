@@ -12,15 +12,22 @@ namespace Ratepay\RatepayPayments\Components\RatepayApi\Services\Request;
 use Exception;
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
+use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RatepayPayments\Components\RatepayApi\Event\BuildEvent;
+use Ratepay\RatepayPayments\Components\RatepayApi\Event\RequestDoneEvent;
+use Ratepay\RatepayPayments\Components\RatepayApi\Event\ResponseEvent;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
-use Ratepay\RatepayPayments\Components\RatepayApi\Services\RequestLogger;
 use Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigEntity;
 use RatePAY\RequestBuilder;
 use Shopware\Core\Framework\Context;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 abstract class AbstractRequest
 {
+
+    protected const EVENT_SUCCESSFUL = '.successful';
+    protected const EVENT_FAILED = '.successful';
 
     const CALL_PAYMENT_REQUEST = "PaymentRequest";
     const CALL_DELIVER = "ConfirmationDeliver";
@@ -31,18 +38,16 @@ abstract class AbstractRequest
      * @var ConfigService
      */
     protected $configService;
-    /**
-     * @var RequestLogger
-     */
-    protected $requestLogger;
 
     /**
      * @var string
+     * @deprecated
      */
     protected $_operation = null;
 
     /**
      * @var string
+     * @deprecated
      */
     protected $_subType = null;
 
@@ -51,48 +56,36 @@ abstract class AbstractRequest
      */
     private $headFactory;
 
-
     /**
-     * @var Context
+     * @var EventDispatcherInterface
      */
-    protected $context;
+    private $eventDispatcher;
 
     public function __construct(
+        EventDispatcherInterface $eventDispatcher,
         ConfigService $configService,
-        RequestLogger $requestLogger,
         HeadFactory $headFactory
     )
     {
         $this->configService = $configService;
-        $this->requestLogger = $requestLogger;
         $this->headFactory = $headFactory;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
+     * @param Context $context
+     * @param IRequestData $requestData
      * @return RequestBuilder
      */
-    public final function doRequest()
+    public final function doRequest(Context $context, IRequestData $requestData)
     {
-        $response = $this->call();
-        if ($response->getResponse()->isSuccessful()) {
-            $this->processSuccess($response);
-        }
-        $this->context = null;
-        return $response;
-    }
-
-    /**
-     * @return RequestBuilder
-     */
-    private function call()
-    {
-        $profileConfig = $this->getProfileConfig();
+        $profileConfig = $this->getProfileConfig($context, $requestData);
         if ($profileConfig == null) {
             throw new Exception('Transaction can not performed, cause no profile was found.');
         }
 
-        $head = $this->getRequestHead($profileConfig);
-        $content = $this->getRequestContent();
+        $head = $this->getRequestHead($requestData, $profileConfig);
+        $content = $this->getRequestContent($requestData);
 
         $requestBuilder = new RequestBuilder($profileConfig->isSandbox());
         $requestBuilder = $requestBuilder->__call('call' . $this->_operation, $content ? [$head, $content] : [$head]);
@@ -100,40 +93,39 @@ abstract class AbstractRequest
             $requestBuilder = $requestBuilder->subtype($this->_subType);
         }
 
-        $this->requestLogger->logRequest($requestBuilder->getRequestRaw(), $requestBuilder->getResponseRaw());
+        $this->eventDispatcher->dispatch(new RequestDoneEvent($requestBuilder));
+
+        $requestEvent = new ResponseEvent($context, $requestBuilder, $requestData);
+        if ($requestBuilder->getResponse()->isSuccessful()) {
+            $this->eventDispatcher->dispatch($requestEvent, get_class($this) . self::EVENT_SUCCESSFUL);
+        } else {
+            $this->eventDispatcher->dispatch($requestEvent, get_class($this) . self::EVENT_FAILED);
+        }
 
         return $requestBuilder;
     }
 
     /**
+     * @param Context $context
+     * @param IRequestData $requestData
      * @return ProfileConfigEntity
      */
-    abstract protected function getProfileConfig();
+    abstract protected function getProfileConfig(Context $context, IRequestData $requestData);
 
-    protected function getRequestHead(ProfileConfigEntity $profileConfig): Head
+    protected function getRequestHead(IRequestData $requestData, ProfileConfigEntity $profileConfig): Head
     {
-        return $this->headFactory->getData($profileConfig);
+        $head = $this->headFactory->getData($profileConfig);
+        /** @var BuildEvent $event */
+        $event = $this->eventDispatcher->dispatch(new BuildEvent($requestData, $head), get_class() . '.build.head');
+        return $event->getBuildData();
     }
 
     /**
+     * @param IRequestData $requestData
      * @return Content
      */
-    protected function getRequestContent(): ?Content
+    protected function getRequestContent(IRequestData $requestData): ?Content
     {
         return null;
     }
-
-    protected function processSuccess(RequestBuilder $response)
-    {
-        // do nothing
-    }
-
-    /**
-     * @param Context $context
-     */
-    public function setContext(Context $context): void
-    {
-        $this->context = $context;
-    }
-
 }

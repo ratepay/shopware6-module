@@ -6,16 +6,18 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\RatepayApi\Services;
+namespace Ratepay\RatepayPayments\Components\Logging\Subscriber;
 
 use DateTime;
 use Exception;
 use Monolog\Logger;
+use Ratepay\RatepayPayments\Components\RatepayApi\Event\RequestDoneEvent;
 use Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class RequestLogger
+class RequestLogger implements EventSubscriberInterface
 {
 
     /**
@@ -43,14 +45,24 @@ class RequestLogger
         $this->logRepository = $logRepository;
     }
 
+    public static function getSubscribedEvents()
+    {
+        return [
+            RequestDoneEvent::class => 'logRequest'
+        ];
+    }
+
     /**
      * Logs the Request and Response
      *
      * @param string $requestXml
      * @param string $responseXml
      */
-    public function logRequest($requestXml, $responseXml)
+    public function logRequest(RequestDoneEvent $event)
     {
+        $requestXml = $event->getRequestBuilder()->getRequestRaw();
+        $responseXml = $event->getRequestBuilder()->getResponseRaw();
+
         preg_match("/<operation.*>(.*)<\/operation>/", $requestXml, $operationMatches);
         $operation = $operationMatches[1];
 

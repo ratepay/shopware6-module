@@ -150,6 +150,7 @@ class RatepayPayments extends Plugin
             'services.xml',
             'models.xml',
             'controller.xml',
+            'subscriber.xml',
         ];
 
         $loader = new XmlFileLoader($containerBuilder, new FileLocator(__DIR__));

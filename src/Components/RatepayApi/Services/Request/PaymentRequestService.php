@@ -13,21 +13,27 @@ use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
 use RatePAY\Model\Request\SubModel\Head\CustomerDevice;
 use RatePAY\Model\Request\SubModel\Head\External;
-use RatePAY\Model\Response\PaymentRequest;
+use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RatepayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\CustomerFactory;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\PaymentFactory;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
-use Ratepay\RatepayPayments\Components\RatepayApi\Services\RequestLogger;
 use Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigEntity;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigRepository;
 use RatePAY\RequestBuilder;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Shopware\Core\Framework\Context;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * @method RequestBuilder doRequest(Context $context, PaymentRequestData $requestData)
+ */
 class PaymentRequestService extends AbstractOrderOperationRequest
 {
+
+    const EVENT_SUCCESSFUL = self::class . parent::EVENT_SUCCESSFUL;
+    const EVENT_FAILED = self::class . parent::EVENT_FAILED;
 
     protected $_operation = self::CALL_PAYMENT_REQUEST;
 
@@ -43,52 +49,31 @@ class PaymentRequestService extends AbstractOrderOperationRequest
      * @var PaymentFactory
      */
     private $paymentFactory;
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $orderRepository;
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $orderItemRepository;
-    /**
-     * @var RequestDataBag
-     */
-    private $requestDataBag;
-
 
     public function __construct(
+        EventDispatcherInterface $eventDispatcher,
         ConfigService $configService,
-        RequestLogger $requestLogger,
         HeadFactory $headFactory,
         ProfileConfigRepository $profileConfigRepository,
         ShoppingBasketFactory $shoppingBasketFactory,
         CustomerFactory $customerFactory,
-        PaymentFactory $paymentFactory,
-        EntityRepositoryInterface $orderRepository,
-        EntityRepositoryInterface $orderItemRepository
+        PaymentFactory $paymentFactory
     )
     {
-        parent::__construct($configService, $requestLogger, $headFactory, $profileConfigRepository);
+        parent::__construct($eventDispatcher, $configService, $headFactory, $profileConfigRepository);
         $this->shoppingBasketFactory = $shoppingBasketFactory;
         $this->customerFactory = $customerFactory;
         $this->paymentFactory = $paymentFactory;
-        $this->orderRepository = $orderRepository;
-        $this->orderItemRepository = $orderItemRepository;
     }
 
-    public function setRequestDataBag(RequestDataBag $dataBag)
+    protected function getRequestHead(IRequestData $requestData, ProfileConfigEntity $profileConfig): Head
     {
-        $this->requestDataBag = $dataBag;
-    }
-
-    protected function getRequestHead(ProfileConfigEntity $profileConfig): Head
-    {
-        $head = parent::getRequestHead($profileConfig);
+        /** @var PaymentRequestData $requestData */
+        $head = parent::getRequestHead($requestData, $profileConfig);
         $head->setExternal(
             (new External())
-                ->setOrderId($this->order->getOrderNumber())
-                ->setMerchantConsumerId($this->order->getOrderCustomer()->getCustomerNumber())
+                ->setOrderId($requestData->getOrder()->getOrderNumber())
+                ->setMerchantConsumerId($requestData->getOrder()->getOrderCustomer()->getCustomerNumber())
         );
 
         if (false) { // TODO device finger printing
@@ -100,44 +85,12 @@ class PaymentRequestService extends AbstractOrderOperationRequest
         return $head;
     }
 
-    protected function getRequestContent(): Content
+    protected function getRequestContent(IRequestData $requestData): Content
     {
+        /** @var PaymentRequestData $requestData */
         return (new Content())
-            ->setShoppingBasket($this->shoppingBasketFactory->getData($this->order))
-            ->setCustomer($this->customerFactory->getData($this->order, $this->requestDataBag))
-            ->setPayment($this->paymentFactory->getData($this->transaction, $this->requestDataBag));
-    }
-
-    protected function processSuccess(RequestBuilder $response)
-    {
-        /** @var PaymentRequest $responseModel */
-        $responseModel = $response->getResponse();
-
-        $customFields = $this->order->getCustomFields() ?? [];
-        $customFields['ratepay']['transaction_id'] = $responseModel->getTransactionId();
-        $customFields['ratepay']['shipping']['delivered'] = 0;
-        $customFields['ratepay']['shipping']['returned'] = 0;
-        $customFields['ratepay']['shipping']['canceled'] = 0;
-
-        $this->orderRepository->upsert([
-            [
-                'id' => $this->order->getId(),
-                'customFields' => $customFields
-            ]
-        ], $this->context);
-
-        $lineItems = [];
-        foreach ($this->order->getLineItems() as $item) {
-            $itemCustomFields = $item->getCustomFields() ?? [];
-            $itemCustomFields['ratepay']['delivered'] = 0;
-            $itemCustomFields['ratepay']['returned'] = 0;
-            $itemCustomFields['ratepay']['canceled'] = 0;
-
-            $lineItems[] = [
-                'id' => $item->getId(),
-                'customFields' => $itemCustomFields
-            ];
-        }
-        $this->orderItemRepository->upsert($lineItems, $this->context);
+            ->setShoppingBasket($this->shoppingBasketFactory->getData($requestData->getOrder()))
+            ->setCustomer($this->customerFactory->getData($requestData->getOrder(), $requestData->getRequestDataBag()))
+            ->setPayment($this->paymentFactory->getData($requestData->getTransaction(), $requestData->getRequestDataBag()));
     }
 }

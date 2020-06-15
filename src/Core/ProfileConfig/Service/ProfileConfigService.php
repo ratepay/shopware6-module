@@ -12,6 +12,7 @@ namespace Ratepay\RatepayPayments\Core\ProfileConfig\Service;
 use RatePAY\Model\Request\AbstractRequest;
 use Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
 use Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
+use Ratepay\RatepayPayments\Components\RatepayApi\Dto\ProfileRequestData;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigCollection;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigEntity;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigMethodEntity;
@@ -93,9 +94,7 @@ class ProfileConfigService
                 }, $deleteIds)), $this->context);
             }
 
-            $this->profileRequestService->setProfileConfig($profileConfig);
-            $this->profileRequestService->setContext($this->context);
-            $response = $this->profileRequestService->doRequest()->getResponse();
+            $response = $this->profileRequestService->doRequest($this->context, new ProfileRequestData($profileConfig))->getResponse();
             $data = [
                 ProfileConfigEntity::FIELD_ID => $profileConfig->getId()
             ];

@@ -9,29 +9,24 @@
 namespace Ratepay\RatepayPayments\Components\RatepayApi\Services\Request;
 
 
+use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
-use Ratepay\RatepayPayments\Components\RatepayApi\Services\RequestLogger;
 use Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigEntity;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigMethodEntity;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigRepository;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
-use Shopware\Core\Checkout\Order\OrderEntity;
+use RatePAY\RequestBuilder;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * @method RequestBuilder doRequest(Context $context, OrderOperationData $requestData)
+ */
 abstract class AbstractOrderOperationRequest extends AbstractRequest
 {
-
-    /**
-     * @var OrderEntity
-     */
-    protected $order;
-
-    /**
-     * @var OrderTransactionEntity
-     */
-    protected $transaction;
 
     /**
      * @var ProfileConfigRepository
@@ -39,45 +34,37 @@ abstract class AbstractOrderOperationRequest extends AbstractRequest
     private $profileConfigRepository;
 
     public function __construct(
+        EventDispatcherInterface $eventDispatcher,
         ConfigService $configService,
-        RequestLogger $requestLogger,
         HeadFactory $headFactory,
         ProfileConfigRepository $profileConfigRepository
     )
     {
-        parent::__construct($configService, $requestLogger, $headFactory);
+        parent::__construct($eventDispatcher, $configService, $headFactory);
         $this->profileConfigRepository = $profileConfigRepository;
     }
 
-    public final function setTransaction(OrderEntity $orderEntity, OrderTransactionEntity $transaction = null)
+    protected function getProfileConfig(Context $context, IRequestData $requestData)
     {
-        $this->order = $orderEntity;
-        if ($transaction !== null) {
-            $this->transaction = $transaction;
-        } else {
-            $this->transaction = $this->order->getTransactions()->first();
-        }
-    }
+        /** @var OrderOperationData $requestData */
 
-    protected function getProfileConfig()
-    {
         $criteria = new Criteria();
         $criteria->addAssociation(ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS);
 
         // payment method
         $criteria->addFilter(new EqualsFilter(
             ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_PAYMENT_METHOD_ID,
-            $this->transaction->getPaymentMethod()->getId()
+            $requestData->getTransaction()->getPaymentMethod()->getId()
         ));
 
         // billing country
         $criteria->addFilter(new EqualsFilter(
             ProfileConfigEntity::FIELD_COUNTRY_CODE_BILLING,
-            $this->order->getAddresses()->get($this->order->getBillingAddressId())->getCountry()->getIso()
+            $requestData->getOrder()->getAddresses()->get($requestData->getOrder()->getBillingAddressId())->getCountry()->getIso()
         ));
 
         // delivery country
-        if ($delivery = $this->order->getDeliveries()->first()) {
+        if ($delivery = $requestData->getOrder()->getDeliveries()->first()) {
             $criteria->addFilter(new EqualsFilter(
                 ProfileConfigEntity::FIELD_COUNTRY_CODE_SHIPPING,
                 $delivery->getShippingOrderAddress()->getCountry()->getIso()
@@ -87,13 +74,13 @@ abstract class AbstractOrderOperationRequest extends AbstractRequest
         // sales channel
         $criteria->addFilter(new EqualsFilter(
             ProfileConfigEntity::FIELD_SALES_CHANNEL_ID,
-            $this->order->getSalesChannelId()
+            $requestData->getOrder()->getSalesChannelId()
         ));
 
         // currency
         $criteria->addFilter(new EqualsFilter(
             ProfileConfigEntity::FIELD_CURRENCY,
-            $this->order->getCurrency()->getIsoCode()
+            $requestData->getOrder()->getCurrency()->getIsoCode()
         ));
 
         // currency
@@ -102,7 +89,7 @@ abstract class AbstractOrderOperationRequest extends AbstractRequest
             true
         ));
 
-        return $this->profileConfigRepository->search($criteria, $this->context)->first();
+        return $this->profileConfigRepository->search($criteria, $context)->first();
     }
 
 }

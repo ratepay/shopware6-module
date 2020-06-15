@@ -9,16 +9,11 @@
 namespace Ratepay\RatepayPayments\Components\RatepayApi\Services\Request;
 
 
-class PaymentCreditService extends AbstractAddRequest
+class PaymentCreditService extends AbstractModifyRequest
 {
 
+    const EVENT_SUCCESSFUL = self::class . parent::EVENT_SUCCESSFUL;
+    const EVENT_FAILED = self::class . parent::EVENT_FAILED;
+
     protected $_subType = 'credit';
-
-    protected $eventName = 'credit';
-
-    public function setAmount(string $label, float $amount): void
-    {
-        parent::setAmount($label, $amount > 0 ? $amount * -1 : $amount);
-    }
-
 }

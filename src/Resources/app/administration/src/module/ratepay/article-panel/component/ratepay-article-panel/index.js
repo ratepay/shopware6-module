@@ -171,7 +171,7 @@ Component.register('ratepay-article-panel', {
         },
         onClickButtonAddDebit() {
             this.orderManagementService
-                .addItem('debit', this.orderId, this.addDebit.value, this.addDebit.name)
+                .addItem('debit', this.orderId, parseFloat(this.addDebit.value), this.addDebit.name)
                 .then(response => {
                     this.showMessage(response, 'addDebit');
                     this.loadList().then(() => {
@@ -181,11 +181,11 @@ Component.register('ratepay-article-panel', {
         },
         onClickButtonAddCredit() {
             this.orderManagementService
-                .addItem('credit', this.orderId, this.addCredit.value, this.addCredit.name)
+                .addItem('credit', this.orderId, parseFloat(this.addCredit.value) * -1, this.addCredit.name)
                 .then(response => {
                     this.showMessage(response, 'addCredit');
                     this.loadList().then(() => {
-                        this.addDebit.showModal = false;
+                        this.addCredit.showModal = false;
                     });
                 });
         },

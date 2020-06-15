@@ -11,15 +11,12 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="Ratepay\RatepayPayments\Components\OrderManagement\Controller\ProductPanel" autowire="true">
-            <argument key="$orderRepository" id="order.repository" type="service"/>
-            <argument key="$lineItemRepository" id="order_line_item.repository" type="service"/>
-            <call method="setContainer">
-                <argument id="service_container" type="service"/>
-            </call>
-            <tag name="controller.service_arguments"/>
+        <service id="Ratepay\RatepayPayments\Components\Logging\Subscriber\RequestLogger">
+            <argument id="Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService" type="service"/>
+            <argument id="ratepay_api_log.repository" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\FileLogger" type="service"/>
+            <tag name="kernel.event_subscriber"/>
         </service>
 
     </services>
-
 </container>
