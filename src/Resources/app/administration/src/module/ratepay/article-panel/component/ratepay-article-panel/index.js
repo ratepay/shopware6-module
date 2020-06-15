@@ -27,6 +27,7 @@ Component.register('ratepay-article-panel', {
             items: [],
             activeTab: 'shipping',
             processSuccess: false,
+            orderId: null,
             loading: {
                 list: true,
                 deliver: false,
@@ -34,9 +35,24 @@ Component.register('ratepay-article-panel', {
                 cancelWithStock: false,
                 rtn: false, // do not use `return`. it is a js key
                 rtnWithStock: false,
-                reload: false
+                reload: false,
+                addCredit: false,
+                addDebit: false
             },
-            orderId: null,
+            addCredit: {
+                showModal: false,
+                value: 0.01,
+                minValue: 0.01,
+                maxValue: 10,
+                name: this.$t('ratepay.articlePanel.modal.addCredit.defaultValue.name')
+            },
+            addDebit: {
+                showModal: false,
+                value: 0.01,
+                minValue: 0.01,
+                maxValue: null,
+                name: this.$t('ratepay.articlePanel.modal.addDebit.defaultValue.name')
+            }
         };
     },
 
@@ -152,6 +168,26 @@ Component.register('ratepay-article-panel', {
             this.loadList().then(() => {
                 this.loading.reload = false;
             });
+        },
+        onClickButtonAddDebit() {
+            this.orderManagementService
+                .addItem('debit', this.orderId, this.addDebit.value, this.addDebit.name)
+                .then(response => {
+                    this.showMessage(response, 'addDebit');
+                    this.loadList().then(() => {
+                        this.addDebit.showModal = false;
+                    });
+                });
+        },
+        onClickButtonAddCredit() {
+            this.orderManagementService
+                .addItem('credit', this.orderId, this.addCredit.value, this.addCredit.name)
+                .then(response => {
+                    this.showMessage(response, 'addCredit');
+                    this.loadList().then(() => {
+                        this.addDebit.showModal = false;
+                    });
+                });
         },
 
         showMessage(response, type) {

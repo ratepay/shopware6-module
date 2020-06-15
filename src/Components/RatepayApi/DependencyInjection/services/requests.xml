@@ -29,5 +29,76 @@
             <argument id="order.repository" type="service"/>
             <argument id="order_line_item.repository" type="service"/>
         </service>
+
+        <service id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentDeliverService">
+            <argument id="Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Factory\InvoiceFactory" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigRepository" type="service"/>
+            <argument id="product.repository" type="service"/>
+            <argument id="order.repository" type="service"/>
+            <argument id="order_line_item.repository" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\RequestLogger" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\FileLogger" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\HistoryLogger" type="service"/>
+        </service>
+
+        <service id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentReturnService">
+            <argument id="Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigRepository" type="service"/>
+            <argument id="product.repository" type="service"/>
+            <argument id="order.repository" type="service"/>
+            <argument id="order_line_item.repository" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\RequestLogger" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\FileLogger" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\HistoryLogger" type="service"/>
+        </service>
+
+        <service id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentCancelService">
+            <argument id="Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigRepository" type="service"/>
+            <argument id="product.repository" type="service"/>
+            <argument id="order.repository" type="service"/>
+            <argument id="order_line_item.repository" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\RequestLogger" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\FileLogger" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\HistoryLogger" type="service"/>
+        </service>
+
+        <service id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentCreditService">
+            <argument id="Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigRepository" type="service"/>
+            <argument id="product.repository" type="service"/>
+            <argument id="order.repository" type="service"/>
+            <argument id="order_line_item.repository" type="service"/>
+            <argument id="Shopware\Core\Checkout\Cart\Order\RecalculationService" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\RequestLogger" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\FileLogger" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\HistoryLogger" type="service"/>
+        </service>
+
+        <service id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentDebitService">
+            <argument id="Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigRepository" type="service"/>
+            <argument id="product.repository" type="service"/>
+            <argument id="order.repository" type="service"/>
+            <argument id="order_line_item.repository" type="service"/>
+            <argument id="Shopware\Core\Checkout\Cart\Order\RecalculationService" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\RequestLogger" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\FileLogger" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\HistoryLogger" type="service"/>
+        </service>
+
+
+
     </services>
 </container>

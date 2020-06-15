@@ -12,25 +12,12 @@ namespace Ratepay\RatepayPayments\Components\RatepayApi\Services\Request;
 class PaymentDebitService extends AbstractAddRequest
 {
 
-    protected $_subType = 'credit';
+    protected $_subType = 'credit'; // it is a little bit confusing, but it is correct ;-)
 
-    /**
-     * @return string
-     */
-    protected function getCallName()
+    protected $eventName = 'debit';
+
+    public function setAmount(string $label, float $amount): void
     {
-        return self::CALL_CHANGE;
+        parent::setAmount($label, $amount < 0 ? $amount * -1 : $amount);
     }
-
-    protected function processSuccess()
-    {
-        foreach ($this->items as $basketPosition) {
-            $position = $this->getOrderPosition($basketPosition);
-            $position->setDelivered($position->getOrderedQuantity());
-            $this->modelManager->flush($position);
-
-            $this->historyLogger->logHistory($position, $basketPosition->getQuantity(), 'Nachbelastung wurde hinzugefügt');
-        }
-    }
-
 }

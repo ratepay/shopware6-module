@@ -14,6 +14,7 @@ use Ratepay\RatepayPayments\Components\PaymentHandler\Constraint\BirthdayConstra
 use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
 use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
 use Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentRequestService;
+use Ratepay\RatepayPayments\Util\CriteriaHelper;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
@@ -65,8 +66,9 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
     {
         $order = $this->getOrderWithAssociations($transaction->getOrder(), $salesChannelContext->getContext());
         try {
-            $this->paymentRequestService->setTransaction($order, $transaction);
+            $this->paymentRequestService->setTransaction($order, $transaction->getOrderTransaction());
             $this->paymentRequestService->setRequestDataBag($dataBag);
+            $this->paymentRequestService->setContext($salesChannelContext->getContext());
             $response = $this->paymentRequestService->doRequest();
             if ($response->getResponse()->isSuccessful()) {
                 $this->eventDispatcher->dispatch(new PaymentSuccessfulEvent($transaction, $dataBag, $salesChannelContext, $response->getResponse()));
@@ -86,27 +88,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
      */
     protected function getOrderWithAssociations(OrderEntity $order, Context $context)
     {
-        $criteria = new Criteria([$order->getId()]);
-        $criteria->addAssociation('currency');
-        $criteria->addAssociation('language.locale');
-        $criteria->addAssociation('addresses');
-        $criteria->addAssociation('addresses.country');
-        $criteria->addAssociation('addresses.salutation');
-        $criteria->addAssociation('orderCustomer');
-        $criteria->addAssociation('orderCustomer.customer');
-        $criteria->addAssociation('lineItems');
-        $criteria->addAssociation('lineItems.cover');
-        $criteria->addAssociation('deliveries');
-        $criteria->addAssociation('deliveries.shippingMethod');
-        $criteria->addAssociation('deliveries.positions');
-        $criteria->addAssociation('deliveries.positions.orderLineItem');
-        $criteria->addAssociation('deliveries.shippingOrderAddress');
-        $criteria->addAssociation('deliveries.shippingOrderAddress.country');
-        $criteria->addAssociation('deliveries.shippingOrderAddress.countryState');
-        $criteria->addAssociation('deliveries.shippingOrderAddress.salutation');
-        $criteria->addSorting(new FieldSorting('lineItems.createdAt'));
-
-        return $this->orderRepository->search($criteria, $context)->first();
+        return $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($order->getId()), $context)->first();
     }
 
     public function getValidationDefinitions(SalesChannelContext $salesChannelContext)

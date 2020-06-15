@@ -11,12 +11,13 @@ namespace Ratepay\RatepayPayments\Components\RatepayApi\Factory;
 
 use RatePAY\Model\Request\SubModel\Content\Payment;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 
 class PaymentFactory
 {
 
 
-    public function getData(OrderTransactionEntity $transaction)
+    public function getData(OrderTransactionEntity $transaction, RequestDataBag $requestDataBag)
     {
         $payment = new Payment();
 

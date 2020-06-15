@@ -9,7 +9,8 @@
 namespace Ratepay\RatepayPayments\Components\RatepayApi\Factory;
 
 
-use DateTimeInterface;
+use RatePAY\Model\Request\SubModel\Content\Invoicing;
+use Shopware\Core\Checkout\Document\DocumentEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 
 class InvoiceFactory
@@ -17,23 +18,21 @@ class InvoiceFactory
 
     public function getData(OrderEntity $order)
     {
-        return null; //TODO
+        $documents = $order->getDocuments()->filter(function (DocumentEntity $documentEntity) {
+            return $documentEntity->getDocumentType()->getTechnicalName() === 'invoice';
+        });
 
-
-        $documentModel = $this->modelManager->getRepository(Document::class); //TODO DI
-        $document = $documentModel->findOneBy(['orderId' => $order->getId(), 'type' => 1]);
-        if ($document !== null) {
-            /** @var DateTimeInterface $dateObject */
-            $dateObject = $document->getDate();
+        if ($invoice = $documents->first()) {
+            $dateObject = $invoice->getCreatedAt();
             $currentDate = $dateObject->format('Y-m-d');
             $currentTime = $dateObject->format('H:i:s');
             $currentDateTime = $currentDate . 'T' . $currentTime;
 
-            return [
-                'InvoiceId' => $document->getDocumentId(),
-                'InvoiceDate' => $currentDateTime,
-                'DeliveryDate' => $currentDateTime
-            ];
+            return (new Invoicing())
+                ->setInvoiceId($invoice->getConfig()['documentNumber'])
+                ->setInvoiceDate($currentDateTime)
+                ->setDeliveryDate($currentDateTime)
+                ;
         }
         return null;
     }

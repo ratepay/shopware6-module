@@ -9,97 +9,57 @@
 namespace Ratepay\RatepayPayments\Components\RatepayApi\Services\Request;
 
 
-use Enlight_Components_Db_Adapter_Pdo_Mysql;
-use RpayRatepay\Component\Mapper\BasketArrayBuilder;
-use RpayRatepay\Helper\PositionHelper;
-use RpayRatepay\Services\Config\ConfigService;
-use RpayRatepay\Services\Factory\InvoiceArrayFactory;
-use RpayRatepay\Services\Logger\HistoryLogger;
-use RpayRatepay\Services\Logger\RequestLogger;
-use RpayRatepay\Services\ProfileConfig\ProfileConfigService;
-use Shopware\Components\Model\ModelManager;
+use RatePAY\Model\Request\SubModel\Content;
+use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
+use Ratepay\RatepayPayments\Components\RatepayApi\Factory\InvoiceFactory;
+use Ratepay\RatepayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
+use Ratepay\RatepayPayments\Components\RatepayApi\Services\FileLogger;
+use Ratepay\RatepayPayments\Components\RatepayApi\Services\HistoryLogger;
+use Ratepay\RatepayPayments\Components\RatepayApi\Services\RequestLogger;
+use Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService;
+use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 
 class PaymentDeliverService extends AbstractModifyRequest
 {
 
+    protected $_operation = self::CALL_DELIVER;
+    protected $eventName = 'deliver';
+
     /**
-     * @var InvoiceArrayFactory
+     * @var InvoiceFactory
      */
-    protected $invoiceArrayFactory;
+    private $invoiceFactory;
 
     public function __construct(
-        Enlight_Components_Db_Adapter_Pdo_Mysql $db,
         ConfigService $configService,
+        HeadFactory $headFactory,
+        InvoiceFactory $invoiceFactory,
+        ShoppingBasketFactory $shoppingBasketFactory,
+        ProfileConfigRepository $profileConfigRepository,
+        EntityRepositoryInterface $productRepository,
+        EntityRepositoryInterface $orderRepository,
+        EntityRepositoryInterface $lineItemsRepository,
         RequestLogger $requestLogger,
-        ProfileConfigService $profileConfigService,
-        HistoryLogger $historyLogger,
-        ModelManager $modelManager,
-        PositionHelper $positionHelper,
-        InvoiceArrayFactory $invoiceArrayFactory
+        FileLogger $fileLogger,
+        HistoryLogger $historyLogger
     )
     {
-        parent::__construct($db, $configService, $requestLogger, $profileConfigService, $historyLogger, $modelManager, $positionHelper);
-        $this->invoiceArrayFactory = $invoiceArrayFactory;
+        parent::__construct($configService, $headFactory, $shoppingBasketFactory, $profileConfigRepository, $productRepository, $orderRepository, $lineItemsRepository, $requestLogger, $fileLogger, $historyLogger);
+        $this->invoiceFactory = $invoiceFactory;
     }
 
-    protected function getCallName()
+    protected function getRequestContent(): Content
     {
-        return self::CALL_DELIVER;
-    }
-
-    protected function isSkipRequest()
-    {
-        /** @deprecated v6.2 */
-        if ($this->_order->getAttribute()->getRatepayDirectDelivery() == false) {
-            if ($this->positionHelper->doesOrderHasOpenPositions($this->_order, $this->items)) {
-                return true;
-            } else {
-                //deliver ALL positions!
-                $basketArrayBuilder = new BasketArrayBuilder($this->_order, $this->_order->getDetails());
-                $basketArrayBuilder->addShippingItem();
-                $this->setItems($basketArrayBuilder);
-                return false;
-            }
+        $content = parent::getRequestContent();
+        if ($invoicing = $this->invoiceFactory->getData($this->order)) {
+            $content->setInvoicing($invoicing);
         }
-        return false;
+        return $content;
     }
 
-    protected function getRequestContent()
+    protected function updateCustomField(array &$customFields, $qty)
     {
-        $requestContent = parent::getRequestContent();
-
-        $invoiceData = $this->invoiceArrayFactory->getData($this->_order);
-        if ($invoiceData) {
-            $requestContent[InvoiceArrayFactory::ARRAY_KEY] = $invoiceData;
-        }
-        return $requestContent;
+        $customFields['delivered'] = $customFields['delivered'] + $qty;
     }
-
-    protected function processSuccess()
-    {
-        foreach ($this->items as $basketPosition) {
-            $position = $this->getOrderPosition($basketPosition);
-
-            if ($this->_order->getAttribute()->getRatepayDirectDelivery() == false && $this->isRequestSkipped == false) {
-                /** @deprecated v6.2 */
-                // this is a little bit tricky:
-                // if a rate payment has been processed and all items has been delivered,
-                // we must set the delivered value to the final value manually
-                // do not decrease with the returned items, cause the returned items should be always zero
-                $position->setDelivered($position->getOrderedQuantity() - $position->getCancelled());
-            } else {
-                $position->setDelivered($position->getDelivered() + $basketPosition->getQuantity());
-            }
-
-            $this->modelManager->flush($position);
-
-            if ($this->isRequestSkipped === false) {
-                $this->historyLogger->logHistory($position, $basketPosition->getQuantity(), 'Artikel wurde versand.');
-            } else {
-                $this->historyLogger->logHistory($position, $basketPosition->getQuantity(), 'Artikel wurde für den Versand vorbereitet.');
-            }
-        }
-        parent::processSuccess();
-    }
-
 }

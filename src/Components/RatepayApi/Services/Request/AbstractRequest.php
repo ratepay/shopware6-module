@@ -17,15 +17,16 @@ use Ratepay\RatepayPayments\Components\RatepayApi\Services\RequestLogger;
 use Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigEntity;
 use RatePAY\RequestBuilder;
+use Shopware\Core\Framework\Context;
 
 abstract class AbstractRequest
 {
 
     const CALL_PAYMENT_REQUEST = "PaymentRequest";
-    const CALL_PAYMENT_CONFIRM = "PaymentConfirm";
     const CALL_DELIVER = "ConfirmationDeliver";
     const CALL_CHANGE = "PaymentChange";
     const CALL_PROFILE_REQUEST = "ProfileRequest";
+
     /**
      * @var ConfigService
      */
@@ -40,13 +41,21 @@ abstract class AbstractRequest
      */
     protected $_operation = null;
 
+    /**
+     * @var string
+     */
     protected $_subType = null;
-    /** @var bool */
-    protected $isRequestSkipped = false;
+
     /**
      * @var HeadFactory
      */
     private $headFactory;
+
+
+    /**
+     * @var Context
+     */
+    protected $context;
 
     public function __construct(
         ConfigService $configService,
@@ -68,6 +77,7 @@ abstract class AbstractRequest
         if ($response->getResponse()->isSuccessful()) {
             $this->processSuccess($response);
         }
+        $this->context = null;
         return $response;
     }
 
@@ -116,6 +126,14 @@ abstract class AbstractRequest
     protected function processSuccess(RequestBuilder $response)
     {
         // do nothing
+    }
+
+    /**
+     * @param Context $context
+     */
+    public function setContext(Context $context): void
+    {
+        $this->context = $context;
     }
 
 }
