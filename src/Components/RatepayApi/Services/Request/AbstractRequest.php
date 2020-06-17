@@ -27,7 +27,7 @@ abstract class AbstractRequest
 {
 
     protected const EVENT_SUCCESSFUL = '.successful';
-    protected const EVENT_FAILED = '.successful';
+    protected const EVENT_FAILED = '.failed';
     protected const EVENT_BUILD_HEAD = '.build.head';
 
     const CALL_PAYMENT_REQUEST = "PaymentRequest";

@@ -5,7 +5,25 @@
  * file that was distributed with this source code.
  */
 
-import './module/ratepay/profile-config';
-import './module/ratepay/log-viewer';
-import './module/ratepay/order-log-history';
-import './module/ratepay/article-panel';
+/**
+ * Custom Components
+ */
+import './component/ratepay/ratepay-order-history-log-grid';
+import './component/ratepay/ratepay-order-management';
+
+/**
+ * Custom Modules
+ */
+import './module/ratepay-api-log';
+import './module/ratepay-profile-config';
+
+/**
+ * Custom Services
+ */
+import './init/order-management-api-service.init';
+import './init/profile-config-api-service.init';
+
+/**
+ * Shopware Extensions
+ */
+import './module/sw-order/view/sw-order-detail-base'

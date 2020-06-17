@@ -52,7 +52,7 @@ class ShoppingBasketFactory
                 $this->addOrderLineItemToBasket($basket, $item, $qty);
             }
         }
-        if (count($itemsToSend) == 0) {
+        if (count($itemsToSend) === 0) {
             // send all items
             foreach ($order->getLineItems() as $item) {
                 $this->addOrderLineItemToBasket($basket, $item, $item->getQuantity());

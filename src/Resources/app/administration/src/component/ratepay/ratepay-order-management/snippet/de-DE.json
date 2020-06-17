@@ -1,0 +1,42 @@
+{
+    "ratepay": {
+        "orderManagement": {
+            "title": "Ratepay Artikelverwaltung",
+            "tab": {
+                "shippingCancel": "Versand/Stornierung",
+                "return": "Retoure"
+            },
+            "action": {
+                "setZero": "Anzahl auf 0 setzen",
+                "addCredit": "Nachlass hinzufügen",
+                "addDebit": "Nachbelastung hinzufügen",
+                "deliverSelection": "Auswahl versenden",
+                "cancelSelection": "Auswahl stornieren",
+                "cancelSelectionWithStock": "Auswahl stornieren & Inventar aktualisieren",
+                "returnSelection": "Auswahl retournieren",
+                "returnSelectionWithStock": "Auswahl retournieren & Inventar aktualisieren"
+            },
+            "table": {
+                "count": "Anzahl",
+                "articleName": "Artikelname",
+                "ordered": "Bestellt",
+                "delivered": "Versendet",
+                "canceled": "Storniert",
+                "returned": "Retourniert"
+            },
+            "messages": {
+                "successTitle": "Erfolgreich",
+                "failedTitle": "Fehlgeschlagen",
+                "deliver": {
+                    "success": "Die Artikel wurden erfolgreich als versendet markiert."
+                },
+                "cancel": {
+                    "success": "Die Artikel wurden erfolgreich storniert."
+                },
+                "return": {
+                    "success": "Die Artikel wurden erfolgreich als retourniert markiert."
+                }
+            }
+        }
+    }
+}

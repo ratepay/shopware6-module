@@ -19,7 +19,7 @@ class OrderOperationData implements IRequestData
     public const OPERATION_DELIVER = 'deliver';
     public const OPERATION_CANCEL = 'cancel';
     public const OPERATION_RETURN = 'return';
-    public const OPERATION_ADD = 'return';
+    public const OPERATION_ADD = 'add';
 
 
     /**
