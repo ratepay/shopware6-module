@@ -11,11 +11,6 @@ namespace Ratepay\RatepayPayments\Components\DeviceFingerprint;
 use RatePAY\Service\DeviceFingerprint;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-/**
- * ServiceClass for device fingerprinting
- * Class DfpService
- * @package Ratepay\Services
- */
 class DfpService
 {
     const SESSION_VAR_NAME = 'ratepay_dfp_token';
