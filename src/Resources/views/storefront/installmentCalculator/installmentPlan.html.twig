@@ -1,0 +1,123 @@
+<!--
+  ~ Copyright (c) 2020 RatePAY GmbH
+  ~
+  ~ For the full copyright and license information, please view the LICENSE
+  ~ file that was distributed with this source code.
+  -->
+
+<table class="table table-striped">
+    <tr>
+        <td class="text-center text-uppercase headline" colspan="2">
+            {{ installment.translations.rp_personal_calculation|raw }}
+        </td>
+    </tr>
+
+    <tr>
+        <td class="warning small text-center" colspan="2">
+            {{ installment.translations.rp_responseText|raw }}
+            <br/>
+            {{ installment.translations.rp_calulation_example|raw }}
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="2" class="small text-right">
+            <a class="rp-link" id="rp-show-installment-plan-details">{{ installment.translations.rp_showInstallmentPlanDetails|raw }} <i class="icon-arrow-head-down"></i></a>
+            <a class="rp-link" id="rp-hide-installment-plan-details">{{ installment.translations.rp_hideInstallmentPlanDetails|raw }} <i class="icon-arrow-head-uo"></i></a>
+        </td>
+    </tr>
+
+    <tr class="rp-installment-plan-details">
+        <td class="rp-installment-plan-title">
+            {{ installment.translations.rp_cash_payment_price|raw }}
+            <p class="rp-installment-plan-description small">{{ installment.translations.rp_mouseover_cash_payment_price|raw }}</p>
+        </td>
+        <td class="text-right">
+            {{ installment.plan.amount }} &euro;
+        </td>
+    </tr>
+
+    <tr class="rp-installment-plan-details">
+        <td class="rp-installment-plan-title">
+            {{ installment.translations.rp_service_charge|raw }}
+            <p class="rp-installment-plan-description small">{{ installment.translations.rp_mouseover_service_charge|raw }}</p>
+        </td>
+        <td class="text-right">
+            {{ installment.plan.serviceCharge }} &euro;
+        </td>
+    </tr>
+
+    <tr class="rp-installment-plan-details">
+        <td class="rp-installment-plan-title">
+            {{ installment.translations.rp_effective_rate|raw }}
+            <p class="rp-installment-plan-description small">{{ installment.translations.rp_mouseover_effective_rate|raw }}</p>
+        </td>
+        <td class="text-right">
+            {{ installment.plan.annualPercentageRate }} %
+        </td>
+    </tr>
+
+    <tr class="rp-installment-plan-details">
+        <td class="rp-installment-plan-title">
+            {{ installment.translations.rp_debit_rate|raw }}
+            <p class="rp-installment-plan-description small">{{ installment.translations.rp_mouseover_debit_rate|raw }}</p>
+        </td>
+        <td class="text-right">
+            {{ installment.plan.monthlyDebitInterest }} %
+        </td>
+    </tr>
+    <tr class="rp-installment-plan-details">
+        <td class="rp-installment-plan-title">
+            {{ installment.translations.rp_interest_amount|raw }}
+            <p class="rp-installment-plan-description small">{{ installment.translations.rp_mouseover_interest_amount|raw }}</p>
+        </td>
+        <td class="text-right">
+            {{ installment.plan.interestAmount }} &euro;
+        </td>
+    </tr>
+
+    <tr class="rp-installment-plan-details separator">
+        <td colspan="2"></td>
+    </tr>
+
+    <tr class="rp-installment-plan-no-details">
+        <td class="rp-installment-plan-title">
+            {{ installment.translations.rp_numberOfRatesFull|raw }} {{ installment.translations.rp_monthly_installment_pl|raw }} {{ installment.translations.rp_each|raw }}
+            <p class="rp-installment-plan-description small">{{ installment.translations.rp_mouseover_duration_month|raw }}</p>
+        </td>
+        <td class="text-right">
+            {{ installment.plan.rate }} &euro;
+        </td>
+    </tr>
+
+    <tr class="rp-installment-plan-details">
+        <td class="rp-installment-plan-title">
+            1.&nbsp;-&nbsp;{{ installment.plan.numberOfRatesFull - 1 }}. {{ installment.translations.rp_monthly_installment_sg|raw }} {{ installment.translations.rp_each|raw }}
+            <p class="rp-installment-plan-description small">{{ installment.translations.rp_mouseover_duration_month|raw }}</p>
+        </td>
+        <td class="text-right">
+            {{ installment.plan.rate }} &euro;
+        </td>
+    </tr>
+
+    <tr class="rp-installment-plan-details">
+        <td class="rp-installment-plan-title">
+            {{ installment.plan.numberOfRatesFull }}. {{ installment.translations.rp_monthly_installment_sg|raw }}
+            <p class="rp-installment-plan-description small">{{ installment.translations.rp_mouseover_last_rate|raw }}</p>
+        </td>
+        <td class="text-right">
+            {{ installment.plan.lastRate }} &euro;
+        </td>
+    </tr>
+
+    <tr>
+        <td class="rp-installment-plan-title">
+            {{ installment.translations.rp_total_amount|raw }}
+            <p class="rp-installment-plan-description small">{{ installment.translations.rp_mouseover_total_amount|raw }}</p>
+        </td>
+        <td class="text-right">
+            {{ installment.plan.totalAmount }} &euro;
+        </td>
+    </tr>
+
+</table>

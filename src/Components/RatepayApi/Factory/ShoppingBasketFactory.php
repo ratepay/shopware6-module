@@ -11,17 +11,23 @@ namespace Ratepay\RatepayPayments\Components\RatepayApi\Factory;
 
 use InvalidArgumentException;
 use RatePAY\Model\Request\SubModel\Content\ShoppingBasket;
+use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
-use Shopware\Core\Checkout\Order\OrderEntity;
 
-class ShoppingBasketFactory
+class ShoppingBasketFactory extends AbstractFactory
 {
 
 
-    public function getData(OrderEntity $order, array $itemsToSend = [])
+    protected function _getData(IRequestData $requestData): ?object
     {
+        /** @var OrderOperationData $requestData */
+
+        $order = $requestData->getOrder();
+        $itemsToSend = $requestData->getItems() ?? [];
+
         $sendAll = count($itemsToSend) === 0;
 
         $basket = new ShoppingBasket();
@@ -52,7 +58,7 @@ class ShoppingBasketFactory
                 $this->addOrderLineItemToBasket($basket, $item, $qty);
             }
         }
-        if (count($itemsToSend) == 0) {
+        if (count($itemsToSend) === 0) {
             // send all items
             foreach ($order->getLineItems() as $item) {
                 $this->addOrderLineItemToBasket($basket, $item, $item->getQuantity());
@@ -71,7 +77,7 @@ class ShoppingBasketFactory
         return $basket;
     }
 
-    protected function addOrderLineItemToBasket(ShoppingBasket $basket, OrderLineItemEntity $item, $qty)
+    protected function addOrderLineItemToBasket(ShoppingBasket $basket, OrderLineItemEntity $item, $qty) : void
     {
         if ($item->getTotalPrice() > 0) {
             $basket->getItems()->addItem(

@@ -7,14 +7,15 @@
 
 import Plugin from 'src/plugin-system/plugin.class';
 
-export default class RatepayCheckout extends Plugin {
+export default class Installment extends Plugin {
 
     init() {
-        this.$el = $(this.el);
         this._registerEvents();
     }
 
     _registerEvents() {
+        this.$el.hide();
     }
 }
+
 

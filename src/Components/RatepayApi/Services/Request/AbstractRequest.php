@@ -88,10 +88,15 @@ abstract class AbstractRequest
         $head = $this->getRequestHead($requestData, $profileConfig);
         $content = $this->getRequestContent($requestData);
 
-        $requestBuilder = new RequestBuilder($profileConfig->isSandbox());
-        $requestBuilder = $requestBuilder->__call('call' . $this->_operation, $content ? [$head, $content] : [$head]);
-        if ($this->_subType) {
-            $requestBuilder = $requestBuilder->subtype($this->_subType);
+        try {
+            $requestBuilder = new RequestBuilder($profileConfig->isSandbox());
+            $requestBuilder = $requestBuilder->__call('call' . $this->_operation, $content ? [$head, $content] : [$head]);
+            if ($this->_subType) {
+                $requestBuilder = $requestBuilder->subtype($this->_subType);
+            }
+        } catch (Exception $e) {
+            $this->eventDispatcher->dispatch(new RequestDoneEvent($requestBuilder));
+            throw $e;
         }
 
         $this->eventDispatcher->dispatch(new RequestDoneEvent($requestBuilder));
@@ -115,7 +120,12 @@ abstract class AbstractRequest
 
     protected function getRequestHead(IRequestData $requestData, ProfileConfigEntity $profileConfig): Head
     {
-        $head = $this->headFactory->getData($profileConfig);
+        $head = $this->headFactory->getData($requestData);
+        $head->setCredential(
+            (new Head\Credential())
+                ->setProfileId($profileConfig->getProfileId())
+                ->setSecuritycode($profileConfig->getSecurityCode())
+        );
         /** @var BuildEvent $event */
         $event = $this->eventDispatcher->dispatch(new BuildEvent($requestData, $head), get_class($this) . self::EVENT_BUILD_HEAD);
         return $event->getBuildData();

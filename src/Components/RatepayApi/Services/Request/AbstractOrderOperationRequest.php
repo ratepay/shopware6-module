@@ -83,7 +83,7 @@ abstract class AbstractOrderOperationRequest extends AbstractRequest
             $requestData->getOrder()->getCurrency()->getIsoCode()
         ));
 
-        // currency
+        // status
         $criteria->addFilter(new EqualsFilter(
             ProfileConfigEntity::FIELD_STATUS,
             true

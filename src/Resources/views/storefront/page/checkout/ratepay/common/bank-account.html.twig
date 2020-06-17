@@ -1,58 +1,71 @@
 {% block ratepay_personal_data_bank_account %}
 
-    <div class="form-row">
-        <div class="form-group col-sm-12">
-            <label class="form-label">
-                {{ "document.bankAccount"|trans|sw_sanitize }}
-            </label>
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-sm-12">
-        <p>{{ "ratepay.storefront.checkout.hints.sepaLegalText"|trans|sw_sanitize }}</p>
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-sm-4">
-            <input type="text"
-                   class="form-control{% if formViolations.getViolations('/ratepay/bankData/accountHolder') is not empty %} is-invalid{% endif %}"
-                   id="rp-iban-account-holder"
-                   placeholder="{{ "ratepay.storefront.checkout.fields.accountholder"|trans|sw_sanitize }}"
-                   value="{{ page.extensions.ratepay.accountHolder }}"
-                   name="ratepay[bankData][accountHolder]"
-                   form="confirmOrderForm"
-                   readonly
-                   required="required"
-            >
-        </div>
-        <div class="form-group col-sm-4">
-            <input
-                type="text"
-                class="form-control{% if formViolations.getViolations('/ratepay/bankData/iban') is not empty %} is-invalid{% endif %}"
-                id="rp-iban-account-number"
-                placeholder="{{ "ratepay.storefront.checkout.fields.iban"|trans|sw_sanitize }}"
-                name="ratepay[bankData][iban]"
-                form="confirmOrderForm"
-                required="required"
-            >
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-sm-12">
-            <div class="custom-control custom-checkbox">
-                <input type="checkbox"
-                       class="checkout-confirm-sepaconfirmation-checkbox custom-control-input{% if formViolations.getViolations('/ratepay/bankData/sepaConfirmation') is not empty %} is-invalid{% endif %}"
-                       required="required"
-                       id="sepaconfirmation"
-                       form="confirmOrderForm"
-                       name="ratepay[bankData][sepaConfirmation]"
-                >
-                <label for="sepaconfirmation" class="checkout-confirm-sepaconfirmation-label custom-control-label">
-                    <p>{{ "ratepay.storefront.checkout.hints.sepaAuthorize"|trans|sw_sanitize }}</p>
-                    <p>{{ "ratepay.storefront.checkout.hints.sepaAuthorizeNote"|trans|sw_sanitize }}</p>
+    {% block ratepay_personal_data_bank_account_title %}
+        <div class="form-row">
+            <div class="form-group col-sm-12">
+                <label class="form-label">
+                    {{ "document.bankAccount"|trans|sw_sanitize }}
                 </label>
             </div>
         </div>
-    </div>
+    {% endblock %}
+
+    {% block ratepay_personal_data_bank_account_legal %}
+        <div class="form-row">
+            <div class="form-group col-sm-12">
+            <p>{{ "ratepay.storefront.checkout.hints.sepaLegalText"|trans|sw_sanitize }}</p>
+            </div>
+        </div>
+    {% endblock %}
+
+    {% block ratepay_personal_data_bank_account_fields %}
+        <div class="form-row">
+            <div class="form-group col-sm-4">
+                <input type="text"
+                       class="form-control{% if formViolations.getViolations('/ratepay/bankData/accountHolder') is not empty %} is-invalid{% endif %}"
+                       id="rp-iban-account-holder"
+                       placeholder="{{ "ratepay.storefront.checkout.fields.accountholder"|trans|sw_sanitize }}"
+                       value="{{ page.extensions.ratepay.accountHolder }}"
+                       name="ratepay[bankData][accountHolder]"
+                       form="confirmOrderForm"
+                       readonly
+                       required="required"
+                >
+            </div>
+            <div class="form-group col-sm-4">
+                <input
+                    type="text"
+                    class="form-control{% if formViolations.getViolations('/ratepay/bankData/iban') is not empty %} is-invalid{% endif %}"
+                    id="rp-iban-account-number"
+                    placeholder="{{ "ratepay.storefront.checkout.fields.iban"|trans|sw_sanitize }}"
+                    name="ratepay[bankData][iban]"
+                    form="confirmOrderForm"
+                    required="required"
+                >
+            </div>
+        </div>
+    {% endblock %}
+
+    {% block ratepay_personal_data_bank_account_sepa_confirm %}
+        <div class="form-row">
+            <div class="form-group col-sm-12">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox"
+                           class="checkout-confirm-sepaconfirmation-checkbox custom-control-input{% if formViolations.getViolations('/ratepay/bankData/sepaConfirmation') is not empty %} is-invalid{% endif %}"
+                           required="required"
+                           id="sepaconfirmation"
+                           form="confirmOrderForm"
+                           name="ratepay[bankData][sepaConfirmation]"
+                    >
+                    <label for="sepaconfirmation" class="checkout-confirm-sepaconfirmation-label custom-control-label">
+                        {% block ratepay_personal_data_bank_account_sepa_confirm_text %}
+                            <p>{{ "ratepay.storefront.checkout.hints.sepaAuthorize"|trans|sw_sanitize }}</p>
+                            <p>{{ "ratepay.storefront.checkout.hints.sepaAuthorizeNote"|trans|sw_sanitize }}</p>
+                        {% endblock %}
+                    </label>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
 
 {% endblock %}

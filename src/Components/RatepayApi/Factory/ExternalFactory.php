@@ -10,13 +10,17 @@ namespace Ratepay\RatepayPayments\Components\RatepayApi\Factory;
 
 
 use RatePAY\Model\Request\SubModel\Head\External\Tracking;
-use Shopware\Core\Checkout\Order\OrderEntity;
+use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
 
-class ExternalFactory
+class ExternalFactory extends AbstractFactory
 {
 
-    public function getData(OrderEntity $order)
+    protected function _getData(IRequestData $requestData): ?object
     {
+        /** @var OrderOperationData $requestData */
+
+        $order = $requestData->getOrder();
         if ($delivery = $order->getDeliveries()->first()) {
             $tracking = new Tracking();
             $tracking->setId($delivery->getTrackingCodes()[0]);

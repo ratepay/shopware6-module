@@ -50,7 +50,7 @@ class PaymentDeliverService extends AbstractModifyRequest
     {
         /** @var OrderOperationData $requestData */
         $content = parent::getRequestContent($requestData);
-        if ($invoicing = $this->invoiceFactory->getData($requestData->getOrder())) {
+        if ($invoicing = $this->invoiceFactory->getData($requestData)) {
             $content->setInvoicing($invoicing);
         }
         return $content;

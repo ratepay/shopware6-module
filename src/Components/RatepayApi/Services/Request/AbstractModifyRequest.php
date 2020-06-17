@@ -68,7 +68,7 @@ abstract class AbstractModifyRequest extends AbstractOrderOperationRequest
     {
         /** @var OrderOperationData $requestData */
         $content = new Content();
-        $content->setShoppingBasket($this->shoppingBasketFactory->getData($requestData->getOrder(), $requestData->getItems()));
+        $content->setShoppingBasket($this->shoppingBasketFactory->getData($requestData));
         return $content;
     }
 

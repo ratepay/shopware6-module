@@ -163,7 +163,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         $this->eventDispatcher->dispatch(new ResponseEvent(
             $event->getContext(),
             $event->getRequestBuilder(),
-            new OrderOperationData($reloadedOrder, OrderOperationData::OPERATION_DELIVER, $newItems, false)
+            new OrderOperationData($reloadedOrder, OrderOperationData::OPERATION_ADD, $newItems, false)
         ), PaymentDeliverService::EVENT_SUCCESSFUL);
     }
 

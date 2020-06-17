@@ -10,15 +10,17 @@ namespace Ratepay\RatepayPayments\Components\RatepayApi\Factory;
 
 
 use RatePAY\Model\Request\SubModel\Content\Payment;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RatepayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 
-class PaymentFactory
+class PaymentFactory extends AbstractFactory
 {
 
-
-    public function getData(OrderTransactionEntity $transaction, RequestDataBag $requestDataBag)
+    protected function _getData(IRequestData $requestData): ?object
     {
+
+        /** @var PaymentRequestData $requestData */
+        $transaction = $requestData->getTransaction();
         $payment = new Payment();
 
         $handler = $transaction->getPaymentMethod()->getHandlerIdentifier();
@@ -26,22 +28,6 @@ class PaymentFactory
         $payment->setMethod($ratepayMethod);
         $payment->setAmount($transaction->getAmount()->getTotalPrice());
 
-        if (false) { // TODO
-            $installment = $paymentRequestData->getInstallmentDetails();
-
-
-            $data = array_merge($data, [
-                'DebitPayType' => $installment->getPaymentSubtype(),
-                'Amount' => $installment->getTotalAmount(),
-                'InstallmentDetails' => [
-                    'InstallmentNumber' => $installment->getNumberOfRatesFull(),
-                    'InstallmentAmount' => $installment->getRate(),
-                    'LastInstallmentAmount' => $installment->getLastRate(),
-                    'InterestRate' => $installment->getInterestRate(),
-                    'PaymentFirstday' => $installment->getPaymentFirstday()
-                ]
-            ]);
-        }
         return $payment;
     }
 }
