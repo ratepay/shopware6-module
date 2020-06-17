@@ -34,6 +34,7 @@ class PaymentRequestService extends AbstractOrderOperationRequest
 
     const EVENT_SUCCESSFUL = self::class . parent::EVENT_SUCCESSFUL;
     const EVENT_FAILED = self::class . parent::EVENT_FAILED;
+    const EVENT_BUILD_HEAD = self::class . parent::EVENT_BUILD_HEAD;
 
     protected $_operation = self::CALL_PAYMENT_REQUEST;
 
@@ -75,13 +76,6 @@ class PaymentRequestService extends AbstractOrderOperationRequest
                 ->setOrderId($requestData->getOrder()->getOrderNumber())
                 ->setMerchantConsumerId($requestData->getOrder()->getOrderCustomer()->getCustomerNumber())
         );
-
-        if (false) { // TODO device finger printing
-            $head->setCustomerDevice(
-                (new CustomerDevice())
-                    ->setDeviceToken(null)                                                                  // TODO
-            );
-        }
         return $head;
     }
 

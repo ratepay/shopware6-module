@@ -8,9 +8,13 @@
 
 namespace Ratepay\RatepayPayments\Components\DeviceFingerprint\Subscriber;
 
+use RatePAY\Model\Request\SubModel\Head;
+use RatePAY\Model\Request\SubModel\Head\CustomerDevice;
 use Ratepay\RatepayPayments\Components\DeviceFingerprint\DfpService;
 use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
 use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
+use Ratepay\RatepayPayments\Components\RatepayApi\Event\BuildEvent;
+use Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentRequestService;
 use RatePAY\Service\DeviceFingerprint;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
@@ -42,8 +46,19 @@ class DeviceFingerprintSubscriber implements EventSubscriberInterface
     {
         return [
             CheckoutConfirmPageLoadedEvent::class => 'addRatepayTemplateData',
-            PaymentSuccessfulEvent::class => 'onPaymentSuccessful'
+            PaymentSuccessfulEvent::class => 'onPaymentSuccessful',
+            PaymentRequestService::EVENT_BUILD_HEAD => 'onPaymentRequest'
         ];
+    }
+
+    public function onPaymentRequest(BuildEvent $buildEvent)
+    {
+        /** @var Head $head */
+        $head = $buildEvent->getBuildData();
+
+        if ($this->dfpService->getDfpId()) {
+            $head->setCustomerDevice((new CustomerDevice())->setDeviceToken($this->dfpService->getDfpId()));
+        }
     }
 
     public function onPaymentSuccessful(PaymentSuccessfulEvent $event)

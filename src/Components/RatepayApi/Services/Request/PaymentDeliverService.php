@@ -24,6 +24,7 @@ class PaymentDeliverService extends AbstractModifyRequest
 
     const EVENT_SUCCESSFUL = self::class . parent::EVENT_SUCCESSFUL;
     const EVENT_FAILED = self::class . parent::EVENT_FAILED;
+    const EVENT_BUILD_HEAD = self::class . parent::EVENT_BUILD_HEAD;
 
     protected $_operation = self::CALL_DELIVER;
 

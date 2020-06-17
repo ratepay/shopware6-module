@@ -28,6 +28,7 @@ abstract class AbstractRequest
 
     protected const EVENT_SUCCESSFUL = '.successful';
     protected const EVENT_FAILED = '.successful';
+    protected const EVENT_BUILD_HEAD = '.build.head';
 
     const CALL_PAYMENT_REQUEST = "PaymentRequest";
     const CALL_DELIVER = "ConfirmationDeliver";
@@ -116,7 +117,7 @@ abstract class AbstractRequest
     {
         $head = $this->headFactory->getData($profileConfig);
         /** @var BuildEvent $event */
-        $event = $this->eventDispatcher->dispatch(new BuildEvent($requestData, $head), get_class() . '.build.head');
+        $event = $this->eventDispatcher->dispatch(new BuildEvent($requestData, $head), get_class($this) . self::EVENT_BUILD_HEAD);
         return $event->getBuildData();
     }
 
