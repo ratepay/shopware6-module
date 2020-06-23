@@ -14,7 +14,7 @@ Component.register('ratepay-order-management', {
     template,
 
     inject: {
-        orderManagementService: "order-management-service"
+        orderManagementService: "ratepay-order-management-service"
     },
 
     mixins: [
@@ -41,12 +41,14 @@ Component.register('ratepay-order-management', {
             showCreditModal: false,
             showDebitModal: false,
             addCredit: {
+                showModal: false,
                 value: 0.01,
                 minValue: 0.01,
                 maxValue: 10,
                 name: this.$t('ratepay.orderManagement.modal.addCredit.defaultValue.name')
             },
             addDebit: {
+                showModal: false,
                 value: 0.01,
                 minValue: 0.01,
                 maxValue: null,
@@ -228,19 +230,19 @@ Component.register('ratepay-order-management', {
         },
 
         onShowDebitModal() {
-            this.showDebitModal = true;
+            this.addDebit.showModal = true;
         },
 
         onCloseDebitModal() {
-            this.showDebitModal = false;
+            this.addDebit.showModal = false;
         },
 
         onShowCreditModal() {
-            this.showCreditModal = true;
+            this.addCredit.showModal = true;
         },
 
         onCloseCreditModal() {
-            this.showCreditModal = false;
+            this.addCredit.showModal = false;
         }
     }
 });

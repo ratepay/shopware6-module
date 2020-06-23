@@ -7,7 +7,7 @@
 
 import OrderManagement from '../service/order-management.api.service.js';
 
-Shopware.Application.addServiceProvider('order-management-service', container => {
+Shopware.Application.addServiceProvider('ratepay-order-management-service', container => {
     const initContainer = Shopware.Application.getContainer('init');
     return new OrderManagement(initContainer.httpClient, container.loginService);
 });

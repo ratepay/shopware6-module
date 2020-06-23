@@ -111,7 +111,7 @@
 
 
     <sw-modal :title="$t('ratepay.orderManagement.action.addDebit')"
-              v-if="showDebitModal"
+              v-if="addDebit.showModal"
               @modal-close="onCloseDebitModal">
         <template>
             <label>{{ $t('ratepay.orderManagement.modal.addDebit.label.name') }}</label>
@@ -132,7 +132,7 @@
     </sw-modal>
 
     <sw-modal :title="$t('ratepay.orderManagement.action.addCredit')"
-              v-if="showCreditModal"
+              v-if="addCredit.showModal"
               @modal-close="onCloseCreditModal">
         <template>
             <label>{{ $t('ratepay.orderManagement.modal.addCredit.label.name') }}</label>
