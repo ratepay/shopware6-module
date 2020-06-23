@@ -1,0 +1,39 @@
+{
+    "ratepay": {
+        "apiLog": {
+            "general": {
+                "subMenuItemApiLogViewer": "Ratepay API-Logs",
+                "descriptionTextModule": ""
+            },
+            "page": {
+                "detail": {
+                    "cancelButtonText": "Back"
+                }
+            },
+            "global": {
+                "labels": {
+                    "id": "Id",
+                    "operation": "Operation",
+                    "suboperation": "Suboperation",
+                    "status": "Status",
+                    "transactionId": "Transaction ID",
+                    "firstname": "First name",
+                    "lastname": "Last name",
+                    "createdAt": "Created at",
+                    "request": "Request",
+                    "response": "Response",
+                    "viewLog": "Request / Response"
+                }
+            },
+            "modal": {
+                "openTitle": "show request / response",
+                "request": {
+                    "heading": "Request"
+                },
+                "response": {
+                    "heading": "Response"
+                }
+            }
+        }
+    }
+}

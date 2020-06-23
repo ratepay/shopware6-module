@@ -1,0 +1,17 @@
+{% block sw_order_detail_base__user_card %}
+
+    {% block ratepay_order_management__container %}
+        <ratepay-order-management
+            @ratepayActionTriggered="onRatepayActionTriggered">
+        </ratepay-order-management>
+    {% endblock %}
+
+    {% block ratepay_order_history_log__container %}
+        <ratepay-order-history-log-grid
+            ref="ratepayOrderHistory">
+        </ratepay-order-history-log-grid>
+    {% endblock %}
+
+    {% parent %}
+
+{% endblock %}

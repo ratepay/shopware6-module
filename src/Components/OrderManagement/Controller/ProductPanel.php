@@ -151,7 +151,7 @@ class ProductPanel extends AbstractController
         if ($order) {
             $items = [];
             foreach ($request->request->get('items') ?? [] as $data) {
-                $items[$data['id']] = intval($data['quantity']);
+                $items[$data['id']] = (int)$data['quantity'];
             }
 
             $response = $this->requestServicesByOperation[$operation]->doRequest(

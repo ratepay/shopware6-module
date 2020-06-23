@@ -1,0 +1,40 @@
+{% block ratepay_profile_config_list %}
+<sw-page class="ratepay-profile-config-list">
+    {% block ratepay_profile_config_list_smart_bar_actions %}
+    <template slot="smart-bar-actions">
+        <sw-button variant="primary" :routerLink="{ name: 'ratepay.profile.config.create' }">
+            {{ $t('ratepay.profileConfig.page.list.createButton') }}
+        </sw-button>
+    </template>
+    {% endblock %}
+
+    <template slot="content">
+        {% block ratepay_profile_config_list_content %}
+        <sw-entity-listing
+            v-if="entities"
+            :items="entities"
+            :repository="repository"
+            :showSelection="false"
+            :columns="columns"
+            detailRoute="ratepay.profile.config.detail">
+
+            <template slot="column-status" slot-scope="{ item }">
+                <sw-color-badge color="red" v-if="item.status === false" ></sw-color-badge>
+                <span v-if="item.status === false">&nbsp;&nbsp;{{ $t('ratepay.profileConfig.global.labels.inactive') }}</span>
+                <sw-color-badge color="green" v-if="item.status === true"></sw-color-badge>
+                <span v-if="item.status === true">&nbsp;&nbsp;{{ $t('ratepay.profileConfig.global.labels.active') }}</span>
+            </template>
+
+            <template slot="column-backend" slot-scope="{ item }">
+                <span v-if="item.backend">{{ $t('global.default.yes') }}</span>
+                <span v-if="!item.backend">{{ $t('global.default.no') }}</span>
+            </template>
+
+            <template slot="column-salesChannel" slot-scope="{ item }">
+                {{ item.salesChannel.name }}
+            </template>
+        </sw-entity-listing>
+        {% endblock %}
+    </template>
+</sw-page>
+{% endblock %}

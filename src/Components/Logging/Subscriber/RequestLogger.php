@@ -83,7 +83,7 @@ class RequestLogger implements EventSubscriberInterface
         $requestXml = preg_replace("/<bank-code>(.*)<\/bank-code>/", '<bank-code>xxxxxxxx</bank-code>', $requestXml);
 
         try {
-            $event = $this->logRepository->create([
+            $this->logRepository->create([
                 [
                     'version' => $this->config->getPluginVersion(),
                     'operation' => $operation,

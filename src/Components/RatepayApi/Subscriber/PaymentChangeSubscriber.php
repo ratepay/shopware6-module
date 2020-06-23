@@ -157,19 +157,23 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         }
         $this->orderRepository->merge($versionId, $event->getContext());
 
-        $reloadedOrder = $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($requestData->getOrder()->getId()), $event->getContext())->first();
+        $reloadedOrder = $this->orderRepository->search(
+            CriteriaHelper::getCriteriaForOrder($requestData->getOrder()->getId()),
+            $event->getContext()
+        )->first();
 
         // trigger deliver event
         $this->eventDispatcher->dispatch(new ResponseEvent(
             $event->getContext(),
             $event->getRequestBuilder(),
-            new OrderOperationData($reloadedOrder, OrderOperationData::OPERATION_DELIVER, $newItems, false)
+            new OrderOperationData($reloadedOrder, OrderOperationData::OPERATION_ADD, $newItems, false)
         ), PaymentDeliverService::EVENT_SUCCESSFUL);
     }
 
     protected function updateCustomField(OrderOperationData $requestData, ?array $customFields, $qty)
     {
         switch ($requestData->getOperation()) {
+            case OrderOperationData::OPERATION_ADD:
             case OrderOperationData::OPERATION_DELIVER:
                 $customFields['delivered'] = $customFields['delivered'] + $qty;
                 break;
