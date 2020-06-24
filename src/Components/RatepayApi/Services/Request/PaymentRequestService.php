@@ -18,7 +18,7 @@ use Ratepay\RatepayPayments\Components\RatepayApi\Factory\CustomerFactory;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\PaymentFactory;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
-use Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService;
+use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigEntity;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigRepository;
 use RatePAY\RequestBuilder;

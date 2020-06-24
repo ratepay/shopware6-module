@@ -12,7 +12,7 @@ namespace Ratepay\RatepayPayments\Components\RatepayApi\Services\Request;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
-use Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService;
+use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigEntity;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigMethodEntity;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigRepository;

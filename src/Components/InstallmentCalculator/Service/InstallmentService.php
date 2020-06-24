@@ -123,7 +123,7 @@ class InstallmentService
     {
         $installmentBuilder = $this->getInstallmentBuilder($billingAddress, $shopId, $paymentMethodName, $isBackend);
         return $installmentBuilder->getInstallmentPlanByTemplate(
-            file_get_contents($this->getTemplate('template.installmentPlan.html', $isBackend)),
+            file_get_contents($this->getTemplate('template.installment-plan.html', $isBackend)),
             $requestDto->getTotalAmount(),
             $requestDto->getType(),
             $requestDto->getValue(),

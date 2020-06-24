@@ -11,7 +11,7 @@ namespace Ratepay\RatepayPayments\Components\RatepayApi\Factory;
 
 use RatePAY\Model\Request\SubModel\Head;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
-use Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService;
+use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class HeadFactory extends AbstractFactory

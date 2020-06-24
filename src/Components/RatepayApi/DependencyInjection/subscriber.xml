@@ -12,6 +12,7 @@
             <bind key="$orderRepository" id="order.repository" type="service"/>
             <bind key="$lineItemsRepository" id="order_line_item.repository" type="service"/>
             <bind key="$productRepository" id="product.repository" type="service"/>
+            <bind key="$logger" id="ratepay.logger" type="service"/>
         </defaults>
 
         <service id="Ratepay\RatepayPayments\Components\RatepayApi\Subscriber\PaymentRequestSubscriber" autowire="true">

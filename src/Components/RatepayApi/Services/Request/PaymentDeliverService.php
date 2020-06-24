@@ -15,7 +15,7 @@ use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\InvoiceFactory;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
-use Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService;
+use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigRepository;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 

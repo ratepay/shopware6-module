@@ -8,15 +8,13 @@
 
 namespace Ratepay\RatepayPayments\Components\RatepayApi\Subscriber;
 
-
 use Exception;
-use Nette\Http\Response;
+use Monolog\Logger;
 use Ratepay\RatepayPayments\Components\OrderManagement\Util\LineItemUtil;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\AddCreditData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Event\ResponseEvent;
-use Ratepay\RatepayPayments\Components\RatepayApi\Services\FileLogger;
-use Ratepay\RatepayPayments\Components\RatepayApi\Services\HistoryLogger;
+use Ratepay\RatepayPayments\Components\Logging\Services\HistoryLogger;
 use Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentCancelService;
 use Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentCreditService;
 use Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentDeliverService;
@@ -33,7 +31,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentChangeSubscriber implements EventSubscriberInterface
 {
-
     /**
      * @var EntityRepositoryInterface
      */
@@ -47,9 +44,9 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
      */
     private $lineItemsRepository;
     /**
-     * @var FileLogger
+     * @var Logger
      */
-    private $fileLogger;
+    private $logger;
     /**
      * @var HistoryLogger
      */
@@ -69,7 +66,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         EntityRepositoryInterface $orderRepository,
         EntityRepositoryInterface $lineItemsRepository,
         RecalculationService $recalculationService,
-        FileLogger $fileLogger,
+        Logger $logger,
         HistoryLogger $historyLogger
     )
     {
@@ -78,11 +75,11 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         $this->orderRepository = $orderRepository;
         $this->lineItemsRepository = $lineItemsRepository;
         $this->recalculationService = $recalculationService;
-        $this->fileLogger = $fileLogger;
+        $this->logger = $logger;
         $this->historyLogger = $historyLogger;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             PaymentCancelService::EVENT_SUCCESSFUL => 'onSuccess',
@@ -92,7 +89,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onSuccess(ResponseEvent $event)
+    public function onSuccess(ResponseEvent $event): void
     {
         /** @var OrderOperationData $requestData */
         $requestData = $event->getRequestData();
@@ -141,7 +138,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function onSuccessAddCredit(ResponseEvent $event)
+    public function onSuccessAddCredit(ResponseEvent $event): void
     {
         /** @var AddCreditData $requestData */
         $requestData = $event->getRequestData();
@@ -183,7 +180,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         return $customFields;
     }
 
-    protected function updateProductStocks(Context $context, OrderOperationData $requestData)
+    protected function updateProductStocks(Context $context, OrderOperationData $requestData): void
     {
         $lineItems = $requestData->getOrder()->getLineItems()->getList(array_keys($requestData->getItems()));
         $data = [];
@@ -204,10 +201,12 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         try {
             $this->productRepository->update($data, $context);
         } catch (Exception $e) {
-            $this->fileLogger->addError('Error during the updating of the stock (Exception: ' . $e->getMessage() . ')', [
+            $this->logger->addError('Error during the updating of the stock', [
+                'message' => $e->getMessage(),
                 'orderId' => $requestData->getOrder()->getId(),
                 'orderNumber' => $requestData->getOrder()->getOrderNumber(),
-                'items' => $requestData->getItems()
+                'items' => $requestData->getItems(),
+                'trace' => $e->getTraceAsString(),
             ]);
         }
     }

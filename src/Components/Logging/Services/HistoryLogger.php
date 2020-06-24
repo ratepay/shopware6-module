@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\RatepayApi\Services;
+namespace Ratepay\RatepayPayments\Components\Logging\Services;
 
 use DateTime;
 use Exception;
@@ -17,27 +17,28 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 class HistoryLogger
 {
     /**
+     * @var EntityRepositoryInterface
+     */
+    protected $logRepository;
+
+    /**
      * @var Logger
      */
     protected $logger;
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $logRepository;
 
     public function __construct(
         EntityRepositoryInterface $logRepository,
         Logger $logger
     )
     {
-        $this->logger = $logger;
         $this->logRepository = $logRepository;
+        $this->logger = $logger;
     }
 
-    public function logHistory($orderId, $message, $articleName, $articleNumber, $quantity)
+    public function logHistory($orderId, $message, $articleName, $articleNumber, $quantity): void
     {
         try {
-            $event = $this->logRepository->create([
+            $this->logRepository->create([
                 [
                     'orderId' => $orderId,
                     'event' => $message,
@@ -48,7 +49,10 @@ class HistoryLogger
                 ]
             ], Context::createDefaultContext());
         } catch (Exception $exception) {
-            $this->logger->error('RatePAY was unable to log order history: ' . $exception->getMessage());
+            $this->logger->error('RatePAY was unable to log order history', [
+                'message' => $exception->getMessage(),
+                'trace' => $exception->getTraceAsString(),
+            ]);
         }
     }
 }

@@ -8,20 +8,20 @@
 
 namespace Ratepay\RatepayPayments\Components\InstallmentCalculator\Controller;
 
-
 use Ratepay\RatepayPayments\Components\InstallmentCalculator\Service\InstallmentService;
-use Shopware\Core\Framework\Context;
-use Shopware\Core\PlatformRequest;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 
 /**
  * @Route(path="/ratepay/installment")
+ * @RouteScope(scopes={"storefront"})
  */
-class InstallmentController extends AbstractController
+class InstallmentController extends StorefrontController
 {
-
     /**
      * @var InstallmentService
      */
@@ -35,11 +35,25 @@ class InstallmentController extends AbstractController
     }
 
     /**
-     * @Route(path="/calculate/", methods={"GET"}, name="ratepay.storefront.installment.calculate")
+     * @Route(path="/calculate/", methods={"GET"}, name="ratepay.storefront.installment.calculate", defaults={"XmlHttpRequest"=true})
      */
-    public function calculateInstallment(Request $request, Context $context)
+    public function calculateInstallment(Request $request, SalesChannelContext $context): Response
     {
-        $salesChannelContext = $request->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_CONTEXT_OBJECT);
-    }
+        $this->denyAccessUnlessLoggedIn();
 
+        $type = $request->query->get('type');
+        $value = $request->query->get('value');
+
+        $installmentTranslations = $this->installmentService->getTranslations($context);
+        $installmentCalculator = $this->installmentService->getInstallmentCalculatorData($context);
+        $installmentPlan = $this->installmentService->getInstallmentPlanData($context, $type, $value);
+
+        return $this->renderStorefront('@Storefront/storefront/installment-calculator/installment-plan.html.twig', [
+            'installment' => [
+                'translations' => $installmentTranslations,
+                'calculator' => $installmentCalculator,
+                'plan' => $installmentPlan,
+            ]
+        ]);
+    }
 }

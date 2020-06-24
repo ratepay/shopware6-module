@@ -14,10 +14,11 @@ use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Event\BuildEvent;
+use Ratepay\RatepayPayments\Components\RatepayApi\Event\RequestBuilderFailedEvent;
 use Ratepay\RatepayPayments\Components\RatepayApi\Event\RequestDoneEvent;
 use Ratepay\RatepayPayments\Components\RatepayApi\Event\ResponseEvent;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
-use Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService;
+use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigEntity;
 use RatePAY\RequestBuilder;
 use Shopware\Core\Framework\Context;
@@ -95,7 +96,7 @@ abstract class AbstractRequest
                 $requestBuilder = $requestBuilder->subtype($this->_subType);
             }
         } catch (Exception $e) {
-            $this->eventDispatcher->dispatch(new RequestDoneEvent($requestBuilder));
+            $this->eventDispatcher->dispatch(new RequestBuilderFailedEvent($e));
             throw $e;
         }
 
