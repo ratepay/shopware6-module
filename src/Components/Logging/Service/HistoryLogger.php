@@ -11,11 +11,13 @@ namespace Ratepay\RatepayPayments\Components\Logging\Service;
 use DateTime;
 use Exception;
 use Monolog\Logger;
+use Ratepay\RatepayPayments\Components\Logging\Model\HistoryLogEntity;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Api\Context\AdminApiSource;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\User\UserEntity;
 
 class HistoryLogger
@@ -58,14 +60,14 @@ class HistoryLogger
         try {
             $this->logRepository->create([
                 [
-                    'user' => $this->getCurrentAdministrator($context),
-                    'orderId' => $orderId,
-                    'event' => $message,
-                    'articlename' => $articleName,
-                    'articlenumber' => $articleNumber,
-                    'quantity' => $quantity,
+                    HistoryLogEntity::FIELD_USER => $this->getCurrentAdministrator($context),
+                    HistoryLogEntity::FIELD_ORDER_ID => $orderId,
+                    HistoryLogEntity::FIELD_EVENT => $message,
+                    HistoryLogEntity::FIELD_PRODUCT_NAME => $articleName,
+                    HistoryLogEntity::FIELD_PRODUCT_NUMBER => $articleNumber,
+                    HistoryLogEntity::FIELD_QTY => $quantity,
                     // ToDo: Check if you can add the correct time for the correct timezone here (or is it a problem of SW6?)
-                    'created_at' => (new DateTime())->format(Defaults::STORAGE_DATE_TIME_FORMAT),
+                    //HistoryLogEntity::FIELD_CREATED_AT => (new DateTime())->format(Defaults::STORAGE_DATE_TIME_FORMAT),
                 ]
             ], $context);
         } catch (Exception $exception) {

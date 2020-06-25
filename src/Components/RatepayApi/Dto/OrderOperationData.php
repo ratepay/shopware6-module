@@ -21,28 +21,26 @@ class OrderOperationData implements IRequestData
     public const OPERATION_RETURN = 'return';
     public const OPERATION_ADD = 'add';
 
-
     /**
      * @var OrderEntity
      */
-    private $order;
+    protected $order;
     /**
      * @var null
      */
-    private $items;
-
+    protected $items;
     /**
      * @var OrderTransactionEntity
      */
-    private $transaction;
+    protected $transaction;
     /**
      * @var string
      */
-    private $operation;
+    protected $operation;
     /**
      * @var bool
      */
-    private $updateStock;
+    protected $updateStock;
 
     public function __construct(OrderEntity $order, string $operation, $items = null, $updateStock = true)
     {
@@ -50,7 +48,26 @@ class OrderOperationData implements IRequestData
         $this->transaction = $order->getTransactions() ? $order->getTransactions()->first() : null;
         $this->items = $items;
         $this->operation = $operation;
-        $this->updateStock = $items == null ? false : $updateStock;
+        $this->updateStock = $items === null ? false : $updateStock;
+    }
+
+    /**
+     * @return array
+     */
+    public function getItems(): array
+    {
+        if ($this->items) {
+            return $this->items;
+        }
+
+        $items = [];
+        foreach ($this->getOrder()->getLineItems() as $item) {
+            $items[$item->getId()] = $item->getQuantity();
+        }
+        if ($this->getOrder()->getShippingTotal() > 0) {
+            $items['shipping'] = 1;
+        }
+        return $items;
     }
 
     /**
@@ -59,14 +76,6 @@ class OrderOperationData implements IRequestData
     public function getOrder(): OrderEntity
     {
         return $this->order;
-    }
-
-    /**
-     * @return null
-     */
-    public function getItems()
-    {
-        return $this->items;
     }
 
     /**

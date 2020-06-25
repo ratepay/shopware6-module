@@ -23,19 +23,19 @@ class Migration1576758772ApiLogTable extends MigrationStep
         $connection->executeQuery("
             CREATE TABLE `ratepay_api_log` (
                 `id` binary(16) NOT NULL,
-                `version` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
-                `operation` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-                `suboperation` varchar(255) COLLATE utf8_unicode_ci NULL,
-                `status` varchar(10) COLLATE utf8_unicode_ci NULL,
-                `transaction_id` varchar(255) COLLATE utf8_unicode_ci NULL,
-                `firstname` varchar(255) COLLATE utf8_unicode_ci NULL,
-                `lastname` varchar(255) COLLATE utf8_unicode_ci NULL,
-                `request` longtext COLLATE utf8_unicode_ci NOT NULL,
-                `response` longtext COLLATE utf8_unicode_ci NOT NULL,
+                `version` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+                `operation` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                `suboperation` varchar(255) COLLATE utf8mb4_unicode_ci NULL,
+                `status` varchar(10) COLLATE utf8mb4_unicode_ci NULL,
+                `transaction_id` varchar(255) COLLATE utf8mb4_unicode_ci NULL,
+                `firstname` varchar(255) COLLATE utf8mb4_unicode_ci NULL,
+                `lastname` varchar(255) COLLATE utf8mb4_unicode_ci NULL,
+                `request` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+                `response` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
                 `created_at` datetime NOT NULL,
                 `updated_at` datetime NULL,
                 PRIMARY KEY (`id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         ");
     }
 

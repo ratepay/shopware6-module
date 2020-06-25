@@ -13,6 +13,15 @@ use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 class HistoryLogEntity extends Entity
 {
 
+    public const FIELD_ID = 'id';
+    public const FIELD_ORDER_ID = 'orderId';
+    public const FIELD_EVENT = 'event';
+    public const FIELD_USER = 'user';
+    public const FIELD_PRODUCT_NAME = 'productName';
+    public const FIELD_PRODUCT_NUMBER = 'productNumber';
+    public const FIELD_QTY = 'quantity';
+    public const FIELD_CREATED_AT = 'createdAt';
+
     /**
      * @var string
      */

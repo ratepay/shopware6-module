@@ -26,18 +26,13 @@ class ShoppingBasketFactory extends AbstractFactory
         /** @var OrderOperationData $requestData */
 
         $order = $requestData->getOrder();
-        $itemsToSend = $requestData->getItems() ?? [];
-
-        $sendAll = count($itemsToSend) === 0;
 
         $basket = new ShoppingBasket();
         $basket->setItems(new ShoppingBasket\Items());
 
-        //$lineItems = $sendAll ? $lineItems : $lineItems->getList(array_keys($itemsToSend));
-        foreach ($itemsToSend as $id => $qty) {
+        foreach ($requestData->getItems() as $id => $qty) {
             if ($qty instanceof LineItem) {
                 // this is a credit or a debit after the order has been placed
-
                 /** @var LineItem $item */
                 $item = $qty;
                 /** @var QuantityPriceDefinition $priceDefinition */
@@ -50,7 +45,16 @@ class ShoppingBasketFactory extends AbstractFactory
                         ->setUnitPriceGross($priceDefinition->getPrice())
                         ->setTaxRate($priceDefinition->getTaxRules()->first()->getTaxRate())
                 );
-            } elseif ($id !== 'shipping') {
+            } elseif ($id === 'shipping') {
+                if($order->getShippingCosts()->getTotalPrice()) {
+                    $basket->setShipping(
+                        (new ShoppingBasket\Shipping())
+                            ->setDescription('shipping')
+                            ->setUnitPriceGross($order->getShippingCosts()->getTotalPrice())
+                            ->setTaxRate($order->getShippingCosts()->getCalculatedTaxes()->first()->getTaxRate())
+                    );
+                }
+            } else {
                 $item = $order->getLineItems()->get($id);
                 if (!$item) {
                     throw new InvalidArgumentException($id . ' does not belongs to the order ' . $order->getId());
@@ -59,28 +63,12 @@ class ShoppingBasketFactory extends AbstractFactory
             }
         }
 
-        if ($sendAll) {
-            // send all items
-            foreach ($order->getLineItems() as $item) {
-                $this->addOrderLineItemToBasket($basket, $item, $item->getQuantity());
-            }
-        }
-
-        if (($sendAll || isset($itemsToSend['shipping'])) && $order->getShippingCosts()->getTotalPrice()) {
-            $basket->setShipping(
-                (new ShoppingBasket\Shipping())
-                    ->setDescription('shipping')
-                    ->setUnitPriceGross($order->getShippingCosts()->getTotalPrice())
-                    ->setTaxRate($order->getShippingCosts()->getCalculatedTaxes()->first()->getTaxRate())
-            );
-        }
-
         return $basket;
     }
 
     protected function addOrderLineItemToBasket(ShoppingBasket $basket, OrderLineItemEntity $item, $qty) : void
     {
-        if ($item->getTotalPrice() > 0) {
+        if ($item->getTotalPrice() > 0 || $item->getType() === LineItem::CUSTOM_LINE_ITEM_TYPE) {
             $basket->getItems()->addItem(
                 (new ShoppingBasket\Items\Item())
                     ->setArticleNumber($item->getType() === LineItem::PRODUCT_LINE_ITEM_TYPE ? $item->getPayload()['productNumber'] : $item->getIdentifier())

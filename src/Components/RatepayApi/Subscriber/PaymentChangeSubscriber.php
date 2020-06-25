@@ -94,44 +94,51 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         /** @var OrderOperationData $requestData */
         $requestData = $event->getRequestData();
 
-        $lineItems = $this->lineItemsRepository->search(new Criteria(array_keys($requestData->getItems())), $event->getContext());
         $data = [];
         /** @var OrderLineItemEntity $item */
-        foreach ($lineItems as $item) {
+        foreach ($requestData->getItems() as $id => $qty) {
+            if($id === 'shipping') {
+                $customFields = $requestData->getOrder()->getCustomFields();
+                $ratepayCustomFields = $customFields['ratepay']['shipping'] ?? LineItemUtil::getEmptyCustomFields();
+                $ratepayCustomFields = $this->updateCustomField($requestData, $ratepayCustomFields, $qty);
+                $customFields['ratepay']['shipping'] = $ratepayCustomFields;
+
+                $this->orderRepository->update([
+                    [
+                        'id' => $requestData->getOrder()->getId(),
+                        'customFields' => $customFields
+                    ]
+                ], $event->getContext());
+
+                $productName = $id;
+                $productNumber = $id;
+            } else {
+                /** @var OrderLineItemEntity $item */
+                $item = $this->lineItemsRepository->search(new Criteria([$id]), $event->getContext())->first();
+
+                $customFields = $item->getCustomFields();
+                $ratepayCustomFields = $customFields['ratepay'] ?? LineItemUtil::getEmptyCustomFields();
+                $customFields['ratepay'] = $this->updateCustomField($requestData, $ratepayCustomFields, $qty);
+                $data[] = [
+                    'id' => $item->getId(),
+                    'customFields' => $customFields
+                ];
+
+                $productName = $item->getLabel();
+                $productNumber = $item->getPayload()['productNumber'] ?? $id;
+            }
 
             $this->historyLogger->logHistory(
                 $event->getContext(),
                 $requestData->getOrder()->getId(),
                 $requestData->getOperation(),
-                $item->getLabel(),
-                $item->getPayload()['productNumber'] ?? '',
-                $requestData->getItems()[$item->getId()]
+                $productName,
+                $productNumber,
+                $qty
             );
-
-            $customFields = $item->getCustomFields();
-            $ratepayCustomFields = $item->getCustomFields()['ratepay'] ?? LineItemUtil::getEmptyCustomFields();
-            $customFields['ratepay'] = $this->updateCustomField($requestData, $ratepayCustomFields, $requestData->getItems()[$item->getId()]);
-            $data[] = [
-                'id' => $item->getId(),
-                'customFields' => $customFields
-            ];
         }
         if ($data) {
             $this->lineItemsRepository->update($data, $event->getContext());
-        }
-
-        if (isset($requestData->getItems()['shipping'])) {
-            $customFields = $requestData->getOrder()->getCustomFields();
-            $ratepayCustomFields = $customFields['ratepay']['shipping'] ?? LineItemUtil::getEmptyCustomFields();
-            $ratepayCustomFields = $this->updateCustomField($requestData, $ratepayCustomFields, $requestData->getItems()['shipping']);
-            $customFields['ratepay']['shipping'] = $ratepayCustomFields;
-
-            $this->orderRepository->update([
-                [
-                    'id' => $requestData->getOrder()->getId(),
-                    'customFields' => $customFields
-                ]
-            ], $event->getContext());
         }
 
         if ($requestData->isUpdateStock()) {
@@ -173,13 +180,13 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         switch ($requestData->getOperation()) {
             case OrderOperationData::OPERATION_ADD:
             case OrderOperationData::OPERATION_DELIVER:
-                $customFields['delivered'] = $customFields['delivered'] + $qty;
+                $customFields['delivered'] += $qty;
                 break;
             case OrderOperationData::OPERATION_CANCEL:
-                $customFields['canceled'] = $customFields['canceled'] + $qty;
+                $customFields['canceled'] += $qty;
                 break;
             case OrderOperationData::OPERATION_RETURN:
-                $customFields['returned'] = $customFields['returned'] + $qty;
+                $customFields['returned'] += $qty;
                 break;
         }
         return $customFields;
@@ -187,7 +194,10 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
 
     protected function updateProductStocks(Context $context, OrderOperationData $requestData): void
     {
-        $lineItems = $requestData->getOrder()->getLineItems()->getList(array_keys($requestData->getItems()));
+        $items = $requestData->getItems();
+        unset($items['shipping']); // "shipping" is not a valid uuid - maybe an error will throw (in the future)
+
+        $lineItems = $requestData->getOrder()->getLineItems()->getList(array_keys($items));
         $data = [];
         /** @var OrderLineItemEntity $item */
         foreach ($lineItems as $item) {

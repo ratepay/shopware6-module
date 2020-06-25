@@ -46,8 +46,8 @@ Component.register('ratepay-order-history-log-grid', {
                     allowResize: false
                 },
                 {
-                    property: 'articlename',
-                    dataIndex: 'articlename',
+                    property: 'productName',
+                    dataIndex: 'productName',
                     label: this.$tc('ratepay.order-log-history.detailBase.column.name'),
                     allowResize: true
                 },

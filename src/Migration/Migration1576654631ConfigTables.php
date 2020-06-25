@@ -23,20 +23,20 @@ class Migration1576654631ConfigTables extends MigrationStep
         $connection->executeQuery('
             CREATE TABLE `ratepay_profile_config` (
               `id` binary(16) NOT NULL,
-              `profile_id` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-              `security_code` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+              `profile_id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+              `security_code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
               `sales_channel_id` binary(16) NOT NULL,
               `backend` tinyint(1) DEFAULT 0,
-              `country_code_billing` varchar(2) COLLATE utf8_unicode_ci DEFAULT NULL,
+              `country_code_billing` varchar(2) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
               `sandbox` tinyint(1) DEFAULT 0,
-              `country_code_delivery` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
-              `currency` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
+              `country_code_delivery` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+              `currency` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
               `status` tinyint(1) DEFAULT 0,
-              `status_message` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+              `status_message` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
               `created_at` datetime NOT NULL,
               `updated_at` datetime DEFAULT NULL,
                 PRIMARY KEY (`id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         ');
 
         $connection->executeQuery('
@@ -54,21 +54,21 @@ class Migration1576654631ConfigTables extends MigrationStep
                 PRIMARY KEY (`id`),
                 FOREIGN KEY (`profile_id`) REFERENCES `ratepay_profile_config` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
                 FOREIGN KEY (`payment_method_id`) REFERENCES `payment_method` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         ');
 
         $connection->executeQuery('
             CREATE TABLE `ratepay_profile_config_method_installment` (
                 `id` binary(16) NOT NULL,
-                `month_allowed` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-                `is_banktransfer_allowed` varchar(10) COLLATE utf8_unicode_ci DEFAULT 0,
+                `month_allowed` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                `is_banktransfer_allowed` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT 0,
                 `is_debit_allowed` tinyint(1) DEFAULT 0,
                 `rate_min_normal` tinyint(1) NOT NULL,
                 `created_at` datetime NOT NULL,
                 `updated_at` datetime DEFAULT NULL,
                 PRIMARY KEY (`id`),
                 FOREIGN KEY (`id`) REFERENCES `ratepay_profile_config_method` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         ');
 
     }

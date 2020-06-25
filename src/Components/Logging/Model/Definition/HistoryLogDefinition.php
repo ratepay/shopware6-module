@@ -40,13 +40,13 @@ class HistoryLogDefinition extends EntityDefinition
     protected function defineFields(): FieldCollection
     {
         return new FieldCollection([
-            (new IdField('id', 'id'))->addFlags(new Required(), new PrimaryKey()),
-            (new StringField('orderId', 'orderId'))->addFlags(new Required()),
-            (new StringField('event', 'event')),
-            (new StringField('user', 'user')),
-            (new StringField('articlename', 'articlename')),
-            (new StringField('articlenumber', 'articlenumber')),
-            (new IntField('quantity', 'quantity'))
+            (new IdField('id', HistoryLogEntity::FIELD_ID))->addFlags(new Required(), new PrimaryKey()),
+            (new IdField('order_id', HistoryLogEntity::FIELD_ORDER_ID))->addFlags(new Required()),
+            (new StringField('event', HistoryLogEntity::FIELD_EVENT)),
+            (new StringField('user', HistoryLogEntity::FIELD_USER)),
+            (new StringField('product_name', HistoryLogEntity::FIELD_PRODUCT_NAME)),
+            (new StringField('product_number', HistoryLogEntity::FIELD_PRODUCT_NUMBER)),
+            (new IntField('quantity', HistoryLogEntity::FIELD_QTY))
         ]);
     }
 }

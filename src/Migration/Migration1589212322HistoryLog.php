@@ -24,16 +24,17 @@ class Migration1589212322HistoryLog extends MigrationStep
         $connection->executeQuery("
             CREATE TABLE `ratepay_order_history` (
                 `id` binary(16) NOT NULL,
-                `orderId` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-                `event` varchar(100) COLLATE utf8_unicode_ci NULL,
-                `user` varchar(100) COLLATE utf8_unicode_ci NULL,
-                `articlename` varchar(100) COLLATE utf8_unicode_ci NULL,
-                `articlenumber` varchar(100) COLLATE utf8_unicode_ci NULL,
-                `quantity` int(5) COLLATE utf8_unicode_ci NULL,
+                `order_id` binary(16) NOT NULL,
+                `event` varchar(100) COLLATE utf8mb4_unicode_ci NULL,
+                `user` varchar(100) COLLATE utf8mb4_unicode_ci NULL,
+                `product_name` varchar(100) COLLATE utf8mb4_unicode_ci NULL,
+                `product_number` varchar(100) COLLATE utf8mb4_unicode_ci NULL,
+                `quantity` int(5) COLLATE utf8mb4_unicode_ci NULL,
                 `created_at` datetime NOT NULL,
                 `updated_at` datetime NULL,
-                PRIMARY KEY (`id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+                PRIMARY KEY (`id`),
+                FOREIGN KEY (`order_id`) REFERENCES `order` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         ");
     }
 
