@@ -50,7 +50,7 @@ class ShoppingBasketFactory extends AbstractFactory
                         ->setUnitPriceGross($priceDefinition->getPrice())
                         ->setTaxRate($priceDefinition->getTaxRules()->first()->getTaxRate())
                 );
-            } else {
+            } elseif ($id !== 'shipping') {
                 $item = $order->getLineItems()->get($id);
                 if (!$item) {
                     throw new InvalidArgumentException($id . ' does not belongs to the order ' . $order->getId());
@@ -58,7 +58,8 @@ class ShoppingBasketFactory extends AbstractFactory
                 $this->addOrderLineItemToBasket($basket, $item, $qty);
             }
         }
-        if (count($itemsToSend) === 0) {
+
+        if ($sendAll) {
             // send all items
             foreach ($order->getLineItems() as $item) {
                 $this->addOrderLineItemToBasket($basket, $item, $item->getQuantity());
