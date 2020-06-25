@@ -96,7 +96,7 @@ abstract class AbstractRequest
                 $requestBuilder = $requestBuilder->subtype($this->_subType);
             }
         } catch (Exception $e) {
-            $this->eventDispatcher->dispatch(new RequestBuilderFailedEvent($e));
+            $this->eventDispatcher->dispatch(new RequestBuilderFailedEvent($e, $requestData));
             throw $e;
         }
 

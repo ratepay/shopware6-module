@@ -9,6 +9,7 @@
 namespace Ratepay\RatepayPayments\Components\InstallmentCalculator\Subscriber;
 
 
+use Exception;
 use RatePAY\Model\Request\SubModel\Content\Payment;
 use Ratepay\RatepayPayments\Components\InstallmentCalculator\Service\InstallmentService;
 use Ratepay\RatepayPayments\Components\InstallmentCalculator\Util\PlanHasher;
@@ -58,7 +59,7 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
             );
 
             if (PlanHasher::isPlanEqualWithHash($requestedInstallment->get('hash'), $plan)) {
-                throw new \Exception('the hash value of the calculated plan does not match the given hash');
+                throw new Exception('the hash value of the calculated plan does not match the given hash');
             }
 
             $paymentObject->setDebitPayType('')

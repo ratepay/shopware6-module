@@ -45,13 +45,11 @@ class InstallmentController extends StorefrontController
         $value = $request->query->get('value');
 
         $installmentTranslations = $this->installmentService->getTranslations($context);
-        $installmentCalculator = $this->installmentService->getInstallmentCalculatorData($context);
         $installmentPlan = $this->installmentService->getInstallmentPlanData($context, $type, $value);
 
         return $this->renderStorefront('@Storefront/storefront/installment-calculator/installment-plan.html.twig', [
             'installment' => [
                 'translations' => $installmentTranslations,
-                'calculator' => $installmentCalculator,
                 'plan' => $installmentPlan,
             ]
         ]);

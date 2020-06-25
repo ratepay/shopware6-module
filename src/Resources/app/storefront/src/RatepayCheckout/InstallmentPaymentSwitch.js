@@ -13,7 +13,7 @@ export default class InstallmentPaymentSwitch extends Plugin {
         hiddenCls: 'd-none',
         showCls: 'd-block',
         paymentTypeBankTransfer: 'BANK-TRANSFER',
-        paymentTypeDirectDebit: 'DIRECT-DEBIT',
+        paymentTypeDirectDebit: 'DIRECT-DEBIT'
     };
 
     init() {

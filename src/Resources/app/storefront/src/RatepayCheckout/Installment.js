@@ -16,7 +16,7 @@ export default class Installment extends Plugin {
 
     static options = {
         calculationTypeTime: 'time',
-        calculationTypeRate: 'rate',
+        calculationTypeRate: 'rate'
     };
 
     init() {

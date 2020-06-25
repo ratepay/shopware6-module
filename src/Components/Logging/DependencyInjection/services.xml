@@ -11,10 +11,9 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="Ratepay\RatepayPayments\Components\Logging\Services\ApiLogger">
-            <argument id="ratepay_api_log.repository" type="service"/>
-            <argument id="Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService" type="service"/>
-            <argument id="ratepay.logger" type="service"/>
+        <service id="Ratepay\RatepayPayments\Components\Logging\Services\ApiLogger" autowire="true">
+            <argument key="$logRepository" id="ratepay_api_log.repository" type="service"/>
+            <argument key="$logger" id="ratepay.logger" type="service"/>
         </service>
 
         <service id="Ratepay\RatepayPayments\Components\Logging\Services\HistoryLogger">
