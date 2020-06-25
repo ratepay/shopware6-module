@@ -16,15 +16,15 @@ use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\InvoiceFactory;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
 use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
-use Ratepay\RatepayPayments\Components\ProfileConfig\Model\Repository\ProfileConfigRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class PaymentDeliverService extends AbstractModifyRequest
 {
 
-    const EVENT_SUCCESSFUL = self::class . parent::EVENT_SUCCESSFUL;
-    const EVENT_FAILED = self::class . parent::EVENT_FAILED;
-    const EVENT_BUILD_HEAD = self::class . parent::EVENT_BUILD_HEAD;
+    public const EVENT_SUCCESSFUL = self::class . parent::EVENT_SUCCESSFUL;
+    public const EVENT_FAILED = self::class . parent::EVENT_FAILED;
+    public const EVENT_BUILD_HEAD = self::class . parent::EVENT_BUILD_HEAD;
 
     protected $_operation = self::CALL_DELIVER;
 
@@ -37,7 +37,7 @@ class PaymentDeliverService extends AbstractModifyRequest
         EventDispatcherInterface $eventDispatcher,
         ConfigService $configService,
         HeadFactory $headFactory,
-        ProfileConfigRepository $profileConfigRepository,
+        EntityRepositoryInterface $profileConfigRepository,
         ShoppingBasketFactory $shoppingBasketFactory,
         InvoiceFactory $invoiceFactory
     )

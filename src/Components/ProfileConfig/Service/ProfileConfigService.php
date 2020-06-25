@@ -15,7 +15,6 @@ use Ratepay\RatepayPayments\Components\ProfileConfig\Model\Collection\ProfileCon
 use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
 use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigMethodInstallmentEntity;
-use Ratepay\RatepayPayments\Components\ProfileConfig\Model\Repository\ProfileConfigRepository;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\ProfileRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\ProfileRequestService;
 use Ratepay\RatepayPayments\RatepayPayments;
@@ -32,7 +31,7 @@ class ProfileConfigService
 {
 
     /**
-     * @var ProfileConfigRepository
+     * @var EntityRepositoryInterface
      */
     private $repository;
     /**

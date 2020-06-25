@@ -21,32 +21,5 @@
                       type="service"/>
         </service>
 
-        <!-- entities -->
-        <service id="Ratepay\RatepayPayments\Components\ProfileConfig\Model\Definition\ProfileConfigDefinition">
-            <tag name="shopware.entity.definition" entity="ratepay_profile_config"/>
-        </service>
-        <service id="Ratepay\RatepayPayments\Components\ProfileConfig\Model\Definition\ProfileConfigMethodDefinition">
-            <tag name="shopware.entity.definition" entity="ratepay_profile_config_method"/>
-        </service>
-        <service id="Ratepay\RatepayPayments\Components\ProfileConfig\Model\Definition\ProfileConfigMethodInstallmentDefinition">
-            <tag name="shopware.entity.definition" entity="ratepay_profile_config_method_installment"/>
-        </service>
-
-        <!-- repositories -->
-        <service id="Ratepay\RatepayPayments\Components\ProfileConfig\Model\Repository\ProfileConfigRepository"
-                 decorates="ratepay_profile_config.repository">
-            <argument id="Ratepay\RatepayPayments\Components\ProfileConfig\Model\Repository\ProfileConfigRepository.inner" type="service"/>
-            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\ProfileRequestService" type="service" />
-        </service>
-
-        <!-- Controller -->
-        <service id="Ratepay\RatepayPayments\Components\ProfileConfig\Controller\ProfileConfigController">
-            <argument id="Ratepay\RatepayPayments\Components\ProfileConfig\Service\ProfileConfigService" type="service"/>
-            <tag name="controller.service_arguments" />
-            <call method="setContainer">
-                <argument id="service_container" type="service"/>
-            </call>
-        </service>
-
     </services>
 </container>

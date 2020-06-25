@@ -17,7 +17,6 @@ use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
 use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
-use Ratepay\RatepayPayments\Components\ProfileConfig\Model\Repository\ProfileConfigRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -46,7 +45,7 @@ abstract class AbstractModifyRequest extends AbstractOrderOperationRequest
         EventDispatcherInterface $eventDispatcher,
         ConfigService $configService,
         HeadFactory $headFactory,
-        ProfileConfigRepository $profileConfigRepository,
+        EntityRepositoryInterface $profileConfigRepository,
         ShoppingBasketFactory $shoppingBasketFactory
     )
     {

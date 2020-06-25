@@ -6,10 +6,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\RatepayApi\Model\Collection;
+namespace Ratepay\RatepayPayments\Components\Logging\Model\Collection;
 
 
-use Ratepay\RatepayPayments\Components\RatepayApi\Model\ApiRequestLogEntity;
+use Ratepay\RatepayPayments\Components\Logging\Model\ApiRequestLogEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**

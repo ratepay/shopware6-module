@@ -16,7 +16,7 @@ use Shopware\Core\Framework\Context;
 class ProfileRequestService extends AbstractRequest
 {
 
-    const EVENT_BUILD_HEAD = self::class . parent::EVENT_BUILD_HEAD;
+    public const EVENT_BUILD_HEAD = self::class . parent::EVENT_BUILD_HEAD;
 
     protected $_operation = self::CALL_PROFILE_REQUEST;
 

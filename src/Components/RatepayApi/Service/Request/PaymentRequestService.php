@@ -20,9 +20,9 @@ use Ratepay\RatepayPayments\Components\RatepayApi\Factory\PaymentFactory;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
 use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
-use Ratepay\RatepayPayments\Components\ProfileConfig\Model\Repository\ProfileConfigRepository;
 use RatePAY\RequestBuilder;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -31,9 +31,9 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 class PaymentRequestService extends AbstractOrderOperationRequest
 {
 
-    const EVENT_SUCCESSFUL = self::class . parent::EVENT_SUCCESSFUL;
-    const EVENT_FAILED = self::class . parent::EVENT_FAILED;
-    const EVENT_BUILD_HEAD = self::class . parent::EVENT_BUILD_HEAD;
+    public const EVENT_SUCCESSFUL = self::class . parent::EVENT_SUCCESSFUL;
+    public const EVENT_FAILED = self::class . parent::EVENT_FAILED;
+    public const EVENT_BUILD_HEAD = self::class . parent::EVENT_BUILD_HEAD;
 
     protected $_operation = self::CALL_PAYMENT_REQUEST;
 
@@ -54,7 +54,7 @@ class PaymentRequestService extends AbstractOrderOperationRequest
         EventDispatcherInterface $eventDispatcher,
         ConfigService $configService,
         HeadFactory $headFactory,
-        ProfileConfigRepository $profileConfigRepository,
+        EntityRepositoryInterface $profileConfigRepository,
         ShoppingBasketFactory $shoppingBasketFactory,
         CustomerFactory $customerFactory,
         PaymentFactory $paymentFactory

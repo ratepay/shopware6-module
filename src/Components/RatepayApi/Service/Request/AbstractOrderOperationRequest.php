@@ -15,9 +15,9 @@ use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
-use Ratepay\RatepayPayments\Components\ProfileConfig\Model\Repository\ProfileConfigRepository;
 use RatePAY\RequestBuilder;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -29,7 +29,7 @@ abstract class AbstractOrderOperationRequest extends AbstractRequest
 {
 
     /**
-     * @var ProfileConfigRepository
+     * @var EntityRepositoryInterface
      */
     private $profileConfigRepository;
 
@@ -37,7 +37,7 @@ abstract class AbstractOrderOperationRequest extends AbstractRequest
         EventDispatcherInterface $eventDispatcher,
         ConfigService $configService,
         HeadFactory $headFactory,
-        ProfileConfigRepository $profileConfigRepository
+        EntityRepositoryInterface $profileConfigRepository
     )
     {
         parent::__construct($eventDispatcher, $configService, $headFactory);
