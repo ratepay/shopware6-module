@@ -9,7 +9,7 @@
 namespace Ratepay\RatepayPayments\Components\RatepayApi\Dto;
 
 
-use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigEntity;
+use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 
 class ProfileRequestData implements IRequestData
 {
