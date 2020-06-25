@@ -12,6 +12,9 @@
 
     <services>
 
+        <service id="Ratepay\RatepayPayments\Components\InstallmentCalculator\Service\InstallmentService" autowire="true" >
+            <argument key="$languageRepository" id="language.repository" type="service" />
+        </service>
 
     </services>
 

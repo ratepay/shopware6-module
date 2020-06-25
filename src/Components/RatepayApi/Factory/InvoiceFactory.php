@@ -10,17 +10,23 @@ namespace Ratepay\RatepayPayments\Components\RatepayApi\Factory;
 
 
 use RatePAY\Model\Request\SubModel\Content\Invoicing;
+use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Shopware\Core\Checkout\Document\DocumentEntity;
-use Shopware\Core\Checkout\Order\OrderEntity;
 
-class InvoiceFactory
+class InvoiceFactory extends AbstractFactory
 {
 
-    public function getData(OrderEntity $order)
+    protected function _getData(IRequestData $requestData): ?object
     {
+        /** @var OrderOperationData $requestData */
+
+        $order = $requestData->getOrder();
         $documents = $order->getDocuments()->filter(function (DocumentEntity $documentEntity) {
             return $documentEntity->getDocumentType()->getTechnicalName() === 'invoice';
         });
+
+        $invoiceObject = null;
 
         if ($invoice = $documents->first()) {
             $dateObject = $invoice->getCreatedAt();
@@ -31,8 +37,7 @@ class InvoiceFactory
             return (new Invoicing())
                 ->setInvoiceId($invoice->getConfig()['documentNumber'])
                 ->setInvoiceDate($currentDateTime)
-                ->setDeliveryDate($currentDateTime)
-                ;
+                ->setDeliveryDate($currentDateTime);
         }
         return null;
     }

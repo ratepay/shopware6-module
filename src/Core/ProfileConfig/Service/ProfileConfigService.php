@@ -12,6 +12,8 @@ namespace Ratepay\RatepayPayments\Core\ProfileConfig\Service;
 use RatePAY\Model\Request\AbstractRequest;
 use Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
 use Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
+use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\ProfileRequestData;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigCollection;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigEntity;
@@ -27,6 +29,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class ProfileConfigService
 {
@@ -169,6 +172,52 @@ class ProfileConfigService
         return $this->repository->search(new Criteria($ids), $this->context);
     }
 
+    public function getProfileConfigBySalesChannel(SalesChannelContext $salesChannelContext) : ProfileConfigEntity
+    {
+
+        $criteria = new Criteria();
+        $criteria->addAssociation(ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS);
+
+        // payment method
+        $criteria->addFilter(new EqualsFilter(
+            ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_PAYMENT_METHOD_ID,
+            $salesChannelContext->getPaymentMethod()->getId()
+        ));
+
+        // billing country
+        $criteria->addFilter(new EqualsFilter(
+            ProfileConfigEntity::FIELD_COUNTRY_CODE_BILLING,
+            $salesChannelContext->getCustomer()->getActiveBillingAddress()->getCountry()->getIso()
+        ));
+
+        // delivery country
+        if ($delivery = $salesChannelContext->getCustomer()->getActiveShippingAddress()) {
+            $criteria->addFilter(new EqualsFilter(
+                ProfileConfigEntity::FIELD_COUNTRY_CODE_SHIPPING,
+                $delivery->getCountry()->getIso()
+            ));
+        }
+
+        // sales channel
+        $criteria->addFilter(new EqualsFilter(
+            ProfileConfigEntity::FIELD_SALES_CHANNEL_ID,
+            $salesChannelContext->getSalesChannel()->getId()
+        ));
+
+        // currency
+        $criteria->addFilter(new EqualsFilter(
+            ProfileConfigEntity::FIELD_CURRENCY,
+            $salesChannelContext->getCurrency()->getIsoCode()
+        ));
+
+        // status
+        $criteria->addFilter(new EqualsFilter(
+            ProfileConfigEntity::FIELD_STATUS,
+            true
+        ));
+
+        return $this->repository->search($criteria, $salesChannelContext->getContext())->first();
+    }
     /**
      * @returns PaymentMethodCollection
      */

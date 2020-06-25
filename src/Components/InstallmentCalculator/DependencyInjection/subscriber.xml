@@ -12,6 +12,13 @@
 
     <services>
 
+        <service id="Ratepay\RatepayPayments\Components\InstallmentCalculator\Subscriber\CheckoutSubscriber" autowire="true">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+        <service id="Ratepay\RatepayPayments\Components\InstallmentCalculator\Subscriber\BuildPaymentSubscriber" autowire="true">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
 
     </services>
 

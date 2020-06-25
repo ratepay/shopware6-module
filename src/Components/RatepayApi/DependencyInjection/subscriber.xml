@@ -11,7 +11,6 @@
         <defaults>
             <bind key="$orderRepository" id="order.repository" type="service"/>
             <bind key="$lineItemsRepository" id="order_line_item.repository" type="service"/>
-            <bind key="$productRepository" id="product.repository" type="service"/>
         </defaults>
 
         <service id="Ratepay\RatepayPayments\Components\RatepayApi\Subscriber\PaymentRequestSubscriber" autowire="true">
@@ -19,6 +18,8 @@
         </service>
 
         <service id="Ratepay\RatepayPayments\Components\RatepayApi\Subscriber\PaymentChangeSubscriber" autowire="true">
+            <argument key="$logger" id="ratepay.logger" type="service"/>
+            <argument key="$productRepository" id="product.repository" type="service"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 

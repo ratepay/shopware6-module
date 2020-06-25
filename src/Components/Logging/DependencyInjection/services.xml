@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" ?>
 <!--
   ~ Copyright (c) 2020 RatePAY GmbH
   ~
@@ -11,13 +11,15 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="Ratepay\RatepayPayments\Components\Logging\Subscriber\RequestBuilderFailedSubscriber">
-            <argument id="ratepay.logger" type="service"/>
-            <tag name="kernel.event_subscriber"/>
+        <service id="Ratepay\RatepayPayments\Components\Logging\Services\ApiLogger" autowire="true">
+            <argument key="$logRepository" id="ratepay_api_log.repository" type="service"/>
+            <argument key="$logger" id="ratepay.logger" type="service"/>
         </service>
 
-        <service id="Ratepay\RatepayPayments\Components\Logging\Subscriber\RequestSubscriber" autowire="true">
-            <tag name="kernel.event_subscriber"/>
+        <service id="Ratepay\RatepayPayments\Components\Logging\Services\HistoryLogger">
+            <argument id="ratepay_order_history.repository" type="service"/>
+            <argument id="ratepay.logger" type="service"/>
         </service>
     </services>
+
 </container>

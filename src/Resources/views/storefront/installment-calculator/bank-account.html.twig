@@ -1,0 +1,37 @@
+{% sw_extends '@RatepayPayments/storefront/page/checkout/ratepay/common/bank-account.html.twig' %}
+
+
+{% block ratepay_personal_data_bank_account_title %}
+    {{ parent() }}
+    <div class="form-row">
+        <div class="form-group col-sm-12">
+            {{ installment.translations.wcd_sepa_notice_block|raw }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block ratepay_personal_data_bank_account_legal %}
+    <div class="form-row">
+        <div class="form-group col-sm-12">
+            <table class="rp-sepa-table small">
+                <tr>
+                    <td colspan="2">{{ installment.translations.wcd_address|raw }}</td>
+                </tr>
+                <tr>
+                    <td>{{ installment.translations.rp_creditor|raw }}</td>
+                    <td>{{ installment.translations.wcd_creditor_id|raw }}</td>
+                </tr>
+                <tr>
+                    <td>{{ installment.translations.rp_mandate|raw }}</td>
+                    <td>{{ installment.translations.rp_mandate_ref|raw }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block ratepay_personal_data_bank_account_sepa_confirm_text %}
+    {{ installment.translations.wcd_sepa_terms_block_1|raw }}<br>
+    {{ installment.translations.wcd_sepa_terms_please_note|raw }}: {{ installment.translations.wcd_sepa_terms_block_2|raw }}<br/>
+    {{ installment.translations.wcd_sepa_terms_block_3|raw }}
+{% endblock %}

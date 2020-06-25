@@ -15,7 +15,7 @@ use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
-use Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService;
+use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigEntity;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -68,7 +68,7 @@ abstract class AbstractModifyRequest extends AbstractOrderOperationRequest
     {
         /** @var OrderOperationData $requestData */
         $content = new Content();
-        $content->setShoppingBasket($this->shoppingBasketFactory->getData($requestData->getOrder(), $requestData->getItems()));
+        $content->setShoppingBasket($this->shoppingBasketFactory->getData($requestData));
         return $content;
     }
 

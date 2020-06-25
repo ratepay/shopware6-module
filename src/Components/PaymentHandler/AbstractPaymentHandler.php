@@ -68,6 +68,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
             $response = $this->paymentRequestService->doRequest(
                 $salesChannelContext->getContext(),
                 new PaymentRequestData(
+                    $salesChannelContext,
                     $order,
                     $transaction->getOrderTransaction(),
                     $dataBag
@@ -94,7 +95,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
         return $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($order->getId()), $context)->first();
     }
 
-    public function getValidationDefinitions(SalesChannelContext $salesChannelContext)
+    public function getValidationDefinitions(SalesChannelContext $salesChannelContext) : array
     {
         $validations = [];
 

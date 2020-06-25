@@ -18,7 +18,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class => 'addRatepayTemplateData'
+            CheckoutConfirmPageLoadedEvent::class => ['addRatepayTemplateData', 900]
         ];
     }
 

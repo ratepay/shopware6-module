@@ -25,7 +25,7 @@
                       type="service"/>
         </service>
 
-        <service id="Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService">
+        <service id="Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService">
             <argument id="Shopware\Core\System\SystemConfig\SystemConfigService" type="service"/>
             <argument id="plugin.repository" type="service"/>
         </service>

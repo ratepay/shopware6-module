@@ -14,10 +14,11 @@ use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Event\BuildEvent;
+use Ratepay\RatepayPayments\Components\RatepayApi\Event\RequestBuilderFailedEvent;
 use Ratepay\RatepayPayments\Components\RatepayApi\Event\RequestDoneEvent;
 use Ratepay\RatepayPayments\Components\RatepayApi\Event\ResponseEvent;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
-use Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService;
+use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigEntity;
 use RatePAY\RequestBuilder;
 use Shopware\Core\Framework\Context;
@@ -88,10 +89,15 @@ abstract class AbstractRequest
         $head = $this->getRequestHead($requestData, $profileConfig);
         $content = $this->getRequestContent($requestData);
 
-        $requestBuilder = new RequestBuilder($profileConfig->isSandbox());
-        $requestBuilder = $requestBuilder->__call('call' . $this->_operation, $content ? [$head, $content] : [$head]);
-        if ($this->_subType) {
-            $requestBuilder = $requestBuilder->subtype($this->_subType);
+        try {
+            $requestBuilder = new RequestBuilder($profileConfig->isSandbox());
+            $requestBuilder = $requestBuilder->__call('call' . $this->_operation, $content ? [$head, $content] : [$head]);
+            if ($this->_subType) {
+                $requestBuilder = $requestBuilder->subtype($this->_subType);
+            }
+        } catch (Exception $e) {
+            $this->eventDispatcher->dispatch(new RequestBuilderFailedEvent($e, $requestData));
+            throw $e;
         }
 
         $this->eventDispatcher->dispatch(new RequestDoneEvent($requestBuilder));
@@ -115,7 +121,12 @@ abstract class AbstractRequest
 
     protected function getRequestHead(IRequestData $requestData, ProfileConfigEntity $profileConfig): Head
     {
-        $head = $this->headFactory->getData($profileConfig);
+        $head = $this->headFactory->getData($requestData);
+        $head->setCredential(
+            (new Head\Credential())
+                ->setProfileId($profileConfig->getProfileId())
+                ->setSecuritycode($profileConfig->getSecurityCode())
+        );
         /** @var BuildEvent $event */
         $event = $this->eventDispatcher->dispatch(new BuildEvent($requestData, $head), get_class($this) . self::EVENT_BUILD_HEAD);
         return $event->getBuildData();

@@ -10,10 +10,11 @@ namespace Ratepay\RatepayPayments\Components\RatepayApi\Factory;
 
 
 use RatePAY\Model\Request\SubModel\Head;
-use Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService;
-use Ratepay\RatepayPayments\Core\ProfileConfig\ProfileConfigEntity;
+use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-class HeadFactory
+class HeadFactory extends AbstractFactory
 {
 
     private $shopwareVersion;
@@ -22,22 +23,18 @@ class HeadFactory
      */
     private $configService;
 
-    public function __construct(ConfigService $configService, $shopwareVersion)
+    public function __construct(EventDispatcherInterface $eventDispatcher, ConfigService $configService, $shopwareVersion)
     {
+        parent::__construct($eventDispatcher);
         $this->configService = $configService;
         $this->shopwareVersion = $shopwareVersion;
     }
 
-    public function getData(ProfileConfigEntity $profileConfig)
+    public function _getData(IRequestData $requestData): ?object
     {
         $head = new Head();
         $head
             ->setSystemId(isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : 'cli/cronjob/api')
-            ->setCredential(
-                (new Head\Credential())
-                    ->setProfileId($profileConfig->getProfileId())
-                    ->setSecuritycode($profileConfig->getSecurityCode())
-            )
             ->setMeta(
                 (new Head\Meta())
                     ->setSystems(

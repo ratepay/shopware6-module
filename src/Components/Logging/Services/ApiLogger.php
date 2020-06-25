@@ -6,62 +6,48 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\Logging\Subscriber;
+namespace Ratepay\RatepayPayments\Components\Logging\Services;
 
 use DateTime;
 use Exception;
 use Monolog\Logger;
-use Ratepay\RatepayPayments\Components\RatepayApi\Event\RequestDoneEvent;
-use Ratepay\RatepayPayments\Core\PluginConfig\Services\ConfigService;
+use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
+use RatePAY\RequestBuilder;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class RequestLogger implements EventSubscriberInterface
+class ApiLogger
 {
+    /**
+     * @var EntityRepositoryInterface
+     */
+    protected $logRepository;
 
     /**
      * @var ConfigService
      */
-    protected $config;
+    protected $configService;
 
     /**
      * @var Logger
      */
     protected $logger;
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $logRepository;
 
     public function __construct(
-        ConfigService $config,
         EntityRepositoryInterface $logRepository,
+        ConfigService $configService,
         Logger $logger
     )
     {
-        $this->config = $config;
-        $this->logger = $logger;
         $this->logRepository = $logRepository;
+        $this->configService = $configService;
+        $this->logger = $logger;
     }
 
-    public static function getSubscribedEvents()
+    public function logRequest(RequestBuilder $requestBuilder): void
     {
-        return [
-            RequestDoneEvent::class => 'logRequest'
-        ];
-    }
-
-    /**
-     * Logs the Request and Response
-     *
-     * @param string $requestXml
-     * @param string $responseXml
-     */
-    public function logRequest(RequestDoneEvent $event)
-    {
-        $requestXml = $event->getRequestBuilder()->getRequestRaw();
-        $responseXml = $event->getRequestBuilder()->getResponseRaw();
+        $requestXml = $requestBuilder->getRequestRaw();
+        $responseXml = $requestBuilder->getResponseRaw();
 
         preg_match("/<operation.*>(.*)<\/operation>/", $requestXml, $operationMatches);
         $operation = $operationMatches[1];
@@ -79,25 +65,34 @@ class RequestLogger implements EventSubscriberInterface
         $transactionId = isset($transactionMatchesResponse[1]) ? $transactionMatchesResponse[1] : $transactionId;
 
         $requestXml = preg_replace("/<owner>(.*)<\/owner>/", '<owner>xxxxxxxx</owner>', $requestXml);
-        $requestXml = preg_replace("/<bank-account-number>(.*)<\/bank-account-number>/", '<bank-account-number>xxxxxxxx</bank-account-number>', $requestXml);
+        $requestXml = preg_replace(
+            "/<bank-account-number>(.*)<\/bank-account-number>/",
+            '<bank-account-number>xxxxxxxx</bank-account-number>',
+            $requestXml
+        );
         $requestXml = preg_replace("/<bank-code>(.*)<\/bank-code>/", '<bank-code>xxxxxxxx</bank-code>', $requestXml);
 
         try {
-            $this->logRepository->create([
+            $this->logRepository->create(
                 [
-                    'version' => $this->config->getPluginVersion(),
-                    'operation' => $operation,
-                    'subOperation' => $operationSubtype,
-                    'status' => $operationStatus,
-                    'transactionId' => $transactionId,
-                    'request' => $requestXml,
-                    'response' => $responseXml,
-                    'createdAt' => new DateTime()
-                ]
-            ], Context::createDefaultContext());
-
+                    [
+                        'version' => $this->configService->getPluginVersion(),
+                        'operation' => $operation,
+                        'subOperation' => $operationSubtype,
+                        'status' => $operationStatus,
+                        'transactionId' => $transactionId,
+                        'request' => $requestXml,
+                        'response' => $responseXml,
+                        'createdAt' => new DateTime()
+                    ]
+                ],
+                Context::createDefaultContext()
+            );
         } catch (Exception $exception) {
-            $this->logger->error('RatePAY was unable to log request history: ' . $exception->getMessage());
+            $this->logger->error('RatePAY was unable to log request history', [
+                'message' => $exception->getMessage(),
+                'trace' => $exception->getTraceAsString(),
+            ]);
         }
     }
 }

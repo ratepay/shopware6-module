@@ -6,8 +6,15 @@
  */
 
 // Import all necessary Storefront plugins and scss files
-import RatepayCheckout from './RatepayCheckout/RatepayCheckout';
+import RatepayInstallment from './RatepayCheckout/Installment';
+import RatepayInstallmentPaymentSwitch from './RatepayCheckout/InstallmentPaymentSwitch';
 
 // Register them via the existing PluginManager
 const PluginManager = window.PluginManager;
-PluginManager.register('RatepayCheckout', RatepayCheckout);
+
+PluginManager.register('ratepay-installment', RatepayInstallment, '[data-ratepay-installment="true"]');
+PluginManager.register(
+    'ratepay-installment-payment-switch',
+    RatepayInstallmentPaymentSwitch,
+    '[data-ratepay-installment-payment-switch="true"]'
+);
