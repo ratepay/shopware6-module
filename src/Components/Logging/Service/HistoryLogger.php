@@ -11,7 +11,6 @@ namespace Ratepay\RatepayPayments\Components\Logging\Service;
 use DateTime;
 use Exception;
 use Monolog\Logger;
-use Petstore30\User;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Api\Context\AdminApiSource;
 use Shopware\Core\Framework\Context;
@@ -66,7 +65,7 @@ class HistoryLogger
                     'articlenumber' => $articleNumber,
                     'quantity' => $quantity,
                     // ToDo: Check if you can add the correct time for the correct timezone here (or is it a problem of SW6?)
-                    'created_at' => (new \DateTime())->format(Defaults::STORAGE_DATE_TIME_FORMAT),
+                    'created_at' => (new DateTime())->format(Defaults::STORAGE_DATE_TIME_FORMAT),
                 ]
             ], $context);
         } catch (Exception $exception) {
