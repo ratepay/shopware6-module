@@ -32,7 +32,6 @@ class ResponseEvent extends \Symfony\Contracts\EventDispatcher\Event
 
     public function __construct(Context $context, RequestBuilder $requestBuilder, IRequestData $requestData)
     {
-
         $this->context = $context;
         $this->requestBuilder = $requestBuilder;
         $this->requestData = $requestData;
