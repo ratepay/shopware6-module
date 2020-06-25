@@ -11,12 +11,17 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="Ratepay\RatepayPayments\Components\Logging\Services\ApiLogger" autowire="true">
+        <service id="ratepay.logger" class="Monolog\Logger">
+            <factory service="Shopware\Core\Framework\Log\LoggerFactory" method="createRotating"/>
+            <argument type="string">ratepay</argument>
+        </service>
+
+        <service id="Ratepay\RatepayPayments\Components\Logging\Service\ApiLogger" autowire="true">
             <argument key="$logRepository" id="ratepay_api_log.repository" type="service"/>
             <argument key="$logger" id="ratepay.logger" type="service"/>
         </service>
 
-        <service id="Ratepay\RatepayPayments\Components\Logging\Services\HistoryLogger">
+        <service id="Ratepay\RatepayPayments\Components\Logging\Service\HistoryLogger">
             <argument id="ratepay_order_history.repository" type="service"/>
             <argument id="ratepay.logger" type="service"/>
         </service>

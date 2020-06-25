@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<!--
+  ~ Copyright (c) 2020 RatePAY GmbH
+  ~
+  ~ For the full copyright and license information, please view the LICENSE
+  ~ file that was distributed with this source code.
+  -->
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="Ratepay\RatepayPayments\Components\ProfileConfig\Service\ProfileConfigService">
+            <argument id="payment_method.repository" type="service"/>
+            <argument id="ratepay_profile_config.repository" type="service"/>
+            <argument id="ratepay_profile_config_method.repository" type="service"/>
+            <argument id="ratepay_profile_config_method_installment.repository" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\ProfileRequestService"
+                      type="service"/>
+        </service>
+
+    </services>
+</container>

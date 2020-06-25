@@ -10,7 +10,7 @@ namespace Ratepay\RatepayPayments\Components\InstallmentCalculator\Service;
 
 use RatePAY\Frontend\InstallmentBuilder;
 use Ratepay\RatepayPayments\Components\InstallmentCalculator\Util\PlanHasher;
-use Ratepay\RatepayPayments\Core\ProfileConfig\Service\ProfileConfigService;
+use Ratepay\RatepayPayments\Components\ProfileConfig\Service\ProfileConfigService;
 use RatePAY\Service\LanguageService;
 use RuntimeException;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;

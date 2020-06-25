@@ -14,7 +14,7 @@ use Ratepay\RatepayPayments\Components\PaymentHandler\Constraint\BirthdayConstra
 use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
 use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\PaymentRequestData;
-use Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentRequestService;
+use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
 use Ratepay\RatepayPayments\Util\CriteriaHelper;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Checkout\Order\OrderEntity;

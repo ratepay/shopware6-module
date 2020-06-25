@@ -14,7 +14,7 @@ use Ratepay\RatepayPayments\Components\DeviceFingerprint\DfpService;
 use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
 use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RatepayPayments\Components\RatepayApi\Event\BuildEvent;
-use Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentRequestService;
+use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
 use RatePAY\Service\DeviceFingerprint;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;

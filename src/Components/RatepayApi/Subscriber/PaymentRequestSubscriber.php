@@ -12,7 +12,7 @@ namespace Ratepay\RatepayPayments\Components\RatepayApi\Subscriber;
 use RatePAY\Model\Response\PaymentRequest;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Event\ResponseEvent;
-use Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentRequestService;
+use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 

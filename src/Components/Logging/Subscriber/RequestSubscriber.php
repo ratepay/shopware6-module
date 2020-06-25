@@ -8,7 +8,7 @@
 
 namespace Ratepay\RatepayPayments\Components\Logging\Subscriber;
 
-use Ratepay\RatepayPayments\Components\Logging\Services\ApiLogger;
+use Ratepay\RatepayPayments\Components\Logging\Service\ApiLogger;
 use Ratepay\RatepayPayments\Components\RatepayApi\Event\RequestDoneEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 

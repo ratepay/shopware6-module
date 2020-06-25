@@ -15,7 +15,7 @@
             <argument type="service"
                       id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <argument type="service" id="order.repository"/>
-            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentRequestService"
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentRequestService"
                       type="service"/>
             <argument id="event_dispatcher" type="service"/>
             <tag name="shopware.payment.method.sync"/>
@@ -25,7 +25,7 @@
             <argument type="service"
                       id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <argument type="service" id="order.repository"/>
-            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentRequestService"
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentRequestService"
                       type="service"/>
             <argument id="event_dispatcher" type="service"/>
             <tag name="shopware.payment.method.sync"/>
@@ -35,7 +35,7 @@
             <argument type="service"
                       id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <argument type="service" id="order.repository"/>
-            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentRequestService"
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentRequestService"
                       type="service"/>
             <argument id="event_dispatcher" type="service"/>
             <tag name="shopware.payment.method.sync"/>
@@ -45,7 +45,7 @@
             <argument type="service"
                       id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <argument type="service" id="order.repository"/>
-            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentRequestService"
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentRequestService"
                       type="service"/>
             <argument id="event_dispatcher" type="service"/>
             <tag name="shopware.payment.method.sync"/>
@@ -56,7 +56,7 @@
             <argument type="service"
                       id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <argument type="service" id="order.repository"/>
-            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Services\Request\PaymentRequestService"
+            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentRequestService"
                       type="service"/>
             <argument id="event_dispatcher" type="service"/>
             <tag name="shopware.payment.method.sync"/>
