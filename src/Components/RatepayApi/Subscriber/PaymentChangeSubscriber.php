@@ -100,6 +100,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         foreach ($lineItems as $item) {
 
             $this->historyLogger->logHistory(
+                $event->getContext(),
                 $requestData->getOrder()->getId(),
                 $requestData->getOperation(),
                 $item->getLabel(),
