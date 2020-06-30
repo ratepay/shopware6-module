@@ -14,6 +14,15 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 class ApiRequestLogEntity extends Entity
 {
 
+    public const FIELD_ID = 'id';
+    public const FIELD_VERSION = 'version';
+    public const FIELD_OPERATION = 'operation';
+    public const FIELD_SUB_OPERATION = 'subOperation';
+    public const FIELD_RESULT = 'result';
+    public const FIELD_REQUEST = 'request';
+    public const FIELD_RESPONSE = 'response';
+    public const FIELD_ADDITIONAL_DATA = 'additionalData';
+
     use EntityIdTrait;
 
     /**
@@ -34,22 +43,12 @@ class ApiRequestLogEntity extends Entity
     /**
      * @var string
      */
-    protected $status;
+    protected $result;
 
     /**
-     * @var string
+     * @var array
      */
-    protected $transactionId;
-
-    /**
-     * @var string
-     */
-    protected $firstname;
-
-    /**
-     * @var string
-     */
-    protected $lastname;
+    protected $additionalData;
 
     /**
      * @var string
@@ -112,57 +111,9 @@ class ApiRequestLogEntity extends Entity
     /**
      * @return string
      */
-    public function getStatus(): string
+    public function getResult(): string
     {
-        return $this->status;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTransactionId(): string
-    {
-        return $this->transactionId;
-    }
-
-    /**
-     * @param string $transactionId
-     */
-    public function setTransactionId(string $transactionId): void
-    {
-        $this->transactionId = $transactionId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFirstname(): string
-    {
-        return $this->firstname;
-    }
-
-    /**
-     * @param string $firstname
-     */
-    public function setFirstname(string $firstname): void
-    {
-        $this->firstname = $firstname;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLastname(): string
-    {
-        return $this->lastname;
-    }
-
-    /**
-     * @param string $lastname
-     */
-    public function setLastname(string $lastname): void
-    {
-        $this->lastname = $lastname;
+        return $this->result;
     }
 
     /**
@@ -195,6 +146,22 @@ class ApiRequestLogEntity extends Entity
     public function setResponse(string $response): void
     {
         $this->response = $response;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAdditionalData(): array
+    {
+        return $this->additionalData;
+    }
+
+    /**
+     * @param array $additionalData
+     */
+    public function setAdditionalData(array $additionalData): void
+    {
+        $this->additionalData = $additionalData;
     }
 
 

@@ -100,7 +100,7 @@ abstract class AbstractRequest
             throw $e;
         }
 
-        $this->eventDispatcher->dispatch(new RequestDoneEvent($requestBuilder));
+        $this->eventDispatcher->dispatch(new RequestDoneEvent($context, $requestData, $requestBuilder));
 
         $requestEvent = new ResponseEvent($context, $requestBuilder, $requestData);
         if ($requestBuilder->getResponse()->isSuccessful()) {

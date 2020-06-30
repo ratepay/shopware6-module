@@ -8,13 +8,14 @@
 
 namespace Ratepay\RatepayPayments\Components\Logging\Service;
 
-use DateTime;
 use Exception;
 use Monolog\Logger;
+use Ratepay\RatepayPayments\Components\Logging\Model\ApiRequestLogEntity;
 use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
-use RatePAY\RequestBuilder;
-use Shopware\Core\Framework\Context;
+use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
+use Ratepay\RatepayPayments\Components\RatepayApi\Event\RequestDoneEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use SimpleXMLElement;
 
 class ApiLogger
 {
@@ -44,49 +45,56 @@ class ApiLogger
         $this->logger = $logger;
     }
 
-    public function logRequest(RequestBuilder $requestBuilder): void
+    public function logRequest(RequestDoneEvent $requestDoneEvent): void
     {
+        $requestBuilder = $requestDoneEvent->getRequestBuilder();
         $requestXml = $requestBuilder->getRequestRaw();
         $responseXml = $requestBuilder->getResponseRaw();
 
-        preg_match("/<operation.*>(.*)<\/operation>/", $requestXml, $operationMatches);
-        $operation = $operationMatches[1];
+        $additionalData = [];
 
-        preg_match('/<operation subtype=\"(.*)">(.*)<\/operation>/', $requestXml, $operationSubtypeMatches);
-        $operationSubtype = isset($operationSubtypeMatches[1]) ? $operationSubtypeMatches[1] : null;
+        $requestData = $requestDoneEvent->getRequestData();
+        if ($requestData instanceof OrderOperationData) {
+            $order = $requestData->getOrder();
+            $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
+            $additionalData['transactionId'] = (string)$requestBuilder->getRequestXmlElement()->head->{'transaction-id'};
+            $additionalData['orderNumber'] = $order->getOrderNumber();
+            $additionalData['firstName'] = $billingAddress->getFirstName();
+            $additionalData['lastName'] = $billingAddress->getFirstName();
+            $additionalData['mail'] = $order->getOrderCustomer()->getEmail();
+        }
 
-        preg_match("/<transaction-id>(.*)<\/transaction-id>/", $requestXml, $transactionMatches);
-        $transactionId = isset($transactionMatches[1]) ? $transactionMatches[1] : null;
+        /** @var SimpleXMLElement $operationNode */
+        $operationNode = $requestBuilder->getRequestXmlElement()->head->operation;
+        $operationSubtype = (string)$operationNode->attributes()->subtype;
+        $operation = (string)$operationNode;
 
-        preg_match('/<status code=\"(.*)">(.*)<\/status>/', $responseXml, $operationStatusMatches);
-        $operationStatus = isset($operationStatusMatches[1]) ? $operationStatusMatches[1] : null;
 
-        preg_match("/<transaction-id>(.*)<\/transaction-id>/", $responseXml, $transactionMatchesResponse);
-        $transactionId = isset($transactionMatchesResponse[1]) ? $transactionMatchesResponse[1] : $transactionId;
+        $reasonNode = $requestBuilder->getResponseXmlElement()->head->processing->reason;
+        $resultNode = $requestBuilder->getResponseXmlElement()->head->processing->result;
+        $result = (string)$reasonNode;
+        if (in_array(((int)$reasonNode->attributes()->code), [303, 700], true) && ((int)$resultNode->attributes()->code) !== 402) {
+            $result = (string)$resultNode;
+        }
 
         $requestXml = preg_replace("/<owner>(.*)<\/owner>/", '<owner>xxxxxxxx</owner>', $requestXml);
-        $requestXml = preg_replace(
-            "/<bank-account-number>(.*)<\/bank-account-number>/",
-            '<bank-account-number>xxxxxxxx</bank-account-number>',
-            $requestXml
-        );
+        $requestXml = preg_replace("/<bank-account-number>(.*)<\/bank-account-number>/", '<bank-account-number>xxxxxxxx</bank-account-number>', $requestXml);
         $requestXml = preg_replace("/<bank-code>(.*)<\/bank-code>/", '<bank-code>xxxxxxxx</bank-code>', $requestXml);
 
         try {
             $this->logRepository->create(
                 [
                     [
-                        'version' => $this->configService->getPluginVersion(),
-                        'operation' => $operation,
-                        'subOperation' => $operationSubtype,
-                        'status' => $operationStatus,
-                        'transactionId' => $transactionId,
-                        'request' => $requestXml,
-                        'response' => $responseXml,
-                        'createdAt' => new DateTime()
+                        ApiRequestLogEntity::FIELD_VERSION => $this->configService->getPluginVersion(),
+                        ApiRequestLogEntity::FIELD_OPERATION => $operation,
+                        ApiRequestLogEntity::FIELD_SUB_OPERATION => $operationSubtype,
+                        ApiRequestLogEntity::FIELD_RESULT => $result,
+                        ApiRequestLogEntity::FIELD_REQUEST => $requestXml,
+                        ApiRequestLogEntity::FIELD_RESPONSE => $responseXml,
+                        ApiRequestLogEntity::FIELD_ADDITIONAL_DATA => $additionalData
                     ]
                 ],
-                Context::createDefaultContext()
+                $requestDoneEvent->getContext()
             );
         } catch (Exception $exception) {
             $this->logger->error('RatePAY was unable to log request history', [
