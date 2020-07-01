@@ -16,6 +16,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\AllowHtml;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\JsonField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\LongTextField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
@@ -42,16 +43,14 @@ class ApiRequestLogDefinition extends EntityDefinition
     protected function defineFields(): FieldCollection
     {
         return new FieldCollection([
-            (new IdField('id', 'id'))->addFlags(new Required(), new PrimaryKey()),
-            (new StringField('version', 'version'))->addFlags(new Required()),
-            (new StringField('operation', 'operation'))->addFlags(new Required()),
-            (new StringField('suboperation', 'subOperation')),
-            (new StringField('status', 'status')),
-            (new StringField('transaction_id', 'transactionId')),
-            (new StringField('firstname', 'firstname')),
-            (new StringField('lastname', 'lastname')),
-            (new LongTextField('request', 'request'))->addFlags(new Required(), new AllowHtml()),
-            (new LongTextField('response', 'response'))->addFlags(new Required(), new AllowHtml()),
+            (new IdField('id', ApiRequestLogEntity::FIELD_ID))->addFlags(new Required(), new PrimaryKey()),
+            (new StringField('version', ApiRequestLogEntity::FIELD_VERSION))->addFlags(new Required()),
+            (new StringField('operation', ApiRequestLogEntity::FIELD_OPERATION))->addFlags(new Required()),
+            (new StringField('sub_operation', ApiRequestLogEntity::FIELD_SUB_OPERATION)),
+            (new StringField('result', ApiRequestLogEntity::FIELD_RESULT)),
+            (new LongTextField('request', ApiRequestLogEntity::FIELD_REQUEST))->addFlags(new Required(), new AllowHtml()),
+            (new LongTextField('response', ApiRequestLogEntity::FIELD_RESPONSE))->addFlags(new Required(), new AllowHtml()),
+            (new JsonField('additional_data', ApiRequestLogEntity::FIELD_ADDITIONAL_DATA))
         ]);
     }
 }

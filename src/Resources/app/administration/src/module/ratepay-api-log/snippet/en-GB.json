@@ -14,15 +14,16 @@
                 "labels": {
                     "id": "Id",
                     "operation": "Operation",
-                    "suboperation": "Suboperation",
-                    "status": "Status",
+                    "subOperation": "Suboperation",
+                    "result": "Result",
                     "transactionId": "Transaction ID",
-                    "firstname": "First name",
-                    "lastname": "Last name",
+                    "firstName": "First name",
+                    "lastName": "Last name",
                     "createdAt": "Created at",
                     "request": "Request",
                     "response": "Response",
-                    "viewLog": "Request / Response"
+                    "viewLog": "Request / Response",
+                    "orderNumber": "Order number"
                 }
             },
             "modal": {

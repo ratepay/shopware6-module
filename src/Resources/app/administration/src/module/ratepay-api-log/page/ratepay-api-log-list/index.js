@@ -48,30 +48,38 @@ Component.register('ratepay-api-log-list', {
                     label: this.$t('ratepay.apiLog.global.labels.operation'),
                     allowResize: true
                 }, {
-                    property: 'suboperation',
-                    dataIndex: 'suboperation',
-                    label: this.$t('ratepay.apiLog.global.labels.suboperation'),
+                    property: 'subOperation',
+                    dataIndex: 'subOperation',
+                    label: this.$t('ratepay.apiLog.global.labels.subOperation'),
                     allowResize: true
                 }, {
-                    property: 'transactionId',
+                    property: 'result',
+                    dataIndex: 'result',
+                    label: this.$t('ratepay.apiLog.global.labels.result'),
+                    allowResize: true
+                }, {
+                    property: 'additionalData.transactionId',
                     dataIndex: 'transactionId',
                     label: this.$t('ratepay.apiLog.global.labels.transactionId'),
                     allowResize: true
                 }, {
-                    property: 'status',
-                    dataIndex: 'status',
-                    label: this.$t('ratepay.apiLog.global.labels.status'),
-                    allowResize: true
+                    property: 'additionalData.orderNumber',
+                    dataIndex: 'orderNumber',
+                    label: this.$t('ratepay.apiLog.global.labels.orderNumber'),
+                    allowResize: true,
+                    visible: false
                 }, {
-                    property: 'firstname',
-                    dataIndex: 'firstname',
-                    label: this.$t('ratepay.apiLog.global.labels.firstname'),
-                    allowResize: true
+                    property: 'additionalData.firstName',
+                    dataIndex: 'firstName',
+                    label: this.$t('ratepay.apiLog.global.labels.firstName'),
+                    allowResize: true,
+                    visible: false,
                 }, {
-                    property: 'lastname',
-                    dataIndex: 'lastname',
-                    label: this.$t('ratepay.apiLog.global.labels.lastname'),
-                    allowResize: true
+                    property: 'additionalData.lastName',
+                    dataIndex: 'lastName',
+                    label: this.$t('ratepay.apiLog.global.labels.lastName'),
+                    allowResize: true,
+                    visible: false,
                 }, {
                     property: 'response',
                     dataIndex: 'response',

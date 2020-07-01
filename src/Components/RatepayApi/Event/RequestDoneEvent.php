@@ -9,7 +9,9 @@
 namespace Ratepay\RatepayPayments\Components\RatepayApi\Event;
 
 
+use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
 use RatePAY\RequestBuilder;
+use Shopware\Core\Framework\Context;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class RequestDoneEvent extends Event
@@ -19,10 +21,29 @@ class RequestDoneEvent extends Event
      * @var RequestBuilder
      */
     private $requestBuilder;
+    /**
+     * @var IRequestData
+     */
+    private $requestData;
+    /**
+     * @var Context
+     */
+    private $context;
 
-    public function __construct(RequestBuilder $requestBuilder)
+    public function __construct(Context $context, IRequestData $requestData, RequestBuilder $requestBuilder)
     {
+        $this->context = $context;
+        $this->requestData = $requestData;
         $this->requestBuilder = $requestBuilder;
+    }
+
+
+    /**
+     * @return Context
+     */
+    public function getContext(): Context
+    {
+        return $this->context;
     }
 
     /**
@@ -31,6 +52,14 @@ class RequestDoneEvent extends Event
     public function getRequestBuilder(): RequestBuilder
     {
         return $this->requestBuilder;
+    }
+
+    /**
+     * @return IRequestData
+     */
+    public function getRequestData(): IRequestData
+    {
+        return $this->requestData;
     }
 
 }

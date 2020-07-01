@@ -33,6 +33,6 @@ class RequestSubscriber implements EventSubscriberInterface
 
     public function onRequestDone(RequestDoneEvent $event): void
     {
-        $this->apiLogger->logRequest($event->getRequestBuilder());
+        $this->apiLogger->logRequest($event);
     }
 }

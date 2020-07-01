@@ -8,7 +8,7 @@
                 :repository="repository"
                 :showSelection="false"
                 :columns="columns"
-                :showActions="false">
+                :showActions="true">
 
                 <template slot="column-response" slot-scope="{ item }">
                     <sw-button @click="modalItem = item">
@@ -26,6 +26,11 @@
                             </div>
                         </div>
                     </sw-modal>
+                </template>
+
+                <template #delete-action="{ }">
+                    {# remove delete link TODO is there a better solution? #}
+                    <span style="display: none;"></span>
                 </template>
             </sw-entity-listing>
         {% endblock %}
