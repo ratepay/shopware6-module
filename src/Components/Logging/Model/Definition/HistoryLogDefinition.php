@@ -10,11 +10,15 @@ namespace Ratepay\RatepayPayments\Components\Logging\Model\Definition;
 
 use Ratepay\RatepayPayments\Components\Logging\Model\Collection\HistoryLogCollection;
 use Ratepay\RatepayPayments\Components\Logging\Model\HistoryLogEntity;
+use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IntField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\ReferenceVersionField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
@@ -41,12 +45,15 @@ class HistoryLogDefinition extends EntityDefinition
     {
         return new FieldCollection([
             (new IdField('id', HistoryLogEntity::FIELD_ID))->addFlags(new Required(), new PrimaryKey()),
-            (new IdField('order_id', HistoryLogEntity::FIELD_ORDER_ID))->addFlags(new Required()),
+            (new FkField('order_id', 'orderId', OrderDefinition::class))->addFlags(new Required()),
+            (new ReferenceVersionField(OrderDefinition::class))->addFlags(new Required()),
             (new StringField('event', HistoryLogEntity::FIELD_EVENT)),
             (new StringField('user', HistoryLogEntity::FIELD_USER)),
             (new StringField('product_name', HistoryLogEntity::FIELD_PRODUCT_NAME)),
             (new StringField('product_number', HistoryLogEntity::FIELD_PRODUCT_NUMBER)),
-            (new IntField('quantity', HistoryLogEntity::FIELD_QTY))
+            (new IntField('quantity', HistoryLogEntity::FIELD_QTY)),
+
+            new ManyToOneAssociationField('order', 'order_id', OrderDefinition::class, 'id', false),
         ]);
     }
 }

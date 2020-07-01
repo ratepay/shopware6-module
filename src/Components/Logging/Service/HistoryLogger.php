@@ -67,7 +67,7 @@ class HistoryLogger
                     HistoryLogEntity::FIELD_PRODUCT_NUMBER => $articleNumber,
                     HistoryLogEntity::FIELD_QTY => $quantity,
                     // ToDo: Check if you can add the correct time for the correct timezone here (or is it a problem of SW6?)
-                    //HistoryLogEntity::FIELD_CREATED_AT => (new DateTime())->format(Defaults::STORAGE_DATE_TIME_FORMAT),
+                    HistoryLogEntity::FIELD_CREATED_AT => (new DateTime())->format(Defaults::STORAGE_DATE_TIME_FORMAT),
                 ]
             ], $context);
         } catch (Exception $exception) {

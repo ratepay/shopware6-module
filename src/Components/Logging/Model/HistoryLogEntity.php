@@ -8,6 +8,7 @@
 
 namespace Ratepay\RatepayPayments\Components\Logging\Model;
 
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 
 class HistoryLogEntity extends Entity
@@ -20,11 +21,17 @@ class HistoryLogEntity extends Entity
     public const FIELD_PRODUCT_NAME = 'productName';
     public const FIELD_PRODUCT_NUMBER = 'productNumber';
     public const FIELD_QTY = 'quantity';
+    public const FIELD_CREATED_AT = 'createdAt';
 
     /**
      * @var string
      */
     protected $orderId;
+
+    /**
+     * @var OrderEntity
+     */
+    protected $order;
 
     /**
      * @var string
@@ -64,6 +71,16 @@ class HistoryLogEntity extends Entity
     public function setOrderId(string $orderId): void
     {
         $this->orderId = $orderId;
+    }
+
+    public function getOrder(): OrderEntity
+    {
+        return $this->order;
+    }
+
+    public function setOrder(OrderEntity $order): void
+    {
+        $this->order = $order;
     }
 
     /**
