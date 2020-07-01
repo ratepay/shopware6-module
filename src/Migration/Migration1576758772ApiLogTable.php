@@ -31,7 +31,7 @@ class Migration1576758772ApiLogTable extends MigrationStep
                 `response` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
                 `additional_data` longtext COLLATE utf8mb4_unicode_ci NULL,
                 `created_at` datetime NOT NULL,
-                `updated_at` datetime NULL
+                `updated_at` datetime NULL,
                 PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         ");
