@@ -175,23 +175,27 @@ Component.register('ratepay-order-management', {
             });
         },
         onClickButtonAddDebit() {
+            this.loading.addDebit = true;
             this.orderManagementService
                 .addItem('debit', this.orderId, parseFloat(this.addDebit.value), this.addDebit.name)
                 .then(response => {
                     this.showMessage(response, 'addDebit');
                     this.loadList().then(() => {
                         this.onCloseDebitModal();
+                        this.loading.addDebit = false;
                         this.$emit('ratepayActionTriggered');
                     });
                 });
         },
         onClickButtonAddCredit() {
+            this.loading.addCredit = true;
             this.orderManagementService
                 .addItem('credit', this.orderId, parseFloat(this.addCredit.value) * -1, this.addCredit.name)
                 .then(response => {
                     this.showMessage(response, 'addCredit');
                     this.loadList().then(() => {
                         this.onCloseCreditModal();
+                        this.loading.addCredit = false;
                         this.$emit('ratepayActionTriggered');
                     });
                 });
