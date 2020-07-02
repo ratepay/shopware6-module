@@ -131,6 +131,10 @@ Component.register('ratepay-order-management', {
                         this.loading.deliver = false;
                         this.$emit('ratepayActionTriggered');
                     });
+                })
+                .catch((response) => {
+                    this.loading.deliver = false;
+                    this.showMessage(response, 'deliver');
                 });
         },
         onClickButtonCancel(updateStock) {
@@ -148,6 +152,11 @@ Component.register('ratepay-order-management', {
                         this.loading.cancelWithStock = false;
                         this.$emit('ratepayActionTriggered');
                     });
+                })
+                .catch((response) => {
+                    this.loading.cancel = false;
+                    this.loading.cancelWithStock = false;
+                    this.showMessage(response, 'cancel');
                 });
         },
         onClickButtonReturn(updateStock) {
@@ -165,6 +174,11 @@ Component.register('ratepay-order-management', {
                         this.loading.rtnWithStock = false;
                         this.$emit('ratepayActionTriggered');
                     });
+                })
+                .catch((response) => {
+                    this.loading.rtn = false;
+                    this.loading.rtnWithStock = false;
+                    this.showMessage(response, 'return');
                 });
         },
         onClickResetSelections() {
@@ -185,6 +199,10 @@ Component.register('ratepay-order-management', {
                         this.loading.addDebit = false;
                         this.$emit('ratepayActionTriggered');
                     });
+                })
+                .catch((response) => {
+                    this.loading.addDebit = false;
+                    this.showMessage(response, 'addDebit');
                 });
         },
         onClickButtonAddCredit() {
@@ -198,6 +216,10 @@ Component.register('ratepay-order-management', {
                         this.loading.addCredit = false;
                         this.$emit('ratepayActionTriggered');
                     });
+                })
+                .catch((response) => {
+                    this.loading.addCredit = false;
+                    this.showMessage(response, 'addCredit');
                 });
         },
 
