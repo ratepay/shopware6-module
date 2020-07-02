@@ -1,9 +1,10 @@
-<!--
+{#
   ~ Copyright (c) 2020 RatePAY GmbH
   ~
   ~ For the full copyright and license information, please view the LICENSE
   ~ file that was distributed with this source code.
-  -->
+#}
+
 {% set installment = page.extensions.ratepay.installment %}
 
 <script type="text/javascript">
@@ -64,12 +65,14 @@
                         </div>
 
                         <div class="panel-body">
-                            <div class="input-group input-group">
-                                <span class="input-group-addon">&euro;</span>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">€</span>
+                                </div>
                                 <input type="number" id="rp-rate-value" class="form-control" aria-label="Amount" min="{{ installment.calculator.rp_minimumRate }}" max="{{ installment.calculator.rp_maximumRate }}" />
-                                <span class="input-group-btn">
-                                    <button id="rp-rate-button" class="btn btn-default rp-btn-rate" type="button" disabled>{{ installment.translations.rp_calculate_rate|raw }}</button>
-                                </span>
+                                <div class="input-group-append">
+                                    <button id="rp-rate-button" class="btn btn-outline-primary rp-btn-rate" type="button" disabled>{{ installment.translations.rp_calculate_rate|raw }}</button>
+                                </div>
                             </div>
                         </div>
                     </div>
