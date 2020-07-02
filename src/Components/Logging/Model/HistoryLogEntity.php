@@ -22,7 +22,6 @@ class HistoryLogEntity extends Entity
     public const FIELD_PRODUCT_NAME = 'productName';
     public const FIELD_PRODUCT_NUMBER = 'productNumber';
     public const FIELD_QTY = 'quantity';
-    public const FIELD_CREATED_AT = 'createdAt';
 
     /**
      * @var string
