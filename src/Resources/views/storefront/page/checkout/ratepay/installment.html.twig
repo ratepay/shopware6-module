@@ -1,8 +1,13 @@
+{#
+  ~ Copyright (c) 2020 RatePAY GmbH
+  ~
+  ~ For the full copyright and license information, please view the LICENSE
+  ~ file that was distributed with this source code.
+#}
+
 {% sw_extends '@RatepayPaments/storefront/page/checkout/ratepay/abstract.html.twig' %}
 
 {% block ratepay_checkout_fields %}
     {{ parent() }}
     {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/common/installment-calculator.html.twig' %}
 {% endblock %}
-
-

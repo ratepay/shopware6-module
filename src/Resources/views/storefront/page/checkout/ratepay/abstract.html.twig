@@ -1,3 +1,10 @@
+{#
+  ~ Copyright (c) 2020 RatePAY GmbH
+  ~
+  ~ For the full copyright and license information, please view the LICENSE
+  ~ file that was distributed with this source code.
+#}
+
 {% block ratepay_checkout_fields %}
     {% if (page.extensions.ratepay.company) %}
         {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/common/vatid.html.twig' %}

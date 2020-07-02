@@ -15,6 +15,8 @@ let xhr = null;
 export default class Installment extends Plugin {
 
     static options = {
+        hiddenCls: 'd-none',
+        showCls: 'd-block',
         calculationTypeTime: 'time',
         calculationTypeRate: 'rate'
     };
@@ -34,6 +36,15 @@ export default class Installment extends Plugin {
         this._runtimeSelect.addEventListener('change', this._onSelectRuntime.bind(this));
         this._rateInput.addEventListener('input', this._onInputRate.bind(this));
         this._rateButton.addEventListener('click', this._onSubmitRate.bind(this));
+        this._registerInstallmentPlanEvents();
+    }
+
+    _registerInstallmentPlanEvents() {
+        this._showInstallmentPlanDetailsButton = this._resultContainer.querySelector('#rp-show-installment-plan-details');
+        this._hideInstallmentPlanDetailsButton = this._resultContainer.querySelector('#rp-hide-installment-plan-details');
+        this._installmentPlanDetails = this._resultContainer.querySelectorAll('.rp-installment-plan-details');
+        this._showInstallmentPlanDetailsButton.addEventListener('click', this._onShowInstallmentPlanDetailsButtonClicked.bind(this));
+        this._hideInstallmentPlanDetailsButton.addEventListener('click', this._onHideInstallmentPlanDetailsButtonClicked.bind(this));
     }
 
     _onSelectRuntime() {
@@ -52,6 +63,18 @@ export default class Installment extends Plugin {
         this._fetchInstallmentPlan(this.options.calculationTypeRate, this._rateInput.value);
     }
 
+    _onShowInstallmentPlanDetailsButtonClicked() {
+        this._hide([this._showInstallmentPlanDetailsButton]);
+        this._show([this._hideInstallmentPlanDetailsButton]);
+        this._show(this._installmentPlanDetails, 'table-row');
+    }
+
+    _onHideInstallmentPlanDetailsButtonClicked() {
+        this._hide([this._hideInstallmentPlanDetailsButton]);
+        this._show([this._showInstallmentPlanDetailsButton]);
+        this._hide(this._installmentPlanDetails, 'table-row');
+    }
+
     _fetchInstallmentPlan(type, value) {
         const client = new HttpClient(window.accessKey, window.contextToken);
         const url = `${window.rpInstallmentCalculateUrl}?type=${type}&value=${value}`;
@@ -65,6 +88,7 @@ export default class Installment extends Plugin {
             this._setContent(response);
             this._typeHolder.value = type;
             this._valueHolder.value = value;
+            this._registerInstallmentPlanEvents();
         };
 
         xhr = client.get(url, this._executeCallback.bind(this, cb));
@@ -82,6 +106,24 @@ export default class Installment extends Plugin {
 
     _setContent(content) {
         this._resultContainer.innerHTML = content;
+    }
+
+    _hide(targets, showClass = this.options.showCls, hiddenClass = this.options.hiddenCls) {
+        targets.forEach(target => {
+            if (target) {
+                target.classList.remove(showClass);
+                target.classList.add(hiddenClass);
+            }
+        });
+    }
+
+    _show(targets, showClass = this.options.showCls, hiddenClass = this.options.hiddenCls) {
+        targets.forEach(target => {
+            if (target) {
+                target.classList.add(showClass);
+                target.classList.remove(hiddenClass);
+            }
+        });
     }
 
 }
