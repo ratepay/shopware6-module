@@ -43,7 +43,6 @@ export default class Installment extends Plugin {
         this._showInstallmentPlanDetailsButton = this._resultContainer.querySelector('#rp-show-installment-plan-details');
         this._hideInstallmentPlanDetailsButton = this._resultContainer.querySelector('#rp-hide-installment-plan-details');
         this._installmentPlanDetails = this._resultContainer.querySelectorAll('.rp-installment-plan-details');
-        console.log(this._installmentPlanDetails);
         this._showInstallmentPlanDetailsButton.addEventListener('click', this._onShowInstallmentPlanDetailsButtonClicked.bind(this));
         this._hideInstallmentPlanDetailsButton.addEventListener('click', this._onHideInstallmentPlanDetailsButtonClicked.bind(this));
     }
