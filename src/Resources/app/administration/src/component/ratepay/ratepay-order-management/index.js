@@ -131,6 +131,10 @@ Component.register('ratepay-order-management', {
                         this.loading.deliver = false;
                         this.$emit('ratepayActionTriggered');
                     });
+                })
+                .catch((response) => {
+                    this.loading.deliver = false;
+                    this.showMessage(response, 'deliver');
                 });
         },
         onClickButtonCancel(updateStock) {
@@ -148,6 +152,11 @@ Component.register('ratepay-order-management', {
                         this.loading.cancelWithStock = false;
                         this.$emit('ratepayActionTriggered');
                     });
+                })
+                .catch((response) => {
+                    this.loading.cancel = false;
+                    this.loading.cancelWithStock = false;
+                    this.showMessage(response, 'cancel');
                 });
         },
         onClickButtonReturn(updateStock) {
@@ -165,6 +174,11 @@ Component.register('ratepay-order-management', {
                         this.loading.rtnWithStock = false;
                         this.$emit('ratepayActionTriggered');
                     });
+                })
+                .catch((response) => {
+                    this.loading.rtn = false;
+                    this.loading.rtnWithStock = false;
+                    this.showMessage(response, 'return');
                 });
         },
         onClickResetSelections() {
@@ -175,25 +189,37 @@ Component.register('ratepay-order-management', {
             });
         },
         onClickButtonAddDebit() {
+            this.loading.addDebit = true;
             this.orderManagementService
                 .addItem('debit', this.orderId, parseFloat(this.addDebit.value), this.addDebit.name)
                 .then(response => {
                     this.showMessage(response, 'addDebit');
                     this.loadList().then(() => {
                         this.onCloseDebitModal();
+                        this.loading.addDebit = false;
                         this.$emit('ratepayActionTriggered');
                     });
+                })
+                .catch((response) => {
+                    this.loading.addDebit = false;
+                    this.showMessage(response, 'addDebit');
                 });
         },
         onClickButtonAddCredit() {
+            this.loading.addCredit = true;
             this.orderManagementService
                 .addItem('credit', this.orderId, parseFloat(this.addCredit.value) * -1, this.addCredit.name)
                 .then(response => {
                     this.showMessage(response, 'addCredit');
                     this.loadList().then(() => {
                         this.onCloseCreditModal();
+                        this.loading.addCredit = false;
                         this.$emit('ratepayActionTriggered');
                     });
+                })
+                .catch((response) => {
+                    this.loading.addCredit = false;
+                    this.showMessage(response, 'addCredit');
                 });
         },
 
