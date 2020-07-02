@@ -2,10 +2,13 @@
 //
 // For the full copyright and license information, please view the LICENSE
 // file that was distributed with this source code.
-@import "ratepay/common/installment-calculator";
-@import "ratepay/common/installment-plan";
 
-.rp-link {
-    cursor: pointer;
-    color: $primary;
+.installment-calculator {
+    padding-bottom: 30px;
+
+    .rp-container-calculator {
+        .row {
+            padding: 10px 0;
+        }
+    }
 }

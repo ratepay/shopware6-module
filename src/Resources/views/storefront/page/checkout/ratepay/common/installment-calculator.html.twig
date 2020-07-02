@@ -19,101 +19,99 @@
     <input type="hidden" name="ratepay[installment][type]" id="rp-calculation-type" value="{{ installment.calculator.defaults.type }}" form="confirmOrderForm" />
     <input type="hidden" name="ratepay[installment][value]" id="rp-calculation-value" value="{{ installment.calculator.defaults.value }}" form="confirmOrderForm" />
 
-    <div class="container">
-        <div class="rp-container-calculator">
-            <div class="row">
-                <div class="col-md-12">
-                    <hr/>
-                </div>
-            </div>
-
-            {% if installment.calculator.rp_allowedMonths|length > 1 %}
-            <div class="row">
-                <div class="col-md-12">
-                    {{ installment.translations.rp_calculation_intro_part1|raw }}
-                    {{ installment.translations.rp_calculation_intro_part2|raw }}
-                    {{ installment.translations.rp_calculation_intro_part3|raw }}
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="panel panel-default">
-                        <div class="panel-heading text-center" id="firstInput">
-                            <h2>{{ installment.translations.rp_runtime_title|raw }}</h2>
-                            {{ installment.translations.rp_runtime_description|raw }}
-                        </div>
-
-                        <div class="panel-body">
-                            <div class="form-group">
-                                <select id="rp-btn-runtime" class="custom-select">
-                                    {% for month in installment.calculator.rp_allowedMonths %}
-                                        <option value="{{ month }}" {% if loop.first %}selected="selected"{% endif %}>
-                                            {{ month }} {{ installment.translations.rp_monthly_installment_pl }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="panel panel-default">
-                        <div class="panel-heading text-center" id="secondInput">
-                            <h2>{{ installment.translations.rp_rate_title|raw }}</h2>
-                            {{ installment.translations.rp_rate_description|raw }}
-                        </div>
-
-                        <div class="panel-body">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">€</span>
-                                </div>
-                                <input type="number" id="rp-rate-value" class="form-control" aria-label="Amount" min="{{ installment.calculator.rp_minimumRate }}" max="{{ installment.calculator.rp_maximumRate }}" />
-                                <div class="input-group-append">
-                                    <button id="rp-rate-button" class="btn btn-outline-primary rp-btn-rate" type="button" disabled>{{ installment.translations.rp_calculate_rate|raw }}</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <div class="rp-container-calculator">
+        <div class="row">
+            <div class="col-md-12">
+                <hr/>
             </div>
         </div>
-        {% endif %}
+
+        {% if installment.calculator.rp_allowedMonths|length > 1 %}
+        <div class="row">
+            <div class="col-md-12">
+                {{ installment.translations.rp_calculation_intro_part1|raw }}
+                {{ installment.translations.rp_calculation_intro_part2|raw }}
+                {{ installment.translations.rp_calculation_intro_part3|raw }}
+            </div>
+        </div>
 
         <div class="row">
-            <div class="col-md-12" id="rp-result-container">
-                {% sw_include '@RatepayPayments/storefront/installment-calculator/installment-plan.html.twig' %}
-            </div>
-        </div>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading text-center" id="firstInput">
+                        <h2>{{ installment.translations.rp_runtime_title|raw }}</h2>
+                        {{ installment.translations.rp_runtime_description|raw }}
+                    </div>
 
-        {# only show sepa form if the payment method is available #}
-        {% if installment.calculator.rp_debitPayType.rp_paymentType_directDebit %}
-            <div id="rp-installment-payment-switch" data-ratepay-installment-payment-switch="true">
-                <input type="hidden" name="ratepay[installment][paymentType]" id="rp-calculation-payment-type" value="{{ installment.calculator.defaults.paymentType }}" form="confirmOrderForm" />
-
-                <div class="row d-block" id="rp-sepa-form">
-                    <div class="col-md-12">
-                        <hr>
-                        {% sw_include '@RatepayPayments/storefront/installment-calculator/bank-account.html.twig' %}
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <select id="rp-btn-runtime" class="custom-select">
+                                {% for month in installment.calculator.rp_allowedMonths %}
+                                    <option value="{{ month }}" {% if loop.first %}selected="selected"{% endif %}>
+                                        {{ month }} {{ installment.translations.rp_monthly_installment_pl }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
                 </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading text-center" id="secondInput">
+                        <h2>{{ installment.translations.rp_rate_title|raw }}</h2>
+                        {{ installment.translations.rp_rate_description|raw }}
+                    </div>
 
-                {# only show the switch if also bank transfer is available #}
-                {% if installment.calculator.rp_debitPayType.rp_paymentType_bankTransfer %}
-                    <div class="row">
-                        <div class="col-md-12">
-                            <hr>
-                            <div class="rp-payment-type-switch d-block" id="rp-switch-payment-type-bank-transfer">
-                                <a href="javascript:;" class="rp-link">{{ installment.translations.rp_switch_payment_type_bank_transfer|raw }}</a>
+                    <div class="panel-body">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">€</span>
                             </div>
-                            <div class="rp-payment-type-switch d-none" id="rp-switch-payment-type-direct-debit">
-                                <a href="javascript:;" class="rp-link">{{ installment.translations.rp_switch_payment_type_direct_debit|raw }}</a>
+                            <input type="number" id="rp-rate-value" class="form-control" aria-label="Amount" min="{{ installment.calculator.rp_minimumRate }}" max="{{ installment.calculator.rp_maximumRate }}" />
+                            <div class="input-group-append">
+                                <button id="rp-rate-button" class="btn btn-outline-primary rp-btn-rate" type="button" disabled>{{ installment.translations.rp_calculate_rate|raw }}</button>
                             </div>
                         </div>
                     </div>
-                {% endif %}
+                </div>
             </div>
-        {% endif %}
+        </div>
     </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-12" id="rp-result-container">
+            {% sw_include '@RatepayPayments/storefront/installment-calculator/installment-plan.html.twig' %}
+        </div>
+    </div>
+
+    {# only show sepa form if the payment method is available #}
+    {% if installment.calculator.rp_debitPayType.rp_paymentType_directDebit %}
+        <div id="rp-installment-payment-switch" data-ratepay-installment-payment-switch="true">
+            <input type="hidden" name="ratepay[installment][paymentType]" id="rp-calculation-payment-type" value="{{ installment.calculator.defaults.paymentType }}" form="confirmOrderForm" />
+
+            <div class="row d-block" id="rp-sepa-form">
+                <div class="col-md-12">
+                    <hr>
+                    {% sw_include '@RatepayPayments/storefront/installment-calculator/bank-account.html.twig' %}
+                </div>
+            </div>
+
+            {# only show the switch if also bank transfer is available #}
+            {% if installment.calculator.rp_debitPayType.rp_paymentType_bankTransfer %}
+                <div class="row">
+                    <div class="col-md-12">
+                        <hr>
+                        <div class="rp-payment-type-switch d-block" id="rp-switch-payment-type-bank-transfer">
+                            <a href="javascript:;" class="rp-link">{{ installment.translations.rp_switch_payment_type_bank_transfer|raw }}</a>
+                        </div>
+                        <div class="rp-payment-type-switch d-none" id="rp-switch-payment-type-direct-debit">
+                            <a href="javascript:;" class="rp-link">{{ installment.translations.rp_switch_payment_type_direct_debit|raw }}</a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
 </div>
