@@ -45,7 +45,7 @@ class HistoryLogDefinition extends EntityDefinition
     {
         return new FieldCollection([
             (new IdField('id', HistoryLogEntity::FIELD_ID))->addFlags(new Required(), new PrimaryKey()),
-            (new FkField('order_id', 'orderId', OrderDefinition::class))->addFlags(new Required()),
+            (new FkField('order_id', HistoryLogEntity::FIELD_ORDER_ID, OrderDefinition::class))->addFlags(new Required()),
             (new ReferenceVersionField(OrderDefinition::class))->addFlags(new Required()),
             (new StringField('event', HistoryLogEntity::FIELD_EVENT)),
             (new StringField('user', HistoryLogEntity::FIELD_USER)),
@@ -53,7 +53,7 @@ class HistoryLogDefinition extends EntityDefinition
             (new StringField('product_number', HistoryLogEntity::FIELD_PRODUCT_NUMBER)),
             (new IntField('quantity', HistoryLogEntity::FIELD_QTY)),
 
-            new ManyToOneAssociationField('order', 'order_id', OrderDefinition::class, 'id', false),
+            new ManyToOneAssociationField(HistoryLogEntity::FIELD_ORDER, 'order_id', OrderDefinition::class, 'id', false),
         ]);
     }
 }
