@@ -154,10 +154,22 @@ class ProductPanel extends AbstractController
                 $items[$data['id']] = (int)$data['quantity'];
             }
 
+            $items = array_filter($items, function($quantity) {
+                return $quantity > 0;
+            });
+
+            if(count($items) === 0) {
+                return $this->json([
+                    'success' => false,
+                    'message' => 'Please provide at least on item' // todo translation - should we translate it?
+                ], 200); // todo is this status OK ?
+            }
+
             $response = $this->requestServicesByOperation[$operation]->doRequest(
                 $context,
                 new OrderOperationData($order, $operation, $items, $request->request->get('updateStock') == true)
             );
+
             return $this->json([
                 'success' => $response->getResponse()->isSuccessful(),
                 'message' => $response->getResponse()->getReasonMessage()

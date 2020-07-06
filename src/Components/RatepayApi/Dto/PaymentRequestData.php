@@ -40,6 +40,25 @@ class PaymentRequestData extends OrderOperationData
     }
 
     /**
+     * @return array
+     */
+    public function getItems(): array
+    {
+        if ($this->items) {
+            return $this->items;
+        }
+
+        $items = [];
+        foreach ($this->getOrder()->getLineItems() as $item) {
+            $items[$item->getId()] = $item->getQuantity();
+        }
+        if ($this->getOrder()->getShippingTotal() > 0) {
+            $items['shipping'] = 1;
+        }
+        return $items;
+    }
+
+    /**
      * @return OrderTransactionEntity
      */
     public function getTransaction(): OrderTransactionEntity

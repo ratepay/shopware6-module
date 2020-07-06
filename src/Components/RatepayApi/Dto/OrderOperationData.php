@@ -9,6 +9,8 @@
 namespace Ratepay\RatepayPayments\Components\RatepayApi\Dto;
 
 
+use Ratepay\RatepayPayments\Components\OrderManagement\Util\LineItemUtil;
+use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 
@@ -42,6 +44,13 @@ class OrderOperationData implements IRequestData
      */
     protected $updateStock;
 
+    /**
+     * OrderOperationData constructor.
+     * @param OrderEntity $order
+     * @param string $operation
+     * @param null|array $items array of IDs and quantity. if no array is provided, all items will be sent to the gateway, if the operation is allowed
+     * @param bool $updateStock
+     */
     public function __construct(OrderEntity $order, string $operation, $items = null, $updateStock = true)
     {
         $this->order = $order;
@@ -61,11 +70,44 @@ class OrderOperationData implements IRequestData
         }
 
         $items = [];
-        foreach ($this->getOrder()->getLineItems() as $item) {
-            $items[$item->getId()] = $item->getQuantity();
+        foreach ($this->order->getLineItems() as $lineItem) {
+            $data = LineItemUtil::getLineItemArray($lineItem);
+            switch ($this->operation) {
+                case self::OPERATION_DELIVER:
+                    $quantity = $data['maxDelivery'];
+                    break;
+                case self::OPERATION_CANCEL:
+                    $quantity = $data['maxCancel'];
+                    break;
+                case self::OPERATION_RETURN:
+                    $quantity = $data['maxReturn'];
+                    break;
+                default:
+                    throw new RuntimeException('the operation ' . $this->operation . '` is not supported for automatic delivery');
+            }
+            if ($quantity > 0) {
+                $items[$lineItem->getId()] = $quantity;
+            }
         }
-        if ($this->getOrder()->getShippingTotal() > 0) {
-            $items['shipping'] = 1;
+        
+        if ($this->order->getShippingTotal() > 0) {
+            $data = LineItemUtil::getShippingLineItem($this->order);
+            switch ($this->operation) {
+                case self::OPERATION_DELIVER:
+                    $quantity = $data['maxDelivery'];
+                    break;
+                case self::OPERATION_CANCEL:
+                    $quantity = $data['maxCancel'];
+                    break;
+                case self::OPERATION_RETURN:
+                    $quantity = $data['maxReturn'];
+                    break;
+                default:
+                    throw new RuntimeException('the operation ' . $this->operation . '` is not supported for automatic delivery');
+            }
+            if ($quantity > 0) {
+                $items['shipping'] = $quantity;
+            }
         }
         return $items;
     }
