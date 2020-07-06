@@ -12,8 +12,13 @@
 
     <services>
 
-        <service id="Ratepay\RatepayPayments\Components\Core\Model\Repository\OrderLineItemRepository" decorates="order_line_item.repository">
-            <argument type="service" id="Ratepay\RatepayPayments\Components\Core\Model\Repository\OrderLineItemRepository.inner"/>
+        <service id="Ratepay\RatepayPayments\Components\Core\Model\Repository\OrderLineItemRepositoryDecorator"
+                 decorates="order_line_item.repository">
+            <argument type="service" id="Ratepay\RatepayPayments\Components\Core\Model\Repository\OrderLineItemRepositoryDecorator.inner"/>
+        </service>
+
+        <service id="Ratepay\RatepayPayments\Components\Core\Model\Extension\OrderExtension">
+            <tag name="shopware.entity.extension"/>
         </service>
 
     </services>
