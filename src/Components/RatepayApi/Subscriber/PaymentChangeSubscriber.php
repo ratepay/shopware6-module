@@ -10,11 +10,11 @@ namespace Ratepay\RatepayPayments\Components\RatepayApi\Subscriber;
 
 use Exception;
 use Monolog\Logger;
+use Ratepay\RatepayPayments\Components\Logging\Service\HistoryLogger;
 use Ratepay\RatepayPayments\Components\OrderManagement\Util\LineItemUtil;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\AddCreditData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Event\ResponseEvent;
-use Ratepay\RatepayPayments\Components\Logging\Service\HistoryLogger;
 use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentCancelService;
 use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentCreditService;
 use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentDeliverService;
