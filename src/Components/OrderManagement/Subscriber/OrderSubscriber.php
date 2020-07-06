@@ -58,6 +58,7 @@ class OrderSubscriber implements EventSubscriberInterface
         $orders = $event->getEntities();
         /** @var OrderEntity $order */
         foreach ($orders as $order) {
+            // ToDo: This extension is not present in the admin frontend
             $order->addExtension(
                 'ratepay_data',
                 new ArrayEntity(

@@ -1,0 +1,15 @@
+{#
+  ~ Copyright (c) 2020 RatePAY GmbH
+  ~
+  ~ For the full copyright and license information, please view the LICENSE
+  ~ file that was distributed with this source code.
+#}
+
+{% block sw_order_line_items_grid_actions %}
+    {% parent %}
+
+    <sw-modal v-if="showLineItemDeleteRestrictionModal"
+              @modal-close="onCloseLineItemDeleteRestrictionModal">
+        {{ $t('ratepay.order.modal.lineItemDeleteRestriction.text') }}
+    </sw-modal>
+{% endblock %}

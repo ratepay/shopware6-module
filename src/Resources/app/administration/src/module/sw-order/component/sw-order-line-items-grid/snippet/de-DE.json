@@ -1,0 +1,11 @@
+{
+    "ratepay": {
+        "order": {
+            "modal": {
+                "lineItemDeleteRestriction": {
+                    "text": "ToDo: Text einfügen"
+                }
+            }
+        }
+    }
+}

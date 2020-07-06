@@ -8,14 +8,14 @@
 
 namespace Ratepay\RatepayPayments\Components\Core\Model\Extension;
 
-use Shopware\Core\Checkout\Order\OrderDefinition;
+use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityExtension;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Inherited;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\JsonField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 // ToDo: Remove it or finish it with an associated table
-class OrderExtension extends EntityExtension
+class OrderLineItemExtension extends EntityExtension
 {
     public function extendFields(FieldCollection $collection): void
     {
@@ -26,6 +26,6 @@ class OrderExtension extends EntityExtension
 
     public function getDefinitionClass(): string
     {
-        return OrderDefinition::class;
+        return OrderLineItemDefinition::class;
     }
 }
