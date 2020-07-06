@@ -160,7 +160,12 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
             $this->recalculationService->addCustomLineItem($requestData->getOrder()->getId(), $item, $versionContext);
             $newItems[$item->getId()] = $item->getPriceDefinition()->getQuantity();
         }
-        $this->orderRepository->merge($versionId, $event->getContext());
+        // recalculate the whole order. (without this, shipping costs will added to the order if there is a shipping free position - RATESWSX-71)
+        $this->recalculationService->recalculateOrder($requestData->getOrder()->getId(), $versionContext);
+        // merge the order with the SYSTEM_SCOPE, cause the recalculateOrder locked the order with this scope.
+        $event->getContext()->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($versionId): void {
+            $this->orderRepository->merge($versionId, $context);
+        });
 
         $reloadedOrder = $this->orderRepository->search(
             CriteriaHelper::getCriteriaForOrder($requestData->getOrder()->getId()),
