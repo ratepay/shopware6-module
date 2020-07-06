@@ -33,9 +33,15 @@ export default class Installment extends Plugin {
     }
 
     _registerEvents() {
-        this._runtimeSelect.addEventListener('change', this._onSelectRuntime.bind(this));
-        this._rateInput.addEventListener('input', this._onInputRate.bind(this));
-        this._rateButton.addEventListener('click', this._onSubmitRate.bind(this));
+        if (this._runtimeSelect) {
+            this._runtimeSelect.addEventListener('change', this._onSelectRuntime.bind(this));
+        }
+        if (this._rateInput) {
+            this._rateInput.addEventListener('input', this._onInputRate.bind(this));
+        }
+        if (this._rateButton) {
+            this._rateButton.addEventListener('click', this._onSubmitRate.bind(this));
+        }
         this._registerInstallmentPlanEvents();
     }
 
