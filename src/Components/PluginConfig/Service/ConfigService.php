@@ -62,4 +62,28 @@ class ConfigService
     {
         return Context::createDefaultContext();
     }
+
+    public function isBidirectionalityEnabled() : bool
+    {
+        $config = $this->getPluginConfiguration();
+        return $config['bidirectionalityEnabled'] ?? false;
+    }
+
+    public function getBidirectionalityFullDelivery(): string
+    {
+        $config = $this->getPluginConfiguration();
+        return $config['bidirectionalityStatusFullDelivery'] ?? '';
+    }
+
+    public function getBidirectionalityFullCancel(): string
+    {
+        $config = $this->getPluginConfiguration();
+        return $config['bidirectionalityStatusFullCancel'] ?? '';
+    }
+
+    public function getBidirectionalityFullReturn(): string
+    {
+        $config = $this->getPluginConfiguration();
+        return $config['bidirectionalityStatusFullReturn'] ?? '';
+    }
 }
