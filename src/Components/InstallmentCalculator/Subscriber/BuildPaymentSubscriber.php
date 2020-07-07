@@ -12,8 +12,8 @@ namespace Ratepay\RatepayPayments\Components\InstallmentCalculator\Subscriber;
 use Exception;
 use RatePAY\Model\Request\SubModel\Content\Payment;
 use Ratepay\RatepayPayments\Components\InstallmentCalculator\Service\InstallmentService;
+use Ratepay\RatepayPayments\Components\InstallmentCalculator\Util\MethodHelper;
 use Ratepay\RatepayPayments\Components\InstallmentCalculator\Util\PlanHasher;
-use Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Event\BuildEvent;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\PaymentFactory;
@@ -45,7 +45,7 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
         /** @var PaymentRequestData $requestData */
         $requestData = $event->getRequestData();
 
-        if ($requestData->getTransaction()->getPaymentMethod()->getHandlerIdentifier() === InstallmentPaymentHandler::class) {
+        if (MethodHelper::isInstallmentMethod($requestData->getTransaction()->getPaymentMethod()->getHandlerIdentifier())) {
             /** @var Payment $paymentObject */
             $paymentObject = $event->getBuildData();
 

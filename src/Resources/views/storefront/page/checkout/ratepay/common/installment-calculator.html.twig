@@ -27,58 +27,58 @@
         </div>
 
         {% if installment.calculator.rp_allowedMonths|length > 1 %}
-        <div class="row">
-            <div class="col-md-12">
-                {{ installment.translations.rp_calculation_intro_part1|raw }}
-                {{ installment.translations.rp_calculation_intro_part2|raw }}
-                {{ installment.translations.rp_calculation_intro_part3|raw }}
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading text-center" id="firstInput">
-                        <h2>{{ installment.translations.rp_runtime_title|raw }}</h2>
-                        {{ installment.translations.rp_runtime_description|raw }}
-                    </div>
-
-                    <div class="panel-body">
-                        <div class="form-group">
-                            <select id="rp-btn-runtime" class="custom-select">
-                                {% for month in installment.calculator.rp_allowedMonths %}
-                                    <option value="{{ month }}" {% if loop.first %}selected="selected"{% endif %}>
-                                        {{ month }} {{ installment.translations.rp_monthly_installment_pl }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
+            <div class="row">
+                <div class="col-md-12">
+                    {{ installment.translations.rp_calculation_intro_part1|raw }}
+                    {{ installment.translations.rp_calculation_intro_part2|raw }}
+                    {{ installment.translations.rp_calculation_intro_part3|raw }}
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading text-center" id="secondInput">
-                        <h2>{{ installment.translations.rp_rate_title|raw }}</h2>
-                        {{ installment.translations.rp_rate_description|raw }}
-                    </div>
 
-                    <div class="panel-body">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">€</span>
-                            </div>
-                            <input type="number" id="rp-rate-value" class="form-control" aria-label="Amount" min="{{ installment.calculator.rp_minimumRate }}" max="{{ installment.calculator.rp_maximumRate }}" />
-                            <div class="input-group-append">
-                                <button id="rp-rate-button" class="btn btn-outline-primary rp-btn-rate" type="button" disabled>{{ installment.translations.rp_calculate_rate|raw }}</button>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading text-center" id="firstInput">
+                            <h2>{{ installment.translations.rp_runtime_title|raw }}</h2>
+                            {{ installment.translations.rp_runtime_description|raw }}
+                        </div>
+
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <select id="rp-btn-runtime" class="custom-select">
+                                    {% for month in installment.calculator.rp_allowedMonths %}
+                                        <option value="{{ month }}" {% if loop.first %}selected="selected"{% endif %}>
+                                            {{ month }} {{ installment.translations.rp_monthly_installment_pl }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading text-center" id="secondInput">
+                            <h2>{{ installment.translations.rp_rate_title|raw }}</h2>
+                            {{ installment.translations.rp_rate_description|raw }}
+                        </div>
+
+                        <div class="panel-body">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">€</span>
+                                </div>
+                                <input type="number" id="rp-rate-value" class="form-control" aria-label="Amount" min="{{ installment.calculator.rp_minimumRate }}" max="{{ installment.calculator.rp_maximumRate }}" />
+                                <div class="input-group-append">
+                                    <button id="rp-rate-button" class="btn btn-outline-primary rp-btn-rate" type="button" disabled>{{ installment.translations.rp_calculate_rate|raw }}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        {% endif %}
     </div>
-    {% endif %}
 
     <div class="row">
         <div class="col-md-12" id="rp-result-container">
