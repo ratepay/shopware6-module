@@ -10,17 +10,17 @@ namespace Ratepay\RatepayPayments\Components\Core\Model\Extension;
 
 use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityExtension;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Inherited;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\JsonField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Runtime;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\ObjectField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
-// ToDo: Remove it or finish it with an associated table
 class OrderExtension extends EntityExtension
 {
     public function extendFields(FieldCollection $collection): void
     {
+        // ToDo: Change from Runtime to an associated database table which is replacing the custom fields
         $collection->add(
-            (new JsonField('ratepay_data', 'ratepayData'))->addFlags(new Inherited())
+            (new ObjectField('ratepay_data', 'ratepayData'))->addFlags(new Runtime())
         );
     }
 

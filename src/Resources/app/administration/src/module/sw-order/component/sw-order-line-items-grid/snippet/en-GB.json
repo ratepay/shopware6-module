@@ -3,7 +3,7 @@
         "order": {
             "modal": {
                 "lineItemDeleteRestriction": {
-                    "text": "ToDo: Text einfügen"
+                    "text": "You can't delete a line item of an order which was processed by a Ratepay payment. Please use the cancellation and the retoure function."
                 }
             }
         }

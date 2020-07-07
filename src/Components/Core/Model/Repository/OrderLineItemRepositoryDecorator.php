@@ -51,7 +51,7 @@ class OrderLineItemRepositoryDecorator implements EntityRepositoryInterface
             }
 
             /** @var ArrayEntity $ratepayData */
-            $ratepayData = $orderLineItem->getOrder()->getExtension('ratepay_data');
+            $ratepayData = $orderLineItem->getOrder()->getExtension('ratepayData');
             if ($ratepayData && $ratepayData->offsetGet('isPayedWithRatepay') === true) {
                 throw new OrderLineItemDeleteRestrictionException();
             }

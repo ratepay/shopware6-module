@@ -58,9 +58,8 @@ class OrderSubscriber implements EventSubscriberInterface
         $orders = $event->getEntities();
         /** @var OrderEntity $order */
         foreach ($orders as $order) {
-            // ToDo: This extension is not present in the admin frontend
             $order->addExtension(
-                'ratepay_data',
+                'ratepayData',
                 new ArrayEntity(
                     [
                         'isPayedWithRatepay' => $this->isPayedWithRatepay($order, $event->getContext()),
@@ -72,6 +71,8 @@ class OrderSubscriber implements EventSubscriberInterface
 
     protected function isPayedWithRatepay(OrderEntity $order, Context $context): bool
     {
+        // ToDo: Better way to detect if it is a ratepay order?
+
         // Because not every order entity provided here has the transaction association
         // loaded, we will load the transactions manually
         $transactions = $this->getOrderTransactions($order, $context);
