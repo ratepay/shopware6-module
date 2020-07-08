@@ -11,13 +11,12 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="Ratepay\RatepayPayments\Components\Logging\Subscriber\RequestBuilderFailedSubscriber">
-            <argument id="ratepay.logger" type="service"/>
+        <defaults>
+            <bind key="$fileLogger" id="ratepay.logger" type="service"/>
             <tag name="kernel.event_subscriber"/>
-        </service>
+        </defaults>
 
-        <service id="Ratepay\RatepayPayments\Components\Logging\Subscriber\RequestSubscriber" autowire="true">
-            <tag name="kernel.event_subscriber"/>
-        </service>
+        <service id="Ratepay\RatepayPayments\Components\Logging\Subscriber\RequestBuilderFailedSubscriber" autowire="true" />
+        <service id="Ratepay\RatepayPayments\Components\Logging\Subscriber\RequestSubscriber" autowire="true" />
     </services>
 </container>

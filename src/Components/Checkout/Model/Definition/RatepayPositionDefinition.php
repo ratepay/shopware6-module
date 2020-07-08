@@ -41,9 +41,9 @@ class RatepayPositionDefinition extends EntityDefinition
     {
         return new FieldCollection([
             (new IdField('id', RatepayPositionEntity::FIELD_ID))->addFlags(new Required(), new PrimaryKey()),
-            (new IntField('canceled', RatepayPositionEntity::FIELD_CANCELED))->addFlags(new Required()),
-            (new IntField('returned', RatepayPositionEntity::FIELD_RETURNED))->addFlags(new Required()),
-            (new IntField('delivered', RatepayPositionEntity::FIELD_DELIVERED))->addFlags(new Required()),
+            (new IntField('canceled', RatepayPositionEntity::FIELD_CANCELED)),
+            (new IntField('returned', RatepayPositionEntity::FIELD_RETURNED)),
+            (new IntField('delivered', RatepayPositionEntity::FIELD_DELIVERED)),
         ]);
     }
 }

@@ -48,7 +48,7 @@ class RatepayOrderDataDefinition extends EntityDefinition
             (new FkField('order_id', RatepayOrderDataEntity::FIELD_ORDER_ID, OrderDefinition::class))->addFlags(new Required()),
             (new ReferenceVersionField(OrderDefinition::class))->addFlags(new Required()),
             (new StringField('transaction_id', RatepayOrderDataEntity::FIELD_TRANSACTION_ID)),
-            (new FkField('shipping_position_id', RatepayOrderDataEntity::FIELD_SHIPPING_POSITION_ID, RatepayPositionDefinition::class))->addFlags(new Required()),
+            (new FkField('shipping_position_id', RatepayOrderDataEntity::FIELD_SHIPPING_POSITION_ID, RatepayPositionDefinition::class)),
 
             new OneToOneAssociationField(
                 RatepayOrderDataEntity::FIELD_ORDER,

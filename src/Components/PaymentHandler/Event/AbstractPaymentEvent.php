@@ -10,6 +10,7 @@ namespace Ratepay\RatepayPayments\Components\PaymentHandler\Event;
 
 
 use RatePAY\Model\Response\PaymentRequest;
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Event\ShopwareEvent;
@@ -36,13 +37,32 @@ abstract class AbstractPaymentEvent extends Event implements ShopwareEvent
      * @var PaymentRequest
      */
     private $response;
+    /**
+     * @var OrderEntity
+     */
+    private $order;
 
-    public function __construct(SyncPaymentTransactionStruct $transaction, RequestDataBag $requestDataBag, SalesChannelContext $salesChannelContext, PaymentRequest $response = null)
+    public function __construct(
+        OrderEntity $order,
+        SyncPaymentTransactionStruct $transaction,
+        RequestDataBag $requestDataBag,
+        SalesChannelContext $salesChannelContext,
+        PaymentRequest $response = null
+    )
     {
         $this->transaction = $transaction;
         $this->requestDataBag = $requestDataBag;
         $this->salesChannelContext = $salesChannelContext;
         $this->response = $response;
+        $this->order = $order;
+    }
+
+    /**
+     * @return OrderEntity
+     */
+    public function getOrder(): OrderEntity
+    {
+        return $this->order;
     }
 
     public function getContext(): Context
@@ -77,7 +97,7 @@ abstract class AbstractPaymentEvent extends Event implements ShopwareEvent
     /**
      * @return PaymentRequest
      */
-    public function getResponse(): PaymentRequest
+    public function getResponse(): ?PaymentRequest
     {
         return $this->response;
     }

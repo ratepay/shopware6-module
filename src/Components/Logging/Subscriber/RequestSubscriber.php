@@ -47,6 +47,9 @@ class RequestSubscriber implements EventSubscriberInterface
             $message = $event->getException()->getMessage();
         }
         $this->fileLogger->addError($message ?? 'Unknown error', [
+            'order_id' => $event->getOrder()->getId(),
+            'order_number' => $event->getOrder()->getOrderNumber(),
+            'request_bag' => $event->getRequestDataBag()
 
         ]);
     }

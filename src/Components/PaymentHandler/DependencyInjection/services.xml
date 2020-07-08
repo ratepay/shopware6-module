@@ -11,56 +11,15 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
 
-        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\InvoicePaymentHandler" public="true">
-            <argument type="service"
-                      id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
-            <argument type="service" id="order.repository"/>
-            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentRequestService"
-                      type="service"/>
-            <argument id="event_dispatcher" type="service"/>
+        <defaults>
+            <bind key="$orderRepository" type="service" id="order.repository" />
             <tag name="shopware.payment.method.sync"/>
-        </service>
+        </defaults>
 
-        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\DebitPaymentHandler" public="true">
-            <argument type="service"
-                      id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
-            <argument type="service" id="order.repository"/>
-            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentRequestService"
-                      type="service"/>
-            <argument id="event_dispatcher" type="service"/>
-            <tag name="shopware.payment.method.sync"/>
-        </service>
-
-        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\PrepaymentPaymentHandler" public="true">
-            <argument type="service"
-                      id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
-            <argument type="service" id="order.repository"/>
-            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentRequestService"
-                      type="service"/>
-            <argument id="event_dispatcher" type="service"/>
-            <tag name="shopware.payment.method.sync"/>
-        </service>
-
-        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentPaymentHandler" public="true">
-            <argument type="service"
-                      id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
-            <argument type="service" id="order.repository"/>
-            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentRequestService"
-                      type="service"/>
-            <argument id="event_dispatcher" type="service"/>
-            <tag name="shopware.payment.method.sync"/>
-        </service>
-
-        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler"
-                 public="true">
-            <argument type="service"
-                      id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
-            <argument type="service" id="order.repository"/>
-            <argument id="Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentRequestService"
-                      type="service"/>
-            <argument id="event_dispatcher" type="service"/>
-            <tag name="shopware.payment.method.sync"/>
-        </service>
-
+        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\InvoicePaymentHandler" public="true" autowire="true" />
+        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\DebitPaymentHandler" public="true" autowire="true" />
+        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\PrepaymentPaymentHandler" public="true" autowire="true" />
+        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentPaymentHandler" public="true" autowire="true" />
+        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler" public="true" autowire="true" />
     </services>
 </container>
