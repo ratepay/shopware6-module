@@ -8,19 +8,21 @@
 
 namespace Ratepay\RatepayPayments\Components\Checkout\Model\Extension;
 
+use Ratepay\RatepayPayments\Components\Checkout\Model\Definition\RatepayOrderDataDefinition;
 use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityExtension;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Runtime;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\ObjectField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\RestrictDelete;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 class OrderExtension extends EntityExtension
 {
+    public const RATEPAY_DATA = 'ratepayData';
+
     public function extendFields(FieldCollection $collection): void
     {
-        // ToDo: Change from Runtime to an associated database table which is replacing the custom fields
         $collection->add(
-            (new ObjectField('ratepay_data', 'ratepayData'))->addFlags(new Runtime())
+            (new OneToOneAssociationField(self::RATEPAY_DATA, 'id', 'order_id', RatepayOrderDataDefinition::class, true))->addFlags(new RestrictDelete())
         );
     }
 
