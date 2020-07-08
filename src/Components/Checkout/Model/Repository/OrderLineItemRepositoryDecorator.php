@@ -10,7 +10,6 @@ namespace Ratepay\RatepayPayments\Components\Checkout\Model\Repository;
 
 
 use Ratepay\RatepayPayments\Components\OrderManagement\Exception\OrderLineItemDeleteRestrictionException;
-use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -18,6 +17,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEve
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\AggregationResultCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
 
 class OrderLineItemRepositoryDecorator implements EntityRepositoryInterface
@@ -28,30 +28,27 @@ class OrderLineItemRepositoryDecorator implements EntityRepositoryInterface
      */
     private $innerRepo;
 
-    public function __construct(EntityRepositoryInterface $innerRepo)
-    {
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $ratepayOrderLineItemDataRepository;
+
+    public function __construct(
+        EntityRepositoryInterface $innerRepo,
+        EntityRepositoryInterface $ratepayOrderLineItemDataRepository
+    ) {
         $this->innerRepo = $innerRepo;
+        $this->ratepayOrderLineItemDataRepository = $ratepayOrderLineItemDataRepository;
     }
 
     public function delete(array $ids, Context $context): EntityWrittenContainerEvent
     {
-        $criteria = new Criteria(array_column($ids, 'id'));
-        $criteria->addAssociation('order');
-        $affectedLineItems = $this->search($criteria, $context);
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsAnyFilter('orderLineItemId', array_column($ids, 'id')));
+        $ratepayLineItems = $this->ratepayOrderLineItemDataRepository->searchIds($criteria, $context);
 
-        if ($affectedLineItems->count() === 0) {
-            return $this->innerRepo->delete($ids, $context);
-        }
-
-        /** @var OrderLineItemEntity $orderLineItem */
-        foreach ($affectedLineItems->getEntities() as $orderLineItem) {
-            if (!$orderLineItem->getOrder()) {
-                continue;
-            }
-
-            if ($orderLineItem->hasExtension('ratepayData')) {
-                throw new OrderLineItemDeleteRestrictionException();
-            }
+        if (count($ratepayLineItems->getIds()) > 0) {
+            throw new OrderLineItemDeleteRestrictionException();
         }
 
         return $this->innerRepo->delete($ids, $context);

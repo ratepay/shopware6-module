@@ -22,6 +22,7 @@
         <service id="Ratepay\RatepayPayments\Components\Checkout\Model\Repository\OrderLineItemRepositoryDecorator"
                  decorates="order_line_item.repository">
             <argument type="service" id="Ratepay\RatepayPayments\Components\Checkout\Model\Repository\OrderLineItemRepositoryDecorator.inner"/>
+            <argument type="service" id="ratepay_order_line_item_data.repository"/>
         </service>
 
         <service id="Ratepay\RatepayPayments\Components\Checkout\Model\Extension\OrderExtension">

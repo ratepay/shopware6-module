@@ -47,12 +47,12 @@ class RatepayOrderDataEntity extends Entity
     protected $transactionId;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $shippingPositionId;
 
     /**
-     * @var RatepayPositionEntity
+     * @var RatepayPositionEntity|null
      */
     protected $shippingPosition;
 
@@ -121,7 +121,7 @@ class RatepayOrderDataEntity extends Entity
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getShippingPositionId(): ?string
     {
@@ -129,15 +129,15 @@ class RatepayOrderDataEntity extends Entity
     }
 
     /**
-     * @param string $shippingPositionId
+     * @param string|null $shippingPositionId
      */
-    public function setShippingPositionId(string $shippingPositionId): void
+    public function setShippingPositionId(?string $shippingPositionId): void
     {
         $this->shippingPositionId = $shippingPositionId;
     }
 
     /**
-     * @return RatepayPositionEntity
+     * @return RatepayPositionEntity|null
      */
     public function getShippingPosition(): ?RatepayPositionEntity
     {
@@ -145,9 +145,9 @@ class RatepayOrderDataEntity extends Entity
     }
 
     /**
-     * @param RatepayPositionEntity $shippingPosition
+     * @param RatepayPositionEntity|null $shippingPosition
      */
-    public function setShippingPosition(RatepayPositionEntity $shippingPosition): void
+    public function setShippingPosition(?RatepayPositionEntity $shippingPosition): void
     {
         $this->shippingPosition = $shippingPosition;
     }
