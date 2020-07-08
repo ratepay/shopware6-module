@@ -62,11 +62,11 @@
                     :showSettings="false"
                     :key="loading.list">
                     <template slot="column-quantity" slot-scope="{ item }">
-                        <sw-select-field v-if="item.maxDelivery > 0" v-model="item.processDeliveryCancel" value="0">
+                        <sw-select-field v-if="item.position.maxDelivery > 0" v-model="item.processDeliveryCancel" value="0">
                             <option value="0">0</option>
-                            <option v-for="n in item.maxDelivery">{{ n }}</option>
+                            <option v-for="n in item.position.maxDelivery">{{ n }}</option>
                         </sw-select-field>
-                        <span v-if="item.maxDelivery == 0">0</span>
+                        <span v-if="item.position.maxDelivery == 0">0</span>
                     </template>
                 </sw-data-grid>
             </template>
@@ -105,11 +105,11 @@
                     :key="loading.list"
                 >
                     <template slot="column-quantity" slot-scope="{ item }">
-                        <sw-select-field v-if="item.maxReturn > 0" v-model="item.processReturn" value="0">
+                        <sw-select-field v-if="item.position.maxReturn > 0" v-model="item.processReturn" value="0">
                             <option value="0">0</option>
-                            <option v-for="n in item.maxReturn">{{ n }}</option>
+                            <option v-for="n in item.position.maxReturn">{{ n }}</option>
                         </sw-select-field>
-                        <span v-if="item.maxReturn == 0">0</span>
+                        <span v-if="item.position.maxReturn == 0">0</span>
                     </template>
                 </sw-data-grid>
             </template>
