@@ -11,12 +11,14 @@ namespace Ratepay\RatepayPayments\Components\Checkout\Model\Definition;
 
 use Ratepay\RatepayPayments\Components\Checkout\Model\Collection\RatepayOrderLineItemDataCollection;
 use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
+use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToOneAssociationField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\ReferenceVersionField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 class RatepayOrderLineItemDataDefinition extends EntityDefinition
@@ -42,8 +44,17 @@ class RatepayOrderLineItemDataDefinition extends EntityDefinition
     {
         return new FieldCollection([
             (new IdField('id', RatepayOrderLineItemDataEntity::FIELD_ID))->addFlags(new Required(), new PrimaryKey()),
+            (new FkField('order_line_item_id', RatepayOrderLineItemDataEntity::FIELD_ORDER_LINE_ITEM_ID, OrderLineItemDefinition::class))->addFlags(new Required()),
+            (new ReferenceVersionField(OrderLineItemDefinition::class))->addFlags(new Required()),
             (new FkField('position_id', RatepayOrderLineItemDataEntity::FIELD_POSITION_ID, RatepayPositionDefinition::class))->addFlags(new Required()),
 
+            new OneToOneAssociationField(
+                RatepayOrderLineItemDataEntity::FIELD_ORDER_LINE_ITEM,
+                'order_line_item_id',
+                'id',
+                OrderLineItemDefinition::class,
+                false
+            ),
             new OneToOneAssociationField(
                 RatepayOrderLineItemDataEntity::FIELD_POSITION,
                 'position_id',
