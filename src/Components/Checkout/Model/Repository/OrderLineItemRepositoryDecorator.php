@@ -9,6 +9,7 @@
 namespace Ratepay\RatepayPayments\Components\Checkout\Model\Repository;
 
 
+use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
 use Ratepay\RatepayPayments\Components\OrderManagement\Exception\OrderLineItemDeleteRestrictionException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
@@ -36,7 +37,8 @@ class OrderLineItemRepositoryDecorator implements EntityRepositoryInterface
     public function __construct(
         EntityRepositoryInterface $innerRepo,
         EntityRepositoryInterface $ratepayOrderLineItemDataRepository
-    ) {
+    )
+    {
         $this->innerRepo = $innerRepo;
         $this->ratepayOrderLineItemDataRepository = $ratepayOrderLineItemDataRepository;
     }
@@ -44,7 +46,7 @@ class OrderLineItemRepositoryDecorator implements EntityRepositoryInterface
     public function delete(array $ids, Context $context): EntityWrittenContainerEvent
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsAnyFilter('orderLineItemId', array_column($ids, 'id')));
+        $criteria->addFilter(new EqualsAnyFilter(RatepayOrderLineItemDataEntity::FIELD_ORDER_LINE_ITEM_ID, array_column($ids, 'id')));
         $ratepayLineItems = $this->ratepayOrderLineItemDataRepository->searchIds($criteria, $context);
 
         if (count($ratepayLineItems->getIds()) > 0) {

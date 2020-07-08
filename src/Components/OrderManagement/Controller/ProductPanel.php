@@ -16,20 +16,16 @@ use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEn
 use Ratepay\RatepayPayments\Components\OrderManagement\Util\LineItemUtil;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\AddCreditData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
-use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\AbstractAddRequest;
 use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\AbstractModifyRequest;
 use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentCancelService;
 use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentCreditService;
-use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentDebitService;
 use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentDeliverService;
 use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentReturnService;
 use Ratepay\RatepayPayments\Util\CriteriaHelper;
-use Shopware\Core\Checkout\Cart\Order\RecalculationService;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -46,26 +42,7 @@ class ProductPanel extends AbstractController
      * @var EntityRepositoryInterface
      */
     private $orderRepository;
-    /**
-     * @var PaymentDeliverService
-     */
-    private $paymentDeliverService;
-    /**
-     * @var PaymentReturnService
-     */
-    private $paymentReturnService;
-    /**
-     * @var PaymentCancelService
-     */
-    private $paymentCancelService;
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $lineItemRepository;
-    /**
-     * @var RecalculationService
-     */
-    private $recalculationService;
+
     /**
      * @var PaymentCreditService
      */
@@ -74,12 +51,10 @@ class ProductPanel extends AbstractController
     /**
      * @var AbstractModifyRequest[]
      */
-    private $requestServicesByOperation = [];
+    private $requestServicesByOperation;
 
     public function __construct(
         EntityRepositoryInterface $orderRepository,
-        EntityRepositoryInterface $lineItemRepository,
-        RecalculationService $recalculationService,
         PaymentDeliverService $paymentDeliverService,
         PaymentReturnService $paymentReturnService,
         PaymentCancelService $paymentCancelService,
@@ -87,17 +62,12 @@ class ProductPanel extends AbstractController
     )
     {
         $this->orderRepository = $orderRepository;
-        $this->lineItemRepository = $lineItemRepository;
-        $this->paymentDeliverService = $paymentDeliverService;
-        $this->paymentReturnService = $paymentReturnService;
-        $this->paymentCancelService = $paymentCancelService;
-        $this->recalculationService = $recalculationService;
         $this->creditService = $creditService;
 
         $this->requestServicesByOperation = [
-            OrderOperationData::OPERATION_DELIVER => $this->paymentDeliverService,
-            OrderOperationData::OPERATION_CANCEL => $this->paymentCancelService,
-            OrderOperationData::OPERATION_RETURN => $this->paymentReturnService
+            OrderOperationData::OPERATION_DELIVER => $paymentDeliverService,
+            OrderOperationData::OPERATION_CANCEL => $paymentCancelService,
+            OrderOperationData::OPERATION_RETURN => $paymentReturnService
         ];
     }
 
@@ -120,7 +90,7 @@ class ProductPanel extends AbstractController
             $items = [];
             foreach ($order->getLineItems() as $lineItem) {
                 /** @var RatepayOrderLineItemDataEntity $extension */
-                if($extension = $lineItem->getExtension(OrderLineItemExtension::RATEPAY_DATA)) {
+                if ($extension = $lineItem->getExtension(OrderLineItemExtension::RATEPAY_DATA)) {
                     $items[$lineItem->getId()] = [
                         'id' => $lineItem->getId(),
                         'name' => $lineItem->getLabel(),
@@ -134,8 +104,7 @@ class ProductPanel extends AbstractController
             }
             /** @var $orderExtension RatepayOrderDataEntity */
             if (($orderExtension = $order->getExtension(OrderExtension::RATEPAY_DATA)) &&
-                $orderExtension->getShippingPosition())
-            {
+                $orderExtension->getShippingPosition()) {
                 $items['shipping'] = [
                     'id' => 'shipping',
                     'name' => 'shipping',

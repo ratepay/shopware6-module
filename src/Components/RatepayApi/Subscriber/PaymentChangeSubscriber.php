@@ -137,7 +137,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
             );
         }
 
-        if(count($positionUpdates)) {
+        if (count($positionUpdates)) {
             $this->ratepayPositionRepository->upsert($positionUpdates, $event->getContext());
         }
 
@@ -175,7 +175,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         ), PaymentDeliverService::EVENT_SUCCESSFUL);
     }
 
-    protected function getPositionUpdates(OrderOperationData $requestData, RatepayPositionEntity $position, $qty) : array
+    protected function getPositionUpdates(OrderOperationData $requestData, RatepayPositionEntity $position, $qty): array
     {
         $updates = [];
         switch ($requestData->getOperation()) {
@@ -202,7 +202,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         $data = [];
         /** @var OrderLineItemEntity $item */
         foreach ($lineItems as $item) {
-            if($item->getProduct()) {
+            if ($item->getProduct()) {
                 // verify if the product still exists
                 $data[] = [
                     'id' => $item->getProduct()->getId(),
@@ -210,7 +210,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
                 ];
             }
         }
-        if(count($data) === 0) {
+        if (count($data) === 0) {
             // nothing to do
             return;
         }

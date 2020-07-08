@@ -22,7 +22,13 @@ class OrderExtension extends EntityExtension
     public function extendFields(FieldCollection $collection): void
     {
         $collection->add(
-            (new OneToOneAssociationField(self::RATEPAY_DATA, 'id', 'order_id', RatepayOrderDataDefinition::class, true))->addFlags(new RestrictDelete())
+            (new OneToOneAssociationField(
+                self::RATEPAY_DATA,
+                'id',
+                'order_id',
+                RatepayOrderDataDefinition::class,
+                true
+            ))->addFlags(new RestrictDelete())
         );
     }
 
