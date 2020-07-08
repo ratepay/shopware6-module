@@ -18,15 +18,9 @@ Component.override('sw-order-line-items-grid', {
         }
     },
 
-    computed: {
-        isOrderPayedWithRatepay() {
-            return this.order.extensions.ratepayData;
-        },
-    },
-
     methods: {
         onDeleteSelectedItems() {
-            if (this.isOrderPayedWithRatepay) {
+            if (this.order.extensions.ratepayData) {
                 this.showLineItemDeleteRestrictionModal = true;
             } else {
                 this.$super('onDeleteSelectedItems')

@@ -12,12 +12,6 @@ const { Component } = Shopware;
 Component.override('sw-order-detail-base', {
     template,
 
-    computed: {
-        isOrderPayedWithRatepay() {
-            return true ||this.order.extensions.ratepayData;
-        },
-    },
-
     methods: {
 
         onRatepayActionTriggered() {
