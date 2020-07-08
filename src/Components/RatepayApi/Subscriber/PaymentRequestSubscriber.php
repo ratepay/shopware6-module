@@ -10,10 +10,14 @@ namespace Ratepay\RatepayPayments\Components\RatepayApi\Subscriber;
 
 
 use RatePAY\Model\Response\PaymentRequest;
+use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
+use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
+use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayPositionEntity;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Event\ResponseEvent;
 use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentRequestSubscriber implements EventSubscriberInterface
@@ -22,19 +26,25 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
     /**
      * @var EntityRepositoryInterface
      */
-    private $orderRepository;
+    private $ratepayOrderExtensionRepository;
     /**
      * @var EntityRepositoryInterface
      */
-    private $lineItemsRepository;
+    private $ratepayOrderLineItemExtensionRepository;
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $ratepayPositionRepository;
 
     public function __construct(
-        EntityRepositoryInterface $orderRepository,
-        EntityRepositoryInterface $lineItemsRepository
+        EntityRepositoryInterface $ratepayOrderExtensionRepository,
+        EntityRepositoryInterface $ratepayOrderLineItemExtensionRepository,
+        EntityRepositoryInterface $ratepayPositionRepository
     )
     {
-        $this->orderRepository = $orderRepository;
-        $this->lineItemsRepository = $lineItemsRepository;
+        $this->ratepayOrderExtensionRepository = $ratepayOrderExtensionRepository;
+        $this->ratepayOrderLineItemExtensionRepository = $ratepayOrderLineItemExtensionRepository;
+        $this->ratepayPositionRepository = $ratepayPositionRepository;
     }
 
     public static function getSubscribedEvents()
@@ -52,31 +62,41 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
         /** @var PaymentRequest $responseModel */
         $responseModel = $requestEvent->getRequestBuilder()->getResponse();
 
-        $customFields = $requestData->getOrder()->getCustomFields() ?? [];
-        $customFields['ratepay']['transaction_id'] = $responseModel->getTransactionId();
-        $customFields['ratepay']['shipping']['delivered'] = 0;
-        $customFields['ratepay']['shipping']['returned'] = 0;
-        $customFields['ratepay']['shipping']['canceled'] = 0;
+        $orderItems = $requestData->getOrder()->getLineItems();
 
-        $this->orderRepository->upsert([
-            [
-                'id' => $requestData->getOrder()->getId(),
-                'customFields' => $customFields
-            ]
-        ], $requestEvent->getContext());
+        $lineItemsData = [];
+        $positions = [];
+        $shippingPositionId = null;
+        foreach ($requestData->getItems() as $id => $item) {
+            $positionId = Uuid::randomHex();
 
-        $lineItems = [];
-        foreach ($requestData->getOrder()->getLineItems() as $item) {
-            $itemCustomFields = $item->getCustomFields() ?? [];
-            $itemCustomFields['ratepay']['delivered'] = 0;
-            $itemCustomFields['ratepay']['returned'] = 0;
-            $itemCustomFields['ratepay']['canceled'] = 0;
-
-            $lineItems[] = [
-                'id' => $item->getId(),
-                'customFields' => $itemCustomFields
+            $positions[] = [
+                RatepayPositionEntity::FIELD_ID => $positionId
             ];
+
+            if ($id === 'shipping') {
+                $shippingPositionId = $positionId;
+            } else {
+                $lineItem = $orderItems->get($id);
+
+                $lineItemsData[] = [
+                    RatepayOrderLineItemDataEntity::FIELD_POSITION_ID => $positionId,
+                    RatepayOrderLineItemDataEntity::FIELD_ORDER_LINE_ITEM_ID => $lineItem->getId(),
+                    RatepayOrderLineItemDataEntity::FIELD_ORDER_LINE_ITEM_VERSION_ID => $lineItem->getVersionId()
+                ];
+            }
         }
-        $this->lineItemsRepository->upsert($lineItems, $requestEvent->getContext());
+
+        $this->ratepayPositionRepository->create($positions, $requestData->getSalesChannelContext()->getContext());
+        $this->ratepayOrderLineItemExtensionRepository->create($lineItemsData, $requestData->getSalesChannelContext()->getContext());
+
+        $this->ratepayOrderExtensionRepository->create([
+            [
+                RatepayOrderDataEntity::FIELD_ORDER_ID => $requestData->getOrder()->getId(),
+                RatepayOrderDataEntity::FIELD_ORDER_VERSION_ID => $requestData->getOrder()->getVersionId(),
+                RatepayOrderDataEntity::FIELD_TRANSACTION_ID => $responseModel->getTransactionId(),
+                RatepayOrderDataEntity::FIELD_SHIPPING_POSITION_ID => $shippingPositionId
+            ]
+        ], $requestData->getSalesChannelContext()->getContext());
     }
 }

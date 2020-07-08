@@ -16,11 +16,30 @@ class RatepayOrderDataEntity extends Entity
 {
 
     public const FIELD_ID = 'id';
+    public const FIELD_ORDER_ID = 'orderId';
+    public const FIELD_ORDER_VERSION_ID = 'orderVersionId';
+    public const FIELD_ORDER = 'order';
     public const FIELD_TRANSACTION_ID = 'transactionId';
     public const FIELD_SHIPPING_POSITION_ID = 'shippingPositionId';
     public const FIELD_SHIPPING_POSITION = 'shippingPosition';
 
     use EntityIdTrait;
+
+
+    /**
+     * @var string
+     */
+    protected $orderId;
+
+    /**
+     * @var string
+     */
+    protected $orderVersionId;
+
+    /**
+     * @var OrderEntity
+     */
+    protected $order;
 
     /**
      * @var string
@@ -36,6 +55,54 @@ class RatepayOrderDataEntity extends Entity
      * @var RatepayPositionEntity
      */
     protected $shippingPosition;
+
+    /**
+     * @return string
+     */
+    public function getOrderId(): string
+    {
+        return $this->orderId;
+    }
+
+    /**
+     * @param string $orderId
+     */
+    public function setOrderId(string $orderId): void
+    {
+        $this->orderId = $orderId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrderVersionId(): string
+    {
+        return $this->orderVersionId;
+    }
+
+    /**
+     * @param string $orderVersionId
+     */
+    public function setOrderVersionId(string $orderVersionId): void
+    {
+        $this->orderVersionId = $orderVersionId;
+    }
+
+    /**
+     * @return OrderEntity
+     */
+    public function getOrder(): OrderEntity
+    {
+        return $this->order;
+    }
+
+    /**
+     * @param OrderEntity $order
+     */
+    public function setOrder(OrderEntity $order): void
+    {
+        $this->order = $order;
+    }
 
     /**
      * @return string
@@ -56,7 +123,7 @@ class RatepayOrderDataEntity extends Entity
     /**
      * @return string
      */
-    public function getShippingPositionId(): string
+    public function getShippingPositionId(): ?string
     {
         return $this->shippingPositionId;
     }
@@ -72,7 +139,7 @@ class RatepayOrderDataEntity extends Entity
     /**
      * @return RatepayPositionEntity
      */
-    public function getShippingPosition(): RatepayPositionEntity
+    public function getShippingPosition(): ?RatepayPositionEntity
     {
         return $this->shippingPosition;
     }
