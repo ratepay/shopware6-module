@@ -19,9 +19,9 @@ class RequestBuilderFailedSubscriber implements EventSubscriberInterface
      */
     protected $logger;
 
-    public function __construct(Logger $logger)
+    public function __construct(Logger $fileLogger)
     {
-        $this->logger = $logger;
+        $this->logger = $fileLogger;
     }
 
     public static function getSubscribedEvents(): array

@@ -35,27 +35,23 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
      * @var PaymentRequestService
      */
     private $paymentRequestService;
-    /**
-     * @var OrderTransactionStateHandler
-     */
-    private $transactionStateHandler;
+
     /**
      * @var EntityRepositoryInterface
      */
     private $orderRepository;
+
     /**
      * @var EventDispatcherInterface
      */
     private $eventDispatcher;
 
     public function __construct(
-        OrderTransactionStateHandler $transactionStateHandler,
         EntityRepositoryInterface $orderRepository,
         PaymentRequestService $paymentRequestService,
         EventDispatcherInterface $eventDispatcher
     )
     {
-        $this->transactionStateHandler = $transactionStateHandler;
         $this->orderRepository = $orderRepository;
         $this->paymentRequestService = $paymentRequestService;
         $this->eventDispatcher = $eventDispatcher;
@@ -75,12 +71,20 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
                 )
             );
             if ($response->getResponse()->isSuccessful()) {
-                $this->eventDispatcher->dispatch(new PaymentSuccessfulEvent($transaction, $dataBag, $salesChannelContext, $response->getResponse()));
+                $this->eventDispatcher->dispatch(new PaymentSuccessfulEvent($order, $transaction, $dataBag, $salesChannelContext, $response->getResponse()));
             } else {
+                // will be catched a few lines later.
                 throw new Exception($response->getResponse()->getReasonMessage());
             }
         } catch (Exception $e) {
-            $this->eventDispatcher->dispatch(new PaymentFailedEvent($transaction, $dataBag, $salesChannelContext, isset($response) ? $response->getResponse() : null));
+            $this->eventDispatcher->dispatch(new PaymentFailedEvent(
+                $order,
+                $transaction,
+                $dataBag,
+                $salesChannelContext,
+                isset($response) ? $response->getResponse() : null,
+                $e
+            ));
             throw new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $e->getMessage());
         }
     }

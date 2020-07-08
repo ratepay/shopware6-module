@@ -18,16 +18,14 @@ class CriteriaHelper
     public static function getCriteriaForOrder($orderId)
     {
         $criteria = new Criteria([$orderId]);
+        //$criteria->addAssociation(OrderExtension::RATEPAY_DATA);
         $criteria->addAssociation('currency');
         $criteria->addAssociation('language.locale');
-        $criteria->addAssociation('addresses');
         $criteria->addAssociation('addresses.country');
         $criteria->addAssociation('addresses.salutation');
-        $criteria->addAssociation('orderCustomer');
         $criteria->addAssociation('orderCustomer.customer');
-        $criteria->addAssociation('lineItems');
+        //$criteria->addAssociation('lineItems.'.OrderLineItemExtension::RATEPAY_DATA);
         $criteria->addAssociation('lineItems.product');
-        $criteria->addAssociation('deliveries');
         $criteria->addAssociation('deliveries.shippingMethod');
         $criteria->addAssociation('deliveries.positions');
         $criteria->addAssociation('deliveries.positions.orderLineItem');
@@ -38,6 +36,7 @@ class CriteriaHelper
         $criteria->addAssociation('transactions.paymentMethod');
         $criteria->addAssociation('documents.documentType');
         $criteria->addSorting(new FieldSorting('lineItems.createdAt'));
+
         return $criteria;
     }
 }

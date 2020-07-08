@@ -9,18 +9,19 @@
 namespace Ratepay\RatepayPayments\Components\OrderManagement\Controller;
 
 
+use Ratepay\RatepayPayments\Components\Checkout\Model\Extension\OrderExtension;
+use Ratepay\RatepayPayments\Components\Checkout\Model\Extension\OrderLineItemExtension;
+use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
+use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
 use Ratepay\RatepayPayments\Components\OrderManagement\Util\LineItemUtil;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\AddCreditData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
-use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\AbstractAddRequest;
 use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\AbstractModifyRequest;
 use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentCancelService;
 use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentCreditService;
-use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentDebitService;
 use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentDeliverService;
 use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentReturnService;
 use Ratepay\RatepayPayments\Util\CriteriaHelper;
-use Shopware\Core\Checkout\Cart\Order\RecalculationService;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -41,26 +42,7 @@ class ProductPanel extends AbstractController
      * @var EntityRepositoryInterface
      */
     private $orderRepository;
-    /**
-     * @var PaymentDeliverService
-     */
-    private $paymentDeliverService;
-    /**
-     * @var PaymentReturnService
-     */
-    private $paymentReturnService;
-    /**
-     * @var PaymentCancelService
-     */
-    private $paymentCancelService;
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $lineItemRepository;
-    /**
-     * @var RecalculationService
-     */
-    private $recalculationService;
+
     /**
      * @var PaymentCreditService
      */
@@ -69,12 +51,10 @@ class ProductPanel extends AbstractController
     /**
      * @var AbstractModifyRequest[]
      */
-    private $requestServicesByOperation = [];
+    private $requestServicesByOperation;
 
     public function __construct(
         EntityRepositoryInterface $orderRepository,
-        EntityRepositoryInterface $lineItemRepository,
-        RecalculationService $recalculationService,
         PaymentDeliverService $paymentDeliverService,
         PaymentReturnService $paymentReturnService,
         PaymentCancelService $paymentCancelService,
@@ -82,17 +62,12 @@ class ProductPanel extends AbstractController
     )
     {
         $this->orderRepository = $orderRepository;
-        $this->lineItemRepository = $lineItemRepository;
-        $this->paymentDeliverService = $paymentDeliverService;
-        $this->paymentReturnService = $paymentReturnService;
-        $this->paymentCancelService = $paymentCancelService;
-        $this->recalculationService = $recalculationService;
         $this->creditService = $creditService;
 
         $this->requestServicesByOperation = [
-            OrderOperationData::OPERATION_DELIVER => $this->paymentDeliverService,
-            OrderOperationData::OPERATION_CANCEL => $this->paymentCancelService,
-            OrderOperationData::OPERATION_RETURN => $this->paymentReturnService
+            OrderOperationData::OPERATION_DELIVER => $paymentDeliverService,
+            OrderOperationData::OPERATION_CANCEL => $paymentCancelService,
+            OrderOperationData::OPERATION_RETURN => $paymentReturnService
         ];
     }
 
@@ -114,11 +89,30 @@ class ProductPanel extends AbstractController
         if ($order) {
             $items = [];
             foreach ($order->getLineItems() as $lineItem) {
-                $items[$lineItem->getId()] = LineItemUtil::getLineItemArray($lineItem);
+                /** @var RatepayOrderLineItemDataEntity $extension */
+                if ($extension = $lineItem->getExtension(OrderLineItemExtension::RATEPAY_DATA)) {
+                    $items[$lineItem->getId()] = [
+                        'id' => $lineItem->getId(),
+                        'name' => $lineItem->getLabel(),
+                        'ordered' => $lineItem->getQuantity(),
+                        'position' => LineItemUtil::addMaxActionValues(
+                            $extension->getPosition(),
+                            $lineItem->getQuantity()
+                        )
+                    ];
+                }
             }
-            if ($shippingLineItem = LineItemUtil::getShippingLineItem($order)) {
-                $items[$shippingLineItem['id']] = $shippingLineItem;
+            /** @var $orderExtension RatepayOrderDataEntity */
+            if (($orderExtension = $order->getExtension(OrderExtension::RATEPAY_DATA)) &&
+                $orderExtension->getShippingPosition()) {
+                $items['shipping'] = [
+                    'id' => 'shipping',
+                    'name' => 'shipping',
+                    'ordered' => 1,
+                    'position' => LineItemUtil::addMaxActionValues($orderExtension->getShippingPosition(), 1)
+                ];
             }
+
             return $this->json([
                 'success' => true,
                 'data' => $items

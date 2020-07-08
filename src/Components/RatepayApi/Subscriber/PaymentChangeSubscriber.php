@@ -10,8 +10,11 @@ namespace Ratepay\RatepayPayments\Components\RatepayApi\Subscriber;
 
 use Exception;
 use Monolog\Logger;
+use Ratepay\RatepayPayments\Components\Checkout\Model\Extension\OrderExtension;
+use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
+use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
+use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayPositionEntity;
 use Ratepay\RatepayPayments\Components\Logging\Service\HistoryLogger;
-use Ratepay\RatepayPayments\Components\OrderManagement\Util\LineItemUtil;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\AddCreditData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Event\ResponseEvent;
@@ -25,7 +28,6 @@ use Shopware\Core\Checkout\Cart\Order\RecalculationService;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -39,10 +41,6 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
      * @var EntityRepositoryInterface
      */
     private $orderRepository;
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $lineItemsRepository;
     /**
      * @var Logger
      */
@@ -59,12 +57,16 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
      * @var EventDispatcherInterface
      */
     private $eventDispatcher;
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $ratepayPositionRepository;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         EntityRepositoryInterface $productRepository,
         EntityRepositoryInterface $orderRepository,
-        EntityRepositoryInterface $lineItemsRepository,
+        EntityRepositoryInterface $ratepayPositionRepository,
         RecalculationService $recalculationService,
         Logger $logger,
         HistoryLogger $historyLogger
@@ -73,10 +75,10 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         $this->eventDispatcher = $eventDispatcher;
         $this->productRepository = $productRepository;
         $this->orderRepository = $orderRepository;
-        $this->lineItemsRepository = $lineItemsRepository;
         $this->recalculationService = $recalculationService;
         $this->logger = $logger;
         $this->historyLogger = $historyLogger;
+        $this->ratepayPositionRepository = $ratepayPositionRepository;
     }
 
     public static function getSubscribedEvents(): array
@@ -94,40 +96,33 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         /** @var OrderOperationData $requestData */
         $requestData = $event->getRequestData();
 
-        $data = [];
+        $positionUpdates = [];
         /** @var OrderLineItemEntity $item */
         foreach ($requestData->getItems() as $id => $qty) {
-            if($id === 'shipping') {
-                $customFields = $requestData->getOrder()->getCustomFields();
-                $ratepayCustomFields = $customFields['ratepay']['shipping'] ?? LineItemUtil::getEmptyCustomFields();
-                $ratepayCustomFields = $this->updateCustomField($requestData, $ratepayCustomFields, $qty);
-                $customFields['ratepay']['shipping'] = $ratepayCustomFields;
-
-                $this->orderRepository->update([
-                    [
-                        'id' => $requestData->getOrder()->getId(),
-                        'customFields' => $customFields
-                    ]
-                ], $event->getContext());
+            if ($id === 'shipping') {
+                /** @var RatepayOrderDataEntity $ratepayData */
+                $ratepayData = $requestData->getOrder()->getExtension(OrderExtension::RATEPAY_DATA);
+                $position = $ratepayData->getShippingPosition();
 
                 $productName = $id;
                 $productNumber = $id;
             } else {
-                /** @var OrderLineItemEntity $item */
-                $item = $this->lineItemsRepository->search(new Criteria([$id]), $event->getContext())->first();
+                /** @var OrderLineItemEntity $lineItem */
+                $lineItem = $requestData->getOrder()->getLineItems()->get($id);
 
-                $customFields = $item->getCustomFields();
-                $ratepayCustomFields = $customFields['ratepay'] ?? LineItemUtil::getEmptyCustomFields();
-                $customFields['ratepay'] = $this->updateCustomField($requestData, $ratepayCustomFields, $qty);
-                $data[] = [
-                    'id' => $item->getId(),
-                    'customFields' => $customFields
-                ];
+                /** @var RatepayOrderLineItemDataEntity $ratepayData */
+                $ratepayData = $lineItem->getExtension(OrderExtension::RATEPAY_DATA);
+                $position = $ratepayData->getPosition();
 
-                $productName = $item->getLabel();
-                $productNumber = $item->getPayload()['productNumber'] ?? $id;
+                $productName = $lineItem->getLabel();
+                $productNumber = $lineItem->getPayload()['productNumber'] ?? $id;
             }
 
+            $updateData = $this->getPositionUpdates($requestData, $position, $qty);
+            $updateData[RatepayPositionEntity::FIELD_ID] = $position->getId();
+            $positionUpdates[] = $updateData;
+
+            // todo trigger event
             $this->historyLogger->logHistory(
                 $event->getContext(),
                 $requestData->getOrder()->getId(),
@@ -137,8 +132,9 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
                 $qty
             );
         }
-        if ($data) {
-            $this->lineItemsRepository->update($data, $event->getContext());
+
+        if (count($positionUpdates)) {
+            $this->ratepayPositionRepository->upsert($positionUpdates, $event->getContext());
         }
 
         if ($requestData->isUpdateStock()) {
@@ -180,21 +176,22 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         ), PaymentDeliverService::EVENT_SUCCESSFUL);
     }
 
-    protected function updateCustomField(OrderOperationData $requestData, ?array $customFields, $qty)
+    protected function getPositionUpdates(OrderOperationData $requestData, RatepayPositionEntity $position, $qty): array
     {
+        $updates = [];
         switch ($requestData->getOperation()) {
             case OrderOperationData::OPERATION_ADD:
             case OrderOperationData::OPERATION_DELIVER:
-                $customFields['delivered'] += $qty;
+                $updates[RatepayPositionEntity::FIELD_DELIVERED] = $position->getDelivered() + $qty;
                 break;
             case OrderOperationData::OPERATION_CANCEL:
-                $customFields['canceled'] += $qty;
+                $updates[RatepayPositionEntity::FIELD_CANCELED] = $position->getCanceled() + $qty;
                 break;
             case OrderOperationData::OPERATION_RETURN:
-                $customFields['returned'] += $qty;
+                $updates[RatepayPositionEntity::FIELD_RETURNED] = $position->getReturned() + $qty;
                 break;
         }
-        return $customFields;
+        return $updates;
     }
 
     protected function updateProductStocks(Context $context, OrderOperationData $requestData): void
@@ -206,7 +203,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         $data = [];
         /** @var OrderLineItemEntity $item */
         foreach ($lineItems as $item) {
-            if($item->getProduct()) {
+            if ($item->getProduct()) {
                 // verify if the product still exists
                 $data[] = [
                     'id' => $item->getProduct()->getId(),
@@ -214,13 +211,14 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
                 ];
             }
         }
-        if(count($data) === 0) {
+        if (count($data) === 0) {
             // nothing to do
             return;
         }
         try {
             $this->productRepository->update($data, $context);
         } catch (Exception $e) {
+            // todo trigger event
             $this->logger->addError('Error during the updating of the stock', [
                 'message' => $e->getMessage(),
                 'orderId' => $requestData->getOrder()->getId(),

@@ -27,3 +27,4 @@ import './init/profile-config-api-service.init';
  * Shopware Extensions
  */
 import './module/sw-order/view/sw-order-detail-base'
+import './module/sw-order/component/sw-order-line-items-grid'

@@ -9,6 +9,11 @@
 namespace Ratepay\RatepayPayments\Components\RatepayApi\Dto;
 
 
+use Ratepay\RatepayPayments\Components\Checkout\Model\Extension\OrderExtension;
+use Ratepay\RatepayPayments\Components\Checkout\Model\Extension\OrderLineItemExtension;
+use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
+use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
+use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayPositionEntity;
 use Ratepay\RatepayPayments\Components\OrderManagement\Util\LineItemUtil;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
@@ -71,45 +76,44 @@ class OrderOperationData implements IRequestData
 
         $items = [];
         foreach ($this->order->getLineItems() as $lineItem) {
-            $data = LineItemUtil::getLineItemArray($lineItem);
-            switch ($this->operation) {
-                case self::OPERATION_DELIVER:
-                    $quantity = $data['maxDelivery'];
-                    break;
-                case self::OPERATION_CANCEL:
-                    $quantity = $data['maxCancel'];
-                    break;
-                case self::OPERATION_RETURN:
-                    $quantity = $data['maxReturn'];
-                    break;
-                default:
-                    throw new RuntimeException('the operation ' . $this->operation . '` is not supported for automatic delivery');
-            }
-            if ($quantity > 0) {
-                $items[$lineItem->getId()] = $quantity;
+            /** @var RatepayOrderLineItemDataEntity $extension */
+            if ($extension = $lineItem->getExtension(OrderLineItemExtension::RATEPAY_DATA)) {
+                $quantity = $this->getMaxQuantityForOperation($extension->getPosition(), $lineItem->getQuantity());
+                if ($quantity > 0) {
+                    $items[$lineItem->getId()] = $quantity;
+                }
             }
         }
-        
-        if ($this->order->getShippingTotal() > 0) {
-            $data = LineItemUtil::getShippingLineItem($this->order);
-            switch ($this->operation) {
-                case self::OPERATION_DELIVER:
-                    $quantity = $data['maxDelivery'];
-                    break;
-                case self::OPERATION_CANCEL:
-                    $quantity = $data['maxCancel'];
-                    break;
-                case self::OPERATION_RETURN:
-                    $quantity = $data['maxReturn'];
-                    break;
-                default:
-                    throw new RuntimeException('the operation ' . $this->operation . '` is not supported for automatic delivery');
-            }
+
+        /** @var RatepayOrderDataEntity $orderExtension */
+        if ($this->order->getShippingTotal() > 0 &&
+            ($orderExtension = $this->order->getExtension(OrderExtension::RATEPAY_DATA)) &&
+            ($shippingPosition = $orderExtension->getShippingPosition())
+        ) {
+            $quantity = $this->getMaxQuantityForOperation($shippingPosition, 1);
             if ($quantity > 0) {
                 $items['shipping'] = $quantity;
             }
         }
         return $items;
+    }
+
+    private function getMaxQuantityForOperation(RatepayPositionEntity $position, int $ordered): int
+    {
+        $maxValues = LineItemUtil::addMaxActionValues($position, $ordered);
+        switch ($this->operation) {
+            case self::OPERATION_DELIVER:
+                return $maxValues['maxDelivery'];
+                break;
+            case self::OPERATION_CANCEL:
+                return $maxValues['maxCancel'];
+                break;
+            case self::OPERATION_RETURN:
+                return $maxValues['maxReturn'];
+                break;
+            default:
+                throw new RuntimeException('the operation ' . $this->operation . '` is not supported for automatic delivery');
+        }
     }
 
     /**

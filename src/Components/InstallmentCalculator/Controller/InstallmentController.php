@@ -39,7 +39,7 @@ class InstallmentController extends StorefrontController
      */
     public function calculateInstallment(Request $request, SalesChannelContext $context): Response
     {
-        $this->denyAccessUnlessLoggedIn();
+        $this->denyAccessUnlessLoggedIn(true);
 
         $type = $request->query->get('type');
         $value = $request->query->get('value');

@@ -11,6 +11,8 @@ namespace Ratepay\RatepayPayments\Components\StateMachine\Subscriber;
 
 use Exception;
 use Monolog\Logger;
+use Ratepay\RatepayPayments\Components\Checkout\Model\Extension\OrderExtension;
+use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentCancelService;
@@ -93,6 +95,8 @@ class TransitionSubscriber implements EventSubscriberInterface
         /** @var OrderEntity $order */
         $order = $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($orderDelivery->getOrderId()), $event->getContext())->first();
 
+        /** @var RatepayOrderDataEntity $ratepayData */
+        $ratepayData = $order->getExtension(OrderExtension::RATEPAY_DATA);
 
         switch ($event->getToPlace()->getTechnicalName()) {
             case $this->configService->getBidirectionalityFullDelivery():
@@ -118,7 +122,7 @@ class TransitionSubscriber implements EventSubscriberInterface
             if ($response->getResponse()->isSuccessful() === false) {
                 $this->logger->addError('Error during bidirectionality. (Exception: ' . $response->getResponse()->getReasonMessage() . ')', [
                     'order' => $order->getId(),
-                    'transactionId' => $order->getCustomFields()['ratepay']['transaction_id'],
+                    'transactionId' => $ratepayData->getTransactionId(),
                     'orderNumber' => $order->getOrderNumber(),
                     'itemsToProcess' => $orderOperationData->getItems(),
                 ]);
@@ -126,7 +130,7 @@ class TransitionSubscriber implements EventSubscriberInterface
         } catch (Exception $e) {
             $this->logger->addCritical('Exception during bidirectionality. (Exception: ' . $e->getMessage() . ')', [
                 'order' => $order->getId(),
-                'transactionId' => $order->getCustomFields()['ratepay']['transaction_id'],
+                'transactionId' => $ratepayData->getTransactionId(),
                 'orderNumber' => $order->getOrderNumber(),
                 'itemsToProcess' => $orderOperationData->getItems()
             ]);

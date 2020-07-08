@@ -13,7 +13,6 @@
     <services>
         <service id="Ratepay\RatepayPayments\Components\OrderManagement\Controller\ProductPanel" autowire="true">
             <argument key="$orderRepository" id="order.repository" type="service"/>
-            <argument key="$lineItemRepository" id="order_line_item.repository" type="service"/>
             <call method="setContainer">
                 <argument id="service_container" type="service"/>
             </call>

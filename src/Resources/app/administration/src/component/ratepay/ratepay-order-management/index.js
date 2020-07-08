@@ -78,19 +78,19 @@ Component.register('ratepay-order-management', {
                     align: 'center'
                 },
                 {
-                    property: 'delivered',
+                    property: 'position.delivered',
                     label: this.$t('ratepay.orderManagement.table.delivered'),
                     allowResize: false,
                     align: 'center'
                 },
                 {
-                    property: 'canceled',
+                    property: 'position.canceled',
                     label: this.$t('ratepay.orderManagement.table.canceled'),
                     allowResize: false,
                     align: 'center'
                 },
                 {
-                    property: 'returned',
+                    property: 'position.returned',
                     label: this.$t('ratepay.orderManagement.table.returned'),
                     allowResize: false,
                     align: 'center'

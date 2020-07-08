@@ -11,6 +11,8 @@ namespace Ratepay\RatepayPayments\Components\RatepayApi\Service\Request;
 
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
+use Ratepay\RatepayPayments\Components\Checkout\Model\Extension\OrderExtension;
+use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
@@ -59,7 +61,10 @@ abstract class AbstractModifyRequest extends AbstractOrderOperationRequest
         $head = parent::getRequestHead($requestData, $profileConfig);
         $head->setExternal($head->getExternal() ?: new Head\External());
         $head->getExternal()->setOrderId($requestData->getOrder()->getOrderNumber());
-        $head->setTransactionId($requestData->getOrder()->getCustomFields()['ratepay']['transaction_id']);
+
+        /** @var RatepayOrderDataEntity $orderExtension */
+        $orderExtension = $requestData->getOrder()->getExtension(OrderExtension::RATEPAY_DATA);
+        $head->setTransactionId($orderExtension->getTransactionId());
         return $head;
     }
 
