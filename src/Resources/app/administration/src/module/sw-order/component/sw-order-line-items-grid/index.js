@@ -20,7 +20,7 @@ Component.override('sw-order-line-items-grid', {
 
     computed: {
         isOrderPayedWithRatepay() {
-            return this.order.extensions.ratepayData.isPayedWithRatepay;
+            return this.order.extensions.ratepayData;
         },
     },
 

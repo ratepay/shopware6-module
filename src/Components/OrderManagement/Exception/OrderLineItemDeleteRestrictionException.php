@@ -20,7 +20,7 @@ class OrderLineItemDeleteRestrictionException extends ShopwareHttpException
 
     public function getErrorCode(): string
     {
-        return 'ORDER_MANAGEMENT__ORDER_LINE_ITEM_DELETE_RESTRICTION';
+        return 'RP_ORDER_MANAGEMENT__ORDER_LINE_ITEM_DELETE_RESTRICTION';
     }
 
     public function getStatusCode(): int

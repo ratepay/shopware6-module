@@ -14,7 +14,7 @@ Component.override('sw-order-detail-base', {
 
     computed: {
         isOrderPayedWithRatepay() {
-            return this.order.extensions.ratepayData.isPayedWithRatepay;
+            return this.order.extensions.ratepayData;
         },
     },
 

@@ -1,6 +1,6 @@
 {
-    "ratepay": {
-        "order": {
+    "order": {
+        "ratepay": {
             "modal": {
                 "lineItemDeleteRestriction": {
                     "text": "Sie können leider keine Positionen aus einer Bestellung mit einer Ratepay Zahlungsart löschen. Nutzen Sie dafür bitte die Funktion der Retoure oder der Stornierung."

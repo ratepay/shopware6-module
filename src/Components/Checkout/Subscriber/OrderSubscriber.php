@@ -6,9 +6,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\OrderManagement\Subscriber;
+namespace Ratepay\RatepayPayments\Components\Checkout\Subscriber;
 
 
+use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RatepayPayments\Components\PaymentHandler\DebitPaymentHandler;
 use Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
 use Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
@@ -21,7 +22,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityLoadedEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\Struct\ArrayEntity;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Shopware\Core\Framework\Context;
 
@@ -58,14 +58,12 @@ class OrderSubscriber implements EventSubscriberInterface
         $orders = $event->getEntities();
         /** @var OrderEntity $order */
         foreach ($orders as $order) {
-            $order->addExtension(
-                'ratepayData',
-                new ArrayEntity(
-                    [
-                        'isPayedWithRatepay' => $this->isPayedWithRatepay($order, $event->getContext()),
-                    ]
-                )
-            );
+            if ($this->isPayedWithRatepay($order, $event->getContext())) {
+                $order->addExtension(
+                    'ratepayData',
+                    new RatepayOrderDataEntity()
+                );
+            }
         }
     }
 

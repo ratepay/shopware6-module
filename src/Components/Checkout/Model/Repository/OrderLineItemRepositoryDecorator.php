@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\Core\Model\Repository;
+namespace Ratepay\RatepayPayments\Components\Checkout\Model\Repository;
 
 
 use Ratepay\RatepayPayments\Components\OrderManagement\Exception\OrderLineItemDeleteRestrictionException;
@@ -19,7 +19,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Aggreg
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
-use Shopware\Core\Framework\Struct\ArrayEntity;
 
 class OrderLineItemRepositoryDecorator implements EntityRepositoryInterface
 {
@@ -50,9 +49,7 @@ class OrderLineItemRepositoryDecorator implements EntityRepositoryInterface
                 continue;
             }
 
-            /** @var ArrayEntity $ratepayData */
-            $ratepayData = $orderLineItem->getOrder()->getExtension('ratepayData');
-            if ($ratepayData && $ratepayData->offsetGet('isPayedWithRatepay') === true) {
+            if ($orderLineItem->hasExtension('ratepayData')) {
                 throw new OrderLineItemDeleteRestrictionException();
             }
         }
