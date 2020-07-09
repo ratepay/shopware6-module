@@ -9,7 +9,7 @@
 namespace Ratepay\RatepayPayments\Components\InstallmentCalculator\Subscriber;
 
 use Ratepay\RatepayPayments\Components\InstallmentCalculator\Service\InstallmentService;
-use Ratepay\RatepayPayments\Components\InstallmentCalculator\Util\MethodHelper;
+use Ratepay\RatepayPayments\Util\MethodHelper;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

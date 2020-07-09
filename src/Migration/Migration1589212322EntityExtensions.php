@@ -64,8 +64,6 @@ class Migration1589212322EntityExtensions extends MigrationStep
 
     public function updateDestructive(Connection $connection): void
     {
-        $connection->executeQuery("DROP TABLE ratepay_order_extension");
-        $connection->executeQuery("DROP TABLE ratepay_line_item_extension");
-        $connection->executeQuery("DROP TABLE ratepay_position");
+
     }
 }

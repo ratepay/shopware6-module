@@ -12,6 +12,9 @@
 
     <services>
 
+        <service id="Ratepay\RatepayPayments\Components\Checkout\Service\PaymentFilterService">
+            <argument type="service" id="Ratepay\RatepayPayments\Components\ProfileConfig\Service\ProfileConfigService" />
+        </service>
 
     </services>
 

@@ -168,8 +168,14 @@ class ProfileConfigService
         return $this->repository->search(new Criteria($ids), $this->context);
     }
 
-    public function getProfileConfigBySalesChannel(SalesChannelContext $salesChannelContext) : ProfileConfigEntity
-    {
+    public function getProfileConfigBySalesChannel(
+        SalesChannelContext $salesChannelContext,
+        string $paymentMethodId = ''
+    ) : ?ProfileConfigEntity {
+
+        if (empty($paymentMethodId)) {
+            $paymentMethodId = $salesChannelContext->getPaymentMethod()->getId();
+        }
 
         $criteria = new Criteria();
         $criteria->addAssociation(ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS);
@@ -177,7 +183,7 @@ class ProfileConfigService
         // payment method
         $criteria->addFilter(new EqualsFilter(
             ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_PAYMENT_METHOD_ID,
-            $salesChannelContext->getPaymentMethod()->getId()
+            $paymentMethodId
         ));
 
         // billing country
@@ -214,6 +220,7 @@ class ProfileConfigService
 
         return $this->repository->search($criteria, $salesChannelContext->getContext())->first();
     }
+
     /**
      * @returns PaymentMethodCollection
      */
