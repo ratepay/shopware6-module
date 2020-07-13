@@ -13,16 +13,20 @@ use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
 use Ratepay\RatepayPayments\Components\Checkout\Model\Extension\OrderExtension;
 use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
+use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
+use Ratepay\RatepayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
+use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
-use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
-use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-abstract class AbstractModifyRequest extends AbstractOrderOperationRequest
+abstract class AbstractModifyRequest extends AbstractRequest
 {
 
     protected $_operation = self::CALL_CHANGE;
@@ -42,6 +46,10 @@ abstract class AbstractModifyRequest extends AbstractOrderOperationRequest
      * @var ShoppingBasketFactory
      */
     private $shoppingBasketFactory;
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $profileConfigRepository;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
@@ -51,8 +59,29 @@ abstract class AbstractModifyRequest extends AbstractOrderOperationRequest
         ShoppingBasketFactory $shoppingBasketFactory
     )
     {
-        parent::__construct($eventDispatcher, $configService, $headFactory, $profileConfigRepository);
+        parent::__construct($eventDispatcher, $configService, $headFactory);
         $this->shoppingBasketFactory = $shoppingBasketFactory;
+        $this->profileConfigRepository = $profileConfigRepository;
+    }
+
+    protected function getProfileConfig(Context $context, IRequestData $requestData): ProfileConfigEntity
+    {
+        /** @var OrderOperationData $requestData */
+
+        /** @var RatepayOrderDataEntity $extension */
+        $extension = $requestData->getOrder()->getExtension(OrderExtension::RATEPAY_DATA);
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter(
+            ProfileConfigEntity::FIELD_PROFILE_ID,
+            $extension->getProfileId()
+        ));
+
+        $profileConfig = $this->profileConfigRepository->search($criteria, $context)->first();
+        if ($profileConfig === null) {
+            throw new ProfileNotFoundException();
+        }
+        return $profileConfig;
     }
 
     protected function getRequestHead(IRequestData $requestData, ProfileConfigEntity $profileConfig): Head

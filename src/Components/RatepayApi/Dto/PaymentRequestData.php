@@ -9,6 +9,7 @@
 namespace Ratepay\RatepayPayments\Components\RatepayApi\Dto;
 
 
+use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -30,13 +31,24 @@ class PaymentRequestData extends OrderOperationData
      * @var SalesChannelContext
      */
     private $salesChannelContext;
+    /**
+     * @var ProfileConfigEntity
+     */
+    private $profileConfig;
 
-    public function __construct(SalesChannelContext $salesChannelContext, OrderEntity $order, OrderTransactionEntity $transaction, RequestDataBag $requestDataBag)
+    public function __construct(
+        SalesChannelContext $salesChannelContext,
+        OrderEntity $order,
+        OrderTransactionEntity $transaction,
+        ProfileConfigEntity $profileConfig,
+        RequestDataBag $requestDataBag
+    )
     {
         parent::__construct($order, self::OPERATION_REQUEST, null);
         $this->transaction = $transaction;
         $this->requestDataBag = $requestDataBag;
         $this->salesChannelContext = $salesChannelContext;
+        $this->profileConfig = $profileConfig;
     }
 
     /**
@@ -80,5 +92,13 @@ class PaymentRequestData extends OrderOperationData
     public function getSalesChannelContext(): SalesChannelContext
     {
         return $this->salesChannelContext;
+    }
+
+    /**
+     * @return ProfileConfigEntity
+     */
+    public function getProfileConfig(): ProfileConfigEntity
+    {
+        return $this->profileConfig;
     }
 }

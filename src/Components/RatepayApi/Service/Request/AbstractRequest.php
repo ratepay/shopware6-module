@@ -12,14 +12,14 @@ namespace Ratepay\RatepayPayments\Components\RatepayApi\Service\Request;
 use Exception;
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
+use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
+use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Event\BuildEvent;
 use Ratepay\RatepayPayments\Components\RatepayApi\Event\RequestBuilderFailedEvent;
 use Ratepay\RatepayPayments\Components\RatepayApi\Event\RequestDoneEvent;
 use Ratepay\RatepayPayments\Components\RatepayApi\Event\ResponseEvent;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
-use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
-use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use RatePAY\RequestBuilder;
 use Shopware\Core\Framework\Context;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -82,7 +82,7 @@ abstract class AbstractRequest
     public final function doRequest(Context $context, IRequestData $requestData)
     {
         $profileConfig = $this->getProfileConfig($context, $requestData);
-        if ($profileConfig == null) {
+        if ($profileConfig === null) {
             throw new Exception('Transaction can not performed, cause no profile was found.');
         }
 
@@ -117,7 +117,7 @@ abstract class AbstractRequest
      * @param IRequestData $requestData
      * @return ProfileConfigEntity
      */
-    abstract protected function getProfileConfig(Context $context, IRequestData $requestData);
+    abstract protected function getProfileConfig(Context $context, IRequestData $requestData): ProfileConfigEntity;
 
     protected function getRequestHead(IRequestData $requestData, ProfileConfigEntity $profileConfig): Head
     {

@@ -31,6 +31,10 @@ class ProfileConfigService
 {
 
     /**
+     * @var Context
+     */
+    protected $context;
+    /**
      * @var EntityRepositoryInterface
      */
     private $repository;
@@ -50,10 +54,6 @@ class ProfileConfigService
      * @var EntityRepositoryInterface
      */
     private $paymentRepository;
-    /**
-     * @var Context
-     */
-    protected $context;
 
     public function __construct(
         EntityRepositoryInterface $paymentRepository,
@@ -102,7 +102,7 @@ class ProfileConfigService
             if ($response->isSuccessful() == false) {
                 $data[ProfileConfigEntity::FIELD_STATUS] = false;
                 $data[ProfileConfigEntity::FIELD_STATUS_MESSAGE] = $response->getReasonMessage();
-            } else if($responseData['merchantConfig']['merchant-status'] == 1) {
+            } else if ($responseData['merchantConfig']['merchant-status'] == 1) {
                 $data[ProfileConfigEntity::FIELD_STATUS] = false;
                 $data[ProfileConfigEntity::FIELD_STATUS_MESSAGE] = 'The profile is disabled. Please contact your account manager.';
             } else {
@@ -120,16 +120,16 @@ class ProfileConfigService
 
                 /** @var PaymentMethodEntity $paymentMethod */
                 foreach ($paymentMethods as $paymentMethod) {
-                    $arrayKey = strtolower(constant($paymentMethod->getHandlerIdentifier().'::RATEPAY_METHOD'));
-                    if($responseData['merchantConfig']['activation-status-'.$arrayKey] == 1) {
+                    $arrayKey = strtolower(constant($paymentMethod->getHandlerIdentifier() . '::RATEPAY_METHOD'));
+                    if ($responseData['merchantConfig']['activation-status-' . $arrayKey] == 1) {
                         // method is disabled.
                         continue;
                     }
-                    if($paymentMethod->getHandlerIdentifier() === InstallmentZeroPercentPaymentHandler::class  && $responseData['installmentConfig']['interestrate-min'] > 0) {
+                    if ($paymentMethod->getHandlerIdentifier() === InstallmentZeroPercentPaymentHandler::class && $responseData['installmentConfig']['interestrate-min'] > 0) {
                         // this is not a zero percent installment profile.
                         continue;
                     }
-                    if($paymentMethod->getHandlerIdentifier() === InstallmentPaymentHandler::class && $responseData['installmentConfig']['interestrate-min'] == 0) {
+                    if ($paymentMethod->getHandlerIdentifier() === InstallmentPaymentHandler::class && $responseData['installmentConfig']['interestrate-min'] == 0) {
                         // this is a zero percent installment profile, not a standard installment.
                         continue;
                     }
@@ -138,9 +138,9 @@ class ProfileConfigService
                         ProfileConfigMethodEntity::FIELD_ID => $id,
                         ProfileConfigMethodEntity::FIELD_PROFILE_ID => $profileConfig->getId(),
                         ProfileConfigMethodEntity::FIELD_PAYMENT_METHOD_ID => $paymentMethod->getId(),
-                        ProfileConfigMethodEntity::FIELD_LIMIT_MIN => floatval($responseData['merchantConfig']['tx-limit-' . $arrayKey . '-min']) ? : null,
-                        ProfileConfigMethodEntity::FIELD_LIMIT_MAX => floatval($responseData['merchantConfig']['tx-limit-' . $arrayKey . '-max']) ? : null,
-                        ProfileConfigMethodEntity::FIELD_LIMIT_MAX_B2B => floatval($responseData['merchantConfig']['tx-limit-' . $arrayKey . '-max-b2b']) ? : null,
+                        ProfileConfigMethodEntity::FIELD_LIMIT_MIN => floatval($responseData['merchantConfig']['tx-limit-' . $arrayKey . '-min']) ?: null,
+                        ProfileConfigMethodEntity::FIELD_LIMIT_MAX => floatval($responseData['merchantConfig']['tx-limit-' . $arrayKey . '-max']) ?: null,
+                        ProfileConfigMethodEntity::FIELD_LIMIT_MAX_B2B => floatval($responseData['merchantConfig']['tx-limit-' . $arrayKey . '-max-b2b']) ?: null,
                         ProfileConfigMethodEntity::FIELD_ALLOW_B2B => $responseData['merchantConfig']['b2b-' . $arrayKey] == 'yes',
                         ProfileConfigMethodEntity::FIELD_ALLOW_DIFFERENT_ADDRESSES => $responseData['merchantConfig']['delivery-address-' . $arrayKey] == 'yes',
                     ];
@@ -168,15 +168,53 @@ class ProfileConfigService
         return $this->repository->search(new Criteria($ids), $this->context);
     }
 
+    /**
+     * @returns PaymentMethodCollection
+     */
+    private function getPaymentMethods()
+    {
+        $criteria = new Criteria();
+        $criteria->addAssociation('plugin');
+        $criteria->addFilter(new EqualsFilter('plugin.baseClass', RatepayPayments::class));
+        return $this->paymentRepository->search($criteria, $this->context);
+    }
+
     public function getProfileConfigBySalesChannel(
         SalesChannelContext $salesChannelContext,
         string $paymentMethodId = null
-    ) : ?ProfileConfigEntity {
+    ): ?ProfileConfigEntity
+    {
 
         if ($paymentMethodId === null) {
             $paymentMethodId = $salesChannelContext->getPaymentMethod()->getId();
         }
+        $billingCountry = $salesChannelContext->getCustomer()->getActiveBillingAddress()->getCountry()->getIso();
 
+        if ($delivery = $salesChannelContext->getCustomer()->getActiveShippingAddress()) {
+            $shippingCountry = $delivery->getCountry()->getIso();
+        } else {
+            $shippingCountry = $billingCountry;
+        }
+
+        return $this->getProfileConfigDefaultParams(
+            $paymentMethodId,
+            $billingCountry,
+            $shippingCountry,
+            $salesChannelContext->getSalesChannel()->getId(),
+            $salesChannelContext->getCurrency()->getIsoCode(),
+            $salesChannelContext->getContext()
+        );
+    }
+
+    public function getProfileConfigDefaultParams(
+        string $paymentMethodId,
+        string $billingCountryIso,
+        string $shippingCountryIso,
+        string $salesChannelId,
+        string $currencyIso,
+        Context $context
+    )
+    {
         $criteria = new Criteria();
         $criteria->addAssociation(ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS);
 
@@ -187,49 +225,21 @@ class ProfileConfigService
         ));
 
         // billing country
-        $criteria->addFilter(new EqualsFilter(
-            ProfileConfigEntity::FIELD_COUNTRY_CODE_BILLING,
-            $salesChannelContext->getCustomer()->getActiveBillingAddress()->getCountry()->getIso()
-        ));
+        $criteria->addFilter(new EqualsFilter(ProfileConfigEntity::FIELD_COUNTRY_CODE_BILLING, $billingCountryIso));
 
         // delivery country
-        if ($delivery = $salesChannelContext->getCustomer()->getActiveShippingAddress()) {
-            $criteria->addFilter(new EqualsFilter(
-                ProfileConfigEntity::FIELD_COUNTRY_CODE_SHIPPING,
-                $delivery->getCountry()->getIso()
-            ));
-        }
+        $criteria->addFilter(new EqualsFilter(ProfileConfigEntity::FIELD_COUNTRY_CODE_SHIPPING, $shippingCountryIso));
 
         // sales channel
-        $criteria->addFilter(new EqualsFilter(
-            ProfileConfigEntity::FIELD_SALES_CHANNEL_ID,
-            $salesChannelContext->getSalesChannel()->getId()
-        ));
+        $criteria->addFilter(new EqualsFilter(ProfileConfigEntity::FIELD_SALES_CHANNEL_ID, $salesChannelId));
 
         // currency
-        $criteria->addFilter(new EqualsFilter(
-            ProfileConfigEntity::FIELD_CURRENCY,
-            $salesChannelContext->getCurrency()->getIsoCode()
-        ));
+        $criteria->addFilter(new EqualsFilter(ProfileConfigEntity::FIELD_CURRENCY, $currencyIso));
 
         // status
-        $criteria->addFilter(new EqualsFilter(
-            ProfileConfigEntity::FIELD_STATUS,
-            true
-        ));
+        $criteria->addFilter(new EqualsFilter(ProfileConfigEntity::FIELD_STATUS, true));
 
-        return $this->repository->search($criteria, $salesChannelContext->getContext())->first();
-    }
-
-    /**
-     * @returns PaymentMethodCollection
-     */
-    private function getPaymentMethods()
-    {
-        $criteria = new Criteria();
-        $criteria->addAssociation('plugin');
-        $criteria->addFilter(new EqualsFilter('plugin.baseClass', RatepayPayments::class));
-        return $this->paymentRepository->search($criteria, $this->context);
+        return $this->repository->search($criteria, $context)->first();
     }
 
 }

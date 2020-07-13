@@ -30,7 +30,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class => ['addRatepayTemplateData', 500]
+            CheckoutConfirmPageLoadedEvent::class => ['addRatepayTemplateData', 310]
         ];
     }
 
@@ -41,7 +41,9 @@ class CheckoutSubscriber implements EventSubscriberInterface
     public function addRatepayTemplateData(CheckoutConfirmPageLoadedEvent $event): void
     {
         $paymentMethod = $event->getSalesChannelContext()->getPaymentMethod();
-        if (MethodHelper::isInstallmentMethod($paymentMethod->getHandlerIdentifier())) {
+        if (MethodHelper::isInstallmentMethod($paymentMethod->getHandlerIdentifier()) &&
+            $event->getPage()->getPaymentMethods()->has($paymentMethod->getId())
+        ) {
             $extension = $event->getPage()->getExtension('ratepay') ?? new ArrayStruct();
 
             $installmentCalculator = $this->installmentService->getInstallmentCalculatorData($event->getSalesChannelContext());

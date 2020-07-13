@@ -13,6 +13,8 @@ use Exception;
 use Ratepay\RatepayPayments\Components\PaymentHandler\Constraint\BirthdayConstraint;
 use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
 use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
+use Ratepay\RatepayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
+use Ratepay\RatepayPayments\Components\ProfileConfig\Service\ProfileConfigService;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
 use Ratepay\RatepayPayments\Util\CriteriaHelper;
@@ -45,37 +47,65 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
      * @var EventDispatcherInterface
      */
     private $eventDispatcher;
+    /**
+     * @var ProfileConfigService
+     */
+    private $profileConfigService;
 
     public function __construct(
         EntityRepositoryInterface $orderRepository,
         PaymentRequestService $paymentRequestService,
+        ProfileConfigService $profileConfigService,
         EventDispatcherInterface $eventDispatcher
     )
     {
         $this->orderRepository = $orderRepository;
         $this->paymentRequestService = $paymentRequestService;
         $this->eventDispatcher = $eventDispatcher;
+        $this->profileConfigService = $profileConfigService;
     }
 
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
         $order = $this->getOrderWithAssociations($transaction->getOrder(), $salesChannelContext->getContext());
         try {
+            $profileConfig = $this->profileConfigService->getProfileConfigDefaultParams(
+                $transaction->getOrderTransaction()->getPaymentMethod()->getId(),
+                $order->getAddresses()->get($order->getBillingAddressId())->getCountry()->getIso(),
+                $order->getDeliveries()->getShippingAddress()->first()->getCountry()->getIso(),
+                $order->getSalesChannelId(),
+                $order->getCurrency()->getIsoCode(),
+                $salesChannelContext->getContext()
+            );
+
+            if($profileConfig === null) {
+                throw new ProfileNotFoundException();
+            }
+
             $response = $this->paymentRequestService->doRequest(
                 $salesChannelContext->getContext(),
                 new PaymentRequestData(
                     $salesChannelContext,
                     $order,
                     $transaction->getOrderTransaction(),
+                    $profileConfig,
                     $dataBag
                 )
             );
+
             if ($response->getResponse()->isSuccessful()) {
-                $this->eventDispatcher->dispatch(new PaymentSuccessfulEvent($order, $transaction, $dataBag, $salesChannelContext, $response->getResponse()));
+                $this->eventDispatcher->dispatch(new PaymentSuccessfulEvent(
+                    $order,
+                    $transaction,
+                    $dataBag,
+                    $salesChannelContext,
+                    $response->getResponse()
+                ));
             } else {
                 // will be catched a few lines later.
                 throw new Exception($response->getResponse()->getReasonMessage());
             }
+
         } catch (Exception $e) {
             $this->eventDispatcher->dispatch(new PaymentFailedEvent(
                 $order,

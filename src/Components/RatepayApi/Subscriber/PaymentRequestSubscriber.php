@@ -90,10 +90,13 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
         $this->ratepayPositionRepository->create($positions, $requestData->getSalesChannelContext()->getContext());
         $this->ratepayOrderLineItemExtensionRepository->create($lineItemsData, $requestData->getSalesChannelContext()->getContext());
 
+        $requestXml = $requestEvent->getRequestBuilder()->getRequestXmlElement();
+
         $this->ratepayOrderExtensionRepository->create([
             [
                 RatepayOrderDataEntity::FIELD_ORDER_ID => $requestData->getOrder()->getId(),
                 RatepayOrderDataEntity::FIELD_ORDER_VERSION_ID => $requestData->getOrder()->getVersionId(),
+                RatepayOrderDataEntity::FIELD_PROFILE_ID => (string)$requestXml->head->credential->{"profile-id"},
                 RatepayOrderDataEntity::FIELD_TRANSACTION_ID => $responseModel->getTransactionId(),
                 RatepayOrderDataEntity::FIELD_SHIPPING_POSITION_ID => $shippingPositionId
             ]

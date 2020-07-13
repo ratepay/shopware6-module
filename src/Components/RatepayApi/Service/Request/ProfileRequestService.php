@@ -9,6 +9,7 @@
 namespace Ratepay\RatepayPayments\Components\RatepayApi\Service\Request;
 
 
+use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\ProfileRequestData;
 use Shopware\Core\Framework\Context;
@@ -21,7 +22,7 @@ class ProfileRequestService extends AbstractRequest
     protected $_operation = self::CALL_PROFILE_REQUEST;
 
 
-    protected function getProfileConfig(Context $context, IRequestData $requestData)
+    protected function getProfileConfig(Context $context, IRequestData $requestData): ProfileConfigEntity
     {
         /** @var $requestData ProfileRequestData */
         return $requestData->getProfileConfig();

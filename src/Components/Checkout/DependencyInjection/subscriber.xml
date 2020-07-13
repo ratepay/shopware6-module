@@ -24,9 +24,7 @@
             <argument type="service" id="service_container"/>
         </service>
 
-        <service id="Ratepay\RatepayPayments\Components\Checkout\Subscriber\PaymentFilterSubscriber">
-            <argument type="service" id="Ratepay\RatepayPayments\Components\Checkout\Service\PaymentFilterService" />
-        </service>
+        <service id="Ratepay\RatepayPayments\Components\Checkout\Subscriber\PaymentFilterSubscriber" autowire="true" />
 
     </services>
 
