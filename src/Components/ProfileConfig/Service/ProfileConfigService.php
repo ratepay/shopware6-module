@@ -170,10 +170,10 @@ class ProfileConfigService
 
     public function getProfileConfigBySalesChannel(
         SalesChannelContext $salesChannelContext,
-        string $paymentMethodId = ''
+        string $paymentMethodId = null
     ) : ?ProfileConfigEntity {
 
-        if (empty($paymentMethodId)) {
+        if ($paymentMethodId === null) {
             $paymentMethodId = $salesChannelContext->getPaymentMethod()->getId();
         }
 
