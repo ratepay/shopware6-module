@@ -8,6 +8,7 @@
 
 namespace Ratepay\RatepayPayments\Components\Checkout\Subscriber;
 
+use Ratepay\RatepayPayments\Util\MethodHelper;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -18,7 +19,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class => ['addRatepayTemplateData', 900]
+            CheckoutConfirmPageLoadedEvent::class => ['addRatepayTemplateData', 310]
         ];
     }
 
@@ -29,7 +30,9 @@ class CheckoutSubscriber implements EventSubscriberInterface
     public function addRatepayTemplateData(CheckoutConfirmPageLoadedEvent $event): void
     {
         $paymentMethod = $event->getSalesChannelContext()->getPaymentMethod();
-        if (strpos($paymentMethod->getHandlerIdentifier(), 'RatepayPayments') !== false) {
+        if (MethodHelper::isRatepayMethod($paymentMethod->getHandlerIdentifier()) &&
+            $event->getPage()->getPaymentMethods()->has($paymentMethod->getId())
+        ) {
             /* Get customer data for checkout form */
             $customerBirthday = $event->getSalesChannelContext()->getCustomer()->getBirthday();
             $customerBillingAddress = $event->getSalesChannelContext()->getCustomer()->getActiveBillingAddress();

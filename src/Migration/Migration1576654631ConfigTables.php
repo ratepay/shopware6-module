@@ -75,8 +75,6 @@ class Migration1576654631ConfigTables extends MigrationStep
 
     public function updateDestructive(Connection $connection): void
     {
-        $connection->executeQuery("DROP TABLE ratepay_profile_config_method_installment");
-        $connection->executeQuery("DROP TABLE ratepay_profile_config_method");
-        $connection->executeQuery("DROP TABLE ratepay_profile_config");
+
     }
 }

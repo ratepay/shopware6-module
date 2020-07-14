@@ -43,6 +43,9 @@ class Database extends AbstractBootstrap
         $this->connection->exec('DROP TABLE IF EXISTS `ratepay_profile_config_method`');
         $this->connection->exec('DROP TABLE IF EXISTS `ratepay_api_log`');
         $this->connection->exec('DROP TABLE IF EXISTS `ratepay_order_history`');
+        $this->connection->exec('DROP TABLE IF EXISTS `ratepay_order_extension`');
+        $this->connection->exec('DROP TABLE IF EXISTS `ratepay_line_item_extension`');
+        $this->connection->exec('DROP TABLE IF EXISTS `ratepay_position`');
         $this->connection->exec("SET FOREIGN_KEY_CHECKS=1;");
     }
 

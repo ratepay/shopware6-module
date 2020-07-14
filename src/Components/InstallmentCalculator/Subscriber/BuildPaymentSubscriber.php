@@ -12,7 +12,7 @@ namespace Ratepay\RatepayPayments\Components\InstallmentCalculator\Subscriber;
 use Exception;
 use RatePAY\Model\Request\SubModel\Content\Payment;
 use Ratepay\RatepayPayments\Components\InstallmentCalculator\Service\InstallmentService;
-use Ratepay\RatepayPayments\Components\InstallmentCalculator\Util\MethodHelper;
+use Ratepay\RatepayPayments\Util\MethodHelper;
 use Ratepay\RatepayPayments\Components\InstallmentCalculator\Util\PlanHasher;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Event\BuildEvent;

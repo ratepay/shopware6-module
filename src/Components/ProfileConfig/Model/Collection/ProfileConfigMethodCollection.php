@@ -23,6 +23,11 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
  */
 class ProfileConfigMethodCollection extends EntityCollection
 {
+    public function filterByMethod(string $paymentMethodId)
+    {
+        return $this->filterByProperty(ProfileConfigMethodEntity::FIELD_PAYMENT_METHOD_ID, $paymentMethodId);
+    }
+
     protected function getExpectedClass(): string
     {
         return ProfileConfigMethodEntity::class;

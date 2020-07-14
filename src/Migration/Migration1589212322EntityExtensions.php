@@ -37,6 +37,7 @@ class Migration1589212322EntityExtensions extends MigrationStep
               `id` binary(16) NOT NULL,
               `order_id` binary(16) NOT NULL,
               `order_version_id` binary(16) NOT NULL,
+              `profile_id` varchar(255) NOT NULL,
               `shipping_position_id` binary(16) NULL,
               `transaction_id` varchar(255) COLLATE utf8mb4_bin NOT NULL,
               `created_at` DATETIME NOT NULL,
@@ -64,8 +65,6 @@ class Migration1589212322EntityExtensions extends MigrationStep
 
     public function updateDestructive(Connection $connection): void
     {
-        $connection->executeQuery("DROP TABLE ratepay_order_extension");
-        $connection->executeQuery("DROP TABLE ratepay_line_item_extension");
-        $connection->executeQuery("DROP TABLE ratepay_position");
+
     }
 }

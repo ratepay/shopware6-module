@@ -9,7 +9,7 @@
 namespace Ratepay\RatepayPayments\Components\InstallmentCalculator\Subscriber;
 
 use Ratepay\RatepayPayments\Components\InstallmentCalculator\Service\InstallmentService;
-use Ratepay\RatepayPayments\Components\InstallmentCalculator\Util\MethodHelper;
+use Ratepay\RatepayPayments\Util\MethodHelper;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -30,7 +30,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class => ['addRatepayTemplateData', 500]
+            CheckoutConfirmPageLoadedEvent::class => ['addRatepayTemplateData', 310]
         ];
     }
 
@@ -41,7 +41,9 @@ class CheckoutSubscriber implements EventSubscriberInterface
     public function addRatepayTemplateData(CheckoutConfirmPageLoadedEvent $event): void
     {
         $paymentMethod = $event->getSalesChannelContext()->getPaymentMethod();
-        if (MethodHelper::isInstallmentMethod($paymentMethod->getHandlerIdentifier())) {
+        if (MethodHelper::isInstallmentMethod($paymentMethod->getHandlerIdentifier()) &&
+            $event->getPage()->getPaymentMethods()->has($paymentMethod->getId())
+        ) {
             $extension = $event->getPage()->getExtension('ratepay') ?? new ArrayStruct();
 
             $installmentCalculator = $this->installmentService->getInstallmentCalculatorData($event->getSalesChannelContext());

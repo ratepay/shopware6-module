@@ -19,6 +19,7 @@ class RatepayOrderDataEntity extends Entity
     public const FIELD_ORDER_ID = 'orderId';
     public const FIELD_ORDER_VERSION_ID = 'orderVersionId';
     public const FIELD_ORDER = 'order';
+    public const FIELD_PROFILE_ID = 'profileId';
     public const FIELD_TRANSACTION_ID = 'transactionId';
     public const FIELD_SHIPPING_POSITION_ID = 'shippingPositionId';
     public const FIELD_SHIPPING_POSITION = 'shippingPosition';
@@ -40,6 +41,11 @@ class RatepayOrderDataEntity extends Entity
      * @var OrderEntity
      */
     protected $order;
+
+    /**
+     * @var string
+     */
+    protected $profileId;
 
     /**
      * @var string
@@ -150,5 +156,21 @@ class RatepayOrderDataEntity extends Entity
     public function setShippingPosition(?RatepayPositionEntity $shippingPosition): void
     {
         $this->shippingPosition = $shippingPosition;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProfileId(): string
+    {
+        return $this->profileId;
+    }
+
+    /**
+     * @param string $profileId
+     */
+    public function setProfileId(string $profileId): void
+    {
+        $this->profileId = $profileId;
     }
 }

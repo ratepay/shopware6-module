@@ -12,23 +12,22 @@ namespace Ratepay\RatepayPayments\Components\RatepayApi\Service\Request;
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
 use RatePAY\Model\Request\SubModel\Head\External;
+use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
+use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\CustomerFactory;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\PaymentFactory;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
-use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
-use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use RatePAY\RequestBuilder;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @method RequestBuilder doRequest(Context $context, PaymentRequestData $requestData)
  */
-class PaymentRequestService extends AbstractOrderOperationRequest
+class PaymentRequestService extends AbstractRequest
 {
 
     public const EVENT_SUCCESSFUL = self::class . parent::EVENT_SUCCESSFUL;
@@ -54,16 +53,21 @@ class PaymentRequestService extends AbstractOrderOperationRequest
         EventDispatcherInterface $eventDispatcher,
         ConfigService $configService,
         HeadFactory $headFactory,
-        EntityRepositoryInterface $profileConfigRepository,
         ShoppingBasketFactory $shoppingBasketFactory,
         CustomerFactory $customerFactory,
         PaymentFactory $paymentFactory
     )
     {
-        parent::__construct($eventDispatcher, $configService, $headFactory, $profileConfigRepository);
+        parent::__construct($eventDispatcher, $configService, $headFactory);
         $this->shoppingBasketFactory = $shoppingBasketFactory;
         $this->customerFactory = $customerFactory;
         $this->paymentFactory = $paymentFactory;
+    }
+
+    protected function getProfileConfig(Context $context, IRequestData $requestData): ProfileConfigEntity
+    {
+        /** @var $requestData PaymentRequestData */
+        return $requestData->getProfileConfig();
     }
 
     protected function getRequestHead(IRequestData $requestData, ProfileConfigEntity $profileConfig): Head

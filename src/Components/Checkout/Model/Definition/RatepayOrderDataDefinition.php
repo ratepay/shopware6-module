@@ -46,8 +46,8 @@ class RatepayOrderDataDefinition extends EntityDefinition
         return new FieldCollection([
             (new IdField(
                 'id',
-                RatepayOrderDataEntity::FIELD_ID)
-            )->addFlags(new Required(), new PrimaryKey()),
+                RatepayOrderDataEntity::FIELD_ID
+            ))->addFlags(new Required(), new PrimaryKey()),
 
             (new FkField(
                 'order_id',
@@ -55,6 +55,11 @@ class RatepayOrderDataDefinition extends EntityDefinition
                 OrderDefinition::class
             ))->addFlags(new Required()),
             (new ReferenceVersionField(OrderDefinition::class))->addFlags(new Required()),
+
+            (new StringField(
+                'profile_id',
+                RatepayOrderDataEntity::FIELD_PROFILE_ID
+            ))->addFlags(new Required()),
 
             (new StringField(
                 'transaction_id',
