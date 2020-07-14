@@ -41,32 +41,32 @@ class PaymentMethods extends AbstractBootstrap
         $payments = [
             [
                 'handlerIdentifier' => InvoicePaymentHandler::class,
-                'name' => 'RatePAY Kauf auf Rechnung',
-                'description' => 'Zahlen Sie erst nach Erhalt der Ware',
+                'name' => 'Ratepay Rechnung',
+                'description' => 'Kauf auf Rechnung',
                 'pluginId' => $this->plugin->getId()
             ],
             [
                 'handlerIdentifier' => PrepaymentPaymentHandler::class,
-                'name' => 'RatePAY Vorkasse',
-                'description' => 'TEXT TEXT TEXT TEXT',
+                'name' => 'Ratepay Vorkasse',
+                'description' => 'Kauf per Vorkasse',
                 'pluginId' => $this->plugin->getId()
             ],
             [
                 'handlerIdentifier' => DebitPaymentHandler::class,
-                'name' => 'RatePAY Lastschrift',
-                'description' => 'TEXT TEXT TEXT TEXT',
+                'name' => 'Ratepay Lastschrift',
+                'description' => 'Kauf per SEPA Lastschrift',
                 'pluginId' => $this->plugin->getId()
             ],
             [
                 'handlerIdentifier' => InstallmentPaymentHandler::class,
-                'name' => 'RatePAY Ratenzahlung',
-                'description' => 'TEXT TEXT TEXT TEXT',
+                'name' => 'Ratepay Ratenzahlung',
+                'description' => 'Kauf per Ratenzahlung',
                 'pluginId' => $this->plugin->getId()
             ],
             [
                 'handlerIdentifier' => InstallmentZeroPercentPaymentHandler::class,
-                'name' => 'RatePAY 0% Finanzierung',
-                'description' => 'TEXT TEXT TEXT TEXT',
+                'name' => 'Ratepay 0% Finanzierung',
+                'description' => 'Kauf per 0% Finanzierung',
                 'pluginId' => $this->plugin->getId()
             ]
         ];
