@@ -60,7 +60,7 @@ class ApiLogger
             $additionalData['transactionId'] = (string)$requestBuilder->getRequestXmlElement()->head->{'transaction-id'};
             $additionalData['orderNumber'] = $order->getOrderNumber();
             $additionalData['firstName'] = $billingAddress->getFirstName();
-            $additionalData['lastName'] = $billingAddress->getFirstName();
+            $additionalData['lastName'] = $billingAddress->getLastName();
             $additionalData['mail'] = $order->getOrderCustomer()->getEmail();
         }
 
