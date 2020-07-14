@@ -49,10 +49,10 @@
                         "title": "Debit"
                     },
                     "installment": {
-                        "title": "Installment"
+                        "title": "Instalment"
                     },
                     "installment_zero_percent": {
-                        "title": "0% financing"
+                        "title": "0% Financing"
                     }
                 },
                 "paymentConfig": {
