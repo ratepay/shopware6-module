@@ -13,6 +13,7 @@ use InvalidArgumentException;
 use RatePAY\Model\Request\SubModel\Content\ShoppingBasket;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
+use Ratepay\RatepayPayments\Components\RatepayApi\Exception\EmptyBasketException;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
@@ -30,7 +31,12 @@ class ShoppingBasketFactory extends AbstractFactory
         $basket = new ShoppingBasket();
         $basket->setItems(new ShoppingBasket\Items());
 
-        foreach ($requestData->getItems() as $id => $qty) {
+        $items = $requestData->getItems();
+        if (count($items) === 0) {
+            throw new EmptyBasketException();
+        }
+
+        foreach ($items as $id => $qty) {
             if ($qty instanceof LineItem) {
                 // this is a credit or a debit after the order has been placed
                 /** @var LineItem $item */
