@@ -49,9 +49,11 @@
                         </sw-button-process>
                     </sw-button-group>
                     <sw-button-group>
-                        <sw-button class="sw-button--small" @click="onShowCreditModal">{{ $t('ratepay.orderManagement.action.addCredit') }}
-                        </sw-button>
-                        <sw-button class="sw-button--small" @click="onShowDebitModal">{{ $t('ratepay.orderManagement.action.addDebit') }}</sw-button>
+                        <sw-button class="sw-button--small" @click="onShowCreditModal">{{ $t('ratepay.orderManagement.action.addCredit') }}</sw-button>
+                        <sw-button class="sw-button--small"
+                                   @click="onShowDebitModal"
+                                   v-if="order.transactions[0].paymentMethod.formattedHandlerIdentifier.indexOf('installment') < 0"
+                        >{{ $t('ratepay.orderManagement.action.addDebit') }}</sw-button>
                     </sw-button-group>
                 </div>
                 <sw-data-grid

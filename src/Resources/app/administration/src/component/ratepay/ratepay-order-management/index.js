@@ -17,6 +17,8 @@ Component.register('ratepay-order-management', {
         orderManagementService: "ratepay-order-management-service"
     },
 
+    props: ['order'],
+
     mixins: [
         Mixin.getByName('notification')
     ],
@@ -24,10 +26,12 @@ Component.register('ratepay-order-management', {
     data() {
         return {
             items: [],
+            //order: null,
             activeTab: 'shipping',
             processSuccess: false,
             orderId: null,
             loading: {
+
                 list: true,
                 deliver: false,
                 cancel: false,
@@ -100,14 +104,14 @@ Component.register('ratepay-order-management', {
     },
 
     created() {
-        this.orderId = this.$route.params.id;
+        window.ooo = this.order;
         this.loadList();
     },
 
     methods: {
         loadList() {
             this.loading.list = true;
-            return this.orderManagementService.load(this.orderId).then(response => {
+            return this.orderManagementService.load(this.order.id).then(response => {
                 return new Promise((resolve, reject) => {
                     if (response.data) {
                         this.items = Object.values(response.data);
@@ -124,7 +128,7 @@ Component.register('ratepay-order-management', {
         onClickButtonDeliver() {
             this.loading.deliver = true;
             this.orderManagementService
-                .doAction('deliver', this.orderId, this.getProcessShippingCancelData())
+                .doAction('deliver', this.order.id, this.getProcessShippingCancelData())
                 .then(response => {
                     this.showMessage(response, 'deliver');
                     this.loadList().then(() => {
@@ -144,7 +148,7 @@ Component.register('ratepay-order-management', {
                 this.loading.cancelWithStock = true;
             }
             this.orderManagementService
-                .doAction('cancel', this.orderId, this.getProcessShippingCancelData(), updateStock)
+                .doAction('cancel', this.order.id, this.getProcessShippingCancelData(), updateStock)
                 .then(response => {
                     this.showMessage(response, 'cancel');
                     this.loadList().then(() => {
@@ -166,7 +170,7 @@ Component.register('ratepay-order-management', {
                 this.loading.rtnWithStock = true;
             }
             this.orderManagementService
-                .doAction('return', this.orderId, this.getProcessReturnData(), updateStock)
+                .doAction('return', this.order.id, this.getProcessReturnData(), updateStock)
                 .then(response => {
                     this.showMessage(response, 'return');
                     this.loadList().then(() => {
@@ -191,7 +195,7 @@ Component.register('ratepay-order-management', {
         onClickButtonAddDebit() {
             this.loading.addDebit = true;
             this.orderManagementService
-                .addItem('debit', this.orderId, parseFloat(this.addDebit.value), this.addDebit.name)
+                .addItem('debit', this.order.id, parseFloat(this.addDebit.value), this.addDebit.name)
                 .then(response => {
                     this.showMessage(response, 'addDebit');
                     this.loadList().then(() => {
@@ -208,7 +212,7 @@ Component.register('ratepay-order-management', {
         onClickButtonAddCredit() {
             this.loading.addCredit = true;
             this.orderManagementService
-                .addItem('credit', this.orderId, parseFloat(this.addCredit.value) * -1, this.addCredit.name)
+                .addItem('credit', this.order.id, parseFloat(this.addCredit.value) * -1, this.addCredit.name)
                 .then(response => {
                     this.showMessage(response, 'addCredit');
                     this.loadList().then(() => {

@@ -17,6 +17,8 @@ Component.register('ratepay-order-history-log-grid', {
         'repositoryFactory'
     ],
 
+    props: ['order'],
+
     data() {
         return {
             repository: null,
@@ -70,7 +72,7 @@ Component.register('ratepay-order-history-log-grid', {
             this.repository = this.repositoryFactory.create('ratepay_order_history');
 
             let criteria = new Criteria();
-            criteria.addFilter(Criteria.equals('orderId', this.$route.params.id));
+            criteria.addFilter(Criteria.equals('orderId', this.order.id));
             criteria.addSorting(Criteria.sort('createdAt', 'DESC'));
 
             this.repository

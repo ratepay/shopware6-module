@@ -11,12 +11,17 @@ namespace Ratepay\RatepayPayments\Components\InstallmentCalculator\Subscriber;
 
 use Exception;
 use RatePAY\Model\Request\SubModel\Content\Payment;
+use RatePAY\Model\Request\SubModel\Content\ShoppingBasket;
+use Ratepay\RatepayPayments\Components\InstallmentCalculator\Exception\DebitNotAllowedOnInstallment;
 use Ratepay\RatepayPayments\Components\InstallmentCalculator\Service\InstallmentService;
-use Ratepay\RatepayPayments\Util\MethodHelper;
 use Ratepay\RatepayPayments\Components\InstallmentCalculator\Util\PlanHasher;
+use Ratepay\RatepayPayments\Components\RatepayApi\Dto\AddCreditData;
+use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Event\BuildEvent;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\PaymentFactory;
+use Ratepay\RatepayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
+use Ratepay\RatepayPayments\Util\MethodHelper;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -36,7 +41,8 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            PaymentFactory::class => 'buildPayment'
+            PaymentFactory::class => 'buildPayment',
+            ShoppingBasketFactory::class => 'buildShoppingBasket'
         ];
     }
 
@@ -74,5 +80,27 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
                 )
                 ->setDebitPayType($requestedInstallment->get('paymentType'));
         }
+    }
+
+    public function buildShoppingBasket(BuildEvent $event): BuildEvent
+    {
+        /** @var OrderOperationData $requestData */
+        $requestData = $event->getRequestData();
+        $paymentMethod = $requestData->getTransaction()->getPaymentMethod();
+
+        /** @var ShoppingBasket $basket */
+        $basket = $event->getBuildData();
+        if ($requestData instanceof AddCreditData &&
+            MethodHelper::isInstallmentMethod($paymentMethod->getHandlerIdentifier())
+        ) {
+            $items = $basket->getItems()->admittedFields['Item']['value'];
+            /** @var ShoppingBasket\Items\Item $item */
+            foreach ($items as $item) {
+                if ($item->getUnitPriceGross() > 0) {
+                    throw new DebitNotAllowedOnInstallment();
+                }
+            }
+        }
+        return $event;
     }
 }

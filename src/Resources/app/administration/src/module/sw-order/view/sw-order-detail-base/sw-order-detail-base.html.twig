@@ -8,12 +8,20 @@
 {% block sw_order_detail_base__user_card %}
 
     {% block ratepay_order_management__container %}
-        <ratepay-order-management v-if="order.extensions.ratepayData" @ratepayActionTriggered="onRatepayActionTriggered">
+        <ratepay-order-management
+            v-if="order.extensions.ratepayData"
+            v-bind:order="order"
+            @ratepayActionTriggered="onRatepayActionTriggered"
+        >
         </ratepay-order-management>
     {% endblock %}
 
     {% block ratepay_order_history_log__container %}
-        <ratepay-order-history-log-grid v-if="order.extensions.ratepayData" ref="ratepayOrderHistory">
+        <ratepay-order-history-log-grid
+            v-if="order.extensions.ratepayData"
+            v-bind:order="order"
+            ref="ratepayOrderHistory"
+        >
         </ratepay-order-history-log-grid>
     {% endblock %}
 
