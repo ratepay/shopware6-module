@@ -18,8 +18,8 @@
         "shopware-plugin-class": "Ratepay\\RatepayPayments\\RatepayPayments",
         "copyright": "(c) by Ratepay GmbH",
         "label": {
-            "de-DE": "Integration der RatePAY Zahlungsmethoden",
-            "en-GB": "Integration of the RatePAY payment methods"
+            "de-DE": "Integration der Ratepay Zahlungsmethoden",
+            "en-GB": "Integration of the Ratepay payment methods"
         },
         "patches": {
             "ratepay/php-library": {
