@@ -40,7 +40,7 @@
                         }
                     },
                     "invoice": {
-                        "title": "Kauf auf Rechnung"
+                        "title": "Rechnung"
                     },
                     "prepayment": {
                         "title": "Vorkasse"
