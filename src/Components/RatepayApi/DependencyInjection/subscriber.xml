@@ -10,18 +10,13 @@
     <services>
 
         <defaults>
-            <bind key="$ratepayPositionRepository" id="ratepay_position.repository" type="service" />
             <tag name="kernel.event_subscriber"/>
         </defaults>
 
-        <service id="Ratepay\RatepayPayments\Components\RatepayApi\Subscriber\PaymentRequestSubscriber" autowire="true">
-            <argument key="$ratepayOrderExtensionRepository" id="ratepay_order_data.repository" type="service" />
-            <argument key="$ratepayOrderLineItemExtensionRepository" id="ratepay_order_line_item_data.repository" type="service" />
-
-
-        </service>
+        <service id="Ratepay\RatepayPayments\Components\RatepayApi\Subscriber\PaymentRequestSubscriber" autowire="true" />
 
         <service id="Ratepay\RatepayPayments\Components\RatepayApi\Subscriber\PaymentChangeSubscriber" autowire="true">
+            <bind key="$ratepayPositionRepository" id="ratepay_position.repository" type="service" />
             <argument key="$orderRepository" id="order.repository" type="service"/>
             <argument key="$logger" id="ratepay.logger" type="service"/>
             <argument key="$productRepository" id="product.repository" type="service"/>

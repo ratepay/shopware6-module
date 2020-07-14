@@ -10,44 +10,28 @@ namespace Ratepay\RatepayPayments\Components\RatepayApi\Subscriber;
 
 
 use RatePAY\Model\Response\PaymentRequest;
-use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
-use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
-use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayPositionEntity;
+use Ratepay\RatepayPayments\Components\Checkout\Service\ExtensionService;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Event\ResponseEvent;
 use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\Uuid\Uuid;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentRequestSubscriber implements EventSubscriberInterface
 {
 
     /**
-     * @var EntityRepositoryInterface
+     * @var ExtensionService
      */
-    private $ratepayOrderExtensionRepository;
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $ratepayOrderLineItemExtensionRepository;
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $ratepayPositionRepository;
+    private $extensionService;
 
     public function __construct(
-        EntityRepositoryInterface $ratepayOrderExtensionRepository,
-        EntityRepositoryInterface $ratepayOrderLineItemExtensionRepository,
-        EntityRepositoryInterface $ratepayPositionRepository
+        ExtensionService $extensionService
     )
     {
-        $this->ratepayOrderExtensionRepository = $ratepayOrderExtensionRepository;
-        $this->ratepayOrderLineItemExtensionRepository = $ratepayOrderLineItemExtensionRepository;
-        $this->ratepayPositionRepository = $ratepayPositionRepository;
+        $this->extensionService = $extensionService;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             PaymentRequestService::EVENT_SUCCESSFUL => 'onSuccess'
@@ -61,45 +45,29 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
 
         /** @var PaymentRequest $responseModel */
         $responseModel = $requestEvent->getRequestBuilder()->getResponse();
+        $requestXml = $requestEvent->getRequestBuilder()->getRequestXmlElement();
 
         $orderItems = $requestData->getOrder()->getLineItems();
 
-        $lineItemsData = [];
-        $positions = [];
-        $shippingPositionId = null;
+        $lineItems = [];
         foreach ($requestData->getItems() as $id => $item) {
-            $positionId = Uuid::randomHex();
-
-            $positions[] = [
-                RatepayPositionEntity::FIELD_ID => $positionId
-            ];
-
-            if ($id === 'shipping') {
-                $shippingPositionId = $positionId;
-            } else {
-                $lineItem = $orderItems->get($id);
-
-                $lineItemsData[] = [
-                    RatepayOrderLineItemDataEntity::FIELD_POSITION_ID => $positionId,
-                    RatepayOrderLineItemDataEntity::FIELD_ORDER_LINE_ITEM_ID => $lineItem->getId(),
-                    RatepayOrderLineItemDataEntity::FIELD_ORDER_LINE_ITEM_VERSION_ID => $lineItem->getVersionId()
-                ];
+            if ($id !== 'shipping') {
+                // shipping will written into the order-extension
+                $lineItems[] = $orderItems->get($id);
             }
         }
+        $this->extensionService->createLineItemExtensions(
+            $lineItems,
+            $requestData->getSalesChannelContext()->getContext()
+        );
 
-        $this->ratepayPositionRepository->create($positions, $requestData->getSalesChannelContext()->getContext());
-        $this->ratepayOrderLineItemExtensionRepository->create($lineItemsData, $requestData->getSalesChannelContext()->getContext());
 
-        $requestXml = $requestEvent->getRequestBuilder()->getRequestXmlElement();
+        $this->extensionService->createOrderExtension(
+            $requestData->getOrder(),
+            $responseModel->getTransactionId(),
+            (string)$requestXml->head->credential->{"profile-id"},
+            $requestData->getSalesChannelContext()->getContext()
+        );
 
-        $this->ratepayOrderExtensionRepository->create([
-            [
-                RatepayOrderDataEntity::FIELD_ORDER_ID => $requestData->getOrder()->getId(),
-                RatepayOrderDataEntity::FIELD_ORDER_VERSION_ID => $requestData->getOrder()->getVersionId(),
-                RatepayOrderDataEntity::FIELD_PROFILE_ID => (string)$requestXml->head->credential->{"profile-id"},
-                RatepayOrderDataEntity::FIELD_TRANSACTION_ID => $responseModel->getTransactionId(),
-                RatepayOrderDataEntity::FIELD_SHIPPING_POSITION_ID => $shippingPositionId
-            ]
-        ], $requestData->getSalesChannelContext()->getContext());
     }
 }

@@ -12,6 +12,11 @@
 
     <services>
 
+        <service id="Ratepay\RatepayPayments\Components\Checkout\Service\ExtensionService" autowire="true">
+            <argument key="$orderExtensionRepository" id="ratepay_order_data.repository" type="service" />
+            <argument key="$lineItemExtensionRepository" id="ratepay_order_line_item_data.repository" type="service" />
+        </service>
+
     </services>
 
 </container>

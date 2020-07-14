@@ -14,6 +14,7 @@ use Ratepay\RatepayPayments\Components\Checkout\Model\Extension\OrderExtension;
 use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
 use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayPositionEntity;
+use Ratepay\RatepayPayments\Components\Checkout\Service\ExtensionService;
 use Ratepay\RatepayPayments\Components\Logging\Service\HistoryLogger;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\AddCreditData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
@@ -61,12 +62,17 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
      * @var EntityRepositoryInterface
      */
     private $ratepayPositionRepository;
+    /**
+     * @var ExtensionService
+     */
+    private $extensionService;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         EntityRepositoryInterface $productRepository,
         EntityRepositoryInterface $orderRepository,
         EntityRepositoryInterface $ratepayPositionRepository,
+        ExtensionService $extensionService,
         RecalculationService $recalculationService,
         Logger $logger,
         HistoryLogger $historyLogger
@@ -79,6 +85,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         $this->logger = $logger;
         $this->historyLogger = $historyLogger;
         $this->ratepayPositionRepository = $ratepayPositionRepository;
+        $this->extensionService = $extensionService;
     }
 
     public static function getSubscribedEvents(): array
@@ -112,6 +119,10 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
 
                 /** @var RatepayOrderLineItemDataEntity $ratepayData */
                 $ratepayData = $lineItem->getExtension(OrderExtension::RATEPAY_DATA);
+                if ($ratepayData === null) {
+                    // will occur if the item has been just added to the order
+                    $ratepayData = $this->extensionService->createLineItemExtensions([$lineItem], $event->getContext())->first();
+                }
                 $position = $ratepayData->getPosition();
 
                 $productName = $lineItem->getLabel();
