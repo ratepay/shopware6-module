@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cef59b2f412125a78e5fefd681edc68f",
+    "content-hash": "690e5880404eecc9b96353ef7aa65adc",
     "packages": [
         {
             "name": "cweagans/composer-patches",
@@ -52,16 +52,16 @@
         },
         {
             "name": "ratepay/php-library",
-            "version": "1.0.1",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ratepay/php-library.git",
-                "reference": "4304eb613ab035519718cc809ba7b2a3a466ecd6"
+                "reference": "93e54a636356ad8af5f14826eb0d667537ec8157"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ratepay/php-library/zipball/4304eb613ab035519718cc809ba7b2a3a466ecd6",
-                "reference": "4304eb613ab035519718cc809ba7b2a3a466ecd6",
+                "url": "https://api.github.com/repos/ratepay/php-library/zipball/93e54a636356ad8af5f14826eb0d667537ec8157",
+                "reference": "93e54a636356ad8af5f14826eb0d667537ec8157",
                 "shasum": ""
             },
             "require": {
@@ -76,6 +76,9 @@
                 "phpunit/phpunit": "5.7.*"
             },
             "type": "library",
+            "extra": {
+                "patches_applied": []
+            },
             "autoload": {
                 "psr-4": {
                     "RatePAY\\": "src/"
@@ -93,7 +96,7 @@
             ],
             "description": "RatePAY API PHP Library",
             "homepage": "https://ratepay.gitbook.io/docs/",
-            "time": "2020-04-08T10:00:42+00:00"
+            "time": "2020-07-15T15:20:57+00:00"
         }
     ],
     "packages-dev": [],
