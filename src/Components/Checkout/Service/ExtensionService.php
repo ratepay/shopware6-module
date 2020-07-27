@@ -15,12 +15,18 @@ use Ratepay\RatepayPayments\Components\Checkout\Model\Definition\RatepayOrderLin
 use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
 use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayPositionEntity;
+use Ratepay\RatepayPayments\Components\InstallmentCalculator\Service\InstallmentService;
+use Ratepay\RatepayPayments\Util\MethodHelper;
+use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class ExtensionService
 {
@@ -29,18 +35,26 @@ class ExtensionService
      * @var EntityRepositoryInterface
      */
     private $orderExtensionRepository;
+
     /**
      * @var EntityRepositoryInterface
      */
     private $lineItemExtensionRepository;
 
+    /**
+     * @var InstallmentService
+     */
+    private $installmentService;
+
     public function __construct(
         EntityRepositoryInterface $orderExtensionRepository,
-        EntityRepositoryInterface $lineItemExtensionRepository
+        EntityRepositoryInterface $lineItemExtensionRepository,
+        InstallmentService $installmentService
     )
     {
         $this->orderExtensionRepository = $orderExtensionRepository;
         $this->lineItemExtensionRepository = $lineItemExtensionRepository;
+        $this->installmentService = $installmentService;
     }
 
     /**
@@ -93,6 +107,56 @@ class ExtensionService
         ), $context);
 
         return $affected->first();
+    }
+
+    public function buildPaymentDataExtension(
+        SalesChannelContext $salesChannelContext,
+        ?OrderEntity $order = null
+    ): ArrayStruct
+    {
+        $paymentMethod = $salesChannelContext->getPaymentMethod();
+        $customer = $salesChannelContext->getCustomer();
+
+        if ($customer) {
+            $customerBirthday = $customer->getBirthday();
+            $customerBillingAddress = $customer->getActiveBillingAddress();
+            if ($customerBillingAddress) {
+                $customerVatId = $customerBillingAddress->getVatId();
+                $customerPhoneNumber = $customerBillingAddress->getPhoneNumber();
+                $customerCompany = $customerBillingAddress->getCompany();
+                $accountHolder = $customerBillingAddress->getFirstName() . " " . $customerBillingAddress->getLastName();
+            }
+        }
+
+        $extension = new ArrayStruct();
+        $extension->set('birthday', $customerBirthday ?? null);
+        $extension->set('vatId', $customerVatId ?? '');
+        $extension->set('phoneNumber', $customerPhoneNumber ?? '');
+        $extension->set('company', $customerCompany ?? '');
+        $extension->set('accountHolder', $accountHolder ?? '');
+        $extension->set(
+            'paymentMethod',
+            strtolower(constant($paymentMethod->getHandlerIdentifier() . '::RATEPAY_METHOD'))
+        );
+
+        if (MethodHelper::isInstallmentMethod($paymentMethod->getHandlerIdentifier())) {
+            $installmentCalculator = $this->installmentService->getInstallmentCalculatorData($salesChannelContext);
+
+            $installmentPlan = $this->installmentService->getInstallmentPlanData(
+                $salesChannelContext,
+                $installmentCalculator['defaults']['type'],
+                $installmentCalculator['defaults']['value'],
+                $order ? $order->getAmountTotal() : null
+            );
+
+            $extension->set('installment', [
+                'translations' => $this->installmentService->getTranslations($salesChannelContext),
+                'calculator' => $installmentCalculator,
+                'plan' => $installmentPlan
+            ]);
+        }
+
+        return $extension;
     }
 
 }

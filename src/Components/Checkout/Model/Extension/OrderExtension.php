@@ -17,13 +17,13 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 class OrderExtension extends EntityExtension
 {
-    public const RATEPAY_DATA = 'ratepayData';
+    public const EXTENSION_NAME = 'ratepayData';
 
     public function extendFields(FieldCollection $collection): void
     {
         $collection->add(
             (new OneToOneAssociationField(
-                self::RATEPAY_DATA,
+                self::EXTENSION_NAME,
                 'id',
                 'order_id',
                 RatepayOrderDataDefinition::class,

@@ -108,7 +108,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         foreach ($requestData->getItems() as $id => $qty) {
             if ($id === 'shipping') {
                 /** @var RatepayOrderDataEntity $ratepayData */
-                $ratepayData = $requestData->getOrder()->getExtension(OrderExtension::RATEPAY_DATA);
+                $ratepayData = $requestData->getOrder()->getExtension(OrderExtension::EXTENSION_NAME);
                 $position = $ratepayData->getShippingPosition();
 
                 $productName = $id;
@@ -118,7 +118,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
                 $lineItem = $requestData->getOrder()->getLineItems()->get($id);
 
                 /** @var RatepayOrderLineItemDataEntity $ratepayData */
-                $ratepayData = $lineItem->getExtension(OrderExtension::RATEPAY_DATA);
+                $ratepayData = $lineItem->getExtension(OrderExtension::EXTENSION_NAME);
                 if ($ratepayData === null) {
                     // will occur if the item has been just added to the order
                     $ratepayData = $this->extensionService->createLineItemExtensions([$lineItem], $event->getContext())->first();
