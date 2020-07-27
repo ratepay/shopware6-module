@@ -53,8 +53,6 @@ class AccountSubscriber implements EventSubscriberInterface
                     $page->getOrder()
                 );
                 $event->getPage()->addExtension('ratepay', $extension);
-                // ToDo: Beim Installment Calculator wird auf den Warenkorb zugegriffen. Dort muss
-                // für diesen Fall auf die Bestellpositionen zugegriffen werden
             }
         }
     }
