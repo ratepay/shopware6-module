@@ -86,4 +86,11 @@ class ConfigService
         $config = $this->getPluginConfiguration();
         return $config['bidirectionalityStatusFullReturn'] ?? '';
     }
+
+    public function getPaymentSuccessfulState(): string
+    {
+        // ToDo: Add plugin config
+        $config = $this->getPluginConfiguration();
+        return 'paid';
+    }
 }
