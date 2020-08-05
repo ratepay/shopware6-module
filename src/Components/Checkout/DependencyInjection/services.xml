@@ -13,8 +13,21 @@
     <services>
 
         <service id="Ratepay\RatepayPayments\Components\Checkout\Service\ExtensionService" autowire="true">
-            <argument key="$orderExtensionRepository" id="ratepay_order_data.repository" type="service" />
-            <argument key="$lineItemExtensionRepository" id="ratepay_order_line_item_data.repository" type="service" />
+            <argument key="$orderExtensionRepository" id="ratepay_order_data.repository" type="service"/>
+            <argument key="$lineItemExtensionRepository" id="ratepay_order_line_item_data.repository" type="service"/>
+        </service>
+
+        <service id="Ratepay\RatepayPayments\Components\Checkout\Service\PaymentFilterService">
+            <argument id="event_dispatcher" type="service"/>
+            <argument id="Ratepay\RatepayPayments\Components\ProfileConfig\Service\ProfileConfigService"
+                      type="service"/>
+        </service>
+
+
+        <service id="Ratepay\RatepayPayments\Components\Checkout\Service\PaymentMethodRoute"
+                 decorates="Shopware\Core\Checkout\Payment\SalesChannel\PaymentMethodRoute">
+            <argument type="service" id="Ratepay\RatepayPayments\Components\Checkout\Service\PaymentMethodRoute.inner"/>
+            <argument type="service" id="Ratepay\RatepayPayments\Components\Checkout\Service\PaymentFilterService"/>
         </service>
 
     </services>
