@@ -9,7 +9,13 @@
 namespace Ratepay\RatepayPayments\Components\PluginConfig\Service;
 
 
+use Ratepay\RatepayPayments\Components\PaymentHandler\DebitPaymentHandler;
+use Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
+use Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
+use Ratepay\RatepayPayments\Components\PaymentHandler\InvoicePaymentHandler;
+use Ratepay\RatepayPayments\Components\PaymentHandler\PrepaymentPaymentHandler;
 use Ratepay\RatepayPayments\RatepayPayments;
+use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -41,6 +47,11 @@ class ConfigService
         return $config['ratepayDevicefingerprintingSnippetId'] ?? 'ratepay';
     }
 
+    public function getPluginConfiguration(): array
+    {
+        return $this->systemConfigService->get('RatepayPayments.config', null) ?: [];
+    }
+
     public function getPluginVersion(): string
     {
         /** @var PluginCollection $plugin */
@@ -53,17 +64,12 @@ class ConfigService
         return $plugins->first()->getVersion();
     }
 
-    public function getPluginConfiguration(): array
-    {
-        return $this->systemConfigService->get('RatepayPayments.config', null) ? : [];
-    }
-
     protected function getContext(): Context
     {
         return Context::createDefaultContext();
     }
 
-    public function isBidirectionalityEnabled() : bool
+    public function isBidirectionalityEnabled(): bool
     {
         $config = $this->getPluginConfiguration();
         return $config['bidirectionalityEnabled'] ?? false;
@@ -85,5 +91,24 @@ class ConfigService
     {
         $config = $this->getPluginConfiguration();
         return $config['bidirectionalityStatusFullReturn'] ?? '';
+    }
+
+    public function getPaymentStatusForMethod(PaymentMethodEntity $paymentMethod): ?string
+    {
+        $config = $this->getPluginConfiguration();
+        switch ($paymentMethod->getHandlerIdentifier()) {
+            case PrepaymentPaymentHandler::class:
+                return $config['paymentStatusPrepayment'] ?? null;
+            case InvoicePaymentHandler::class:
+                return $config['paymentStatusInvoice'] ?? null;
+            case DebitPaymentHandler::class:
+                return $config['paymentStatusDebit'] ?? null;
+            case InstallmentPaymentHandler::class:
+                return $config['paymentStatusInstallment'] ?? null;
+            case InstallmentZeroPercentPaymentHandler::class:
+                return $config['paymentStatusInstallment0Percent'] ?? null;
+            default:
+                return null;
+        }
     }
 }

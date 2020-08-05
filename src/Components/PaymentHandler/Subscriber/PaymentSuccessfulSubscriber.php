@@ -1,0 +1,61 @@
+<?php declare(strict_types=1);
+/**
+ * Copyright (c) 2020 Ratepay GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Ratepay\RatepayPayments\Components\PaymentHandler\Subscriber;
+
+
+use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
+use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
+use Shopware\Core\System\StateMachine\StateMachineRegistry;
+use Shopware\Core\System\StateMachine\Transition;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
+class PaymentSuccessfulSubscriber implements EventSubscriberInterface
+{
+
+    /**
+     * @var StateMachineRegistry
+     */
+    private $stateMachineRegistry;
+    /**
+     * @var ConfigService
+     */
+    private $configService;
+
+    public function __construct(StateMachineRegistry $stateMachineRegistry, ConfigService $configService)
+    {
+        $this->stateMachineRegistry = $stateMachineRegistry;
+        $this->configService = $configService;
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return [
+            PaymentSuccessfulEvent::class => 'changeTransactionState'
+        ];
+    }
+
+
+    public function changeTransactionState(PaymentSuccessfulEvent $event)
+    {
+        $paymentMethod = $event->getTransaction()->getOrderTransaction()->getPaymentMethod();
+        $newState = $this->configService->getPaymentStatusForMethod($paymentMethod);
+        if ($newState) {
+            $this->stateMachineRegistry->transition(
+                new Transition(
+                    OrderTransactionDefinition::ENTITY_NAME,
+                    $event->getTransaction()->getOrderTransaction()->getId(),
+                    $newState,
+                    'stateId'
+                ),
+                $event->getSalesChannelContext()->getContext()
+            );
+        }
+    }
+}
