@@ -36,16 +36,13 @@
             <name>paymentStatusPrepayment</name>
             <options>
                 <option><id>failed</id><name>Failed</name><name lang="de-DE">Fehlgeschlagen</name></option>
-                <option><id>refunded_partially</id><name>Refunded (partially)</name><name lang="de-DE">Teilweise erstattet</name></option>
                 <option><id>authorized</id><name>Authorized</name><name lang="de-DE">Autorisiert</name></option>
                 <option><id>reminded</id><name>Reminded</name><name lang="de-DE">Erinnert</name></option>
-                <option><id>chargeback</id><name>Chargeback</name><name lang="de-DE">Rückbuchung</name></option>
                 <option><id>in_progress</id><name>In Progress</name><name lang="de-DE">In Bearbeitung</name></option>
                 <option><id>cancelled</id><name>Cancelled</name><name lang="de-DE">Abgebrochen</name></option>
                 <option><id>paid</id><name>Paid</name><name lang="de-DE">Bezahlt</name></option>
                 <option><id>paid_partially</id><name>Paid (partially)</name><name lang="de-DE">Teilweise bezahlt</name></option>
                 <option><id>open</id><name>Open</name><name lang="de-DE">Offen</name></option>
-                <option><id>refunded</id><name>Refunded</name><name lang="de-DE">Erstattet</name></option>
             </options>
             <defaultValue>open</defaultValue>
             <label>Prepayment</label>
@@ -55,16 +52,13 @@
             <name>paymentStatusInvoice</name>
             <options>
                 <option><id>failed</id><name>Failed</name><name lang="de-DE">Fehlgeschlagen</name></option>
-                <option><id>refunded_partially</id><name>Refunded (partially)</name><name lang="de-DE">Teilweise erstattet</name></option>
                 <option><id>authorized</id><name>Authorized</name><name lang="de-DE">Autorisiert</name></option>
                 <option><id>reminded</id><name>Reminded</name><name lang="de-DE">Erinnert</name></option>
-                <option><id>chargeback</id><name>Chargeback</name><name lang="de-DE">Rückbuchung</name></option>
                 <option><id>in_progress</id><name>In Progress</name><name lang="de-DE">In Bearbeitung</name></option>
                 <option><id>cancelled</id><name>Cancelled</name><name lang="de-DE">Abgebrochen</name></option>
                 <option><id>paid</id><name>Paid</name><name lang="de-DE">Bezahlt</name></option>
                 <option><id>paid_partially</id><name>Paid (partially)</name><name lang="de-DE">Teilweise bezahlt</name></option>
                 <option><id>open</id><name>Open</name><name lang="de-DE">Offen</name></option>
-                <option><id>refunded</id><name>Refunded</name><name lang="de-DE">Erstattet</name></option>
             </options>
             <defaultValue>paid</defaultValue>
             <label>Invoice</label>
@@ -74,16 +68,13 @@
             <name>paymentStatusDebit</name>
             <options>
                 <option><id>failed</id><name>Failed</name><name lang="de-DE">Fehlgeschlagen</name></option>
-                <option><id>refunded_partially</id><name>Refunded (partially)</name><name lang="de-DE">Teilweise erstattet</name></option>
                 <option><id>authorized</id><name>Authorized</name><name lang="de-DE">Autorisiert</name></option>
                 <option><id>reminded</id><name>Reminded</name><name lang="de-DE">Erinnert</name></option>
-                <option><id>chargeback</id><name>Chargeback</name><name lang="de-DE">Rückbuchung</name></option>
                 <option><id>in_progress</id><name>In Progress</name><name lang="de-DE">In Bearbeitung</name></option>
                 <option><id>cancelled</id><name>Cancelled</name><name lang="de-DE">Abgebrochen</name></option>
                 <option><id>paid</id><name>Paid</name><name lang="de-DE">Bezahlt</name></option>
                 <option><id>paid_partially</id><name>Paid (partially)</name><name lang="de-DE">Teilweise bezahlt</name></option>
                 <option><id>open</id><name>Open</name><name lang="de-DE">Offen</name></option>
-                <option><id>refunded</id><name>Refunded</name><name lang="de-DE">Erstattet</name></option>
             </options>
             <defaultValue>paid</defaultValue>
             <label>Debit</label>
@@ -93,16 +84,13 @@
             <name>paymentStatusInstallment</name>
             <options>
                 <option><id>failed</id><name>Failed</name><name lang="de-DE">Fehlgeschlagen</name></option>
-                <option><id>refunded_partially</id><name>Refunded (partially)</name><name lang="de-DE">Teilweise erstattet</name></option>
                 <option><id>authorized</id><name>Authorized</name><name lang="de-DE">Autorisiert</name></option>
                 <option><id>reminded</id><name>Reminded</name><name lang="de-DE">Erinnert</name></option>
-                <option><id>chargeback</id><name>Chargeback</name><name lang="de-DE">Rückbuchung</name></option>
                 <option><id>in_progress</id><name>In Progress</name><name lang="de-DE">In Bearbeitung</name></option>
                 <option><id>cancelled</id><name>Cancelled</name><name lang="de-DE">Abgebrochen</name></option>
                 <option><id>paid</id><name>Paid</name><name lang="de-DE">Bezahlt</name></option>
                 <option><id>paid_partially</id><name>Paid (partially)</name><name lang="de-DE">Teilweise bezahlt</name></option>
                 <option><id>open</id><name>Open</name><name lang="de-DE">Offen</name></option>
-                <option><id>refunded</id><name>Refunded</name><name lang="de-DE">Erstattet</name></option>
             </options>
             <defaultValue>paid</defaultValue>
             <label>Installment</label>
@@ -112,16 +100,13 @@
             <name>paymentStatusInstallment0Percent</name>
             <options>
                 <option><id>failed</id><name>Failed</name><name lang="de-DE">Fehlgeschlagen</name></option>
-                <option><id>refunded_partially</id><name>Refunded (partially)</name><name lang="de-DE">Teilweise erstattet</name></option>
                 <option><id>authorized</id><name>Authorized</name><name lang="de-DE">Autorisiert</name></option>
                 <option><id>reminded</id><name>Reminded</name><name lang="de-DE">Erinnert</name></option>
-                <option><id>chargeback</id><name>Chargeback</name><name lang="de-DE">Rückbuchung</name></option>
                 <option><id>in_progress</id><name>In Progress</name><name lang="de-DE">In Bearbeitung</name></option>
                 <option><id>cancelled</id><name>Cancelled</name><name lang="de-DE">Abgebrochen</name></option>
                 <option><id>paid</id><name>Paid</name><name lang="de-DE">Bezahlt</name></option>
                 <option><id>paid_partially</id><name>Paid (partially)</name><name lang="de-DE">Teilweise bezahlt</name></option>
                 <option><id>open</id><name>Open</name><name lang="de-DE">Offen</name></option>
-                <option><id>refunded</id><name>Refunded</name><name lang="de-DE">Erstattet</name></option>
             </options>
             <defaultValue>paid</defaultValue>
             <label>Installment (0% financing)</label>
