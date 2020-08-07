@@ -96,7 +96,9 @@ class ExtensionService
         ];
 
         if ($order->getShippingCosts()->getTotalPrice() > 0) {
-            $orderExtensionData[RatepayPositionEntity::FIELD_ID] = Uuid::randomHex();
+            $orderExtensionData[RatepayOrderDataEntity::FIELD_SHIPPING_POSITION] = [
+                RatepayPositionEntity::FIELD_ID => Uuid::randomHex(),
+            ];
         }
 
         $event = $this->orderExtensionRepository->create([$orderExtensionData], $context);
