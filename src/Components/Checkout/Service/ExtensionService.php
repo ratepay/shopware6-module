@@ -88,15 +88,18 @@ class ExtensionService
         Context $context
     ): RatepayOrderDataEntity
     {
-        $event = $this->orderExtensionRepository->create([[
+        $orderExtensionData = [
             RatepayOrderDataEntity::FIELD_ORDER_ID => $order->getId(),
             RatepayOrderDataEntity::FIELD_ORDER_VERSION_ID => $order->getVersionId(),
             RatepayOrderDataEntity::FIELD_PROFILE_ID => $profileId,
             RatepayOrderDataEntity::FIELD_TRANSACTION_ID => $transactionId,
-            RatepayOrderDataEntity::FIELD_SHIPPING_POSITION => [
-                RatepayPositionEntity::FIELD_ID => Uuid::randomHex()
-            ]
-        ]], $context);
+        ];
+
+        if ($order->getShippingCosts()->getTotalPrice() > 0) {
+            $orderExtensionData[RatepayPositionEntity::FIELD_ID] = Uuid::randomHex();
+        }
+
+        $event = $this->orderExtensionRepository->create([$orderExtensionData], $context);
 
         $affected = $this->orderExtensionRepository->search(new Criteria(
             $event->getPrimaryKeys(RatepayOrderDataDefinition::ENTITY_NAME)
