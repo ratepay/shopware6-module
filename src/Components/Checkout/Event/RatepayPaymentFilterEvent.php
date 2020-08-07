@@ -33,13 +33,10 @@ class RatepayPaymentFilterEvent extends Event
     private $isAvailable = true;
 
     /**
-     * @var Event|null
-     */
-    private $parentEvent;
-    /**
      * @var ProfileConfigEntity
      */
     private $profileConfig;
+
     /**
      * @var ProfileConfigMethodEntity
      */
@@ -49,15 +46,13 @@ class RatepayPaymentFilterEvent extends Event
         PaymentMethodEntity $paymentMethod,
         ProfileConfigEntity $profileConfig,
         ProfileConfigMethodEntity $methodConfig,
-        SalesChannelContext $salesChannelContext,
-        Event $parentEvent = null
+        SalesChannelContext $salesChannelContext
     )
     {
         $this->paymentMethod = $paymentMethod;
         $this->profileConfig = $profileConfig;
         $this->methodConfig = $methodConfig;
         $this->salesChannelContext = $salesChannelContext;
-        $this->parentEvent = $parentEvent;
     }
 
     /**
@@ -107,14 +102,4 @@ class RatepayPaymentFilterEvent extends Event
     {
         $this->isAvailable = $isAvailable;
     }
-
-    /**
-     * @return Event|null
-     */
-    public function getParentEvent(): ?Event
-    {
-        return $this->parentEvent;
-    }
-
-
 }

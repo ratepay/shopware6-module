@@ -1,0 +1,11 @@
+{
+    "order": {
+        "ratepay": {
+            "modal": {
+                "orderDeleteRestriction": {
+                    "text": "Eine Bestellung, die mit einer Ratepay Zahlungsart bezahlt wurde, kann nicht gelöscht werden!"
+                }
+            }
+        }
+    }
+}
