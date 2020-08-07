@@ -77,7 +77,7 @@ class OrderOperationData implements IRequestData
         $items = [];
         foreach ($this->order->getLineItems() as $lineItem) {
             /** @var RatepayOrderLineItemDataEntity $extension */
-            if ($extension = $lineItem->getExtension(OrderLineItemExtension::RATEPAY_DATA)) {
+            if ($extension = $lineItem->getExtension(OrderLineItemExtension::EXTENSION_NAME)) {
                 $quantity = $this->getMaxQuantityForOperation($extension->getPosition(), $lineItem->getQuantity());
                 if ($quantity > 0) {
                     $items[$lineItem->getId()] = $quantity;
@@ -87,7 +87,7 @@ class OrderOperationData implements IRequestData
 
         /** @var RatepayOrderDataEntity $orderExtension */
         if ($this->order->getShippingTotal() > 0 &&
-            ($orderExtension = $this->order->getExtension(OrderExtension::RATEPAY_DATA)) &&
+            ($orderExtension = $this->order->getExtension(OrderExtension::EXTENSION_NAME)) &&
             ($shippingPosition = $orderExtension->getShippingPosition())
         ) {
             $quantity = $this->getMaxQuantityForOperation($shippingPosition, 1);

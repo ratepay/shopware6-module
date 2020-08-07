@@ -8,18 +8,28 @@
 
 namespace Ratepay\RatepayPayments\Components\Checkout\Subscriber;
 
+use Ratepay\RatepayPayments\Components\Checkout\Service\ExtensionService;
 use Ratepay\RatepayPayments\Util\MethodHelper;
-use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutSubscriber implements EventSubscriberInterface
 {
 
-    public static function getSubscribedEvents()
+    /**
+     * @var ExtensionService
+     */
+    protected $extensionService;
+
+    public function __construct(ExtensionService $extensionService)
+    {
+        $this->extensionService = $extensionService;
+    }
+
+    public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class => ['addRatepayTemplateData', 310]
+            CheckoutConfirmPageLoadedEvent::class => ['addRatepayTemplateData', 310],
         ];
     }
 
@@ -33,20 +43,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
         if (MethodHelper::isRatepayMethod($paymentMethod->getHandlerIdentifier()) &&
             $event->getPage()->getPaymentMethods()->has($paymentMethod->getId())
         ) {
-            /* Get customer data for checkout form */
-            $customerBirthday = $event->getSalesChannelContext()->getCustomer()->getBirthday();
-            $customerBillingAddress = $event->getSalesChannelContext()->getCustomer()->getActiveBillingAddress();
-            $customerVatId = $customerBillingAddress->getVatId();
-            $customerPhoneNumber = $customerBillingAddress->getPhoneNumber();
-            $customerCompany = $customerBillingAddress->getCompany();
-
-            $extension = $event->getPage()->getExtension('ratepay') ?? new ArrayStruct();
-            $extension->set('paymentMethod', strtolower(constant($paymentMethod->getHandlerIdentifier() . '::RATEPAY_METHOD')));
-            $extension->set('birthday', $customerBirthday);
-            $extension->set('vatId', $customerVatId);
-            $extension->set('phoneNumber', $customerPhoneNumber);
-            $extension->set('company', $customerCompany);
-            $extension->set('accountHolder', $customerBillingAddress->getFirstName() . " " . $customerBillingAddress->getLastName());
+            $extension = $this->extensionService->buildPaymentDataExtension($event->getSalesChannelContext());
             $event->getPage()->addExtension('ratepay', $extension);
         }
 

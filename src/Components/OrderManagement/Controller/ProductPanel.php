@@ -90,7 +90,7 @@ class ProductPanel extends AbstractController
             $items = [];
             foreach ($order->getLineItems() as $lineItem) {
                 /** @var RatepayOrderLineItemDataEntity $extension */
-                if ($extension = $lineItem->getExtension(OrderLineItemExtension::RATEPAY_DATA)) {
+                if ($extension = $lineItem->getExtension(OrderLineItemExtension::EXTENSION_NAME)) {
                     $items[$lineItem->getId()] = [
                         'id' => $lineItem->getId(),
                         'name' => $lineItem->getLabel(),
@@ -103,7 +103,7 @@ class ProductPanel extends AbstractController
                 }
             }
             /** @var $orderExtension RatepayOrderDataEntity */
-            if (($orderExtension = $order->getExtension(OrderExtension::RATEPAY_DATA)) &&
+            if (($orderExtension = $order->getExtension(OrderExtension::EXTENSION_NAME)) &&
                 $orderExtension->getShippingPosition()) {
                 $items['shipping'] = [
                     'id' => 'shipping',

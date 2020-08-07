@@ -69,7 +69,7 @@ abstract class AbstractModifyRequest extends AbstractRequest
         /** @var OrderOperationData $requestData */
 
         /** @var RatepayOrderDataEntity $extension */
-        $extension = $requestData->getOrder()->getExtension(OrderExtension::RATEPAY_DATA);
+        $extension = $requestData->getOrder()->getExtension(OrderExtension::EXTENSION_NAME);
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter(
@@ -92,7 +92,7 @@ abstract class AbstractModifyRequest extends AbstractRequest
         $head->getExternal()->setOrderId($requestData->getOrder()->getOrderNumber());
 
         /** @var RatepayOrderDataEntity $orderExtension */
-        $orderExtension = $requestData->getOrder()->getExtension(OrderExtension::RATEPAY_DATA);
+        $orderExtension = $requestData->getOrder()->getExtension(OrderExtension::EXTENSION_NAME);
         $head->setTransactionId($orderExtension->getTransactionId());
         return $head;
     }

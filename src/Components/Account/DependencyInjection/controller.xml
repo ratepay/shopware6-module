@@ -12,8 +12,9 @@
 
     <services>
 
-        <service id="Ratepay\RatepayPayments\Components\InstallmentCalculator\Subscriber\BuildPaymentSubscriber" autowire="true">
-            <tag name="kernel.event_subscriber"/>
+        <service id="Ratepay\RatepayPayments\Components\Account\Controller\AccountOrderControllerDecorator"
+                 decorates="Shopware\Storefront\Controller\AccountOrderController"
+                 parent="Shopware\Storefront\Controller\AccountOrderController">
         </service>
 
     </services>
