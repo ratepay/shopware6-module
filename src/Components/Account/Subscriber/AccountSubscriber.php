@@ -39,7 +39,7 @@ class AccountSubscriber implements EventSubscriberInterface
     public function onAccountEditOrderPageLoaded(AccountEditOrderPageLoadedEvent $event): void
     {
         $page = $event->getPage();
-        if ($page->getOrder()->hasExtension(OrderExtension::EXTENSION_NAME)) {
+        if (MethodHelper::isRatepayOrder($page->getOrder())) {
             // You can't change the payment if it is a ratepay order
             $page->setPaymentChangeable(false);
         } else {

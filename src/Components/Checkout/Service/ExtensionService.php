@@ -57,12 +57,10 @@ class ExtensionService
         $this->installmentService = $installmentService;
     }
 
-    /**
-     * @param OrderLineItemEntity[] $lineItems
-     * @param Context $context
-     * @return RatepayOrderLineItemDataCollection
-     */
-    public function createLineItemExtensions(array $lineItems, Context $context): RatepayOrderLineItemDataCollection
+    public function createLineItemExtensionEntities(
+        array $lineItems,
+        Context $context
+    ): RatepayOrderLineItemDataCollection
     {
         $data = [];
         foreach ($lineItems as $lineItem) {
@@ -83,14 +81,12 @@ class ExtensionService
         return $affected->getEntities();
     }
 
-    /**
-     * @param OrderEntity $order
-     * @param string $transactionId
-     * @param string $profileId
-     * @param Context $context
-     * @return RatepayOrderDataEntity
-     */
-    public function createOrderExtension(OrderEntity $order, string $transactionId, string $profileId, Context $context): RatepayOrderDataEntity
+    public function createOrderExtensionEntity(
+        OrderEntity $order,
+        string $transactionId,
+        string $profileId,
+        Context $context
+    ): RatepayOrderDataEntity
     {
         $event = $this->orderExtensionRepository->create([[
             RatepayOrderDataEntity::FIELD_ORDER_ID => $order->getId(),
