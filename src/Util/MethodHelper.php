@@ -14,7 +14,6 @@ use Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
 use Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
 use Ratepay\RatepayPayments\Components\PaymentHandler\InvoicePaymentHandler;
 use Ratepay\RatepayPayments\Components\PaymentHandler\PrepaymentPaymentHandler;
-use Shopware\Core\Checkout\Order\OrderEntity;
 
 class MethodHelper
 {
@@ -28,19 +27,6 @@ class MethodHelper
             InvoicePaymentHandler::class,
             PrepaymentPaymentHandler::class,
         ], true);
-    }
-
-    public static function isRatepayOrder(OrderEntity $order): bool
-    {
-        $hasRatepayTransaction = false;
-        foreach ($order->getTransactions() as $transaction) {
-            if ($transaction->getPaymentMethod()
-                && self::isRatepayMethod($transaction->getPaymentMethod()->getHandlerIdentifier())) {
-                $hasRatepayTransaction = true;
-                break;
-            }
-        }
-        return $hasRatepayTransaction;
     }
 
     public static function isInstallmentMethod(string $handlerIdentifier): bool

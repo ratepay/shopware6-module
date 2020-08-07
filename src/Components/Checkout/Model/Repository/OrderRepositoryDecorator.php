@@ -9,9 +9,8 @@
 namespace Ratepay\RatepayPayments\Components\Checkout\Model\Repository;
 
 
+use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RatepayPayments\Components\OrderManagement\Exception\OrderDeleteRestrictionException;
-use Ratepay\RatepayPayments\Util\MethodHelper;
-use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -19,6 +18,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEve
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\AggregationResultCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
 
 class OrderRepositoryDecorator implements EntityRepositoryInterface
@@ -29,27 +29,28 @@ class OrderRepositoryDecorator implements EntityRepositoryInterface
      */
     private $innerRepo;
 
-    public function __construct(EntityRepositoryInterface $innerRepo)
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $ratepayOrderDataRepository;
+
+    public function __construct(
+        EntityRepositoryInterface $innerRepo,
+        EntityRepositoryInterface $ratepayOrderDataRepository
+    )
     {
         $this->innerRepo = $innerRepo;
+        $this->ratepayOrderDataRepository = $ratepayOrderDataRepository;
     }
 
     public function delete(array $ids, Context $context): EntityWrittenContainerEvent
     {
-        $criteria = new Criteria(array_column($ids, 'id'));
-        $criteria->addAssociation('transactions');
-        $criteria->addAssociation('transactions.paymentMethod');
-        $affectedOrders = $this->search($criteria, $context);
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsAnyFilter(RatepayOrderDataEntity::FIELD_ORDER_ID, array_column($ids, 'id')));
+        $ratepayOrders = $this->ratepayOrderDataRepository->searchIds($criteria, $context);
 
-        if ($affectedOrders->count() === 0) {
-            return $this->innerRepo->delete($ids, $context);
-        }
-
-        /** @var OrderEntity $order */
-        foreach ($affectedOrders->getEntities() as $order) {
-            if (MethodHelper::isRatepayOrder($order)) {
-                throw new OrderDeleteRestrictionException();
-            }
+        if (count($ratepayOrders->getIds()) > 0) {
+            throw new OrderDeleteRestrictionException();
         }
 
         return $this->innerRepo->delete($ids, $context);
