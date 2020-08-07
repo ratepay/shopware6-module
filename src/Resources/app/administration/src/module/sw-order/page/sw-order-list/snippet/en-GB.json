@@ -1,0 +1,11 @@
+{
+    "order": {
+        "ratepay": {
+            "modal": {
+                "orderDeleteRestriction": {
+                    "text": "You can't delete an order which was processed by a Ratepay payment."
+                }
+            }
+        }
+    }
+}

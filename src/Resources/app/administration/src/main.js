@@ -28,3 +28,4 @@ import './init/profile-config-api-service.init';
  */
 import './module/sw-order/view/sw-order-detail-base'
 import './module/sw-order/component/sw-order-line-items-grid'
+import './module/sw-order/page/sw-order-list'
