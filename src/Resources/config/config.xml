@@ -19,12 +19,6 @@
             <label lang="de-DE">Debug-Modus aktivieren</label>
         </input-field>
 
-        <input-field type="bool">
-            <name>ratepayDevicefingerprintingButton</name>
-            <label>Device fingerprinting</label>
-            <label lang="de-DE">Device fingerprinting</label>
-        </input-field>
-
         <input-field type="text">
             <name>ratepayDevicefingerprintingSnippetId</name>
             <label>Snippet ID</label>
@@ -35,6 +29,91 @@
 
     </card>
     <!-- waiting for this: https://issues.shopware.com/issues/NEXT-7670 -->
+    <card>
+        <title>Transctionstatus after order completion</title>
+        <title lang="de-DE">Transkationsstatus nach Bestellabsschluss</title>
+        <input-field type="single-select">
+            <name>paymentStatusPrepayment</name>
+            <options>
+                <option><id>failed</id><name>Failed</name><name lang="de-DE">Fehlgeschlagen</name></option>
+                <option><id>authorized</id><name>Authorized</name><name lang="de-DE">Autorisiert</name></option>
+                <option><id>reminded</id><name>Reminded</name><name lang="de-DE">Erinnert</name></option>
+                <option><id>in_progress</id><name>In Progress</name><name lang="de-DE">In Bearbeitung</name></option>
+                <option><id>cancelled</id><name>Cancelled</name><name lang="de-DE">Abgebrochen</name></option>
+                <option><id>paid</id><name>Paid</name><name lang="de-DE">Bezahlt</name></option>
+                <option><id>paid_partially</id><name>Paid (partially)</name><name lang="de-DE">Teilweise bezahlt</name></option>
+                <option><id>open</id><name>Open</name><name lang="de-DE">Offen</name></option>
+            </options>
+            <defaultValue>open</defaultValue>
+            <label>Prepayment</label>
+            <label lang="de-DE">Vorkasse</label>
+        </input-field>
+        <input-field type="single-select">
+            <name>paymentStatusInvoice</name>
+            <options>
+                <option><id>failed</id><name>Failed</name><name lang="de-DE">Fehlgeschlagen</name></option>
+                <option><id>authorized</id><name>Authorized</name><name lang="de-DE">Autorisiert</name></option>
+                <option><id>reminded</id><name>Reminded</name><name lang="de-DE">Erinnert</name></option>
+                <option><id>in_progress</id><name>In Progress</name><name lang="de-DE">In Bearbeitung</name></option>
+                <option><id>cancelled</id><name>Cancelled</name><name lang="de-DE">Abgebrochen</name></option>
+                <option><id>paid</id><name>Paid</name><name lang="de-DE">Bezahlt</name></option>
+                <option><id>paid_partially</id><name>Paid (partially)</name><name lang="de-DE">Teilweise bezahlt</name></option>
+                <option><id>open</id><name>Open</name><name lang="de-DE">Offen</name></option>
+            </options>
+            <defaultValue>paid</defaultValue>
+            <label>Invoice</label>
+            <label lang="de-DE">Kauf auf Rechnung</label>
+        </input-field>
+        <input-field type="single-select">
+            <name>paymentStatusDebit</name>
+            <options>
+                <option><id>failed</id><name>Failed</name><name lang="de-DE">Fehlgeschlagen</name></option>
+                <option><id>authorized</id><name>Authorized</name><name lang="de-DE">Autorisiert</name></option>
+                <option><id>reminded</id><name>Reminded</name><name lang="de-DE">Erinnert</name></option>
+                <option><id>in_progress</id><name>In Progress</name><name lang="de-DE">In Bearbeitung</name></option>
+                <option><id>cancelled</id><name>Cancelled</name><name lang="de-DE">Abgebrochen</name></option>
+                <option><id>paid</id><name>Paid</name><name lang="de-DE">Bezahlt</name></option>
+                <option><id>paid_partially</id><name>Paid (partially)</name><name lang="de-DE">Teilweise bezahlt</name></option>
+                <option><id>open</id><name>Open</name><name lang="de-DE">Offen</name></option>
+            </options>
+            <defaultValue>paid</defaultValue>
+            <label>Debit</label>
+            <label lang="de-DE">Lastschrift</label>
+        </input-field>
+        <input-field type="single-select">
+            <name>paymentStatusInstallment</name>
+            <options>
+                <option><id>failed</id><name>Failed</name><name lang="de-DE">Fehlgeschlagen</name></option>
+                <option><id>authorized</id><name>Authorized</name><name lang="de-DE">Autorisiert</name></option>
+                <option><id>reminded</id><name>Reminded</name><name lang="de-DE">Erinnert</name></option>
+                <option><id>in_progress</id><name>In Progress</name><name lang="de-DE">In Bearbeitung</name></option>
+                <option><id>cancelled</id><name>Cancelled</name><name lang="de-DE">Abgebrochen</name></option>
+                <option><id>paid</id><name>Paid</name><name lang="de-DE">Bezahlt</name></option>
+                <option><id>paid_partially</id><name>Paid (partially)</name><name lang="de-DE">Teilweise bezahlt</name></option>
+                <option><id>open</id><name>Open</name><name lang="de-DE">Offen</name></option>
+            </options>
+            <defaultValue>paid</defaultValue>
+            <label>Installment</label>
+            <label lang="de-DE">Ratenzahlung</label>
+        </input-field>
+        <input-field type="single-select">
+            <name>paymentStatusInstallment0Percent</name>
+            <options>
+                <option><id>failed</id><name>Failed</name><name lang="de-DE">Fehlgeschlagen</name></option>
+                <option><id>authorized</id><name>Authorized</name><name lang="de-DE">Autorisiert</name></option>
+                <option><id>reminded</id><name>Reminded</name><name lang="de-DE">Erinnert</name></option>
+                <option><id>in_progress</id><name>In Progress</name><name lang="de-DE">In Bearbeitung</name></option>
+                <option><id>cancelled</id><name>Cancelled</name><name lang="de-DE">Abgebrochen</name></option>
+                <option><id>paid</id><name>Paid</name><name lang="de-DE">Bezahlt</name></option>
+                <option><id>paid_partially</id><name>Paid (partially)</name><name lang="de-DE">Teilweise bezahlt</name></option>
+                <option><id>open</id><name>Open</name><name lang="de-DE">Offen</name></option>
+            </options>
+            <defaultValue>paid</defaultValue>
+            <label>Installment (0% financing)</label>
+            <label lang="de-DE">Ratenzahlung (0% Finanzierung)</label>
+        </input-field>
+    </card>
+
     <card>
         <title>Bidirectionality</title>
         <title lang="de-DE">Bidirektionalität</title>
