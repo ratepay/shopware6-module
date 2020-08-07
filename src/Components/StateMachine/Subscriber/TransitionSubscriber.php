@@ -96,7 +96,7 @@ class TransitionSubscriber implements EventSubscriberInterface
         $order = $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($orderDelivery->getOrderId()), $event->getContext())->first();
 
         /** @var RatepayOrderDataEntity $ratepayData */
-        $ratepayData = $order->getExtension(OrderExtension::RATEPAY_DATA);
+        $ratepayData = $order->getExtension(OrderExtension::EXTENSION_NAME);
 
         switch ($event->getToPlace()->getTechnicalName()) {
             case $this->configService->getBidirectionalityFullDelivery():

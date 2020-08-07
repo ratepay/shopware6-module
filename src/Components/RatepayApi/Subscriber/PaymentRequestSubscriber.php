@@ -56,13 +56,13 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
                 $lineItems[] = $orderItems->get($id);
             }
         }
-        $this->extensionService->createLineItemExtensions(
+        $this->extensionService->createLineItemExtensionEntities(
             $lineItems,
             $requestData->getSalesChannelContext()->getContext()
         );
 
 
-        $this->extensionService->createOrderExtension(
+        $this->extensionService->createOrderExtensionEntity(
             $requestData->getOrder(),
             $responseModel->getTransactionId(),
             (string)$requestXml->head->credential->{"profile-id"},
