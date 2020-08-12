@@ -17,7 +17,7 @@
     <div class="form-row">
         <div class="form-group col-sm-4">
             <input type="text"
-               class="form-control"
+               class="form-control{% if formViolations.getViolations('/ratepay/vatId') is not empty %} is-invalid{% endif %}"
                placeholder="{{ "address.companyVatPlaceholder"|trans|sw_sanitize }}"
                name="ratepay[vatId]"
                form="confirmOrderForm"
