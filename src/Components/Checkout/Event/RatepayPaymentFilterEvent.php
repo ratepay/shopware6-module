@@ -96,10 +96,14 @@ class RatepayPaymentFilterEvent extends Event
     }
 
     /**
+     * if <code>$isAvailable</code> is false, the event will stopped.
      * @param bool $isAvailable
      */
     public function setIsAvailable(bool $isAvailable): void
     {
+        if ($isAvailable === false) {
+            $this->stopPropagation();
+        }
         $this->isAvailable = $isAvailable;
     }
 }

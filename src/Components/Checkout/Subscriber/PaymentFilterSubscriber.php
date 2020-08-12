@@ -36,10 +36,6 @@ class PaymentFilterSubscriber implements EventSubscriberInterface
 
     public function filterByDefaultConditions(RatepayPaymentFilterEvent $event): RatepayPaymentFilterEvent
     {
-        if ($event->isAvailable() === false) {
-            return $event;
-        }
-
         $salesChannelContext = $event->getSalesChannelContext();
         $methodConfig = $event->getMethodConfig();
         $customer = $salesChannelContext->getCustomer();
