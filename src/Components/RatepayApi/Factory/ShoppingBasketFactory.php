@@ -15,6 +15,7 @@ use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Exception\EmptyBasketException;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
+use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 
@@ -30,6 +31,7 @@ class ShoppingBasketFactory extends AbstractFactory
 
         $basket = new ShoppingBasket();
         $basket->setItems(new ShoppingBasket\Items());
+        $basket->setCurrency($order->getCurrency()->getIsoCode());
 
         $items = $requestData->getItems();
         if (count($items) === 0) {
@@ -49,7 +51,7 @@ class ShoppingBasketFactory extends AbstractFactory
                         ->setDescription($item->getLabel())
                         ->setQuantity($priceDefinition->getQuantity())
                         ->setUnitPriceGross($priceDefinition->getPrice())
-                        ->setTaxRate($priceDefinition->getTaxRules()->first()->getTaxRate())
+                        ->setTaxRate($this->getTaxRate($priceDefinition))
                 );
             } elseif ($id === 'shipping') {
                 if($order->getShippingCosts()->getTotalPrice()) {
@@ -57,7 +59,7 @@ class ShoppingBasketFactory extends AbstractFactory
                         (new ShoppingBasket\Shipping())
                             ->setDescription('shipping')
                             ->setUnitPriceGross($order->getShippingCosts()->getTotalPrice())
-                            ->setTaxRate($order->getShippingCosts()->getCalculatedTaxes()->first()->getTaxRate())
+                            ->setTaxRate($this->getTaxRate($order->getShippingCosts()))
                     );
                 }
             } else {
@@ -74,6 +76,7 @@ class ShoppingBasketFactory extends AbstractFactory
 
     protected function addOrderLineItemToBasket(ShoppingBasket $basket, OrderLineItemEntity $item, $qty) : void
     {
+
         if ($item->getTotalPrice() > 0 || $item->getType() === LineItem::CUSTOM_LINE_ITEM_TYPE) {
             $basket->getItems()->addItem(
                 (new ShoppingBasket\Items\Item())
@@ -81,16 +84,22 @@ class ShoppingBasketFactory extends AbstractFactory
                     ->setDescription($item->getLabel())
                     ->setQuantity($qty)
                     ->setUnitPriceGross($item->getPrice()->getUnitPrice())
-                    ->setTaxRate($item->getPrice()->getCalculatedTaxes()->first()->getTaxRate())
+                    ->setTaxRate($this->getTaxRate($item->getPrice()))
             );
         } else {
             $discount = $basket->getDiscount() ?: new ShoppingBasket\Discount();
             $discount->setDescription('discount');
             $discount->setDescriptionAddition($discount->getDescription() ? $discount->getDescription() . ', ' : $item->getLabel());
             $discount->setUnitPriceGross($discount->getUnitPriceGross() + $item->getTotalPrice());
-            $discount->setTaxRate($item->getPrice()->getCalculatedTaxes()->first()->getTaxRate());
+            $discount->setTaxRate($this->getTaxRate($item->getPrice()));
             $basket->setDiscount($discount);
         }
+    }
+
+    private function getTaxRate(CalculatedPrice $calculatedPrice): float
+    {
+        $tax = $calculatedPrice->getCalculatedTaxes()->first();
+        return $tax ? $tax->getTaxRate() : 0;
     }
 
 }
