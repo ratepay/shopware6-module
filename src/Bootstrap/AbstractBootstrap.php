@@ -26,7 +26,6 @@ abstract class AbstractBootstrap implements ContainerAwareInterface
      */
     protected $installContext;
 
-
     /**
      * @var Context
      */
@@ -42,85 +41,83 @@ abstract class AbstractBootstrap implements ContainerAwareInterface
      */
     protected $plugin;
 
-    public final function __construct()
+    final public function __construct()
     {
         $this->defaultContext = Context::createDefaultContext();
     }
 
-    public abstract function install();
+    abstract public function install(): void;
 
-    public abstract function update();
+    abstract public function update(): void;
 
-    public abstract function uninstall($keepUserData = false);
+    abstract public function uninstall(bool $keepUserData = false): void;
 
-    public abstract function activate();
+    abstract public function activate(): void;
 
-    public abstract function deactivate();
+    abstract public function deactivate(): void;
 
     public function injectServices(): void
     {
-
     }
 
-    public final function setInstallContext(InstallContext $installContext)
+    final public function setInstallContext(InstallContext $installContext): void
     {
         $this->installContext = $installContext;
     }
 
-    public final function setLogger(Logger $logger)
+    final public function setLogger(Logger $logger): void
     {
         $this->logger = $logger;
     }
 
-    public final function setPlugin(PluginEntity $plugin)
+    final public function setPlugin(PluginEntity $plugin): void
     {
         $this->plugin = $plugin;
     }
 
-    public function preInstall()
+    public function preInstall(): void
     {
     }
 
-    public function preUpdate()
+    public function preUpdate(): void
     {
     }
 
-    public function preUninstall($keepUserData = false)
+    public function preUninstall($keepUserData = false): void
     {
     }
 
-    public function preActivate()
+    public function preActivate(): void
     {
     }
 
-    public function preDeactivate()
+    public function preDeactivate(): void
     {
     }
 
-    public function postActivate()
+    public function postActivate(): void
     {
     }
 
-    public function postDeactivate()
+    public function postDeactivate(): void
     {
     }
 
-    public function postUninstall()
+    public function postUninstall(): void
     {
     }
 
-    public function postUpdate()
+    public function postUpdate(): void
     {
     }
 
-    public function postInstall()
+    public function postInstall(): void
     {
     }
 
-    protected final function getPluginPath()
+    final protected function getPluginPath(): string
     {
         return $this->container->getParameter('kernel.root_dir') . DIRECTORY_SEPARATOR . $this->plugin->getPath();
     }
-
 
 }

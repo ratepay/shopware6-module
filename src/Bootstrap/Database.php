@@ -10,6 +10,7 @@ namespace Ratepay\RatepayPayments\Bootstrap;
 
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
 
 class Database extends AbstractBootstrap
 {
@@ -23,15 +24,18 @@ class Database extends AbstractBootstrap
         $this->connection = $this->container->get(Connection::class);
     }
 
-    public function install()
+    public function install(): void
     {
     }
 
-    public function update()
+    public function update(): void
     {
     }
 
-    public function uninstall($keepUserData = false)
+    /**
+     * @throws DBALException
+     */
+    public function uninstall(bool $keepUserData = false): void
     {
         if ($keepUserData) {
             return;
@@ -50,11 +54,11 @@ class Database extends AbstractBootstrap
         $this->connection->exec("SET FOREIGN_KEY_CHECKS=1;");
     }
 
-    public function activate()
+    public function activate(): void
     {
     }
 
-    public function deactivate()
+    public function deactivate(): void
     {
     }
 }
