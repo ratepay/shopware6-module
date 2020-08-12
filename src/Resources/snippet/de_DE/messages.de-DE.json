@@ -5,9 +5,7 @@
                 "errors": {
                     "missingSepaConfirm": "Bitte geben bestätigen Sie das SEPA Mandat.",
                     "missingIban": "Bitte geben Sie eine gültige IBAN an.",
-                    "missingBirthday": "Bitte geben Sie Ihr Alter an. Sie müssen mindestens 18 Jahre alt sein, um mit Ratepay zu bezahlen.",
-                    "missingVatId": "Bitte geben Sie Ihre Steuernummer an.",
-                    "missingPhone": "Bitte geben Sie Ihre Telefonnummer an."
+                    "missingBirthday": "Bitte geben Sie Ihr Alter an. Sie müssen mindestens 18 Jahre alt sein, um mit Ratepay zu bezahlen."
                 },
                 "label": {
                     "birthday": "Geburtsdatum"
