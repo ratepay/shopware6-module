@@ -134,12 +134,11 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
     {
         $validations = [];
 
-        if (!empty($salesChannelContext->getCustomer()->getActiveBillingAddress()->getCompany())) {
-            // phone is not required anymore
-            //$validations['phone'] = [new NotBlank(['message' => 'ratepay.storefront.checkout.errors.missingPhone'])];
-            $validations['vatId'] = [new NotBlank(['message' => 'ratepay.storefront.checkout.errors.missingVatId'])];
-        } else {
-            $validations['birthday'] = [new NotBlank(['message' => 'ratepay.storefront.checkout.errors.missingBirthday']), new BirthdayConstraint('-18 years')];
+        if (empty($salesChannelContext->getCustomer()->getActiveBillingAddress()->getCompany())) {
+            $validations['birthday'] = [
+                new NotBlank(['message' => 'ratepay.storefront.checkout.errors.missingBirthday']),
+                new BirthdayConstraint('-18 years'),
+            ];
         }
         return $validations;
     }
