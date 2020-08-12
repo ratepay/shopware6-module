@@ -125,7 +125,11 @@ class ExtensionService
                 $customerVatId = $customerBillingAddress->getVatId();
                 $customerPhoneNumber = $customerBillingAddress->getPhoneNumber();
                 $customerCompany = $customerBillingAddress->getCompany();
-                $accountHolder = $customerBillingAddress->getFirstName() . " " . $customerBillingAddress->getLastName();
+                if ($customerBillingAddress->getCompany()) {
+                    $accountHolder = $customerBillingAddress->getCompany();
+                } else {
+                    $accountHolder = $customerBillingAddress->getFirstName() . " " . $customerBillingAddress->getLastName();
+                }
             }
         }
 
