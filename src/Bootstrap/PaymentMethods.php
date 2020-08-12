@@ -21,6 +21,40 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 
 class PaymentMethods extends AbstractBootstrap
 {
+
+    private const PAYMENT_METHODS = [
+        [
+            'handlerIdentifier' => InvoicePaymentHandler::class,
+            'name' => 'Ratepay Rechnung',
+            'description' => 'Kauf auf Rechnung',
+            'afterOrderEnabled' => true,
+        ],
+        [
+            'handlerIdentifier' => PrepaymentPaymentHandler::class,
+            'name' => 'Ratepay Vorkasse',
+            'description' => 'Kauf per Vorkasse',
+            'afterOrderEnabled' => true,
+        ],
+        [
+            'handlerIdentifier' => DebitPaymentHandler::class,
+            'name' => 'Ratepay Lastschrift',
+            'description' => 'Kauf per SEPA Lastschrift',
+            'afterOrderEnabled' => true,
+        ],
+        [
+            'handlerIdentifier' => InstallmentPaymentHandler::class,
+            'name' => 'Ratepay Ratenzahlung',
+            'description' => 'Kauf per Ratenzahlung',
+            'afterOrderEnabled' => true,
+        ],
+        [
+            'handlerIdentifier' => InstallmentZeroPercentPaymentHandler::class,
+            'name' => 'Ratepay 0% Finanzierung',
+            'description' => 'Kauf per 0% Finanzierung',
+            'afterOrderEnabled' => true,
+        ],
+    ];
+
     /**
      * @var EntityRepositoryInterface
      */
@@ -31,98 +65,50 @@ class PaymentMethods extends AbstractBootstrap
         $this->paymentRepository = $this->container->get('payment_method.repository');
     }
 
-    public function update()
+    public function update(): void
     {
         $this->install();
     }
 
-    public function install()
+    public function install(): void
     {
-        $payments = [
-            [
-                'handlerIdentifier' => InvoicePaymentHandler::class,
-                'name' => 'Ratepay Rechnung',
-                'description' => 'Kauf auf Rechnung',
-                'pluginId' => $this->plugin->getId()
-            ],
-            [
-                'handlerIdentifier' => PrepaymentPaymentHandler::class,
-                'name' => 'Ratepay Vorkasse',
-                'description' => 'Kauf per Vorkasse',
-                'pluginId' => $this->plugin->getId()
-            ],
-            [
-                'handlerIdentifier' => DebitPaymentHandler::class,
-                'name' => 'Ratepay Lastschrift',
-                'description' => 'Kauf per SEPA Lastschrift',
-                'pluginId' => $this->plugin->getId()
-            ],
-            [
-                'handlerIdentifier' => InstallmentPaymentHandler::class,
-                'name' => 'Ratepay Ratenzahlung',
-                'description' => 'Kauf per Ratenzahlung',
-                'pluginId' => $this->plugin->getId()
-            ],
-            [
-                'handlerIdentifier' => InstallmentZeroPercentPaymentHandler::class,
-                'name' => 'Ratepay 0% Finanzierung',
-                'description' => 'Kauf per 0% Finanzierung',
-                'pluginId' => $this->plugin->getId()
-            ]
-        ];
+        foreach (self::PAYMENT_METHODS as $paymentMethod) {
+            $paymentMethod['pluginId'] = $this->plugin->getId();
+            $this->paymentRepository->upsert([$paymentMethod], $this->defaultContext);
+        }
 
-        foreach ($payments as $index => $payment) {
-            $paymentEntities = $this->paymentRepository->search(
-                ((new Criteria())
-                    ->addFilter(new EqualsFilter('pluginId', $this->plugin->getId()))
-                    ->addFilter(new EqualsFilter('handlerIdentifier', $payment['handlerIdentifier']))
-                    ->setLimit(1)
-                ),
-                $this->defaultContext
-            );
-            $paymentEntity = $paymentEntities->first();
-            if ($paymentEntity !== null) {
-                unset($payments[$index]);
-            }
-        }
-        if(count($payments) > 0) {
-            $this->paymentRepository->upsert(array_values($payments), $this->defaultContext);
-        }
         $this->setActiveFlags(true);
     }
 
-    protected function setActiveFlags(bool $activated)
+    public function uninstall($keepUserData = false): void
+    {
+        $this->setActiveFlags(false);
+    }
+
+    public function activate(): void
+    {
+        $this->setActiveFlags(true);
+    }
+
+    public function deactivate(): void
+    {
+        $this->setActiveFlags(false);
+    }
+
+    protected function setActiveFlags(bool $activated): void
     {
         $paymentEntities = $this->paymentRepository->search(
-            ((new Criteria())
-                ->addFilter(new EqualsFilter('pluginId', $this->plugin->getId()))
-                ->setLimit(1)
-            ),
+            (new Criteria())->addFilter(new EqualsFilter('pluginId', $this->plugin->getId())),
             $this->defaultContext
         );
 
-        $updateData = array_map(function (PaymentMethodEntity $entity) use ($activated) {
+        $updateData = array_map(static function (PaymentMethodEntity $entity) use ($activated) {
             return [
                 'id' => $entity->getId(),
-                'active' => $activated
+                'active' => $activated,
             ];
         }, $paymentEntities->getElements());
 
         $this->paymentRepository->update(array_values($updateData), $this->defaultContext);
-    }
-
-    public function uninstall($keepUserData = false)
-    {
-        $this->setActiveFlags(false);
-    }
-
-    public function activate()
-    {
-        $this->setActiveFlags(true);
-    }
-
-    public function deactivate()
-    {
-        $this->setActiveFlags(false);
     }
 }
