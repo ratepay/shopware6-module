@@ -73,11 +73,10 @@ class PaymentMethods extends AbstractBootstrap
     public function install(): void
     {
         foreach (self::PAYMENT_METHODS as $paymentMethod) {
-            $paymentMethod['pluginId'] = $this->plugin->getId();
-            $this->paymentRepository->upsert([$paymentMethod], $this->defaultContext);
+            $this->upsertPaymentMethod($paymentMethod);
         }
 
-        $this->setActiveFlags(true);
+        $this->setActiveFlags(false);
     }
 
     public function uninstall($keepUserData = false): void
@@ -93,6 +92,26 @@ class PaymentMethods extends AbstractBootstrap
     public function deactivate(): void
     {
         $this->setActiveFlags(false);
+    }
+
+    protected function upsertPaymentMethod(array $paymentMethod): void
+    {
+        $paymentSearchResult = $this->paymentRepository->search(
+            ((new Criteria())
+                ->addFilter(new EqualsFilter('handlerIdentifier', $paymentMethod['handlerIdentifier']))
+                ->setLimit(1)
+            ),
+            $this->defaultContext
+        );
+
+        /** @var PaymentMethodEntity|null $paymentEntity */
+        $paymentEntity = $paymentSearchResult->first();
+        if ($paymentEntity) {
+            $paymentMethod['id'] = $paymentEntity->getId();
+        }
+
+        $paymentMethod['pluginId'] = $this->plugin->getId();
+        $this->paymentRepository->upsert([$paymentMethod], $this->defaultContext);
     }
 
     protected function setActiveFlags(bool $activated): void
