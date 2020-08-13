@@ -37,17 +37,17 @@
                     "success": "The articles has been marked as returned."
                 },
                 "addCredit": {
-                    "success": "Der Nachlass wurde erfolgreich hinzugefügt!"
+                    "success": "The credit has been successfully added!"
                 },
                 "addDebit": {
-                    "success": "Die Nachbelastung wurde erfolgreich hinzugefügt!"
+                    "success": "The debit has been successfully added!"
                 }
             },
             "modal": {
                 "addCredit": {
                     "label": {
-                        "name": "Bezeichnung",
-                        "amount": "Betrag"
+                        "name": "Title",
+                        "amount": "Amount"
                     },
                     "defaultValue": {
                         "name": ""
@@ -55,8 +55,8 @@
                 },
                 "addDebit": {
                     "label": {
-                        "name": "Bezeichnung",
-                        "amount": "Betrag"
+                        "name": "Title",
+                        "amount": "Amount"
                     },
                     "defaultValue": {
                         "name": ""
