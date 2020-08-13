@@ -35,6 +35,32 @@
                 },
                 "return": {
                     "success": "The articles has been marked as returned."
+                },
+                "addCredit": {
+                    "success": "Der Nachlass wurde erfolgreich hinzugefügt!"
+                },
+                "addDebit": {
+                    "success": "Die Nachbelastung wurde erfolgreich hinzugefügt!"
+                }
+            },
+            "modal": {
+                "addCredit": {
+                    "label": {
+                        "name": "Bezeichnung",
+                        "amount": "Betrag"
+                    },
+                    "defaultValue": {
+                        "name": ""
+                    }
+                },
+                "addDebit": {
+                    "label": {
+                        "name": "Bezeichnung",
+                        "amount": "Betrag"
+                    },
+                    "defaultValue": {
+                        "name": ""
+                    }
                 }
             }
         }
