@@ -202,6 +202,9 @@ Component.register('ratepay-order-management', {
                         this.onCloseDebitModal();
                         this.loading.addDebit = false;
                         this.$emit('ratepayActionTriggered');
+                        // Reset values
+                        this.addDebit.name = this.$t('ratepay.orderManagement.modal.addDebit.defaultValue.name');
+                        this.addDebit.value = 0.01;
                     });
                 })
                 .catch((response) => {
@@ -219,6 +222,9 @@ Component.register('ratepay-order-management', {
                         this.onCloseCreditModal();
                         this.loading.addCredit = false;
                         this.$emit('ratepayActionTriggered');
+                        // Reset values
+                        this.addCredit.name = this.$t('ratepay.orderManagement.modal.addCredit.defaultValue.name');
+                        this.addCredit.value = 0.01;
                     });
                 })
                 .catch((response) => {

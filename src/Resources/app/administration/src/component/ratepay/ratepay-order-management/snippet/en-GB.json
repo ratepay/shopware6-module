@@ -35,6 +35,32 @@
                 },
                 "return": {
                     "success": "The articles has been marked as returned."
+                },
+                "addCredit": {
+                    "success": "The credit has been successfully added!"
+                },
+                "addDebit": {
+                    "success": "The debit has been successfully added!"
+                }
+            },
+            "modal": {
+                "addCredit": {
+                    "label": {
+                        "name": "Title",
+                        "amount": "Amount"
+                    },
+                    "defaultValue": {
+                        "name": ""
+                    }
+                },
+                "addDebit": {
+                    "label": {
+                        "name": "Title",
+                        "amount": "Amount"
+                    },
+                    "defaultValue": {
+                        "name": ""
+                    }
                 }
             }
         }
