@@ -47,13 +47,12 @@ export default class OrderManagementApiService extends ApiService {
             ).then(response => response.data)
     }
 
-    addItem(action, orderId, amount, label) {
+    addItem(action, orderId, data) {
         return this.httpClient
             .post(this.getApiBasePath() + '/addItem/' + orderId,
                 {
                     action: action,
-                    amount: amount,
-                    label: label
+                    ...data
                 },
                 {
                     headers: this.getBasicHeaders()

@@ -47,7 +47,12 @@
                 "addCredit": {
                     "label": {
                         "name": "Title",
-                        "amount": "Amount"
+                        "tax": "Tax Rate",
+                        "amountGross": "Amount (Gross)",
+                        "amountNet": "Amount (Net)"
+                    },
+                    "placeholder": {
+                        "tax": "Select a tax rate ..."
                     },
                     "defaultValue": {
                         "name": ""
@@ -56,7 +61,12 @@
                 "addDebit": {
                     "label": {
                         "name": "Title",
-                        "amount": "Amount"
+                        "tax": "Tax Rate",
+                        "amountGross": "Amount (Gross)",
+                        "amountNet": "Amount (Net)"
+                    },
+                    "placeholder": {
+                        "tax": "Select a tax rate ..."
                     },
                     "defaultValue": {
                         "name": ""

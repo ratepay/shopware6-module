@@ -9,12 +9,14 @@ import template from './ratepay-order-management.html.twig';
 import './ratepay-order-management.scss';
 
 const {Component, Mixin} = Shopware;
+const { Criteria } = Shopware.Data;
 
 Component.register('ratepay-order-management', {
     template,
 
     inject: {
-        orderManagementService: "ratepay-order-management-service"
+        orderManagementService: "ratepay-order-management-service",
+        repositoryFactory: "repositoryFactory"
     },
 
     props: ['order'],
@@ -26,12 +28,12 @@ Component.register('ratepay-order-management', {
     data() {
         return {
             items: [],
-            //order: null,
+            taxes: [],
+            defaultTax: null,
             activeTab: 'shipping',
             processSuccess: false,
             orderId: null,
             loading: {
-
                 list: true,
                 deliver: false,
                 cancel: false,
@@ -46,17 +48,21 @@ Component.register('ratepay-order-management', {
             showDebitModal: false,
             addCredit: {
                 showModal: false,
-                value: 0.01,
-                minValue: 0.01,
-                maxValue: null,
-                name: this.$t('ratepay.orderManagement.modal.addCredit.defaultValue.name')
+                data: {
+                    amount: null,
+                    name: null,
+                    tax: null,
+                    taxId: null
+                }
             },
             addDebit: {
                 showModal: false,
-                value: 0.01,
-                minValue: 0.01,
-                maxValue: null,
-                name: this.$t('ratepay.orderManagement.modal.addDebit.defaultValue.name')
+                data: {
+                    amount: null,
+                    name: null,
+                    tax: null,
+                    taxId: null
+                }
             }
         };
     },
@@ -100,12 +106,15 @@ Component.register('ratepay-order-management', {
                     align: 'center'
                 }
             ];
-        }
+        },
+        taxRepository() {
+            return this.repositoryFactory.create('tax');
+        },
     },
 
     created() {
-        window.ooo = this.order;
         this.loadList();
+        this.loadTaxes();
     },
 
     methods: {
@@ -124,6 +133,54 @@ Component.register('ratepay-order-management', {
                     resolve()
                 });
             });
+        },
+        loadTaxes() {
+            return this.taxRepository.search(new Criteria(1, 500), Shopware.Context.api).then((res) => {
+                this.taxes = res;
+                this.defaultTax = res[0];
+                this.initCredit();
+                this.initDebit();
+            });
+        },
+        initCredit() {
+            this.addCredit.data.amount = [
+                {
+                    net: null,
+                    gross: null,
+                    currencyId: this.order.currencyId,
+                    linked: true
+                }
+            ];
+            this.addCredit.data.name = this.$t('ratepay.orderManagement.modal.addCredit.defaultValue.name');
+            this.addCredit.data.tax = this.defaultTax;
+            this.addCredit.data.taxId = null;
+        },
+        initDebit() {
+            this.addDebit.data.amount = [
+                {
+                    net: null,
+                    gross: null,
+                    currencyId: this.order.currencyId,
+                    linked: true
+                }
+            ];
+            this.addDebit.data.name = this.$t('ratepay.orderManagement.modal.addDebit.defaultValue.name');
+            this.addDebit.data.tax = this.defaultTax;
+            this.addDebit.data.taxId = null;
+        },
+        updateCreditTax() {
+            this.taxes.forEach((tax) => {
+                if (tax.id === this.addCredit.data.taxId) {
+                    this.addCredit.data.tax = tax;
+                }
+            })
+        },
+        updateDebitTax() {
+            this.taxes.forEach((tax) => {
+                if (tax.id === this.addDebit.data.taxId) {
+                    this.addDebit.data.tax = tax;
+                }
+            })
         },
         onClickButtonDeliver() {
             this.loading.deliver = true;
@@ -195,16 +252,14 @@ Component.register('ratepay-order-management', {
         onClickButtonAddDebit() {
             this.loading.addDebit = true;
             this.orderManagementService
-                .addItem('debit', this.order.id, parseFloat(this.addDebit.value), this.addDebit.name)
+                .addItem('debit', this.order.id, this.addDebit.data)
                 .then(response => {
                     this.showMessage(response, 'addDebit');
                     this.loadList().then(() => {
                         this.onCloseDebitModal();
                         this.loading.addDebit = false;
                         this.$emit('ratepayActionTriggered');
-                        // Reset values
-                        this.addDebit.name = this.$t('ratepay.orderManagement.modal.addDebit.defaultValue.name');
-                        this.addDebit.value = 0.01;
+                        this.initDebit();
                     });
                 })
                 .catch((response) => {
@@ -214,17 +269,17 @@ Component.register('ratepay-order-management', {
         },
         onClickButtonAddCredit() {
             this.loading.addCredit = true;
+            this.addCredit.data.amount.net *= -1;
+            this.addCredit.data.amount.gross *= -1;
             this.orderManagementService
-                .addItem('credit', this.order.id, parseFloat(this.addCredit.value) * -1, this.addCredit.name)
+                .addItem('credit', this.order.id, this.addCredit.data)
                 .then(response => {
                     this.showMessage(response, 'addCredit');
                     this.loadList().then(() => {
                         this.onCloseCreditModal();
                         this.loading.addCredit = false;
                         this.$emit('ratepayActionTriggered');
-                        // Reset values
-                        this.addCredit.name = this.$t('ratepay.orderManagement.modal.addCredit.defaultValue.name');
-                        this.addCredit.value = 0.01;
+                        this.initCredit();
                     });
                 })
                 .catch((response) => {

@@ -47,7 +47,12 @@
                 "addCredit": {
                     "label": {
                         "name": "Bezeichnung",
-                        "amount": "Betrag"
+                        "tax": "Steuersatz",
+                        "amountGross": "Betrag (Brutto)",
+                        "amountNet": "Betrag (Netto)"
+                    },
+                    "placeholder": {
+                        "tax": "Wähle einen Steuersatz aus ..."
                     },
                     "defaultValue": {
                         "name": ""
@@ -56,7 +61,12 @@
                 "addDebit": {
                     "label": {
                         "name": "Bezeichnung",
-                        "amount": "Betrag"
+                        "tax": "Steuersatz",
+                        "amountGross": "Betrag (Brutto)",
+                        "amountNet": "Betrag (Netto)"
+                    },
+                    "placeholder": {
+                        "tax": "Wähle einen Steuersatz aus ..."
                     },
                     "defaultValue": {
                         "name": ""
