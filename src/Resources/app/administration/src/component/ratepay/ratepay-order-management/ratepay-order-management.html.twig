@@ -126,7 +126,13 @@
             <label>{{ $t('ratepay.orderManagement.modal.addDebit.label.name') }}</label>
             <sw-text-field :value="addDebit.name" v-model="addDebit.name"></sw-text-field>
             <label>{{ $t('ratepay.orderManagement.modal.addDebit.label.amount') }}</label>
-            <sw-number-field numberType="float" :step="0.01" :min="addDebit.min" :max="addDebit.maxValue" :digits="2" :value="addDebit.value" v-model="addDebit.value">
+            <sw-number-field numberType="float"
+                             :step="0.01"
+                             :min="addDebit.minValue"
+                             :max="addDebit.maxValue"
+                             :digits="2"
+                             :value="addDebit.value"
+                             v-model="addDebit.value">
             </sw-number-field>
         </template>
         <template slot="modal-footer">
@@ -147,7 +153,13 @@
             <label>{{ $t('ratepay.orderManagement.modal.addCredit.label.name') }}</label>
             <sw-text-field :value="addCredit.name" v-model="addCredit.name"></sw-text-field>
             <label>{{ $t('ratepay.orderManagement.modal.addCredit.label.amount') }}</label>
-            <sw-number-field numberType="float" :step="0.01" :min="addCredit.min" :max="addCredit.maxValue" :digits="2" :value="addCredit.value" v-model="addCredit.value">
+            <sw-number-field numberType="float"
+                             :step="0.01"
+                             :min="addCredit.minValue"
+                             :max="addCredit.maxValue"
+                             :digits="2"
+                             :value="addCredit.value"
+                             v-model="addCredit.value">
             </sw-number-field>
         </template>
         <template slot="modal-footer">

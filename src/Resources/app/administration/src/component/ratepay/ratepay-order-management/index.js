@@ -48,7 +48,7 @@ Component.register('ratepay-order-management', {
                 showModal: false,
                 value: 0.01,
                 minValue: 0.01,
-                maxValue: 10,
+                maxValue: null,
                 name: this.$t('ratepay.orderManagement.modal.addCredit.defaultValue.name')
             },
             addDebit: {
