@@ -36,14 +36,14 @@ Module.register('ratepay-profile-config', {
             component: 'ratepay-profile-config-detail',
             path: 'detail/:id',
             meta: {
-                parentPath: 'ratepay-profile-config-list'
+                parentPath: 'ratepay.profile.config.list'
             }
         },
         create: {
             component: 'ratepay-profile-config-create',
             path: 'create',
             meta: {
-                parentPath: 'ratepay-profile-config-list'
+                parentPath: 'ratepay.profile.config.list'
             }
         }
     },
