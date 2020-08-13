@@ -18,6 +18,7 @@ use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
+use function Amp\Promise\first;
 
 class ShoppingBasketFactory extends AbstractFactory
 {
@@ -45,13 +46,14 @@ class ShoppingBasketFactory extends AbstractFactory
                 $item = $qty;
                 /** @var QuantityPriceDefinition $priceDefinition */
                 $priceDefinition = $item->getPriceDefinition();
+                $taxRule = $priceDefinition->getTaxRules()->first();
                 $basket->getItems()->addItem(
                     (new ShoppingBasket\Items\Item())
                         ->setArticleNumber($item->getId())
                         ->setDescription($item->getLabel())
                         ->setQuantity($priceDefinition->getQuantity())
                         ->setUnitPriceGross($priceDefinition->getPrice())
-                        ->setTaxRate($this->getTaxRate($priceDefinition))
+                        ->setTaxRate($taxRule ? $taxRule->getTaxRate() : 0)
                 );
             } elseif ($id === 'shipping') {
                 if($order->getShippingCosts()->getTotalPrice()) {
