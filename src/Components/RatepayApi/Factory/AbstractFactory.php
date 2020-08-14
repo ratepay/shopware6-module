@@ -11,6 +11,8 @@ namespace Ratepay\RatepayPayments\Components\RatepayApi\Factory;
 
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Event\BuildEvent;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 abstract class AbstractFactory
@@ -21,9 +23,15 @@ abstract class AbstractFactory
      */
     private $eventDispatcher;
 
-    public function __construct(EventDispatcherInterface $eventDispatcher)
+    /**
+     * @var RequestStack
+     */
+    private $requestStack;
+
+    public function __construct(EventDispatcherInterface $eventDispatcher, RequestStack $requestStack)
     {
         $this->eventDispatcher = $eventDispatcher;
+        $this->requestStack = $requestStack;
     }
 
     public function getData(IRequestData $requestData): ?object
@@ -38,4 +46,9 @@ abstract class AbstractFactory
     }
 
     abstract protected function _getData(IRequestData $requestData): ?object;
+
+    protected function getRequest(): ?Request
+    {
+        return $this->requestStack->getCurrentRequest();
+    }
 }

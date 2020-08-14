@@ -12,6 +12,7 @@ namespace Ratepay\RatepayPayments\Components\RatepayApi\Factory;
 use RatePAY\Model\Request\SubModel\Head;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
 use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class HeadFactory extends AbstractFactory
@@ -23,9 +24,13 @@ class HeadFactory extends AbstractFactory
      */
     private $configService;
 
-    public function __construct(EventDispatcherInterface $eventDispatcher, ConfigService $configService, $shopwareVersion)
-    {
-        parent::__construct($eventDispatcher);
+    public function __construct(
+        EventDispatcherInterface $eventDispatcher,
+        RequestStack $requestStack,
+        ConfigService $configService,
+        $shopwareVersion
+    ) {
+        parent::__construct($eventDispatcher, $requestStack);
         $this->configService = $configService;
         $this->shopwareVersion = $shopwareVersion;
     }

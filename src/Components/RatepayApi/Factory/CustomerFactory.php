@@ -115,13 +115,20 @@ class CustomerFactory extends AbstractFactory
      *
      * @return string
      */
-    private function _getCustomerIP()
+    private function _getCustomerIP(): ?string
     {
+        if ($this->getRequest()) {
+            return $this->getRequest()->getClientIp();
+        }
+
         if (isset($_SERVER['REMOTE_ADDR'])) {
             return $_SERVER['REMOTE_ADDR'];
-        } else if (isset($_SERVER['SERVER_ADDR'])) {
+        }
+
+        if (isset($_SERVER['SERVER_ADDR'])) {
             return $_SERVER['SERVER_ADDR'];
         }
+
         return null;
     }
 
