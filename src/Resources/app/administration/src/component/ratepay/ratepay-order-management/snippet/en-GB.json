@@ -41,6 +41,12 @@
                 },
                 "addDebit": {
                     "success": "The debit has been successfully added!"
+                },
+                "creditDebitValidation": {
+                    "missingName": "Please insert a name!",
+                    "missingTax": "Please choose a tax rate!",
+                    "missingAmount": "Please insert an amount!",
+                    "amountTooLow": "Please insert a positive amount!"
                 }
             },
             "modal": {

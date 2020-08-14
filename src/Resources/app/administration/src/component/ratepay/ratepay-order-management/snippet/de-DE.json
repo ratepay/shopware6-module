@@ -41,6 +41,12 @@
                 },
                 "addDebit": {
                     "success": "Die Nachbelastung wurde erfolgreich hinzugefügt!"
+                },
+                "creditDebitValidation": {
+                    "missingName": "Bitte gib einen Namen an!",
+                    "missingTax": "Bitte wähle einen Steuersatz aus!",
+                    "missingAmount": "Bitte gib einen Betrag an!",
+                    "amountTooLow": "Bitte gib einen positiven Brutto Betrag an!"
                 }
             },
             "modal": {

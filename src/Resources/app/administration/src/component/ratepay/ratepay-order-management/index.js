@@ -153,7 +153,7 @@ Component.register('ratepay-order-management', {
             ];
             this.addCredit.data.name = this.$t('ratepay.orderManagement.modal.addCredit.defaultValue.name');
             this.addCredit.data.tax = this.defaultTax;
-            this.addCredit.data.taxId = null;
+            this.addCredit.data.taxId = this.defaultTax.id;
         },
         initDebit() {
             this.addDebit.data.amount = [
@@ -166,21 +166,21 @@ Component.register('ratepay-order-management', {
             ];
             this.addDebit.data.name = this.$t('ratepay.orderManagement.modal.addDebit.defaultValue.name');
             this.addDebit.data.tax = this.defaultTax;
-            this.addDebit.data.taxId = null;
+            this.addDebit.data.taxId = this.defaultTax.id;
         },
         updateCreditTax() {
-            this.taxes.forEach((tax) => {
+            for (let tax of this.taxes) {
                 if (tax.id === this.addCredit.data.taxId) {
                     this.addCredit.data.tax = tax;
                 }
-            })
+            }
         },
         updateDebitTax() {
-            this.taxes.forEach((tax) => {
+            for (let tax of this.taxes) {
                 if (tax.id === this.addDebit.data.taxId) {
                     this.addDebit.data.tax = tax;
                 }
-            })
+            }
         },
         onClickButtonDeliver() {
             this.loading.deliver = true;
@@ -251,6 +251,10 @@ Component.register('ratepay-order-management', {
         },
         onClickButtonAddDebit() {
             this.loading.addDebit = true;
+            if (!this.validateCreditDebit(this.addDebit.data)) {
+                this.loading.addDebit = false;
+                return;
+            }
             this.orderManagementService
                 .addItem('debit', this.order.id, this.addDebit.data)
                 .then(response => {
@@ -269,6 +273,10 @@ Component.register('ratepay-order-management', {
         },
         onClickButtonAddCredit() {
             this.loading.addCredit = true;
+            if (!this.validateCreditDebit(this.addCredit.data)) {
+                this.loading.addCredit = false;
+                return;
+            }
             this.orderManagementService
                 .addItem('credit', this.order.id, this.addCredit.data)
                 .then(response => {
@@ -284,6 +292,41 @@ Component.register('ratepay-order-management', {
                     this.loading.addCredit = false;
                     this.showMessage(response, 'addCredit');
                 });
+        },
+        validateCreditDebit(creditDebit) {
+            if (!creditDebit.taxId) {
+                this.showMessage({
+                    success: false,
+                    message: this.$tc('ratepay.orderManagement.messages.creditDebitValidation.missingTax')
+                });
+                return false;
+            }
+
+            if (!creditDebit.name) {
+                this.showMessage({
+                    success: false,
+                    message: this.$tc('ratepay.orderManagement.messages.creditDebitValidation.missingName')
+                });
+                return false;
+            }
+
+            if (!creditDebit.amount[0]) {
+                this.showMessage({
+                    success: false,
+                    message: this.$tc('ratepay.orderManagement.messages.creditDebitValidation.missingAmount')
+                });
+                return false;
+            }
+
+            if (creditDebit.amount[0].gross <= 0) {
+                this.showMessage({
+                    success: false,
+                    message: this.$tc('ratepay.orderManagement.messages.creditDebitValidation.amountTooLow')
+                });
+                return false;
+            }
+
+            return true;
         },
 
         showMessage(response, type) {

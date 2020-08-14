@@ -134,7 +134,8 @@
                       @change="updateDebitTax">
                 <option v-for="tax in taxes"
                         :key="tax.id"
-                        :value="tax.id">
+                        :value="tax.id"
+                        :selected="addDebit.data.taxId === tax.id">
                     {{ tax.name }}
                 </option>
             </sw-field>
@@ -172,7 +173,8 @@
                       @change="updateCreditTax">
                 <option v-for="tax in taxes"
                         :key="tax.id"
-                        :value="tax.id">
+                        :value="tax.id"
+                        :selected="addDebit.data.taxId === tax.id">
                     {{ tax.name }}
                 </option>
             </sw-field>
