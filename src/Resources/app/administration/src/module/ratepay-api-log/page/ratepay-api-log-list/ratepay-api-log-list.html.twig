@@ -15,7 +15,8 @@
                 :repository="repository"
                 :showSelection="false"
                 :columns="columns"
-                :showActions="true">
+                :showActions="true"
+                :identifier="'ratepay-api-log-list'">
 
                 <template slot="column-response" slot-scope="{ item }">
                     <sw-button @click="modalItem = item">
