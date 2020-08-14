@@ -19,12 +19,20 @@ use Shopware\Core\Framework\Uuid\Uuid;
 class AddCreditData extends OrderOperationData
 {
 
+    private const ACTION_CREDIT = 'credit';
+    private const ACTION_DEBIT = 'debit';
+
     public function __construct(
+        string $action,
         OrderEntity $order,
         string $label,
-        float $amount
-    )
-    {
+        array $amount,
+        array $tax
+    ) {
+        if ($action === self::ACTION_CREDIT) {
+            $amount['gross'] *= -1;
+            $amount['net'] *= -1;
+        }
         $lineItem = (new LineItem(Uuid::randomHex(), LineItem::CUSTOM_LINE_ITEM_TYPE, null, 1))
             ->setStackable(false)
             ->setRemovable(false)
@@ -32,15 +40,15 @@ class AddCreditData extends OrderOperationData
             ->setDescription($label)
             ->setPayload([])
             ->setPriceDefinition(QuantityPriceDefinition::fromArray([
-                'isCalculated' => false,
-                'price' => $amount,
+                'isCalculated' => true,
+                'price' => $amount['gross'],
                 'quantity' => 1,
                 'precision' => $order->getCurrency()->getDecimalPrecision(),
                 'taxRules' => [
                     [
-                        'taxRate' => 0,
-                        'percentage' => 100
-                    ]
+                        'taxRate' => $tax['taxRate'],
+                        'percentage' => 100,
+                    ],
                 ]
             ]));
         $lineItem->addExtension(OrderConverter::ORIGINAL_ID, new IdStruct($lineItem->getId()));

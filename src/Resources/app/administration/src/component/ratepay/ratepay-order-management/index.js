@@ -269,8 +269,6 @@ Component.register('ratepay-order-management', {
         },
         onClickButtonAddCredit() {
             this.loading.addCredit = true;
-            this.addCredit.data.amount.net *= -1;
-            this.addCredit.data.amount.gross *= -1;
             this.orderManagementService
                 .addItem('credit', this.order.id, this.addCredit.data)
                 .then(response => {

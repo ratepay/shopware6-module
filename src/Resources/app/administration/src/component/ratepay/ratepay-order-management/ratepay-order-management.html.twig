@@ -138,7 +138,8 @@
                     {{ tax.name }}
                 </option>
             </sw-field>
-            <sw-price-field :taxRate="addDebit.data.tax"
+            <sw-price-field class="rp-price-field hide-lock"
+                            :taxRate="addDebit.data.tax"
                             :price="addDebit.data.amount"
                             :currency="order.currency"
                             :grossLabel="$tc('ratepay.orderManagement.modal.addDebit.label.amountGross')"
@@ -175,7 +176,8 @@
                     {{ tax.name }}
                 </option>
             </sw-field>
-            <sw-price-field :taxRate="addCredit.data.tax"
+            <sw-price-field class="rp-price-field hide-lock"
+                            :taxRate="addCredit.data.tax"
                             :price="addCredit.data.amount"
                             :currency="order.currency"
                             :grossLabel="$tc('ratepay.orderManagement.modal.addCredit.label.amountGross')"

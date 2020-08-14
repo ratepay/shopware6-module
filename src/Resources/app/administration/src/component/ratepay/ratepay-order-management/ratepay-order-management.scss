@@ -34,3 +34,11 @@
 
 
 }
+
+.rp-price-field {
+    &.hide-lock {
+        .sw-price-field__lock {
+            visibility: hidden;
+        }
+    }
+}
