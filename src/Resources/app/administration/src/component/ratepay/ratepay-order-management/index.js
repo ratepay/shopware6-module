@@ -256,8 +256,12 @@ Component.register('ratepay-order-management', {
                 return;
             }
             this.orderManagementService
-                .addItem('debit', this.order.id, this.addDebit.data)
-                .then(response => {
+                .addItem(
+                    this.order.id,
+                    this.addDebit.data.name,
+                    this.addDebit.data.amount[0].gross,
+                    this.addDebit.data.tax.taxRate
+                ).then(response => {
                     this.showMessage(response, 'addDebit');
                     this.loadList().then(() => {
                         this.onCloseDebitModal();
@@ -278,8 +282,12 @@ Component.register('ratepay-order-management', {
                 return;
             }
             this.orderManagementService
-                .addItem('credit', this.order.id, this.addCredit.data)
-                .then(response => {
+                .addItem(
+                    this.order.id,
+                    this.addCredit.data.name,
+                    (this.addCredit.data.amount[0].gross * -1),
+                    this.addCredit.data.tax.taxRate
+                ).then(response => {
                     this.showMessage(response, 'addCredit');
                     this.loadList().then(() => {
                         this.onCloseCreditModal();

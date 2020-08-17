@@ -212,14 +212,13 @@ class ProductPanel extends AbstractController
      */
     public function addItem($orderId, Request $request, Context $context)
     {
-        $action = $request->request->get('action');
-        $amount = $request->request->get('amount');
-        $label = $request->request->get('name');
-        $tax = $request->request->get('tax');
+        $name = $request->request->get('name');
+        $grossAmount = $request->request->get('grossAmount');
+        $taxRate = $request->request->get('taxRate');
 
         $order = $this->fetchOrder($context, $orderId);
 
-        $response = $this->creditService->doRequest($context, new AddCreditData($action, $order, $label, $amount[0], $tax));
+        $response = $this->creditService->doRequest($context, new AddCreditData($order, $name, $grossAmount, $taxRate));
 
         if ($response->getResponse()->isSuccessful()) {
             return $this->json([
