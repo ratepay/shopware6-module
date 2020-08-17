@@ -5,7 +5,9 @@
                 "errors": {
                     "missingSepaConfirm": "Please confirm the SEPA mandate",
                     "missingIban": "Please provide your IBAN.",
-                    "missingBirthday": "Please provide your birthday. You must be at least 18 years old to order with Ratepay."
+                    "missingBirthday": "Please provide your birthday. You must be at least 18 years old to order with Ratepay.",
+                    "invalidBirthday": "Please provide a valid date for your birthday.",
+                    "isNotOfLegalAge": "You must be at least 18 years old to order with Ratepay."
                 },
                 "label": {
                     "birthday": "Birthday"
