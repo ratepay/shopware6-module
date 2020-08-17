@@ -90,7 +90,7 @@ class ShoppingBasketFactory extends AbstractFactory
         } else {
             $discount = $basket->getDiscount() ?: new ShoppingBasket\Discount();
             $discount->setDescription('discount');
-            $discount->setDescriptionAddition($discount->getDescription() ? $discount->getDescription() . ', ' : $item->getLabel());
+            $discount->setDescriptionAddition(($discount->getDescriptionAddition() ? $discount->getDescriptionAddition() . ', ' : null). $item->getLabel());
             $discount->setUnitPriceGross($discount->getUnitPriceGross() + $item->getTotalPrice());
             $discount->setTaxRate($this->getTaxRate($item->getPrice()));
             $basket->setDiscount($discount);
