@@ -60,22 +60,13 @@ class CustomerFactory extends AbstractFactory
 
         /** @var RequestDataBag $requestData */
         $requestData = $requestDataBag->get('ratepay');
-        if ($billingAddress->getCompany() == null) {
-            if ($requestData->has('birthday')) {
-                /** @var RequestDataBag $birthday */
-                $birthday = $requestData->get('birthday');
-                $customer->setDateOfBirth($birthday->getInt('year') . '-' . $birthday->getInt('month') . '-' . $birthday->getInt('day'));
-            } else {
-                $customer->setDateOfBirth($order->getOrderCustomer()->getCustomer()->getBirthday()->format('Y-m-d'));
-            }
+        if ($billingAddress->getCompany() === null &&
+            $order->getOrderCustomer()->getCustomer()->getBirthday()
+        ) {
+            $customer->setDateOfBirth($order->getOrderCustomer()->getCustomer()->getBirthday()->format('Y-m-d'));
         }
 
-        if ($requestData->has('phone') && !empty($requestData->get('phone'))) {
-            $customer->getContacts()->setPhone(
-                (new Customer\Contacts\Phone())
-                    ->setDirectDial($requestData->get('phone'))
-            );
-        } else if ($billingAddress->getPhoneNumber()) {
+        if ($billingAddress->getPhoneNumber()) {
             $customer->getContacts()->setPhone(
                 (new Customer\Contacts\Phone())
                     ->setDirectDial($billingAddress->getPhoneNumber())
@@ -91,11 +82,7 @@ class CustomerFactory extends AbstractFactory
 
         if ($billingAddress->getCompany()) {
             $customer->setCompanyName($billingAddress->getCompany());
-            if ($requestData->has('vatId')) {
-                $customer->setVatId($requestData->get('vatId'));
-            } else if ($billingAddress->getVatId()) {
-                $customer->setVatId($billingAddress->getVatId());
-            }
+            $customer->setVatId($billingAddress->getVatId());
         }
 
         if ($requestData->has('bankData')) {
