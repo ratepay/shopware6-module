@@ -31,6 +31,8 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 class ExtensionService
 {
 
+    public const PAYMENT_PAGE_EXTENSION_NAME = 'ratepay';
+
     /**
      * @var EntityRepositoryInterface
      */

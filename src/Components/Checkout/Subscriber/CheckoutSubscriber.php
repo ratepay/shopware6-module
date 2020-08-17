@@ -44,7 +44,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
             $event->getPage()->getPaymentMethods()->has($paymentMethod->getId())
         ) {
             $extension = $this->extensionService->buildPaymentDataExtension($event->getSalesChannelContext());
-            $event->getPage()->addExtension('ratepay', $extension);
+            $event->getPage()->addExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME, $extension);
         }
 
     }

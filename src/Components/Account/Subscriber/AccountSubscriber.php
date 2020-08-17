@@ -52,7 +52,7 @@ class AccountSubscriber implements EventSubscriberInterface
                     $event->getSalesChannelContext(),
                     $page->getOrder()
                 );
-                $event->getPage()->addExtension('ratepay', $extension);
+                $event->getPage()->addExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME, $extension);
             }
         }
     }
