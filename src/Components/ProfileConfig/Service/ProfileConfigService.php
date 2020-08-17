@@ -215,6 +215,8 @@ class ProfileConfigService
         Context $context
     )
     {
+        // TODO: Move this function to a repository
+
         $criteria = new Criteria();
         $criteria->addAssociation(ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS);
 
