@@ -10,7 +10,8 @@ namespace Ratepay\RatepayPayments\Components\PaymentHandler;
 
 
 use Exception;
-use Ratepay\RatepayPayments\Components\PaymentHandler\Constraint\BirthdayConstraint;
+use Ratepay\RatepayPayments\Components\PaymentHandler\Constraint\Birthday;
+use Ratepay\RatepayPayments\Components\PaymentHandler\Constraint\IsOfLegalAge;
 use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
 use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
 use Ratepay\RatepayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
@@ -137,7 +138,8 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
         if (empty($salesChannelContext->getCustomer()->getActiveBillingAddress()->getCompany())) {
             $validations['birthday'] = [
                 new NotBlank(['message' => 'ratepay.storefront.checkout.errors.missingBirthday']),
-                new BirthdayConstraint('-18 years'),
+                new Birthday(['message' => 'ratepay.storefront.checkout.errors.invalidBirthday']),
+                new IsOfLegalAge(['message' => 'ratepay.storefront.checkout.errors.isNotOfLegalAge']),
             ];
         }
         return $validations;

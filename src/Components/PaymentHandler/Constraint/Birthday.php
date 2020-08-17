@@ -8,12 +8,12 @@
 
 namespace Ratepay\RatepayPayments\Components\PaymentHandler\Constraint;
 
-use Symfony\Component\Validator\Constraints\LessThanOrEqual;
+use Symfony\Component\Validator\Constraints\Date;
 
-class BirthdayConstraint extends LessThanOrEqual
+class Birthday extends Date
 {
-    public function validatedBy()
+    public function validatedBy(): string
     {
-        return BirthdayConstraintValidator::class;
+        return BirthdayValidator::class;
     }
 }

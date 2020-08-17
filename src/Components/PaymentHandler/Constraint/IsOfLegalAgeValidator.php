@@ -13,13 +13,12 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\LessThanOrEqualValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
-class BirthdayConstraintValidator extends LessThanOrEqualValidator
+class IsOfLegalAgeValidator extends LessThanOrEqualValidator
 {
-
-    public function validate($value, Constraint $constraint)
+    public function validate($value, Constraint $constraint): void
     {
-        if (!$constraint instanceof BirthdayConstraint) {
-            throw new UnexpectedTypeException($constraint, BirthdayConstraint::class);
+        if (!$constraint instanceof IsOfLegalAge) {
+            throw new UnexpectedTypeException($constraint, IsOfLegalAge::class);
         }
 
         if (!is_array($value) || !isset($value['year'], $value['month'], $value['day'])) {
@@ -27,6 +26,5 @@ class BirthdayConstraintValidator extends LessThanOrEqualValidator
         }
 
         parent::validate((new DateTime())->setDate($value['year'], $value['month'], $value['day']), $constraint);
-
     }
 }
