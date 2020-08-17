@@ -169,10 +169,14 @@ Component.register('ratepay-order-management', {
             this.addDebit.data.taxId = this.defaultTax.id;
         },
         updateCreditTax() {
-            this.addCredit.data.tax = this.taxes.get(this.addCredit.data.taxId);
+            if (this.addCredit.data.taxId) {
+                this.addCredit.data.tax = this.taxes.get(this.addCredit.data.taxId);
+            }
         },
         updateDebitTax() {
-            this.addDebit.data.tax = this.taxes.get(this.addDebit.data.taxId);
+            if (this.addDebit.data.taxId) {
+                this.addDebit.data.tax = this.taxes.get(this.addDebit.data.taxId);
+            }
         },
         onClickButtonDeliver() {
             this.loading.deliver = true;
