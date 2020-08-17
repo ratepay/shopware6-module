@@ -10,6 +10,7 @@ namespace Ratepay\RatepayPayments\Components\DeviceFingerprint\Subscriber;
 
 use RatePAY\Model\Request\SubModel\Head;
 use RatePAY\Model\Request\SubModel\Head\CustomerDevice;
+use Ratepay\RatepayPayments\Components\Checkout\Service\ExtensionService;
 use Ratepay\RatepayPayments\Components\DeviceFingerprint\DfpService;
 use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
 use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
@@ -42,16 +43,16 @@ class DeviceFingerprintSubscriber implements EventSubscriberInterface
     }
 
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class => 'addRatepayTemplateData',
+            CheckoutConfirmPageLoadedEvent::class => ['addRatepayTemplateData', 300],
             PaymentSuccessfulEvent::class => 'onPaymentSuccessful',
-            PaymentRequestService::EVENT_BUILD_HEAD => 'onPaymentRequest'
+            PaymentRequestService::EVENT_BUILD_HEAD => 'onPaymentRequest',
         ];
     }
 
-    public function onPaymentRequest(BuildEvent $buildEvent)
+    public function onPaymentRequest(BuildEvent $buildEvent): void
     {
         /** @var Head $head */
         $head = $buildEvent->getBuildData();
@@ -61,33 +62,27 @@ class DeviceFingerprintSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function onPaymentSuccessful(PaymentSuccessfulEvent $event)
+    public function onPaymentSuccessful(PaymentSuccessfulEvent $event): void
     {
         $this->dfpService->deleteToken();
     }
 
     /**
      * @param CheckoutConfirmPageLoadedEvent $event
-     * @codeCoverageIgnore
      */
     public function addRatepayTemplateData(CheckoutConfirmPageLoadedEvent $event): void
     {
-        if (strpos($event->getSalesChannelContext()->getPaymentMethod()->getHandlerIdentifier(), 'RatepayPayments') !== false) {
+        if ($event->getPage()->hasExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME)) {
             $snippetId = $this->configService->getDeviceFingerprintSnippetId();
-            if ($snippetId == null) {
-                return;
-            }
-
-            if ($this->dfpService->isDfpIdAlreadyGenerated() == false) {
+            if ($this->dfpService->isDfpIdAlreadyGenerated() === false) {
                 $dfpHelper = new DeviceFingerprint($snippetId);
                 $snippet = str_replace('\"', '"', $dfpHelper->getDeviceIdentSnippet($this->dfpService->getDfpId()));
 
-                $extension = $event->getPage()->getExtension('ratepay') ?? new ArrayStruct();
-                $extension->set('snippet', $snippet);
-                $event->getPage()->addExtension('ratepayDfp', $extension);
+                /** @var ArrayStruct $extension */
+                $extension = $event->getPage()->getExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME);
+                $extension->set('dfp', $snippet);
             }
         }
-
     }
 
 }
