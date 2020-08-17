@@ -33,7 +33,7 @@
 
 {% block base_footer %}
     {{ parent() }}
-    {% if page.extensions.ratepay.dfp %}
-        {{ page.extensions.ratepay.dfp|raw }}
+    {% if page.extensions.ratepayDfp %}
+        {{ page.extensions.ratepayDfp.snippet|raw }}
     {% endif %}
 {% endblock %}

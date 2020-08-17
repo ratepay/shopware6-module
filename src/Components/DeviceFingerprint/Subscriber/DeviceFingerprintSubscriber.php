@@ -83,8 +83,8 @@ class DeviceFingerprintSubscriber implements EventSubscriberInterface
                 $snippet = str_replace('\"', '"', $dfpHelper->getDeviceIdentSnippet($this->dfpService->getDfpId()));
 
                 $extension = $event->getPage()->getExtension('ratepay') ?? new ArrayStruct();
-                $extension->set('dfp', $snippet);
-                $event->getPage()->addExtension('ratepay', $extension);
+                $extension->set('snippet', $snippet);
+                $event->getPage()->addExtension('ratepayDfp', $extension);
             }
         }
 
