@@ -35,7 +35,7 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
     {
         return [
             PaymentRequestService::EVENT_SUCCESSFUL => 'onSuccess',
-            PaymentRequestService::EVENT_FAILED => 'onFailure'
+            PaymentRequestService::EVENT_FAILED => 'onFailure',
         ];
     }
 

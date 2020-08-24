@@ -37,7 +37,8 @@ class MethodHelper
      */
     public static function isRatepayOrder(OrderEntity $order): bool
     {
-        return ($transaction = $order->getTransactions()->last()) &&
+        $transaction = $order->getTransactions()->last();
+        return $transaction &&
             $transaction->getPaymentMethod() &&
             self::isRatepayMethod($transaction->getPaymentMethod()->getHandlerIdentifier());
     }

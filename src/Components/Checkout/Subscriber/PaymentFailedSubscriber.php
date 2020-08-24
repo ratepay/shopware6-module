@@ -86,7 +86,8 @@ class PaymentFailedSubscriber implements EventSubscriberInterface
                 return;
             }
 
-            if ($response && $session = $this->container->get('session')) {
+            $session = $this->container->get('session');
+            if ($response && $session) {
                 $message = !empty($response->getCustomerMessage()) ? $response->getCustomerMessage() : $response->getResultMessage();
                 $session->getFlashBag()->add('danger', $message);
             }
