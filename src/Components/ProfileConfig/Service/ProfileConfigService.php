@@ -185,13 +185,20 @@ class ProfileConfigService
     ): ?ProfileConfigEntity
     {
 
+        if (($customer = $salesChannelContext->getCustomer()) === null ||
+            ($billingAddress = $customer->getActiveBillingAddress()) === null ||
+            ($shippingAddress = $customer->getActiveShippingAddress()) === null
+        ) {
+            return null;
+        }
+
         if ($paymentMethodId === null) {
             $paymentMethodId = $salesChannelContext->getPaymentMethod()->getId();
         }
-        $billingCountry = $salesChannelContext->getCustomer()->getActiveBillingAddress()->getCountry()->getIso();
+        $billingCountry = $billingAddress->getCountry()->getIso();
 
-        if ($delivery = $salesChannelContext->getCustomer()->getActiveShippingAddress()) {
-            $shippingCountry = $delivery->getCountry()->getIso();
+        if ($shippingAddress) {
+            $shippingCountry = $shippingAddress->getCountry()->getIso();
         } else {
             $shippingCountry = $billingCountry;
         }
