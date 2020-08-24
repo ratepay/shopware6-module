@@ -17,10 +17,7 @@ use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEn
 use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayPositionEntity;
 use Ratepay\RatepayPayments\Components\InstallmentCalculator\Service\InstallmentService;
 use Ratepay\RatepayPayments\Util\MethodHelper;
-use Shopware\Core\Checkout\Customer\CustomerEntity;
-use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -87,6 +84,7 @@ class ExtensionService
         OrderEntity $order,
         string $transactionId,
         string $profileId,
+        bool $successful,
         Context $context
     ): RatepayOrderDataEntity
     {
@@ -95,6 +93,7 @@ class ExtensionService
             RatepayOrderDataEntity::FIELD_ORDER_VERSION_ID => $order->getVersionId(),
             RatepayOrderDataEntity::FIELD_PROFILE_ID => $profileId,
             RatepayOrderDataEntity::FIELD_TRANSACTION_ID => $transactionId,
+            RatepayOrderDataEntity::FIELD_SUCCESSFUL => $successful,
         ];
 
         if ($order->getShippingCosts()->getTotalPrice() > 0) {

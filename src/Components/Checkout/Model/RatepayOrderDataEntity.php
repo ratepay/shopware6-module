@@ -23,6 +23,7 @@ class RatepayOrderDataEntity extends Entity
     public const FIELD_TRANSACTION_ID = 'transactionId';
     public const FIELD_SHIPPING_POSITION_ID = 'shippingPositionId';
     public const FIELD_SHIPPING_POSITION = 'shippingPosition';
+    public const FIELD_SUCCESSFUL = 'successful';
 
     use EntityIdTrait;
 
@@ -61,6 +62,11 @@ class RatepayOrderDataEntity extends Entity
      * @var RatepayPositionEntity|null
      */
     protected $shippingPosition;
+
+    /**
+     * @var bool
+     */
+    protected $successful;
 
     /**
      * @return string
@@ -172,5 +178,13 @@ class RatepayOrderDataEntity extends Entity
     public function setProfileId(string $profileId): void
     {
         $this->profileId = $profileId;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSuccessful(): bool
+    {
+        return $this->successful;
     }
 }

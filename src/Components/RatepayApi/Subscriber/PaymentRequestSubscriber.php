@@ -34,8 +34,27 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            PaymentRequestService::EVENT_SUCCESSFUL => 'onSuccess'
+            PaymentRequestService::EVENT_SUCCESSFUL => 'onSuccess',
+            PaymentRequestService::EVENT_FAILED => 'onFailure'
         ];
+    }
+
+    public function onFailure(ResponseEvent $requestEvent)
+    {
+        /** @var PaymentRequestData $requestData */
+        $requestData = $requestEvent->getRequestData();
+
+        /** @var PaymentRequest $responseModel */
+        $responseModel = $requestEvent->getRequestBuilder()->getResponse();
+        $requestXml = $requestEvent->getRequestBuilder()->getRequestXmlElement();
+
+        $this->extensionService->createOrderExtensionEntity(
+            $requestData->getOrder(),
+            $responseModel->getTransactionId(),
+            (string)$requestXml->head->credential->{"profile-id"},
+            false,
+            $requestData->getSalesChannelContext()->getContext()
+        );
     }
 
     public function onSuccess(ResponseEvent $requestEvent)
@@ -66,6 +85,7 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
             $requestData->getOrder(),
             $responseModel->getTransactionId(),
             (string)$requestXml->head->credential->{"profile-id"},
+            true,
             $requestData->getSalesChannelContext()->getContext()
         );
 

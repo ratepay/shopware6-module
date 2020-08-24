@@ -31,10 +31,10 @@ abstract class AbstractRequest
     protected const EVENT_FAILED = '.failed';
     protected const EVENT_BUILD_HEAD = '.build.head';
 
-    protected const CALL_PAYMENT_REQUEST = "PaymentRequest";
-    protected const CALL_DELIVER = "ConfirmationDeliver";
-    protected const CALL_CHANGE = "PaymentChange";
-    protected const CALL_PROFILE_REQUEST = "ProfileRequest";
+    public const CALL_PAYMENT_REQUEST = "PaymentRequest";
+    public const CALL_DELIVER = "ConfirmationDeliver";
+    public const CALL_CHANGE = "PaymentChange";
+    public const CALL_PROFILE_REQUEST = "ProfileRequest";
 
     /**
      * @var ConfigService

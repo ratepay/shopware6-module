@@ -13,6 +13,7 @@ use Ratepay\RatepayPayments\Components\Checkout\Model\Collection\RatepayOrderDat
 use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
@@ -70,6 +71,11 @@ class RatepayOrderDataDefinition extends EntityDefinition
                 'shipping_position_id',
                 RatepayOrderDataEntity::FIELD_SHIPPING_POSITION_ID,
                 RatepayPositionDefinition::class
+            )),
+
+            (new BoolField(
+                'successful',
+                RatepayOrderDataEntity::FIELD_SUCCESSFUL
             )),
 
             new OneToOneAssociationField(

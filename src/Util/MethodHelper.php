@@ -30,17 +30,16 @@ class MethodHelper
         ], true);
     }
 
+    /**
+     * checks is the last transaction of an order processed by a ratepay method
+     * @param OrderEntity $order
+     * @return bool
+     */
     public static function isRatepayOrder(OrderEntity $order): bool
     {
-        $hasRatepayTransaction = false;
-        foreach ($order->getTransactions() as $transaction) {
-            if ($transaction->getPaymentMethod()
-                && self::isRatepayMethod($transaction->getPaymentMethod()->getHandlerIdentifier())) {
-                $hasRatepayTransaction = true;
-                break;
-            }
-        }
-        return $hasRatepayTransaction;
+        return ($transaction = $order->getTransactions()->last()) &&
+            $transaction->getPaymentMethod() &&
+            self::isRatepayMethod($transaction->getPaymentMethod()->getHandlerIdentifier());
     }
 
     public static function isInstallmentMethod(string $handlerIdentifier): bool
