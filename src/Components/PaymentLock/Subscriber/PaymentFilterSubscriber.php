@@ -35,9 +35,15 @@ class PaymentFilterSubscriber implements EventSubscriberInterface
 
     public function filterPayments(RatepayPaymentFilterEvent $event)
     {
+        if($event->getOrderEntity()) {
+            $customerId = $event->getOrderEntity()->getOrderCustomer()->getCustomerId();
+        } else {
+            $customerId = $event->getSalesChannelContext()->getCustomer()->getId();
+        }
+
         $isLocked = $this->lockService->isPaymentLocked(
             $event->getPaymentMethod()->getId(),
-            $event->getSalesChannelContext()->getCustomer()->getId(),
+            $customerId,
             $event->getSalesChannelContext()->getContext()
         );
 

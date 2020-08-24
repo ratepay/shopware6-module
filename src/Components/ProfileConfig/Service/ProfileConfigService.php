@@ -18,6 +18,7 @@ use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigMethodIn
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\ProfileRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\ProfileRequestService;
 use Ratepay\RatepayPayments\RatepayPayments;
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
@@ -250,5 +251,29 @@ class ProfileConfigService
 
         return $this->repository->search($criteria, $context)->first();
     }
+
+    public function getProfileConfigByOrderEntity(OrderEntity $order, string $paymentMethodId, Context $context): ?ProfileConfigEntity
+    {
+        $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
+        $shippingAddress = $order->getAddresses()->get($order->getDeliveries()->first()->getShippingOrderAddressId());
+
+        $billingCountry = $billingAddress->getCountry()->getIso();
+
+        if ($shippingAddress) {
+            $shippingCountry = $shippingAddress->getCountry()->getIso();
+        } else {
+            $shippingCountry = $billingCountry;
+        }
+
+        return $this->getProfileConfigDefaultParams(
+            $paymentMethodId,
+            $billingCountry,
+            $shippingCountry,
+            $order->getSalesChannelId(),
+            $order->getCurrency()->getIsoCode(),
+            $context
+        );
+    }
+
 
 }

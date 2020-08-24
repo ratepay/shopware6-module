@@ -12,13 +12,17 @@ use RatePAY\Model\Request\SubModel\Head;
 use RatePAY\Model\Request\SubModel\Head\CustomerDevice;
 use Ratepay\RatepayPayments\Components\Checkout\Service\ExtensionService;
 use Ratepay\RatepayPayments\Components\DeviceFingerprint\DfpService;
+use Ratepay\RatepayPayments\Components\PaymentHandler\Event\AbstractPaymentEvent;
+use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
 use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
 use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RatepayPayments\Components\RatepayApi\Event\BuildEvent;
 use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
 use RatePAY\Service\DeviceFingerprint;
 use Shopware\Core\Framework\Struct\ArrayStruct;
+use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
+use Shopware\Storefront\Page\PageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class DeviceFingerprintSubscriber implements EventSubscriberInterface
@@ -47,7 +51,9 @@ class DeviceFingerprintSubscriber implements EventSubscriberInterface
     {
         return [
             CheckoutConfirmPageLoadedEvent::class => ['addRatepayTemplateData', 300],
-            PaymentSuccessfulEvent::class => 'onPaymentSuccessful',
+            AccountEditOrderPageLoadedEvent::class => ['addRatepayTemplateData', 300],
+            PaymentSuccessfulEvent::class => 'onOrderComplete',
+            PaymentFailedEvent::class => 'onOrderComplete',
             PaymentRequestService::EVENT_BUILD_HEAD => 'onPaymentRequest',
         ];
     }
@@ -62,15 +68,15 @@ class DeviceFingerprintSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function onPaymentSuccessful(PaymentSuccessfulEvent $event): void
+    public function onOrderComplete(AbstractPaymentEvent $event): void
     {
         $this->dfpService->deleteToken();
     }
 
     /**
-     * @param CheckoutConfirmPageLoadedEvent $event
+     * @param PageLoadedEvent $event
      */
-    public function addRatepayTemplateData(CheckoutConfirmPageLoadedEvent $event): void
+    public function addRatepayTemplateData(PageLoadedEvent $event): void
     {
         if ($event->getPage()->hasExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME)) {
             $snippetId = $this->configService->getDeviceFingerprintSnippetId();

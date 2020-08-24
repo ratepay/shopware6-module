@@ -8,7 +8,6 @@
 
 namespace Ratepay\RatepayPayments\Components\Account\Subscriber;
 
-use Ratepay\RatepayPayments\Components\Checkout\Model\Extension\OrderExtension;
 use Ratepay\RatepayPayments\Components\Checkout\Service\ExtensionService;
 use Ratepay\RatepayPayments\Util\MethodHelper;
 use Shopware\Storefront\Event\RouteRequest\HandlePaymentMethodRouteRequestEvent;
@@ -31,15 +30,15 @@ class AccountSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            AccountEditOrderPageLoadedEvent::class => 'onAccountEditOrderPageLoaded',
+            AccountEditOrderPageLoadedEvent::class => ['addRatepayTemplateData', 310],
             HandlePaymentMethodRouteRequestEvent::class => 'onHandlePaymentMethodRouteRequest',
         ];
     }
 
-    public function onAccountEditOrderPageLoaded(AccountEditOrderPageLoadedEvent $event): void
+    public function addRatepayTemplateData(AccountEditOrderPageLoadedEvent $event): void
     {
         $page = $event->getPage();
-        if (MethodHelper::isRatepayOrder($page->getOrder())) {
+        if (false && MethodHelper::isRatepayOrder($page->getOrder())) { // TODO add check: is payment failed
             // You can't change the payment if it is a ratepay order
             $page->setPaymentChangeable(false);
         } else {

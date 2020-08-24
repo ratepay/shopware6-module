@@ -11,6 +11,7 @@ namespace Ratepay\RatepayPayments\Components\Checkout\Event;
 
 use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Contracts\EventDispatcher\Event;
@@ -23,7 +24,7 @@ class RatepayPaymentFilterEvent extends Event
      */
     private $paymentMethod;
     /**
-     * @var SalesChannelContext
+     * @var SalesChannelContext|null
      */
     private $salesChannelContext;
 
@@ -41,18 +42,24 @@ class RatepayPaymentFilterEvent extends Event
      * @var ProfileConfigMethodEntity
      */
     private $methodConfig;
+    /**
+     * @var OrderEntity|null
+     */
+    private $orderEntity;
 
     public function __construct(
         PaymentMethodEntity $paymentMethod,
         ProfileConfigEntity $profileConfig,
         ProfileConfigMethodEntity $methodConfig,
-        SalesChannelContext $salesChannelContext
+        SalesChannelContext $salesChannelContext,
+        OrderEntity $orderEntity = null
     )
     {
         $this->paymentMethod = $paymentMethod;
         $this->profileConfig = $profileConfig;
         $this->methodConfig = $methodConfig;
         $this->salesChannelContext = $salesChannelContext;
+        $this->orderEntity = $orderEntity;
     }
 
     /**
@@ -106,4 +113,13 @@ class RatepayPaymentFilterEvent extends Event
         }
         $this->isAvailable = $isAvailable;
     }
+
+    /**
+     * @return OrderEntity|null
+     */
+    public function getOrderEntity(): ?OrderEntity
+    {
+        return $this->orderEntity;
+    }
+
 }

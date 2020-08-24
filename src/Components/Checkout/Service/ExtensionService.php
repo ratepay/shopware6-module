@@ -17,10 +17,7 @@ use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEn
 use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayPositionEntity;
 use Ratepay\RatepayPayments\Components\InstallmentCalculator\Service\InstallmentService;
 use Ratepay\RatepayPayments\Util\MethodHelper;
-use Shopware\Core\Checkout\Customer\CustomerEntity;
-use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -103,7 +100,7 @@ class ExtensionService
             ];
         }
 
-        $event = $this->orderExtensionRepository->create([$orderExtensionData], $context);
+        $event = $this->orderExtensionRepository->upsert([$orderExtensionData], $context);
 
         $affected = $this->orderExtensionRepository->search(new Criteria(
             $event->getPrimaryKeys(RatepayOrderDataDefinition::ENTITY_NAME)
