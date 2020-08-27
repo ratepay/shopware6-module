@@ -40,7 +40,8 @@ class PaymentFilterSubscriber implements EventSubscriberInterface
         $methodConfig = $event->getMethodConfig();
         $salesChannelContext = $event->getSalesChannelContext();
 
-        if ($orderEntity = $event->getOrderEntity()) {
+        $orderEntity = $event->getOrderEntity();
+        if ($orderEntity) {
             // order has been already placed
             $addressCollection = $orderEntity->getAddresses();
             $billingAddressId = $orderEntity->getBillingAddressId();

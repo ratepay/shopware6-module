@@ -63,6 +63,12 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
         $response = $this->innerService->load($request, $salesChannelContext, $criteria);
 
         $currentRequest = $this->requestStack->getCurrentRequest();
+        if ($currentRequest) {
+            return $response;
+        }
+
+        // if the order id is set, the oder has been already placed, and the customer may tries to change/edit
+        // the payment method. - e.g. in case of a failed payment
         $orderId = $currentRequest->get('orderId');
         $order = null;
         if ($orderId) {
@@ -70,9 +76,7 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
         }
 
         if ($order || $request->query->getBoolean('onlyAvailable', false)) {
-            // if the order is set, the oder has been already placed, and the customer may tries to change/edit
-            // the payment method. - e.g. in case of a failed payment
-            $paymentMethods = $this->paymentFilterService->filterPaymentMethods($response->getPaymentMethods(), $salesChannelContext, $order ?? null);
+            $paymentMethods = $this->paymentFilterService->filterPaymentMethods($response->getPaymentMethods(), $salesChannelContext, $order);
             return new PaymentMethodRouteResponse($paymentMethods);
         }
 
