@@ -27,13 +27,10 @@
                 </div>
             </div>
         </div>
+        {% if page.extensions.ratepay.dfp %}
+            {{ page.extensions.ratepay.dfp|raw }}
+        {% endif %}
     {% endif %}
     {{ parent() }}
-{% endblock %}
 
-{% block base_footer %}
-    {{ parent() }}
-    {% if page.extensions.ratepay.dfp %}
-        {{ page.extensions.ratepay.dfp|raw }}
-    {% endif %}
 {% endblock %}

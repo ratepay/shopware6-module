@@ -28,6 +28,8 @@
                  decorates="Shopware\Core\Checkout\Payment\SalesChannel\PaymentMethodRoute">
             <argument type="service" id="Ratepay\RatepayPayments\Components\Checkout\Service\PaymentMethodRoute.inner"/>
             <argument type="service" id="Ratepay\RatepayPayments\Components\Checkout\Service\PaymentFilterService"/>
+            <argument type="service" id="request_stack"/>
+            <argument type="service" id="order.repository"/>
         </service>
 
     </services>

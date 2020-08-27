@@ -12,6 +12,7 @@ use Ratepay\RatepayPayments\Components\Checkout\Event\RatepayPaymentFilterEvent;
 use Ratepay\RatepayPayments\Components\ProfileConfig\Model\Collection\ProfileConfigMethodCollection;
 use Ratepay\RatepayPayments\Components\ProfileConfig\Service\ProfileConfigService;
 use Ratepay\RatepayPayments\Util\MethodHelper;
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -40,18 +41,26 @@ class PaymentFilterService
     }
 
 
-    public function filterPaymentMethods(PaymentMethodCollection $paymentMethodCollection, SalesChannelContext $salesChannelContext): PaymentMethodCollection
+    public function filterPaymentMethods(PaymentMethodCollection $paymentMethodCollection, SalesChannelContext $salesChannelContext, OrderEntity $order = null): PaymentMethodCollection
     {
-        return $paymentMethodCollection->filter(function (PaymentMethodEntity $paymentMethod) use ($salesChannelContext) {
+        return $paymentMethodCollection->filter(function (PaymentMethodEntity $paymentMethod) use ($salesChannelContext, $order) {
             if (MethodHelper::isRatepayMethod($paymentMethod->getHandlerIdentifier()) === false) {
                 // payment method is not a ratepay method - so we won't check it.
                 return true;
             }
 
-            $profileConfig = $this->profileConfigService->getProfileConfigBySalesChannel(
-                $salesChannelContext,
-                $paymentMethod->getId()
-            );
+            if ($order) {
+                $profileConfig = $this->profileConfigService->getProfileConfigByOrderEntity(
+                    $order,
+                    $paymentMethod->getId(),
+                    $salesChannelContext->getContext()
+                );
+            } else {
+                $profileConfig = $this->profileConfigService->getProfileConfigBySalesChannel(
+                    $salesChannelContext,
+                    $paymentMethod->getId()
+                );
+            }
 
             if ($profileConfig === null) {
                 // no profile config for this sales channel is found
@@ -73,7 +82,8 @@ class PaymentFilterService
                 $paymentMethod,
                 $profileConfig,
                 $methodConfig,
-                $salesChannelContext
+                $salesChannelContext,
+                $order
             ));
 
             return $filterEvent->isAvailable();

@@ -10,6 +10,7 @@ namespace Ratepay\RatepayPayments\Components\Checkout\Subscriber;
 
 use Ratepay\RatepayPayments\Components\Checkout\Event\RatepayPaymentFilterEvent;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
+use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressCollection;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentFilterSubscriber implements EventSubscriberInterface
@@ -36,20 +37,38 @@ class PaymentFilterSubscriber implements EventSubscriberInterface
 
     public function filterByDefaultConditions(RatepayPaymentFilterEvent $event): RatepayPaymentFilterEvent
     {
-        $salesChannelContext = $event->getSalesChannelContext();
         $methodConfig = $event->getMethodConfig();
-        $customer = $salesChannelContext->getCustomer();
-        $cart = $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext);
+        $salesChannelContext = $event->getSalesChannelContext();
 
-        if ($customer === null ||
-            $customer->getActiveBillingAddress() === null ||
-            $customer->getActiveShippingAddress() === null
-        ) {
-            $event->setIsAvailable(false);
-            return $event;
+        $orderEntity = $event->getOrderEntity();
+        if ($orderEntity) {
+            // order has been already placed
+            $addressCollection = $orderEntity->getAddresses();
+            $billingAddressId = $orderEntity->getBillingAddressId();
+            $shippingAddressId = $orderEntity->getBillingAddressId();
+            $totalPrice = $orderEntity->getPrice()->getTotalPrice();
+        } else {
+            // order has not been placed
+            $customer = $salesChannelContext->getCustomer();
+            $cart = $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext);
+
+            if ($customer === null ||
+                $customer->getActiveBillingAddress() === null ||
+                $customer->getActiveShippingAddress() === null
+            ) {
+                $event->setIsAvailable(false);
+                return $event;
+            }
+            $addressCollection = new CustomerAddressCollection([
+                $customer->getActiveBillingAddress()->getId() => $customer->getActiveBillingAddress(),
+                $customer->getActiveShippingAddress()->getId() => $customer->getActiveShippingAddress(),
+            ]);
+            $billingAddressId = $customer->getActiveBillingAddress()->getId();
+            $shippingAddressId = $customer->getActiveShippingAddress()->getId();
+            $totalPrice = $cart->getPrice()->getTotalPrice();
         }
 
-        $isB2b = !empty($customer->getActiveBillingAddress()->getCompany());
+        $isB2b = !empty($addressCollection->get($billingAddressId)->getCompany());
 
         if ($isB2b && $methodConfig->isAllowB2b() === false) {
             $event->setIsAvailable(false);
@@ -58,14 +77,13 @@ class PaymentFilterSubscriber implements EventSubscriberInterface
 
         $amountMin = $methodConfig->getLimitMin();
         $amountMax = $isB2b ? $methodConfig->getLimitMaxB2b() : $methodConfig->getLimitMax();
-        $totalPrice = $cart->getPrice()->getTotalPrice();
         if ($totalPrice < $amountMin || $totalPrice > $amountMax) {
             $event->setIsAvailable(false);
             return $event;
         }
 
-        if ($methodConfig->isAllowDifferentAddresses() === false &&
-            $customer->getActiveBillingAddress()->getId() !== $customer->getActiveShippingAddress()->getId()
+        if ($billingAddressId !== $shippingAddressId &&
+            $methodConfig->isAllowDifferentAddresses() === false
         ) {
             $event->setIsAvailable(false);
             return $event;
