@@ -10,9 +10,11 @@ namespace Ratepay\RatepayPayments\Components\RatepayApi\Service\Request;
 
 
 use Exception;
+use RatePAY\Exception\ExceptionAbstract;
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
 use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
+use Ratepay\RatepayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
 use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Event\BuildEvent;
@@ -20,6 +22,7 @@ use Ratepay\RatepayPayments\Components\RatepayApi\Event\RequestBuilderFailedEven
 use Ratepay\RatepayPayments\Components\RatepayApi\Event\RequestDoneEvent;
 use Ratepay\RatepayPayments\Components\RatepayApi\Event\ResponseEvent;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
+use Ratepay\RatepayPayments\Exception\RatepayException;
 use RatePAY\RequestBuilder;
 use Shopware\Core\Framework\Context;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -45,13 +48,13 @@ abstract class AbstractRequest
      * @var string
      * @deprecated
      */
-    protected $_operation = null;
+    protected $_operation;
 
     /**
      * @var string
      * @deprecated
      */
-    protected $_subType = null;
+    protected $_subType;
 
     /**
      * @var HeadFactory
@@ -78,12 +81,13 @@ abstract class AbstractRequest
      * @param Context $context
      * @param IRequestData $requestData
      * @return RequestBuilder
+     * @throws RatepayException
      */
-    public final function doRequest(Context $context, IRequestData $requestData)
+    final public function doRequest(Context $context, IRequestData $requestData) : RequestBuilder
     {
         $profileConfig = $this->getProfileConfig($context, $requestData);
         if ($profileConfig === null) {
-            throw new Exception('Transaction can not performed, cause no profile was found.');
+            throw new ProfileNotFoundException();
         }
 
         $head = $this->getRequestHead($requestData, $profileConfig);
@@ -95,9 +99,9 @@ abstract class AbstractRequest
             if ($this->_subType) {
                 $requestBuilder = $requestBuilder->subtype($this->_subType);
             }
-        } catch (Exception $e) {
+        } catch (ExceptionAbstract $e) {
             $this->eventDispatcher->dispatch(new RequestBuilderFailedEvent($e, $requestData));
-            throw $e;
+            throw new RatepayException($e->getMessage(), $e->getCode(), $e);
         }
 
         $this->eventDispatcher->dispatch(new RequestDoneEvent($context, $requestData, $requestBuilder));

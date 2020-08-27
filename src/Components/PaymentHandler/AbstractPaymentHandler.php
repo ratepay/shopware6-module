@@ -9,7 +9,7 @@
 namespace Ratepay\RatepayPayments\Components\PaymentHandler;
 
 
-use Exception;
+use Ratepay\RatepayPayments\Components\PaymentHandler\Event\BeforePaymentEvent;
 use Ratepay\RatepayPayments\Components\PaymentHandler\Constraint\Birthday;
 use Ratepay\RatepayPayments\Components\PaymentHandler\Constraint\IsOfLegalAge;
 use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
@@ -18,6 +18,7 @@ use Ratepay\RatepayPayments\Components\ProfileConfig\Exception\ProfileNotFoundEx
 use Ratepay\RatepayPayments\Components\ProfileConfig\Service\ProfileConfigService;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
+use Ratepay\RatepayPayments\Exception\RatepayException;
 use Ratepay\RatepayPayments\Util\CriteriaHelper;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
@@ -82,15 +83,19 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
                 throw new ProfileNotFoundException();
             }
 
+            $paymentRequestData = new PaymentRequestData(
+                $salesChannelContext,
+                $order,
+                $transaction->getOrderTransaction(),
+                $profileConfig,
+                $dataBag
+            );
+
+            $this->eventDispatcher->dispatch(new BeforePaymentEvent($paymentRequestData, $salesChannelContext->getContext()));
+
             $response = $this->paymentRequestService->doRequest(
                 $salesChannelContext->getContext(),
-                new PaymentRequestData(
-                    $salesChannelContext,
-                    $order,
-                    $transaction->getOrderTransaction(),
-                    $profileConfig,
-                    $dataBag
-                )
+                $paymentRequestData
             );
 
 
@@ -105,17 +110,17 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
 
             } else {
                 // will be catched a few lines later.
-                throw new Exception($response->getResponse()->getReasonMessage());
+                throw new RatepayException($response->getResponse()->getReasonMessage());
             }
 
-        } catch (Exception $e) {
+        } catch (RatepayException $e) {
             $this->eventDispatcher->dispatch(new PaymentFailedEvent(
                 $order,
                 $transaction,
                 $dataBag,
                 $salesChannelContext,
                 isset($response) ? $response->getResponse() : null,
-                $e
+                $e->getPrevious() ?? $e
             ));
             throw new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $e->getMessage());
         }

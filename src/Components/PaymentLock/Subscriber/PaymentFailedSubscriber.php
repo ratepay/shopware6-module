@@ -36,7 +36,9 @@ class PaymentFailedSubscriber implements EventSubscriberInterface
 
     public function lockPaymentMethod(PaymentFailedEvent $event)
     {
-        if (in_array($event->getResponse()->getReasonCode(), self::ERROR_CODES, false)) {
+        if ($event->getResponse() &&
+            in_array($event->getResponse()->getReasonCode(), self::ERROR_CODES, false)
+        ) {
             if ($event->getSalesChannelContext()->getCustomer() === null) {
                 // customer is not logged in - guest order
                 return;

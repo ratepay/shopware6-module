@@ -9,18 +9,13 @@
 namespace Ratepay\RatepayPayments\Components\ProfileConfig\Exception;
 
 
-use Shopware\Core\Framework\ShopwareHttpException;
+use Ratepay\RatepayPayments\Exception\RatepayException;
 
-class ProfileNotFoundException extends ShopwareHttpException
+class ProfileNotFoundException extends RatepayException
 {
 
     public function __construct()
     {
         parent::__construct('Profile-ID was not found. Operation can not executed.');
-    }
-
-    public function getErrorCode(): string
-    {
-        return 'RATEPAY__PROFILE_NOT_FOUND';
     }
 }
