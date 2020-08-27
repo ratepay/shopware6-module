@@ -64,10 +64,7 @@ class UserDataSubscriber implements EventSubscriberInterface
         }
 
         if ($customer) {
-            $customerUpdates = [
-                'id' => $customer->getId(),
-                'versionId' => $customer->getVersionId()
-            ];
+            $customerUpdates = [];
 
             /** @var RequestDataBag $ratepayData */
             if ($ratepayData->has('birthday')) {
@@ -84,8 +81,14 @@ class UserDataSubscriber implements EventSubscriberInterface
                 $customerUpdates['birthday'] = $date;
             }
 
-            if (count($customerUpdates) > 1) { // not > 0, cause the ID is always set.
-                $this->customerRepository->upsert([$customerUpdates], $event->getContext());
+            if (count($customerUpdates) > 0) {
+                $this->customerRepository->upsert([array_merge(
+                    [
+                        'id' => $customer->getId(),
+                        'versionId' => $customer->getVersionId()
+                    ],
+                    $customerUpdates
+                )], $event->getContext());
             }
         }
 
