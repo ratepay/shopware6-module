@@ -28,6 +28,11 @@
 
         <service id="Ratepay\RatepayPayments\Components\Checkout\Subscriber\PaymentFilterSubscriber" autowire="true" />
 
+        <service id="Ratepay\RatepayPayments\Components\Checkout\Subscriber\PaymentFailedSubscriber">
+            <argument type="service" id="ratepay_api_log.repository"/>
+            <argument type="service" id="service_container"/>
+        </service>
+
     </services>
 
 </container>

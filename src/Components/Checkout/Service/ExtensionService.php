@@ -84,6 +84,7 @@ class ExtensionService
         OrderEntity $order,
         string $transactionId,
         string $profileId,
+        bool $successful,
         Context $context
     ): RatepayOrderDataEntity
     {
@@ -92,6 +93,7 @@ class ExtensionService
             RatepayOrderDataEntity::FIELD_ORDER_VERSION_ID => $order->getVersionId(),
             RatepayOrderDataEntity::FIELD_PROFILE_ID => $profileId,
             RatepayOrderDataEntity::FIELD_TRANSACTION_ID => $transactionId,
+            RatepayOrderDataEntity::FIELD_SUCCESSFUL => $successful,
         ];
 
         if ($order->getShippingCosts()->getTotalPrice() > 0) {

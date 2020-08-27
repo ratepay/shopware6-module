@@ -41,16 +41,18 @@ class RequestSubscriber implements EventSubscriberInterface
 
     public function onPaymentFailed(PaymentFailedEvent $event)
     {
-        if($event->getResponse()) {
+        $exception = $event->getException();
+        if ($exception) {
+            $exception = $exception->getPrevious() ?? $exception;
+            $message = $exception->getMessage();
+        } else if ($event->getResponse()) {
             $message = $event->getResponse()->getReasonMessage();
-        } else if($event->getException()) {
-            $message = $event->getException()->getMessage();
         }
+
         $this->fileLogger->addError($message ?? 'Unknown error', [
             'order_id' => $event->getOrder()->getId(),
             'order_number' => $event->getOrder()->getOrderNumber(),
             'request_bag' => $event->getRequestDataBag()
-
         ]);
     }
 
