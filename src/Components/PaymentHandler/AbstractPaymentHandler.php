@@ -131,7 +131,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
      * @param Context $context
      * @return OrderEntity|null
      */
-    protected function getOrderWithAssociations(OrderEntity $order, Context $context)
+    protected function getOrderWithAssociations(OrderEntity $order, Context $context) : OrderEntity
     {
         return $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($order->getId()), $context)->first();
     }
@@ -140,7 +140,8 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
     {
         $validations = [];
 
-        if (empty($salesChannelContext->getCustomer()->getActiveBillingAddress()->getCompany())) {
+        if ($salesChannelContext->getCustomer()->getBirthday() === null &&
+            empty($salesChannelContext->getCustomer()->getActiveBillingAddress()->getCompany())) {
             $validations['birthday'] = [
                 new NotBlank(['message' => 'ratepay.storefront.checkout.errors.missingBirthday']),
                 new Birthday(['message' => 'ratepay.storefront.checkout.errors.invalidBirthday']),
