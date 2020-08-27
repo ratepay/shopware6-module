@@ -136,10 +136,10 @@ class ExtensionService
 
         $extension = new ArrayStruct();
         $extension->set('birthday', $customerBirthday ?? null);
-        $extension->set('vatId', $customerVatId ?? '');
-        $extension->set('phoneNumber', $customerPhoneNumber ?? '');
-        $extension->set('company', $customerCompany ?? '');
-        $extension->set('accountHolder', $accountHolder ?? '');
+        $extension->set('vatId', $customerVatId ?? null);
+        $extension->set('phoneNumber', $customerPhoneNumber ?? null);
+        $extension->set('company', $customerCompany ?? null);
+        $extension->set('accountHolder', $accountHolder ?? null);
         $extension->set(
             'paymentMethod',
             strtolower(constant($paymentMethod->getHandlerIdentifier() . '::RATEPAY_METHOD'))

@@ -7,9 +7,23 @@
 
 {% block ratepay_checkout_fields %}
     {% if (page.extensions.ratepay.company) %}
-        {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/common/vatid.html.twig' %}
+        {% if page.extensions.ratepay.vatId is null %}
+            {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/common/vatid.html.twig' %}
+        {% endif %}
     {% else %}
-        {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/common/birthday.html.twig' %}
+        {% if page.extensions.ratepay.birthday is null %}
+            {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/common/birthday.html.twig' %}
+        {% endif %}
     {% endif %}
-    {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/common/phone.html.twig' %}
+    {% if page.extensions.ratepay.phoneNumber is null %}
+        {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/common/phone.html.twig' %}
+    {% endif %}
+{% endblock %}
+
+{% block ratepay_legal_textes %}
+    <div class="form-row">
+        <div class="form-group col-sm-12">
+            {{ "ratepay.storefront.checkout.hints.legalText"|trans|raw }}
+        </div>
+    </div>
 {% endblock %}
