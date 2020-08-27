@@ -63,7 +63,7 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
         $response = $this->innerService->load($request, $salesChannelContext, $criteria);
 
         $currentRequest = $this->requestStack->getCurrentRequest();
-        if ($currentRequest) {
+        if (!$currentRequest) {
             return $response;
         }
 
