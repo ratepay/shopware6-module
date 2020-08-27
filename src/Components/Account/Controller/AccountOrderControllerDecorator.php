@@ -8,6 +8,8 @@
 
 namespace Ratepay\RatepayPayments\Components\Account\Controller;
 
+use Ratepay\RatepayPayments\Components\Checkout\Model\Extension\OrderExtension;
+use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RatepayPayments\Util\CriteriaHelper;
 use Ratepay\RatepayPayments\Util\MethodHelper;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -27,11 +29,17 @@ class AccountOrderControllerDecorator extends AccountOrderController
 
     /**
      * @Route("/account/order/update/{orderId}", name="frontend.account.edit-order.update-order", methods={"POST"})
+     * @param string $orderId
+     * @param Request $request
+     * @param SalesChannelContext $context
+     * @return Response
      */
     public function updateOrder(string $orderId, Request $request, SalesChannelContext $context): Response
     {
         $order = $this->fetchOrder($context->getContext(), $orderId);
-        if (false && $order && MethodHelper::isRatepayOrder($order)) { // TODO add check: is payment failed
+        /** @var RatepayOrderDataEntity $ratepayData */
+        $ratepayData = $order ? $order->getExtension(OrderExtension::EXTENSION_NAME) : null;
+        if ($order && $ratepayData && MethodHelper::isRatepayOrder($order) && $ratepayData->isSuccessful()) {
             // You can't change the payment if it is a ratepay order
             return $this->redirectToRoute('frontend.account.edit-order.page', ['orderId' => $orderId]);
         }
