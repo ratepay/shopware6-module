@@ -1,0 +1,22 @@
+{% sw_extends '@Storefront/storefront/page/checkout/finish/finish-details.html.twig' %}
+
+{% block page_checkout_finish_order_payment_method %}
+    {{ parent() }}
+
+    {% set ratepayData = page.order.getExtension('ratepayData') %}
+    {% if ratepayData %}
+        {% if ratepayData.transactionId%}
+            <p>
+                <strong>{{ "ratepay.storefront.checkout.finish.info.transaction-id"|trans|sw_sanitize }}</strong>
+                {{ ratepayData.transactionId }}
+            </p>
+        {% endif %}
+        {% if ratepayData.descriptor %}
+            <p>
+                <strong>{{ "ratepay.storefront.checkout.finish.info.descriptor"|trans|sw_sanitize }}</strong>
+                {{ ratepayData.descriptor }}
+            </p>
+        {% endif %}
+    {% endif %}
+
+{% endblock %}

@@ -51,6 +51,7 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
         $this->extensionService->createOrderExtensionEntity(
             $requestData->getOrder(),
             $responseModel->getTransactionId(),
+            $responseModel->getDescriptor(),
             (string)$requestXml->head->credential->{"profile-id"},
             false,
             $requestData->getSalesChannelContext()->getContext()
@@ -84,6 +85,7 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
         $this->extensionService->createOrderExtensionEntity(
             $requestData->getOrder(),
             $responseModel->getTransactionId(),
+            $responseModel->getDescriptor(),
             (string)$requestXml->head->credential->{"profile-id"},
             true,
             $requestData->getSalesChannelContext()->getContext()

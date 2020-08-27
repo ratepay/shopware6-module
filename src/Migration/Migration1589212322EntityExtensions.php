@@ -40,6 +40,7 @@ class Migration1589212322EntityExtensions extends MigrationStep
               `profile_id` varchar(255) NOT NULL,
               `shipping_position_id` binary(16) NULL,
               `transaction_id` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+              `descriptor` varchar(255) COLLATE utf8mb4_bin NULL,
               `successful` TINYINT NOT NULL, 
               `created_at` DATETIME NOT NULL,
               `updated_at` DATETIME NULL,

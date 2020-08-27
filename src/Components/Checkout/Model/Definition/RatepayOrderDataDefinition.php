@@ -67,6 +67,11 @@ class RatepayOrderDataDefinition extends EntityDefinition
                 RatepayOrderDataEntity::FIELD_TRANSACTION_ID
             )),
 
+            (new StringField(
+                'descriptor',
+                RatepayOrderDataEntity::FIELD_DESCRIPTOR
+            )),
+
             (new FkField(
                 'shipping_position_id',
                 RatepayOrderDataEntity::FIELD_SHIPPING_POSITION_ID,

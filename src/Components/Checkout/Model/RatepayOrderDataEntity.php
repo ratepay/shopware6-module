@@ -21,6 +21,7 @@ class RatepayOrderDataEntity extends Entity
     public const FIELD_ORDER = 'order';
     public const FIELD_PROFILE_ID = 'profileId';
     public const FIELD_TRANSACTION_ID = 'transactionId';
+    public const FIELD_DESCRIPTOR = 'descriptor';
     public const FIELD_SHIPPING_POSITION_ID = 'shippingPositionId';
     public const FIELD_SHIPPING_POSITION = 'shippingPosition';
     public const FIELD_SUCCESSFUL = 'successful';
@@ -52,6 +53,11 @@ class RatepayOrderDataEntity extends Entity
      * @var string
      */
     protected $transactionId;
+
+    /**
+     * @var string|null
+     */
+    protected $descriptor;
 
     /**
      * @var string|null
@@ -130,6 +136,14 @@ class RatepayOrderDataEntity extends Entity
     public function setTransactionId(string $transactionId): void
     {
         $this->transactionId = $transactionId;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getDescriptor(): ?string
+    {
+        return $this->descriptor;
     }
 
     /**
