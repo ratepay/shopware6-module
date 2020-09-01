@@ -6,19 +6,19 @@
  */
 
 /**
- * Ratepay Components
+ * Custom Components
  */
 import './component/ratepay/ratepay-order-history-log-grid';
 import './component/ratepay/ratepay-order-management';
 
 /**
- * Ratepay Modules
+ * Custom Modules
  */
 import './module/ratepay-api-log';
 import './module/ratepay-profile-config';
 
 /**
- * Ratepay Services
+ * Custom Services
  */
 import './init/order-management-api-service.init';
 import './init/profile-config-api-service.init';

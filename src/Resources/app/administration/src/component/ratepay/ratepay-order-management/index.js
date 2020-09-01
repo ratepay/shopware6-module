@@ -104,6 +104,18 @@ Component.register('ratepay-order-management', {
                     label: this.$t('ratepay.orderManagement.table.returned'),
                     allowResize: false,
                     align: 'center'
+                },
+                {
+                    property: 'unitPrice',
+                    label: this.$t('ratepay.orderManagement.table.unitPrice'),
+                    allowResize: false,
+                    align: 'right'
+                },
+                {
+                    property: 'totalPrice',
+                    label: this.$t('ratepay.orderManagement.table.totalPrice'),
+                    allowResize: false,
+                    align: 'right'
                 }
             ];
         },

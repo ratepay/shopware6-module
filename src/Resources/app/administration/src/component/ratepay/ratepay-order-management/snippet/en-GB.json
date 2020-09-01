@@ -22,7 +22,9 @@
                 "ordered": "Ordered",
                 "delivered": "Delivered",
                 "canceled": "Canceled",
-                "returned": "Returned"
+                "returned": "Returned",
+                "unitPrice": "Single price",
+                "totalPrice": "Total price"
             },
             "messages": {
                 "successTitle": "Successful",
