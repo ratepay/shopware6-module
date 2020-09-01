@@ -97,7 +97,7 @@ class ApiLogger
                 $requestDoneEvent->getContext()
             );
         } catch (Exception $exception) {
-            $this->logger->error('RatePAY was unable to log request history', [
+            $this->logger->error('Ratepay was unable to log request history', [
                 'message' => $exception->getMessage(),
                 'trace' => $exception->getTraceAsString(),
             ]);

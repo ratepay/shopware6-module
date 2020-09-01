@@ -69,7 +69,7 @@ class HistoryLogger
                 ]
             ], $context);
         } catch (Exception $exception) {
-            $this->logger->error('RatePAY was unable to log order history', [
+            $this->logger->error('Ratepay was unable to log order history', [
                 'message' => $exception->getMessage(),
                 'trace' => $exception->getTraceAsString(),
             ]);

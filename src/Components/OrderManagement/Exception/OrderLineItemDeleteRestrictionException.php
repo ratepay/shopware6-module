@@ -15,7 +15,7 @@ class OrderLineItemDeleteRestrictionException extends ShopwareHttpException
 {
     public function __construct()
     {
-        parent::__construct('Order line items from orders payed with RatePAY payment methods can not be deleted via API.');
+        parent::__construct('Order line items from orders payed with Ratepay payment methods can not be deleted via API.');
     }
 
     public function getErrorCode(): string

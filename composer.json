@@ -17,9 +17,18 @@
     "extra": {
         "shopware-plugin-class": "Ratepay\\RatepayPayments\\RatepayPayments",
         "copyright": "(c) by Ratepay GmbH",
+        "plugin-icon": "src/Resources/public/plugin.png",
         "label": {
             "de-DE": "Integration der Ratepay Zahlungsmethoden",
             "en-GB": "Integration of the Ratepay payment methods"
+        },
+        "manufacturerLink": {
+            "de-DE": "https://www.ratepay.com",
+            "en-GB": "https://www.ratepay.com"
+        },
+        "supportLink": {
+            "de-DE": "https://www.ratepay.com",
+            "en-GB": "https://www.ratepay.com"
         }
     },
     "require": {
