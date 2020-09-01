@@ -10,16 +10,17 @@ namespace Ratepay\RatepayPayments\Components\PaymentHandler;
 
 use Shopware\Core\Framework\Validation\DataValidationDefinition;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints\Iban;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class DebitPaymentHandler extends AbstractPaymentHandler
 {
-    const RATEPAY_METHOD = 'ELV';
+    public const RATEPAY_METHOD = 'ELV';
 
-    public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
+    public function getValidationDefinitions(Request $request, SalesChannelContext $salesChannelContext): array
     {
-        $validations = parent::getValidationDefinitions($salesChannelContext);
+        $validations = parent::getValidationDefinitions($request, $salesChannelContext);
 
         $bankData = new DataValidationDefinition();
         //$bankData->add('accountHolder', new NotBlank()); // Not required, it will be overridden by the customerFactory
