@@ -13,11 +13,12 @@
         <title>Settings</title>
         <title lang="de-DE">Einstellungen</title>
 
-        <input-field type="bool">
+        <!-- Not in use, yet. -->
+        <!--input-field type="bool">
             <name>ratepayDebugMode</name>
             <label>Enable Debug-Mode</label>
             <label lang="de-DE">Debug-Modus aktivieren</label>
-        </input-field>
+        </input-field-->
 
         <input-field type="text">
             <name>ratepayDevicefingerprintingSnippetId</name>
