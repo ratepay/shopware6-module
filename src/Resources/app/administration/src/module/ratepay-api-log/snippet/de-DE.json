@@ -1,10 +1,7 @@
 {
     "ratepay": {
         "apiLog": {
-            "general": {
-                "subMenuItemApiLogViewer": "Ratepay API-Logs",
-                "descriptionTextModule": ""
-            },
+            "componentTitle": "Ratepay API-Logs",
             "page": {
                 "detail": {
                     "cancelButtonText": "Zurück"

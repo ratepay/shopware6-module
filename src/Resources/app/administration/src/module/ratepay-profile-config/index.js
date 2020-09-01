@@ -17,10 +17,8 @@ const {Module} = Shopware;
 Module.register('ratepay-profile-config', {
     type: 'plugin',
     name: 'profile-config',
-    title: 'ratepay.profileConfig.general.mainMenuItemGeneral',
-    description: 'sw-property.general.descriptionTextModule',
-    color: '#ff3d58',
-    icon: 'default-shopping-paper-bag-product',
+    title: 'ratepay.profileConfig.componentTitle',
+    icon: 'default-action-settings',
 
     snippets: {
         'de-DE': deDE,
@@ -30,7 +28,10 @@ Module.register('ratepay-profile-config', {
     routes: {
         list: {
             component: 'ratepay-profile-config-list',
-            path: 'list'
+            path: 'list',
+            meta: {
+                parentPath: 'sw.settings.index'
+            }
         },
         detail: {
             component: 'ratepay-profile-config-detail',
@@ -48,12 +49,11 @@ Module.register('ratepay-profile-config', {
         }
     },
 
-    navigation: [{
-        id: 'ratepay',
-        label: 'ratepay.profileConfig.general.mainMenuItemGeneral',
-        color: '#ff3d58',
-        path: 'ratepay.profile.config.list',
-        icon: 'default-shopping-paper-bag-product',
-        position: 100
-    }]
+    settingsItem: [
+        {
+            to: 'ratepay.profile.config.list',
+            group: 'plugins',
+            icon: 'default-action-settings',
+        }
+    ]
 });

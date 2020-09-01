@@ -34,8 +34,6 @@ Component.register('ratepay-profile-config-detail', {
             isLoading: false,
             processSuccess: false,
             repository: null,
-            paymentConfigRepository: null,
-            paymentConfigInstallmentRepository: null,
             disabledReloadButton: this.entity === null,
             currentTab: 'general'
         };
@@ -43,8 +41,6 @@ Component.register('ratepay-profile-config-detail', {
 
     created() {
         this.repository = this.repositoryFactory.create('ratepay_profile_config');
-        this.paymentConfigRepository = this.repositoryFactory.create('ratepay_profile_config_method');
-        this.paymentConfigInstallmentRepository = this.repositoryFactory.create('ratepay_profile_config_method_installment');
         let prom = this.loadEntity();
         if (this.$route.params.reloadConfig) {
             prom.then(() => {

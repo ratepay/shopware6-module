@@ -1,10 +1,7 @@
 {
     "ratepay": {
         "profileConfig": {
-            "general": {
-                "mainMenuItemGeneral": "Ratepay Profile Config",
-                "descriptionTextModule": ""
-            },
+            "componentTitle": "Ratepay Profil Konfiguration",
             "global": {
                 "labels": {
                     "profile_id": "Profile ID",
