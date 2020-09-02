@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "highlight.js": "^10.1.2",
+    "xml-formatter": "^2.1.3"
+  }
+}
