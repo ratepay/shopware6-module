@@ -61,7 +61,7 @@
                 <option><id>pay_partially</id><name>Paid (partially)</name><name lang="de-DE">Teilweise bezahlt</name></option>
                 <option><id>open</id><name>Open</name><name lang="de-DE">Offen</name></option>
             </options>
-            <defaultValue>paid</defaultValue>
+            <defaultValue>authorize</defaultValue>
             <label>Invoice</label>
             <label lang="de-DE">Kauf auf Rechnung</label>
         </input-field>
@@ -77,7 +77,7 @@
                 <option><id>pay_partially</id><name>Paid (partially)</name><name lang="de-DE">Teilweise bezahlt</name></option>
                 <option><id>open</id><name>Open</name><name lang="de-DE">Offen</name></option>
             </options>
-            <defaultValue>paid</defaultValue>
+            <defaultValue>authorize</defaultValue>
             <label>Debit</label>
             <label lang="de-DE">Lastschrift</label>
         </input-field>
@@ -93,7 +93,7 @@
                 <option><id>pay_partially</id><name>Paid (partially)</name><name lang="de-DE">Teilweise bezahlt</name></option>
                 <option><id>open</id><name>Open</name><name lang="de-DE">Offen</name></option>
             </options>
-            <defaultValue>paid</defaultValue>
+            <defaultValue>authorize</defaultValue>
             <label>Installment</label>
             <label lang="de-DE">Ratenzahlung</label>
         </input-field>
@@ -109,7 +109,7 @@
                 <option><id>pay_partially</id><name>Paid (partially)</name><name lang="de-DE">Teilweise bezahlt</name></option>
                 <option><id>open</id><name>Open</name><name lang="de-DE">Offen</name></option>
             </options>
-            <defaultValue>paid</defaultValue>
+            <defaultValue>authorize</defaultValue>
             <label>Installment (0% financing)</label>
             <label lang="de-DE">Ratenzahlung (0% Finanzierung)</label>
         </input-field>
