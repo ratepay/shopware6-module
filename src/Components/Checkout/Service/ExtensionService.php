@@ -83,6 +83,7 @@ class ExtensionService
     public function createOrderExtensionEntity(
         OrderEntity $order,
         string $transactionId,
+        string $descriptor,
         string $profileId,
         bool $successful,
         Context $context
@@ -93,6 +94,7 @@ class ExtensionService
             RatepayOrderDataEntity::FIELD_ORDER_VERSION_ID => $order->getVersionId(),
             RatepayOrderDataEntity::FIELD_PROFILE_ID => $profileId,
             RatepayOrderDataEntity::FIELD_TRANSACTION_ID => $transactionId,
+            RatepayOrderDataEntity::FIELD_DESCRIPTOR => $descriptor,
             RatepayOrderDataEntity::FIELD_SUCCESSFUL => $successful,
         ];
 

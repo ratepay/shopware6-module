@@ -2,6 +2,12 @@
     "ratepay": {
         "storefront": {
             "checkout": {
+                "finish": {
+                    "info": {
+                        "transaction-id": "Transaction number:",
+                        "descriptor": "Descriptor:"
+                    }
+                },
                 "errors": {
                     "missingSepaConfirm": "Please confirm the SEPA mandate",
                     "missingIban": "Please provide your IBAN.",

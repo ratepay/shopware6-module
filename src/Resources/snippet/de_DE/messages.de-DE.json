@@ -2,6 +2,12 @@
     "ratepay": {
         "storefront": {
             "checkout": {
+                "finish": {
+                    "info": {
+                        "transaction-id": "Transaktionsnummer:",
+                        "descriptor": "Verwendungszweck:"
+                    }
+                },
                 "errors": {
                     "missingSepaConfirm": "Bitte geben bestätigen Sie das SEPA Mandat.",
                     "missingIban": "Bitte geben Sie eine gültige IBAN an.",

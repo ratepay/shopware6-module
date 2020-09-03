@@ -9,9 +9,9 @@
 namespace Ratepay\RatepayPayments\Components\PaymentHandler;
 
 
-use Ratepay\RatepayPayments\Components\PaymentHandler\Event\BeforePaymentEvent;
 use Ratepay\RatepayPayments\Components\PaymentHandler\Constraint\Birthday;
 use Ratepay\RatepayPayments\Components\PaymentHandler\Constraint\IsOfLegalAge;
+use Ratepay\RatepayPayments\Components\PaymentHandler\Event\BeforePaymentEvent;
 use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
 use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
 use Ratepay\RatepayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
@@ -29,6 +29,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterface
@@ -68,6 +69,13 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
 
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
+        $ratepayData = $dataBag->get('ratepay');
+        if ($ratepayData === null) {
+            // if no fields are submitted via the storefront, variable will be null. to avoid problems with the missing
+            // object, we create a "dummy" object for this key.
+            $dataBag->set('ratepay', new ParameterBag([]));
+        }
+
         $order = $this->getOrderWithAssociations($transaction->getOrder(), $salesChannelContext->getContext());
         try {
             $profileConfig = $this->profileConfigService->getProfileConfigDefaultParams(
