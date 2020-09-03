@@ -83,7 +83,7 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
             if ($constraints instanceof DataValidationDefinition) {
                 $parent->addSub($key, $constraints);
             } else {
-                call_user_func_array([$parent, 'add'], [$key] + $constraints);
+                call_user_func_array([$parent, 'add'], array_merge([$key], $constraints));
             }
         }
     }

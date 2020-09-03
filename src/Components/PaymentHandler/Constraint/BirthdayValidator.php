@@ -11,6 +11,7 @@ namespace Ratepay\RatepayPayments\Components\PaymentHandler\Constraint;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\DateValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
+use Symfony\Component\Validator\Exception\UnexpectedValueException;
 
 class BirthdayValidator extends DateValidator
 {
@@ -20,10 +21,12 @@ class BirthdayValidator extends DateValidator
             throw new UnexpectedTypeException($constraint, Birthday::class);
         }
 
-        if (!is_array($value) || !isset($value['year'], $value['month'], $value['day'])) {
-            throw new UnexpectedTypeException(getType($value), 'array');
-        }
+        if ($value) {
+            if (!is_array($value) || !isset($value['year'], $value['month'], $value['day'])) {
+                throw new UnexpectedValueException($value, 'array');
+            }
 
-        parent::validate(sprintf('%d-%02d-%02d', $value['year'], $value['month'], $value['day']), $constraint);
+            parent::validate(sprintf('%d-%02d-%02d', $value['year'], $value['month'], $value['day']), $constraint);
+        }
     }
 }

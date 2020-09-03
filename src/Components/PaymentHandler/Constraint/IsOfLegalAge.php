@@ -14,6 +14,12 @@ class IsOfLegalAge extends LessThanOrEqual
 {
     public const LEGAL_AGE = 18;
 
+    public const TOO_YOUNG_ERROR_NAME = 'RP_AGE_TO_YOUNG';
+
+    protected static $errorNames = [
+        self::TOO_HIGH_ERROR => self::TOO_YOUNG_ERROR_NAME
+    ];
+
     public function __construct($options = null)
     {
         $options = $options ?? [];
