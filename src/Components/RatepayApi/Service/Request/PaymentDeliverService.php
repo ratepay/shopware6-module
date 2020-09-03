@@ -10,12 +10,15 @@ namespace Ratepay\RatepayPayments\Components\RatepayApi\Service\Request;
 
 
 use RatePAY\Model\Request\SubModel\Content;
+use RatePAY\Model\Request\SubModel\Head;
+use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
+use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
+use Ratepay\RatepayPayments\Components\RatepayApi\Factory\ExternalFactory;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\InvoiceFactory;
 use Ratepay\RatepayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
-use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -32,6 +35,10 @@ class PaymentDeliverService extends AbstractModifyRequest
      * @var InvoiceFactory
      */
     private $invoiceFactory;
+    /**
+     * @var ExternalFactory
+     */
+    private $externalFactory;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
@@ -39,11 +46,13 @@ class PaymentDeliverService extends AbstractModifyRequest
         HeadFactory $headFactory,
         EntityRepositoryInterface $profileConfigRepository,
         ShoppingBasketFactory $shoppingBasketFactory,
-        InvoiceFactory $invoiceFactory
+        InvoiceFactory $invoiceFactory,
+        ExternalFactory $externalFactory
     )
     {
         parent::__construct($eventDispatcher, $configService, $headFactory, $profileConfigRepository, $shoppingBasketFactory);
         $this->invoiceFactory = $invoiceFactory;
+        $this->externalFactory = $externalFactory;
     }
 
     protected function getRequestContent(IRequestData $requestData): ?Content
@@ -54,6 +63,16 @@ class PaymentDeliverService extends AbstractModifyRequest
             $content->setInvoicing($invoicing);
         }
         return $content;
+    }
+
+    protected function getRequestHead(IRequestData $requestData, ProfileConfigEntity $profileConfig): Head
+    {
+        $head = parent::getRequestHead($requestData, $profileConfig);
+        $data = $this->externalFactory->getData($requestData);
+        if ($data) {
+            $head->setExternal($data);
+        }
+        return $head;
     }
 
 }
