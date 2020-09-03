@@ -26,11 +26,11 @@
                         <div class="flex-container">
                             <div>
                                 <span class="heading">{{ $t('ratepay.apiLog.modal.request.heading') }}</span>
-                                <pre>{{ formatXml(modalItem.request) }}</pre>
+                                <pre class="content" v-html="formatXml(modalItem.request)"></pre>
                             </div>
                             <div>
                                 <span class="heading">{{ $t('ratepay.apiLog.modal.response.heading') }}</span>
-                                <pre>{{ formatXml(modalItem.response) }}</pre>
+                                <pre class="content" v-html="formatXml(modalItem.response)"></pre>
                             </div>
                         </div>
                     </sw-modal>

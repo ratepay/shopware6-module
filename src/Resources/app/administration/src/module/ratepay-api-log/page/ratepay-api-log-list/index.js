@@ -5,10 +5,17 @@
  * file that was distributed with this source code.
  */
 
+
 import template from './ratepay-api-log-list.html.twig';
 import './ratepay-api-log-list.scss';
 
-import formatter from '../../../../lib/xml-formatter';
+// import xmlFormatter to format the XML with whitespaces
+import xmlFormatter from 'xml-formatter';
+
+// import highlight.js for xml highlighting
+import hljs from 'highlight.js/lib/core';
+import hljsXml from 'highlight.js/lib/languages/xml';
+import 'highlight.js/styles/github.css';
 
 const {Component} = Shopware;
 const {Criteria} = Shopware.Data;
@@ -98,10 +105,14 @@ Component.register('ratepay-api-log-list', {
             .then((result) => {
                 this.entities = result;
             });
+
+        hljs.registerLanguage('xml', hljsXml);
+        hljs.configure({useBR: true});
     },
+
     methods: {
         formatXml(str) {
-            return formatter.formatXml(str);
+            return hljs.highlight('xml', xmlFormatter(str)).value
         }
     }
 });
