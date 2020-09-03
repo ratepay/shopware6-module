@@ -5,7 +5,7 @@
 
     {% set ratepayData = page.order.getExtension('ratepayData') %}
     {% if ratepayData %}
-        {% if ratepayData.transactionId%}
+        {% if ratepayData.transactionId %}
             <p>
                 <strong>{{ "ratepay.storefront.checkout.finish.info.transaction-id"|trans|sw_sanitize }}</strong>
                 {{ ratepayData.transactionId }}
