@@ -11,17 +11,20 @@ namespace Ratepay\RatepayPayments\Components\PaymentHandler;
 
 use Shopware\Core\Framework\Validation\DataValidationDefinition;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints\Choice;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class InstallmentPaymentHandler extends AbstractPaymentHandler
 {
 
-    const RATEPAY_METHOD = 'INSTALLMENT';
+    use DebitValidationTrait;
 
-    public function getValidationDefinitions(SalesChannelContext $salesChannelContext) : array
+    public const RATEPAY_METHOD = 'INSTALLMENT';
+
+    public function getValidationDefinitions(Request $request, SalesChannelContext $salesChannelContext): array
     {
-        $validations = parent::getValidationDefinitions($salesChannelContext);
+        $validations = parent::getValidationDefinitions($request, $salesChannelContext);
 
         $installment = new DataValidationDefinition();
         $installment->add('type',
@@ -39,6 +42,13 @@ class InstallmentPaymentHandler extends AbstractPaymentHandler
             new NotBlank(['message' => 'ratepay.storefront.checkout.errors.unknownError']),
             new Choice(['choices' => ['DIRECT-DEBIT', 'BANK-TRANSFER'], 'message' => 'ratepay.storefront.checkout.errors.unknownError'])
         );
+
+        $ratepayData = $request->get('ratepay');
+        if (isset($ratepayData['installment']['paymentType']) &&
+            $ratepayData['installment']['paymentType'] === 'DIRECT-DEBIT'
+        ) {
+            $validations = array_merge($validations, $this->getDebitConstraints($request, $salesChannelContext));
+        }
 
         $validations['installment'] = $installment;
         return $validations;
