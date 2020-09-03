@@ -44,12 +44,12 @@ Component.register('ratepay-profile-config-list', {
                 dataIndex: 'salesChannel.name',
                 label: this.$t('ratepay.profileConfig.global.labels.sales_channel'),
                 allowResize: true
-            }, {
+            }, /*{ Not in use, yet.
                 property: 'backend',
                 dataIndex: 'backend',
                 label: this.$t('ratepay.profileConfig.global.labels.backend'),
                 allowResize: true
-            }, {
+            },*/ {
                 property: 'status',
                 dataIndex: 'status',
                 label: this.$t('ratepay.profileConfig.global.labels.status'),
