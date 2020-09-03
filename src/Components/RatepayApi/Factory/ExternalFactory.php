@@ -9,6 +9,7 @@
 namespace Ratepay\RatepayPayments\Components\RatepayApi\Factory;
 
 
+use RatePAY\Model\Request\SubModel\Head\External;
 use RatePAY\Model\Request\SubModel\Head\External\Tracking;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
 use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
@@ -22,6 +23,7 @@ class ExternalFactory extends AbstractFactory
 
         $order = $requestData->getOrder();
         if ($delivery = $order->getDeliveries()->first()) {
+            $external = new External();
             $tracking = new Tracking();
             $tracking->setId($delivery->getTrackingCodes()[0]);
             $supportedMethods = ['DHL', 'DPD', 'GLS', 'HLG', 'HVS', 'OTH', 'TNT', 'UPS'];
@@ -31,7 +33,8 @@ class ExternalFactory extends AbstractFactory
                     break;
                 }
             }
-            return $tracking;
+            $external->setTracking($tracking);
+            return $external;
         }
         return null;
     }
