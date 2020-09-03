@@ -1,3 +1,4 @@
+(cd ./src/Resources && yarn install --no-dev);
 mkdir -p build/
 tar --exclude-from=.release_exclude  -czf build/dist.tar.gz .
 rm -rf build/dist/RatepayPayments
