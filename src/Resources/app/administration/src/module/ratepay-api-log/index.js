@@ -15,10 +15,8 @@ const {Module} = Shopware;
 Module.register('ratepay-api-log', {
     type: 'plugin',
     name: 'api-log',
-    title: 'ratepay.apiLog.general.subMenuItemApiLogViewer',
-    description: 'sw-property.general.descriptionTextModule',
-    color: '#ff3d58',
-    icon: 'default-shopping-paper-bag-product',
+    title: 'ratepay.apiLog.componentTitle',
+    icon: 'default-badge-warning',
 
     snippets: {
         'de-DE': deDE,
@@ -28,15 +26,19 @@ Module.register('ratepay-api-log', {
     routes: {
         list: {
             component: 'ratepay-api-log-list',
-            path: 'list'
+            path: 'list',
+            meta: {
+                parentPath: 'sw.settings.index'
+            }
         }
     },
 
-    navigation: [{
-        parent: 'ratepay',
-        label: 'ratepay.apiLog.general.subMenuItemApiLogViewer',
-        path: 'ratepay.api.log.list',
-        position: 10
-    }]
+    settingsItem: [
+        {
+            to: 'ratepay.api.log.list',
+            group: 'plugins',
+            icon: 'default-badge-warning',
+        }
+    ]
 
 });

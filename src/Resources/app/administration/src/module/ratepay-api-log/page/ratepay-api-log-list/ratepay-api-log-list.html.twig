@@ -7,6 +7,11 @@
 
 {% block ratepay_api_log_list %}
 <sw-page class="ratepay-log-viewer-list">
+
+    <template slot="smart-bar-header">
+        <h2>{{ $t('ratepay.apiLog.componentTitle') }}</h2>
+    </template>
+
     <template slot="content">
         {% block ratepay_api_log_list_content %}
             <sw-entity-listing

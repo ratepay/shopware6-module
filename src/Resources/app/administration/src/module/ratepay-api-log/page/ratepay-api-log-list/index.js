@@ -37,7 +37,7 @@ Component.register('ratepay-api-log-list', {
 
     metaInfo() {
         return {
-            title: this.$createTitle()
+            title: this.$t('ratepay.apiLog.componentTitle')
         };
     },
 

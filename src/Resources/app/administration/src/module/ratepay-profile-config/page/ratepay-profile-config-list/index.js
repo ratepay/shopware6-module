@@ -17,16 +17,16 @@ Component.register('ratepay-profile-config-list', {
         'repositoryFactory'
     ],
 
+    metaInfo() {
+        return {
+            title: this.$t('ratepay.profileConfig.componentTitle')
+        };
+    },
+
     data() {
         return {
             repository: null,
             entities: null
-        };
-    },
-
-    metaInfo() {
-        return {
-            title: this.$createTitle()
         };
     },
 

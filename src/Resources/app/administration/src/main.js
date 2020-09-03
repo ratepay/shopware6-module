@@ -6,19 +6,19 @@
  */
 
 /**
- * Custom Components
+ * Ratepay Components
  */
 import './component/ratepay/ratepay-order-history-log-grid';
 import './component/ratepay/ratepay-order-management';
 
 /**
- * Custom Modules
+ * Ratepay Modules
  */
 import './module/ratepay-api-log';
 import './module/ratepay-profile-config';
 
 /**
- * Custom Services
+ * Ratepay Services
  */
 import './init/order-management-api-service.init';
 import './init/profile-config-api-service.init';
@@ -26,6 +26,4 @@ import './init/profile-config-api-service.init';
 /**
  * Shopware Extensions
  */
-import './module/sw-order/view/sw-order-detail-base'
-import './module/sw-order/component/sw-order-line-items-grid'
-import './module/sw-order/page/sw-order-list'
+import './module/sw-order';
