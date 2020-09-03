@@ -137,8 +137,8 @@ Component.register('ratepay-order-management', {
                     if (response.data) {
                         this.items = Object.values(response.data);
                         this.items.map(item => {
-                            item.processDeliveryCancel = "0";
-                            item.processReturn = "0";
+                            item.processDeliveryCancel = item.position.maxDelivery.toString();
+                            item.processReturn = item.position.maxReturn.toString();
                         });
                         this.loading.list = false;
                     }
