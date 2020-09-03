@@ -1,4 +1,12 @@
 {
+    "error.VIOLATION::RP_AGE_TO_YOUNG": "You must be at least 18 years old to order with Ratepay.",
+    "error.VIOLATION::RP_INVALID_AGE": "Please provide a valid date for your birthday.",
+    "error.VIOLATION::RP_MISSING_IBAN": "Please provide a valid IBAN.",
+    "error.VIOLATION::RP_INVALID_COUNTRY_CODE_ERROR": "The country of the IBAN is not valid.",
+    "error.VIOLATION::RP_CHECKSUM_FAILED_ERROR": "The check digits of the IBAN are invalid.",
+    "error.VIOLATION::RP_INVALID_FORMAT_ERROR": "Please provide a valid IBAN.",
+    "error.VIOLATION::RP_NOT_SUPPORTED_COUNTRY_CODE_ERROR": "The country of the IBAN is not valid.",
+    "error.VIOLATION::RP_MISSING_SEPA_CONFIRM": "Please confirm the SEPA mandate.",
     "ratepay": {
         "storefront": {
             "checkout": {
@@ -7,13 +15,6 @@
                         "transaction-id": "Transaction number:",
                         "descriptor": "Descriptor:"
                     }
-                },
-                "errors": {
-                    "missingSepaConfirm": "Please confirm the SEPA mandate",
-                    "missingIban": "Please provide your IBAN.",
-                    "missingBirthday": "Please provide your birthday. You must be at least 18 years old to order with Ratepay.",
-                    "invalidBirthday": "Please provide a valid date for your birthday.",
-                    "isNotOfLegalAge": "You must be at least 18 years old to order with Ratepay."
                 },
                 "label": {
                     "birthday": "Birthday"

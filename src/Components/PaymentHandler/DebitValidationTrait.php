@@ -8,11 +8,12 @@
 
 namespace Ratepay\RatepayPayments\Components\PaymentHandler;
 
+use Ratepay\RatepayPayments\Components\PaymentHandler\Constraint\Iban;
+use Ratepay\RatepayPayments\Components\PaymentHandler\Constraint\IbanNotBlank;
+use Ratepay\RatepayPayments\Components\PaymentHandler\Constraint\SepaConfirmNotBlank;
 use Shopware\Core\Framework\Validation\DataValidationDefinition;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Validator\Constraints\Iban;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 trait DebitValidationTrait
 {
@@ -21,15 +22,14 @@ trait DebitValidationTrait
         $bankData = new DataValidationDefinition();
         //$bankData->add('accountHolder', new NotBlank()); // Not required, it will be overridden by the customerFactory
         $bankData->add('iban',
-            new NotBlank(['message' => 'ratepay.storefront.checkout.errors.missingIban']),
-            new Iban(['message' => 'ratepay.storefront.checkout.errors.missingIban'])
+            new IbanNotBlank(),
+            new Iban()
         );
         $bankData->add('sepaConfirmation',
-            new NotBlank(['message' => 'ratepay.storefront.checkout.errors.missingSepaConfirm'])
+            new SepaConfirmNotBlank()
         );
         return [
             'bankData' => $bankData
         ];
     }
-
 }

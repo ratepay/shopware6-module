@@ -10,6 +10,7 @@ namespace Ratepay\RatepayPayments\Components\PaymentHandler;
 
 
 use Ratepay\RatepayPayments\Components\PaymentHandler\Constraint\Birthday;
+use Ratepay\RatepayPayments\Components\PaymentHandler\Constraint\BirthdayNotBlank;
 use Ratepay\RatepayPayments\Components\PaymentHandler\Constraint\IsOfLegalAge;
 use Ratepay\RatepayPayments\Components\PaymentHandler\Event\BeforePaymentEvent;
 use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
@@ -31,10 +32,11 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterface
 {
+
+    public const ERROR_SNIPPET_VIOLATION_PREFIX = 'error.VIOLATION::';
 
     /**
      * @var PaymentRequestService
@@ -158,9 +160,9 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
             )
         ) {
             $validations['birthday'] = [
-                new NotBlank(['message' => 'ratepay.storefront.checkout.errors.missingBirthday']),
-                new Birthday(['message' => 'ratepay.storefront.checkout.errors.invalidBirthday']),
-                new IsOfLegalAge(['message' => 'ratepay.storefront.checkout.errors.isNotOfLegalAge']),
+                new BirthdayNotBlank(),
+                new Birthday(['message' => self::ERROR_SNIPPET_VIOLATION_PREFIX . Birthday::ERROR_NAME]),
+                new IsOfLegalAge(['message' => self::ERROR_SNIPPET_VIOLATION_PREFIX . IsOfLegalAge::TOO_YOUNG_ERROR_NAME]),
             ];
         }
         return $validations;

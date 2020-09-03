@@ -28,19 +28,19 @@ class InstallmentPaymentHandler extends AbstractPaymentHandler
 
         $installment = new DataValidationDefinition();
         $installment->add('type',
-            new NotBlank(['message' => 'ratepay.storefront.checkout.errors.unknownError']),
-            new Choice(['choices' => ['time', 'rate'], 'message' => 'ratepay.storefront.checkout.errors.unknownError'])
+            new NotBlank(),
+            new Choice(['choices' => ['time', 'rate']])
         );
         $installment->add('value',
-            new NotBlank(['message' => 'ratepay.storefront.checkout.errors.unknownError'])
+            new NotBlank()
         );
 
         $installment->add('hash',
-            new NotBlank(['message' => 'ratepay.storefront.checkout.errors.unknownError'])
+            new NotBlank()
         );
         $installment->add('paymentType',
-            new NotBlank(['message' => 'ratepay.storefront.checkout.errors.unknownError']),
-            new Choice(['choices' => ['DIRECT-DEBIT', 'BANK-TRANSFER'], 'message' => 'ratepay.storefront.checkout.errors.unknownError'])
+            new NotBlank(),
+            new Choice(['choices' => ['DIRECT-DEBIT', 'BANK-TRANSFER']])
         );
 
         $ratepayData = $request->get('ratepay');
