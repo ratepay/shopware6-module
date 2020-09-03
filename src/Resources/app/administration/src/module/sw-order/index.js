@@ -7,4 +7,5 @@
 
 import './view/sw-order-detail-base'
 import './component/sw-order-line-items-grid'
+import './component/sw-order-user-card'
 import './page/sw-order-list'
