@@ -77,9 +77,9 @@ class ApiLogger
             $result = (string)$resultNode;
         }
 
-        $requestXml = preg_replace("/<owner>(.*)<\/owner>/", '<owner>xxxxxxxx</owner>', $requestXml);
-        $requestXml = preg_replace("/<bank-account-number>(.*)<\/bank-account-number>/", '<bank-account-number>xxxxxxxx</bank-account-number>', $requestXml);
-        $requestXml = preg_replace("/<bank-code>(.*)<\/bank-code>/", '<bank-code>xxxxxxxx</bank-code>', $requestXml);
+        foreach (['securitycode', 'owner', 'iban'] as $key) {
+            $requestXml = preg_replace("/<$key>(.*)<\/$key>/", "<$key>xxxxxxxx</$key>", $requestXml);
+        }
 
         try {
             $this->logRepository->create(
