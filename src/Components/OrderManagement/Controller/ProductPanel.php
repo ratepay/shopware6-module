@@ -95,6 +95,8 @@ class ProductPanel extends AbstractController
                         'id' => $lineItem->getId(),
                         'name' => $lineItem->getLabel(),
                         'ordered' => $lineItem->getQuantity(),
+                        'unitPrice' => $lineItem->getUnitPrice(),
+                        'totalPrice' => $lineItem->getTotalPrice(),
                         'position' => LineItemUtil::addMaxActionValues(
                             $extension->getPosition(),
                             $lineItem->getQuantity()
@@ -109,6 +111,8 @@ class ProductPanel extends AbstractController
                     'id' => 'shipping',
                     'name' => 'shipping',
                     'ordered' => 1,
+                    'unitPrice' => $order->getShippingTotal(),
+                    'totalPrice' => $order->getShippingTotal(),
                     'position' => LineItemUtil::addMaxActionValues($orderExtension->getShippingPosition(), 1)
                 ];
             }

@@ -22,7 +22,9 @@
                 "ordered": "Bestellt",
                 "delivered": "Versendet",
                 "canceled": "Storniert",
-                "returned": "Retourniert"
+                "returned": "Retourniert",
+                "unitPrice": "Einzelpreis",
+                "totalPrice": "Gesamtsumme"
             },
             "messages": {
                 "successTitle": "Erfolgreich",

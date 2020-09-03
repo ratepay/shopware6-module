@@ -1,0 +1,10 @@
+{
+    "sw-order": {
+        "detailBase": {
+            "ratepay": {
+                "transactionId": "Transaction-ID",
+                "descriptor": "Descriptor"
+            }
+        }
+    }
+}

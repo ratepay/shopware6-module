@@ -56,6 +56,7 @@
                         >{{ $t('ratepay.orderManagement.action.addDebit') }}</sw-button>
                     </sw-button-group>
                 </div>
+
                 <sw-data-grid
                     :dataSource="items"
                     :columns="columns"
@@ -63,6 +64,7 @@
                     :showActions="false"
                     :showSettings="false"
                     :key="loading.list">
+
                     <template slot="column-quantity" slot-scope="{ item }">
                         <sw-select-field v-if="item.position.maxDelivery > 0" v-model="item.processDeliveryCancel" value="0">
                             <option value="0">0</option>
@@ -70,6 +72,15 @@
                         </sw-select-field>
                         <span v-if="item.position.maxDelivery == 0">0</span>
                     </template>
+
+                    <template slot="column-unitPrice" slot-scope="{ item }">
+                        {{ item.unitPrice | currency(order.currency.translated.shortName) }}
+                    </template>
+                    <template slot="column-totalPrice" slot-scope="{ item }">
+                        {{ item.totalPrice | currency(order.currency.translated.shortName) }}
+                    </template>
+
+
                 </sw-data-grid>
             </template>
 

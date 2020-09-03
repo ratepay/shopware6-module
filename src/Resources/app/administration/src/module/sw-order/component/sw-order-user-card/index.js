@@ -5,7 +5,10 @@
  * file that was distributed with this source code.
  */
 
-import './view/sw-order-detail-base'
-import './component/sw-order-line-items-grid'
-import './component/sw-order-user-card'
-import './page/sw-order-list'
+import template from './sw-order-user-card.html.twig';
+
+const {Component} = Shopware;
+
+Component.override('sw-order-user-card', {
+    template,
+});
