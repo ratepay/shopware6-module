@@ -254,6 +254,10 @@ Component.register('ratepay-order-management', {
             this.loading.reload = true;
             this.loadList().then(() => {
                 this.loading.reload = false;
+                this.items.forEach(function (item, index) {
+                    item.processDeliveryCancel = 0;
+                    item.processReturn = 0;
+                });
                 this.$emit('ratepayActionTriggered');
             });
         },
