@@ -15,8 +15,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints\Choice;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class InstallmentPaymentHandler extends DebitPaymentHandler
+class InstallmentPaymentHandler extends AbstractPaymentHandler
 {
+
+    use DebitValidationTrait;
 
     public const RATEPAY_METHOD = 'INSTALLMENT';
 
@@ -42,8 +44,10 @@ class InstallmentPaymentHandler extends DebitPaymentHandler
         );
 
         $ratepayData = $request->get('ratepay');
-        if (isset($ratepayData['installment']['paymentType']) && $ratepayData['installment']['paymentType'] !== 'DIRECT-DEBIT') {
-            unset($validations['bankData']);
+        if (isset($ratepayData['installment']['paymentType']) &&
+            $ratepayData['installment']['paymentType'] === 'DIRECT-DEBIT'
+        ) {
+            $validations = array_merge($validations, $this->getDebitConstraints($request, $salesChannelContext));
         }
 
         $validations['installment'] = $installment;
