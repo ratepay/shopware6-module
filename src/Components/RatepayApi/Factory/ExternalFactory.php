@@ -22,10 +22,12 @@ class ExternalFactory extends AbstractFactory
         /** @var OrderOperationData $requestData */
 
         $order = $requestData->getOrder();
-        if ($delivery = $order->getDeliveries()->first()) {
+        $delivery = $order->getDeliveries()->first();
+        if ($delivery && count($delivery->getTrackingCodes()) > 0) {
+            $trackingCode = $delivery->getTrackingCodes()[0];
             $external = new External();
             $tracking = new Tracking();
-            $tracking->setId($delivery->getTrackingCodes()[0]);
+            $tracking->setId($trackingCode);
             $supportedMethods = ['DHL', 'DPD', 'GLS', 'HLG', 'HVS', 'OTH', 'TNT', 'UPS'];
             foreach ($supportedMethods as $supportedMethod) {
                 if (strpos($delivery->getShippingMethod()->getName(), $supportedMethod) === 0) {
