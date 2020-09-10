@@ -19,7 +19,14 @@
                 :allowColumnEdit="false"
                 :allowInlineEdit="false"
                 :compactMode="true">
+
+                <template slot="column-createdAt" slot-scope="{ item }">
+                    {{ item.createdAt| date({hour: '2-digit', minute: '2-digit'}) }}
+                </template>
+
             </sw-entity-listing>
+
+
         </sw-container>
 
 </sw-card>

@@ -23,6 +23,10 @@
                 :showActions="true"
                 :identifier="'ratepay-api-log-list'">
 
+                <template slot="column-createdAt" slot-scope="{ item }">
+                    {{ item.createdAt| date({hour: '2-digit', minute: '2-digit'}) }}
+                </template>
+
                 <template slot="column-response" slot-scope="{ item }">
                     <sw-button @click="modalItem = item">
                         {{ $t('ratepay.apiLog.modal.openTitle') }}
