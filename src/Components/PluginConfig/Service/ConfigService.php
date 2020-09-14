@@ -6,15 +6,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\PluginConfig\Service;
+namespace Ratepay\RpayPayments\Components\PluginConfig\Service;
 
 
-use Ratepay\RatepayPayments\Components\PaymentHandler\DebitPaymentHandler;
-use Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
-use Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
-use Ratepay\RatepayPayments\Components\PaymentHandler\InvoicePaymentHandler;
-use Ratepay\RatepayPayments\Components\PaymentHandler\PrepaymentPaymentHandler;
-use Ratepay\RatepayPayments\RatepayPayments;
+use Ratepay\RpayPayments\Components\PaymentHandler\DebitPaymentHandler;
+use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
+use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
+use Ratepay\RpayPayments\Components\PaymentHandler\InvoicePaymentHandler;
+use Ratepay\RpayPayments\Components\PaymentHandler\PrepaymentPaymentHandler;
+use Ratepay\RpayPayments\RpayPayments;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -49,7 +49,7 @@ class ConfigService
 
     public function getPluginConfiguration(): array
     {
-        return $this->systemConfigService->get('RatepayPayments.config', null) ?: [];
+        return $this->systemConfigService->get('RpayPayments.config', null) ?: [];
     }
 
     public function getPluginVersion(): string
@@ -57,7 +57,7 @@ class ConfigService
         /** @var PluginCollection $plugin */
         $plugins = $this->pluginRepository->search(
             (new Criteria())
-                ->addFilter(new EqualsFilter('baseClass', RatepayPayments::class))
+                ->addFilter(new EqualsFilter('baseClass', RpayPayments::class))
                 ->setLimit(1),
             $this->getContext()
         );

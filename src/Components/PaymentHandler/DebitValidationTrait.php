@@ -6,11 +6,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\PaymentHandler;
+namespace Ratepay\RpayPayments\Components\PaymentHandler;
 
-use Ratepay\RatepayPayments\Components\PaymentHandler\Constraint\Iban;
-use Ratepay\RatepayPayments\Components\PaymentHandler\Constraint\IbanNotBlank;
-use Ratepay\RatepayPayments\Components\PaymentHandler\Constraint\SepaConfirmNotBlank;
+use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\Iban;
+use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\IbanNotBlank;
+use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\SepaConfirmNotBlank;
 use Shopware\Core\Framework\Validation\DataValidationDefinition;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\Request;

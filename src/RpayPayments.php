@@ -8,11 +8,12 @@
 
 declare(strict_types=1);
 
-namespace Ratepay\RatepayPayments;
+namespace Ratepay\RpayPayments;
 
-use Ratepay\RatepayPayments\Bootstrap\AbstractBootstrap;
-use Ratepay\RatepayPayments\Bootstrap\Database;
-use Ratepay\RatepayPayments\Bootstrap\PaymentMethods;
+use Exception;
+use Ratepay\RpayPayments\Bootstrap\AbstractBootstrap;
+use Ratepay\RpayPayments\Bootstrap\Database;
+use Ratepay\RpayPayments\Bootstrap\PaymentMethods;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -24,7 +25,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\Routing\RouteCollectionBuilder;
 
-class RatepayPayments extends Plugin
+class RpayPayments extends Plugin
 {
     public function install(Plugin\Context\InstallContext $context): void
     {
@@ -131,7 +132,7 @@ class RatepayPayments extends Plugin
         if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
             require_once __DIR__ . '/../vendor/autoload.php';
         } else {
-            throw new \Exception('Ratepay: the autoloader has not been created! Please run `composer install` in ratepay plugin directory');
+            throw new Exception('Ratepay: the autoloader has not been created! Please run `composer install` in Ratepay plugin directory');
         }
     }
 

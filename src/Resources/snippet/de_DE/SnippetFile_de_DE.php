@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Ratepay\RatepayPayments\Resources\snippet\de_DE;
+namespace Ratepay\RpayPayments\Resources\snippet\de_DE;
 
 use Shopware\Core\System\Snippet\Files\SnippetFileInterface;
 

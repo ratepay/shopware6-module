@@ -6,22 +6,22 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\OrderManagement\Controller;
+namespace Ratepay\RpayPayments\Components\OrderManagement\Controller;
 
 
-use Ratepay\RatepayPayments\Components\Checkout\Model\Extension\OrderExtension;
-use Ratepay\RatepayPayments\Components\Checkout\Model\Extension\OrderLineItemExtension;
-use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
-use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
-use Ratepay\RatepayPayments\Components\OrderManagement\Util\LineItemUtil;
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\AddCreditData;
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
-use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\AbstractModifyRequest;
-use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentCancelService;
-use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentCreditService;
-use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentDeliverService;
-use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentReturnService;
-use Ratepay\RatepayPayments\Util\CriteriaHelper;
+use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
+use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderLineItemExtension;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
+use Ratepay\RpayPayments\Components\OrderManagement\Util\LineItemUtil;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\AddCreditData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
+use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\AbstractModifyRequest;
+use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentCancelService;
+use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentCreditService;
+use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentDeliverService;
+use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentReturnService;
+use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;

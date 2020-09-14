@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\InstallmentCalculator\Exception;
+namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Exception;
 
 
 use Shopware\Core\Framework\ShopwareHttpException;

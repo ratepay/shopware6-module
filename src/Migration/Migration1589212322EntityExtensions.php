@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Migration;
+namespace Ratepay\RpayPayments\Migration;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Migration\MigrationStep;

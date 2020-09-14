@@ -6,11 +6,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\InstallmentCalculator\Service;
+namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Service;
 
 use RatePAY\Frontend\InstallmentBuilder;
-use Ratepay\RatepayPayments\Components\InstallmentCalculator\Util\PlanHasher;
-use Ratepay\RatepayPayments\Components\ProfileConfig\Service\ProfileConfigService;
+use Ratepay\RpayPayments\Components\InstallmentCalculator\Util\PlanHasher;
+use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigService;
 use RatePAY\Service\LanguageService;
 use RuntimeException;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;

@@ -6,20 +6,20 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\RatepayApi\Service\Request;
+namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 
 
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
-use Ratepay\RatepayPayments\Components\Checkout\Model\Extension\OrderExtension;
-use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
-use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
-use Ratepay\RatepayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
-use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
-use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
-use Ratepay\RatepayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
+use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
+use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
+use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
+use Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory;
+use Ratepay\RpayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;

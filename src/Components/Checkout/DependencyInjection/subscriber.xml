@@ -16,24 +16,24 @@
             <tag name="kernel.event_subscriber"/>
         </defaults>
 
-        <service id="Ratepay\RatepayPayments\Components\Checkout\Subscriber\CheckoutSubscriber" public="true">
-            <argument type="service" id="Ratepay\RatepayPayments\Components\Checkout\Service\ExtensionService" />
+        <service id="Ratepay\RpayPayments\Components\Checkout\Subscriber\CheckoutSubscriber" public="true">
+            <argument type="service" id="Ratepay\RpayPayments\Components\Checkout\Service\ExtensionService" />
         </service>
 
-        <service id="Ratepay\RatepayPayments\Components\Checkout\Subscriber\CheckoutValidationSubscriber">
+        <service id="Ratepay\RpayPayments\Components\Checkout\Subscriber\CheckoutValidationSubscriber">
             <argument type="service" id="Shopware\Core\Framework\Validation\DataValidator"/>
             <argument type="service" id="request_stack"/>
             <argument type="service" id="service_container"/>
         </service>
 
-        <service id="Ratepay\RatepayPayments\Components\Checkout\Subscriber\PaymentFilterSubscriber" autowire="true" />
+        <service id="Ratepay\RpayPayments\Components\Checkout\Subscriber\PaymentFilterSubscriber" autowire="true" />
 
-        <service id="Ratepay\RatepayPayments\Components\Checkout\Subscriber\PaymentFailedSubscriber">
+        <service id="Ratepay\RpayPayments\Components\Checkout\Subscriber\PaymentFailedSubscriber">
             <argument type="service" id="ratepay_api_log.repository"/>
             <argument type="service" id="service_container"/>
         </service>
 
-        <service id="Ratepay\RatepayPayments\Components\Checkout\Subscriber\UserDataSubscriber">
+        <service id="Ratepay\RpayPayments\Components\Checkout\Subscriber\UserDataSubscriber">
             <argument id="customer.repository" type="service"/>
             <argument id="order_address.repository" type="service"/>
             <argument id="customer_address.repository" type="service"/>

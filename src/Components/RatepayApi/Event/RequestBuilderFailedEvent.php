@@ -6,10 +6,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\RatepayApi\Event;
+namespace Ratepay\RpayPayments\Components\RatepayApi\Event;
 
 use Exception;
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class RequestBuilderFailedEvent extends Event

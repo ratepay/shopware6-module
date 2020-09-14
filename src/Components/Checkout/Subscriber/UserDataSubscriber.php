@@ -6,11 +6,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\Checkout\Subscriber;
+namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
 
 
 use DateTime;
-use Ratepay\RatepayPayments\Components\PaymentHandler\Event\BeforePaymentEvent;
+use Ratepay\RpayPayments\Components\PaymentHandler\Event\BeforePaymentEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

@@ -6,9 +6,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\Checkout\Model\Extension;
+namespace Ratepay\RpayPayments\Components\Checkout\Model\Extension;
 
-use Ratepay\RatepayPayments\Components\Checkout\Model\Definition\RatepayOrderDataDefinition;
+use Ratepay\RpayPayments\Components\Checkout\Model\Definition\RatepayOrderDataDefinition;
 use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityExtension;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\RestrictDelete;

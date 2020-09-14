@@ -6,9 +6,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\Checkout\Subscriber;
+namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
 
-use Ratepay\RatepayPayments\Components\Checkout\Event\RatepayPaymentFilterEvent;
+use Ratepay\RpayPayments\Components\Checkout\Event\RatepayPaymentFilterEvent;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressCollection;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

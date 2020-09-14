@@ -6,12 +6,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\Account\Subscriber;
+namespace Ratepay\RpayPayments\Components\Account\Subscriber;
 
-use Ratepay\RatepayPayments\Components\Checkout\Model\Extension\OrderExtension;
-use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
-use Ratepay\RatepayPayments\Components\Checkout\Service\ExtensionService;
-use Ratepay\RatepayPayments\Util\MethodHelper;
+use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
+use Ratepay\RpayPayments\Components\Checkout\Service\ExtensionService;
+use Ratepay\RpayPayments\Util\MethodHelper;
 use Shopware\Storefront\Event\RouteRequest\HandlePaymentMethodRouteRequestEvent;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

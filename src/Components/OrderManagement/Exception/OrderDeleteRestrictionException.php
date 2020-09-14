@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\OrderManagement\Exception;
+namespace Ratepay\RpayPayments\Components\OrderManagement\Exception;
 
 use Shopware\Core\Framework\ShopwareHttpException;
 use Symfony\Component\HttpFoundation\Response;

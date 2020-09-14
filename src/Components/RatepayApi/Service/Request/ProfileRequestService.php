@@ -6,12 +6,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\RatepayApi\Service\Request;
+namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 
 
-use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\ProfileRequestData;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\ProfileRequestData;
 use Shopware\Core\Framework\Context;
 
 class ProfileRequestService extends AbstractRequest

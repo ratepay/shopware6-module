@@ -6,12 +6,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\Account\Controller;
+namespace Ratepay\RpayPayments\Components\Account\Controller;
 
-use Ratepay\RatepayPayments\Components\Checkout\Model\Extension\OrderExtension;
-use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
-use Ratepay\RatepayPayments\Util\CriteriaHelper;
-use Ratepay\RatepayPayments\Util\MethodHelper;
+use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
+use Ratepay\RpayPayments\Util\CriteriaHelper;
+use Ratepay\RpayPayments\Util\MethodHelper;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;

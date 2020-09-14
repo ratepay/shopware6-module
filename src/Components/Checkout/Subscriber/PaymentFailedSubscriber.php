@@ -6,14 +6,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\Checkout\Subscriber;
+namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
 
 
-use Ratepay\RatepayPayments\Components\Checkout\Model\Extension\OrderExtension;
-use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
-use Ratepay\RatepayPayments\Components\Logging\Model\ApiRequestLogEntity;
-use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
-use Ratepay\RatepayPayments\Components\RatepayApi\Util\ResponseConverter;
+use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
+use Ratepay\RpayPayments\Components\Logging\Model\ApiRequestLogEntity;
+use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
+use Ratepay\RpayPayments\Components\RatepayApi\Util\ResponseConverter;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;

@@ -6,17 +6,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\Checkout\Service;
+namespace Ratepay\RpayPayments\Components\Checkout\Service;
 
 
-use Ratepay\RatepayPayments\Components\Checkout\Model\Collection\RatepayOrderLineItemDataCollection;
-use Ratepay\RatepayPayments\Components\Checkout\Model\Definition\RatepayOrderDataDefinition;
-use Ratepay\RatepayPayments\Components\Checkout\Model\Definition\RatepayOrderLineItemDataDefinition;
-use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
-use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
-use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayPositionEntity;
-use Ratepay\RatepayPayments\Components\InstallmentCalculator\Service\InstallmentService;
-use Ratepay\RatepayPayments\Util\MethodHelper;
+use Ratepay\RpayPayments\Components\Checkout\Model\Collection\RatepayOrderLineItemDataCollection;
+use Ratepay\RpayPayments\Components\Checkout\Model\Definition\RatepayOrderDataDefinition;
+use Ratepay\RpayPayments\Components\Checkout\Model\Definition\RatepayOrderLineItemDataDefinition;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayPositionEntity;
+use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
+use Ratepay\RpayPayments\Util\MethodHelper;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;

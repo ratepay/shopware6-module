@@ -6,12 +6,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\Checkout\Service;
+namespace Ratepay\RpayPayments\Components\Checkout\Service;
 
-use Ratepay\RatepayPayments\Components\Checkout\Event\RatepayPaymentFilterEvent;
-use Ratepay\RatepayPayments\Components\ProfileConfig\Model\Collection\ProfileConfigMethodCollection;
-use Ratepay\RatepayPayments\Components\ProfileConfig\Service\ProfileConfigService;
-use Ratepay\RatepayPayments\Util\MethodHelper;
+use Ratepay\RpayPayments\Components\Checkout\Event\RatepayPaymentFilterEvent;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\Collection\ProfileConfigMethodCollection;
+use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigService;
+use Ratepay\RpayPayments\Util\MethodHelper;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;

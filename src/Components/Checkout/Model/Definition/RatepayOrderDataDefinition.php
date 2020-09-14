@@ -6,11 +6,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\Checkout\Model\Definition;
+namespace Ratepay\RpayPayments\Components\Checkout\Model\Definition;
 
 
-use Ratepay\RatepayPayments\Components\Checkout\Model\Collection\RatepayOrderDataCollection;
-use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
+use Ratepay\RpayPayments\Components\Checkout\Model\Collection\RatepayOrderDataCollection;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;

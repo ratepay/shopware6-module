@@ -12,7 +12,7 @@
 
     <services>
 
-        <service id="Ratepay\RatepayPayments\Components\Account\Controller\AccountOrderControllerDecorator"
+        <service id="Ratepay\RpayPayments\Components\Account\Controller\AccountOrderControllerDecorator"
                  decorates="Shopware\Storefront\Controller\AccountOrderController"
                  parent="Shopware\Storefront\Controller\AccountOrderController">
         </service>

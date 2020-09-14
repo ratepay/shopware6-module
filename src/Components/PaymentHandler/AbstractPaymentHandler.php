@@ -6,21 +6,21 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\PaymentHandler;
+namespace Ratepay\RpayPayments\Components\PaymentHandler;
 
 
-use Ratepay\RatepayPayments\Components\PaymentHandler\Constraint\Birthday;
-use Ratepay\RatepayPayments\Components\PaymentHandler\Constraint\BirthdayNotBlank;
-use Ratepay\RatepayPayments\Components\PaymentHandler\Constraint\IsOfLegalAge;
-use Ratepay\RatepayPayments\Components\PaymentHandler\Event\BeforePaymentEvent;
-use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
-use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
-use Ratepay\RatepayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
-use Ratepay\RatepayPayments\Components\ProfileConfig\Service\ProfileConfigService;
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\PaymentRequestData;
-use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
-use Ratepay\RatepayPayments\Exception\RatepayException;
-use Ratepay\RatepayPayments\Util\CriteriaHelper;
+use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\Birthday;
+use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\BirthdayNotBlank;
+use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\IsOfLegalAge;
+use Ratepay\RpayPayments\Components\PaymentHandler\Event\BeforePaymentEvent;
+use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
+use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
+use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
+use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigService;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
+use Ratepay\RpayPayments\Exception\RatepayException;
+use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;

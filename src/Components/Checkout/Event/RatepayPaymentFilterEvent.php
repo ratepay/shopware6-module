@@ -6,11 +6,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\Checkout\Event;
+namespace Ratepay\RpayPayments\Components\Checkout\Event;
 
 
-use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
-use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;

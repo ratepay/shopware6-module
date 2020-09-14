@@ -13,9 +13,9 @@
             <tag name="kernel.event_subscriber"/>
         </defaults>
 
-        <service id="Ratepay\RatepayPayments\Components\RatepayApi\Subscriber\PaymentRequestSubscriber" autowire="true" />
+        <service id="Ratepay\RpayPayments\Components\RatepayApi\Subscriber\PaymentRequestSubscriber" autowire="true" />
 
-        <service id="Ratepay\RatepayPayments\Components\RatepayApi\Subscriber\PaymentChangeSubscriber" autowire="true">
+        <service id="Ratepay\RpayPayments\Components\RatepayApi\Subscriber\PaymentChangeSubscriber" autowire="true">
             <bind key="$ratepayPositionRepository" id="ratepay_position.repository" type="service" />
             <argument key="$orderRepository" id="order.repository" type="service"/>
             <argument key="$logger" id="ratepay.logger" type="service"/>

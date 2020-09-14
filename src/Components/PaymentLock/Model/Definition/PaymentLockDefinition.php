@@ -6,10 +6,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\PaymentLock\Model\Definition;
+namespace Ratepay\RpayPayments\Components\PaymentLock\Model\Definition;
 
-use Ratepay\RatepayPayments\Components\PaymentLock\Model\Collection\PaymentLockCollection;
-use Ratepay\RatepayPayments\Components\PaymentLock\Model\PaymentLockEntity;
+use Ratepay\RpayPayments\Components\PaymentLock\Model\Collection\PaymentLockCollection;
+use Ratepay\RpayPayments\Components\PaymentLock\Model\PaymentLockEntity;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Checkout\Payment\PaymentMethodDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;

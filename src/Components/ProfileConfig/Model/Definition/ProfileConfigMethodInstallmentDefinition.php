@@ -6,10 +6,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\ProfileConfig\Model\Definition;
+namespace Ratepay\RpayPayments\Components\ProfileConfig\Model\Definition;
 
-use Ratepay\RatepayPayments\Components\ProfileConfig\Model\Collection\ProfileConfigMethodInstallmentCollection;
-use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigMethodInstallmentEntity;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\Collection\ProfileConfigMethodInstallmentCollection;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodInstallmentEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;

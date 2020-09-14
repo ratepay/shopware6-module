@@ -5,7 +5,8 @@
   ~ file that was distributed with this source code.
 #}
 
-{% block sw_order_detail_base__user_card %}
+{% block sw_order_detail_base_line_items_card %}
+    {% parent %}
 
     {% block ratepay_order_management__container %}
         <ratepay-order-management
@@ -24,7 +25,5 @@
         >
         </ratepay-order-history-log-grid>
     {% endblock %}
-
-    {% parent %}
 
 {% endblock %}

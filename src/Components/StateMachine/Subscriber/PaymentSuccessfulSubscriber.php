@@ -6,11 +6,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\StateMachine\Subscriber;
+namespace Ratepay\RpayPayments\Components\StateMachine\Subscriber;
 
 
-use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
-use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
+use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
+use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;

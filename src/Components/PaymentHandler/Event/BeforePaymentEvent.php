@@ -6,9 +6,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\PaymentHandler\Event;
+namespace Ratepay\RpayPayments\Components\PaymentHandler\Event;
 
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\PaymentRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Event\ShopwareEvent;
 use Symfony\Contracts\EventDispatcher\Event;

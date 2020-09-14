@@ -6,15 +6,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\RatepayApi\Dto;
+namespace Ratepay\RpayPayments\Components\RatepayApi\Dto;
 
 
-use Ratepay\RatepayPayments\Components\Checkout\Model\Extension\OrderExtension;
-use Ratepay\RatepayPayments\Components\Checkout\Model\Extension\OrderLineItemExtension;
-use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
-use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
-use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayPositionEntity;
-use Ratepay\RatepayPayments\Components\OrderManagement\Util\LineItemUtil;
+use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
+use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderLineItemExtension;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayPositionEntity;
+use Ratepay\RpayPayments\Components\OrderManagement\Util\LineItemUtil;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;

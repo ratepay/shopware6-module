@@ -11,7 +11,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="Ratepay\RatepayPayments\Components\OrderManagement\Controller\ProductPanel" autowire="true">
+        <service id="Ratepay\RpayPayments\Components\OrderManagement\Controller\ProductPanel" autowire="true">
             <argument key="$orderRepository" id="order.repository" type="service"/>
             <call method="setContainer">
                 <argument id="service_container" type="service"/>

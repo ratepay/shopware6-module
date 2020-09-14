@@ -6,14 +6,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Bootstrap;
+namespace Ratepay\RpayPayments\Bootstrap;
 
 
-use Ratepay\RatepayPayments\Components\PaymentHandler\DebitPaymentHandler;
-use Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
-use Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
-use Ratepay\RatepayPayments\Components\PaymentHandler\InvoicePaymentHandler;
-use Ratepay\RatepayPayments\Components\PaymentHandler\PrepaymentPaymentHandler;
+use Ratepay\RpayPayments\Components\PaymentHandler\DebitPaymentHandler;
+use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
+use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
+use Ratepay\RpayPayments\Components\PaymentHandler\InvoicePaymentHandler;
+use Ratepay\RpayPayments\Components\PaymentHandler\PrepaymentPaymentHandler;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;

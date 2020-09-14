@@ -6,18 +6,18 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\ProfileConfig\Service;
+namespace Ratepay\RpayPayments\Components\ProfileConfig\Service;
 
 
-use Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
-use Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
-use Ratepay\RatepayPayments\Components\ProfileConfig\Model\Collection\ProfileConfigCollection;
-use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
-use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
-use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigMethodInstallmentEntity;
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\ProfileRequestData;
-use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\ProfileRequestService;
-use Ratepay\RatepayPayments\RatepayPayments;
+use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
+use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\Collection\ProfileConfigCollection;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodInstallmentEntity;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\ProfileRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\ProfileRequestService;
+use Ratepay\RpayPayments\RpayPayments;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
@@ -176,7 +176,7 @@ class ProfileConfigService
     {
         $criteria = new Criteria();
         $criteria->addAssociation('plugin');
-        $criteria->addFilter(new EqualsFilter('plugin.baseClass', RatepayPayments::class));
+        $criteria->addFilter(new EqualsFilter('plugin.baseClass', RpayPayments::class));
         return $this->paymentRepository->search($criteria, $this->context);
     }
 

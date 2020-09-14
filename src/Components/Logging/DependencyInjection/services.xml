@@ -16,12 +16,12 @@
             <argument type="string">ratepay</argument>
         </service>
 
-        <service id="Ratepay\RatepayPayments\Components\Logging\Service\ApiLogger" autowire="true">
+        <service id="Ratepay\RpayPayments\Components\Logging\Service\ApiLogger" autowire="true">
             <argument key="$logRepository" id="ratepay_api_log.repository" type="service"/>
             <argument key="$logger" id="ratepay.logger" type="service"/>
         </service>
 
-        <service id="Ratepay\RatepayPayments\Components\Logging\Service\HistoryLogger">
+        <service id="Ratepay\RpayPayments\Components\Logging\Service\HistoryLogger">
             <argument id="ratepay_order_history.repository" type="service"/>
             <argument id="user.repository" type="service"/>
             <argument id="ratepay.logger" type="service"/>

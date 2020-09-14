@@ -6,10 +6,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\Logging\Subscriber;
+namespace Ratepay\RpayPayments\Components\Logging\Subscriber;
 
 use Monolog\Logger;
-use Ratepay\RatepayPayments\Components\RatepayApi\Event\RequestBuilderFailedEvent;
+use Ratepay\RpayPayments\Components\RatepayApi\Event\RequestBuilderFailedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class RequestBuilderFailedSubscriber implements EventSubscriberInterface

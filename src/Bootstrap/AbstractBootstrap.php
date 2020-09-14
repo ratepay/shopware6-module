@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Bootstrap;
+namespace Ratepay\RpayPayments\Bootstrap;
 
 
 use Monolog\Logger;

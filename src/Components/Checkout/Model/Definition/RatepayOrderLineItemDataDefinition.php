@@ -6,11 +6,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\Checkout\Model\Definition;
+namespace Ratepay\RpayPayments\Components\Checkout\Model\Definition;
 
 
-use Ratepay\RatepayPayments\Components\Checkout\Model\Collection\RatepayOrderLineItemDataCollection;
-use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
+use Ratepay\RpayPayments\Components\Checkout\Model\Collection\RatepayOrderLineItemDataCollection;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;

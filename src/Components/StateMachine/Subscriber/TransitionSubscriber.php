@@ -6,19 +6,19 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\StateMachine\Subscriber;
+namespace Ratepay\RpayPayments\Components\StateMachine\Subscriber;
 
 
 use Exception;
 use Monolog\Logger;
-use Ratepay\RatepayPayments\Components\Checkout\Model\Extension\OrderExtension;
-use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
-use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
-use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentCancelService;
-use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentDeliverService;
-use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentReturnService;
-use Ratepay\RatepayPayments\Util\CriteriaHelper;
+use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
+use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
+use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentCancelService;
+use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentDeliverService;
+use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentReturnService;
+use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;

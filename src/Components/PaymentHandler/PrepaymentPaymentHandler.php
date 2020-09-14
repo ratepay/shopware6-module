@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\PaymentHandler;
+namespace Ratepay\RpayPayments\Components\PaymentHandler;
 
 
 class PrepaymentPaymentHandler extends AbstractPaymentHandler

@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Exception;
+namespace Ratepay\RpayPayments\Exception;
 
 
 use Exception;

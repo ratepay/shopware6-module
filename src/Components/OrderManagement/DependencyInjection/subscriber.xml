@@ -11,7 +11,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="Ratepay\RatepayPayments\Components\OrderManagement\Subscriber\LineItemsListener">
+        <service id="Ratepay\RpayPayments\Components\OrderManagement\Subscriber\LineItemsListener">
             <argument id="order_line_item.repository" type="service"/>
             <tag name="kernel.event_subscriber"/>
         </service>

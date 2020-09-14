@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\PaymentHandler\Constraint;
+namespace Ratepay\RpayPayments\Components\PaymentHandler\Constraint;
 
 
 class BirthdayNotBlank extends AbstractNotBlank

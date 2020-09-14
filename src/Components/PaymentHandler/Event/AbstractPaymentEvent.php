@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\PaymentHandler\Event;
+namespace Ratepay\RpayPayments\Components\PaymentHandler\Event;
 
 
 use RatePAY\Model\Response\PaymentRequest;

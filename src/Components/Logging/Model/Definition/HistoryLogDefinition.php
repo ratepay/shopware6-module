@@ -6,10 +6,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\Logging\Model\Definition;
+namespace Ratepay\RpayPayments\Components\Logging\Model\Definition;
 
-use Ratepay\RatepayPayments\Components\Logging\Model\Collection\HistoryLogCollection;
-use Ratepay\RatepayPayments\Components\Logging\Model\HistoryLogEntity;
+use Ratepay\RpayPayments\Components\Logging\Model\Collection\HistoryLogCollection;
+use Ratepay\RpayPayments\Components\Logging\Model\HistoryLogEntity;
 use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;

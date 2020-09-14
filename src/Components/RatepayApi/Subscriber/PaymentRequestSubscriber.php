@@ -6,14 +6,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\RatepayApi\Subscriber;
+namespace Ratepay\RpayPayments\Components\RatepayApi\Subscriber;
 
 
 use RatePAY\Model\Response\PaymentRequest;
-use Ratepay\RatepayPayments\Components\Checkout\Service\ExtensionService;
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\PaymentRequestData;
-use Ratepay\RatepayPayments\Components\RatepayApi\Event\ResponseEvent;
-use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
+use Ratepay\RpayPayments\Components\Checkout\Service\ExtensionService;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Event\ResponseEvent;
+use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentRequestSubscriber implements EventSubscriberInterface

@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\DeviceFingerprint;
+namespace Ratepay\RpayPayments\Components\DeviceFingerprint;
 
 use RatePAY\Service\DeviceFingerprint;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;

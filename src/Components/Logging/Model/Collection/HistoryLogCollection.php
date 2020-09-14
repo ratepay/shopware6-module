@@ -6,9 +6,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\Logging\Model\Collection;
+namespace Ratepay\RpayPayments\Components\Logging\Model\Collection;
 
-use Ratepay\RatepayPayments\Components\Logging\Model\HistoryLogEntity;
+use Ratepay\RpayPayments\Components\Logging\Model\HistoryLogEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**

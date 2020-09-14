@@ -6,10 +6,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\ProfileConfig\Model\Collection;
+namespace Ratepay\RpayPayments\Components\ProfileConfig\Model\Collection;
 
 
-use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**

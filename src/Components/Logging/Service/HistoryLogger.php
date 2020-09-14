@@ -6,12 +6,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\Logging\Service;
+namespace Ratepay\RpayPayments\Components\Logging\Service;
 
 use DateTime;
 use Exception;
 use Monolog\Logger;
-use Ratepay\RatepayPayments\Components\Logging\Model\HistoryLogEntity;
+use Ratepay\RpayPayments\Components\Logging\Model\HistoryLogEntity;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Api\Context\AdminApiSource;
 use Shopware\Core\Framework\Context;

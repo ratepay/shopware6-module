@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\InstallmentCalculator\Util;
+namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Util;
 
 
 class PlanHasher

@@ -6,12 +6,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\RatepayApi\Factory;
+namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 
 
 use RatePAY\Model\Request\SubModel\Head;
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
-use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 

@@ -6,9 +6,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\ProfileConfig\Model;
+namespace Ratepay\RpayPayments\Components\ProfileConfig\Model;
 
-use Ratepay\RatepayPayments\Components\ProfileConfig\Model\Collection\ProfileConfigMethodCollection;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\Collection\ProfileConfigMethodCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 use Shopware\Core\System\SalesChannel\SalesChannelEntity;

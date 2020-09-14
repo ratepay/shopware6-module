@@ -6,10 +6,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\ProfileConfig\Exception;
+namespace Ratepay\RpayPayments\Components\ProfileConfig\Exception;
 
 
-use Ratepay\RatepayPayments\Exception\RatepayException;
+use Ratepay\RpayPayments\Exception\RatepayException;
 
 class ProfileNotFoundException extends RatepayException
 {

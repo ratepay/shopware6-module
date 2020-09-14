@@ -6,11 +6,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\PaymentLock\Subscriber;
+namespace Ratepay\RpayPayments\Components\PaymentLock\Subscriber;
 
 
-use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
-use Ratepay\RatepayPayments\Components\PaymentLock\Service\LockService;
+use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
+use Ratepay\RpayPayments\Components\PaymentLock\Service\LockService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentFailedSubscriber implements EventSubscriberInterface

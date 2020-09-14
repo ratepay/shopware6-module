@@ -6,12 +6,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\RatepayApi\Factory;
+namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 
 
 use RatePAY\Model\Request\SubModel\Content\Invoicing;
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Shopware\Core\Checkout\Document\DocumentEntity;
 
 class InvoiceFactory extends AbstractFactory

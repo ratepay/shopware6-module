@@ -15,10 +15,10 @@
             <tag name="kernel.event_subscriber"/>
         </defaults>
 
-        <service id="Ratepay\RatepayPayments\Components\StateMachine\Subscriber\PaymentSuccessfulSubscriber" autowire="true">
+        <service id="Ratepay\RpayPayments\Components\StateMachine\Subscriber\PaymentSuccessfulSubscriber" autowire="true">
         </service>
 
-        <service id="Ratepay\RatepayPayments\Components\StateMachine\Subscriber\TransitionSubscriber" autowire="true">
+        <service id="Ratepay\RpayPayments\Components\StateMachine\Subscriber\TransitionSubscriber" autowire="true">
             <argument key="$orderRepository" id="order.repository" type="service" />
             <argument key="$orderDeliveryRepository" id="order_delivery.repository" type="service" />
             <argument key="$logger" id="ratepay.logger" type="service" />

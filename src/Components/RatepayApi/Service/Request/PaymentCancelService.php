@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\RatepayApi\Service\Request;
+namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 
 
 class PaymentCancelService extends AbstractModifyRequest

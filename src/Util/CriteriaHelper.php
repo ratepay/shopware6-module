@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Util;
+namespace Ratepay\RpayPayments\Util;
 
 
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;

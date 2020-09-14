@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\RatepayApi\Util;
+namespace Ratepay\RpayPayments\Components\RatepayApi\Util;
 
 
 use RatePAY\Model\Response\AbstractResponse;

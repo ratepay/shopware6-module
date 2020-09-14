@@ -10,31 +10,31 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="Ratepay\RatepayPayments\Components\Checkout\Model\Definition\RatepayOrderDataDefinition">
+        <service id="Ratepay\RpayPayments\Components\Checkout\Model\Definition\RatepayOrderDataDefinition">
             <tag name="shopware.entity.definition" entity="ratepay_order_data"/>
         </service>
-        <service id="Ratepay\RatepayPayments\Components\Checkout\Model\Definition\RatepayOrderLineItemDataDefinition">
+        <service id="Ratepay\RpayPayments\Components\Checkout\Model\Definition\RatepayOrderLineItemDataDefinition">
             <tag name="shopware.entity.definition" entity="ratepay_order_line_item_data"/>
         </service>
-        <service id="Ratepay\RatepayPayments\Components\Checkout\Model\Definition\RatepayPositionDefinition">
+        <service id="Ratepay\RpayPayments\Components\Checkout\Model\Definition\RatepayPositionDefinition">
             <tag name="shopware.entity.definition" entity="ratepay_position"/>
         </service>
-        <service id="Ratepay\RatepayPayments\Components\Checkout\Model\Repository\OrderLineItemRepositoryDecorator"
+        <service id="Ratepay\RpayPayments\Components\Checkout\Model\Repository\OrderLineItemRepositoryDecorator"
                  decorates="order_line_item.repository">
-            <argument type="service" id="Ratepay\RatepayPayments\Components\Checkout\Model\Repository\OrderLineItemRepositoryDecorator.inner"/>
+            <argument type="service" id="Ratepay\RpayPayments\Components\Checkout\Model\Repository\OrderLineItemRepositoryDecorator.inner"/>
             <argument type="service" id="ratepay_order_line_item_data.repository"/>
         </service>
-        <service id="Ratepay\RatepayPayments\Components\Checkout\Model\Repository\OrderRepositoryDecorator"
+        <service id="Ratepay\RpayPayments\Components\Checkout\Model\Repository\OrderRepositoryDecorator"
                  decorates="order.repository">
-            <argument type="service" id="Ratepay\RatepayPayments\Components\Checkout\Model\Repository\OrderRepositoryDecorator.inner"/>
+            <argument type="service" id="Ratepay\RpayPayments\Components\Checkout\Model\Repository\OrderRepositoryDecorator.inner"/>
             <argument type="service" id="ratepay_order_data.repository"/>
         </service>
 
-        <service id="Ratepay\RatepayPayments\Components\Checkout\Model\Extension\OrderExtension">
+        <service id="Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension">
             <tag name="shopware.entity.extension"/>
         </service>
 
-        <service id="Ratepay\RatepayPayments\Components\Checkout\Model\Extension\OrderLineItemExtension">
+        <service id="Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderLineItemExtension">
             <tag name="shopware.entity.extension"/>
         </service>
     </services>

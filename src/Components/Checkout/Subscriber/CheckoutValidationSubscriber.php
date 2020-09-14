@@ -8,9 +8,9 @@
 
 declare(strict_types=1);
 
-namespace Ratepay\RatepayPayments\Components\Checkout\Subscriber;
+namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
 
-use Ratepay\RatepayPayments\Components\PaymentHandler\AbstractPaymentHandler;
+use Ratepay\RpayPayments\Components\PaymentHandler\AbstractPaymentHandler;
 use Shopware\Core\Framework\Validation\BuildValidationEvent;
 use Shopware\Core\Framework\Validation\DataValidationDefinition;
 use Shopware\Core\Framework\Validation\DataValidator;
@@ -58,7 +58,7 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
         $context = $this->getContextFromRequest($request);
         $paymentHandlerIdentifier = $context->getPaymentMethod()->getHandlerIdentifier();
 
-        if (strpos($paymentHandlerIdentifier, 'RatepayPayments') !== false) {
+        if (strpos($paymentHandlerIdentifier, 'RpayPayments') !== false) {
 
             /** @var $paymentHandler AbstractPaymentHandler */
             $paymentHandler = $this->container->get($paymentHandlerIdentifier);

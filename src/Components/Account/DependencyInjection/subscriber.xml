@@ -16,8 +16,8 @@
             <tag name="kernel.event_subscriber"/>
         </defaults>
 
-        <service id="Ratepay\RatepayPayments\Components\Account\Subscriber\AccountSubscriber" public="true">
-            <argument type="service" id="Ratepay\RatepayPayments\Components\Checkout\Service\ExtensionService" />
+        <service id="Ratepay\RpayPayments\Components\Account\Subscriber\AccountSubscriber" public="true">
+            <argument type="service" id="Ratepay\RpayPayments\Components\Checkout\Service\ExtensionService" />
         </service>
 
     </services>

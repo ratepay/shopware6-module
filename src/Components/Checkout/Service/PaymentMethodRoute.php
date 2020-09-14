@@ -6,10 +6,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\Checkout\Service;
+namespace Ratepay\RpayPayments\Components\Checkout\Service;
 
 
-use Ratepay\RatepayPayments\Util\CriteriaHelper;
+use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Shopware\Core\Checkout\Payment\SalesChannel\AbstractPaymentMethodRoute;
 use Shopware\Core\Checkout\Payment\SalesChannel\PaymentMethodRouteResponse;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;

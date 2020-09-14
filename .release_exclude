@@ -10,3 +10,5 @@ sonar-project.properties
 tests
 .release_exclude
 .DS_Store
+vendor
+src/Resources/node_modules

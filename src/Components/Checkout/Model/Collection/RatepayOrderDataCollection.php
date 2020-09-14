@@ -6,10 +6,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\Checkout\Model\Collection;
+namespace Ratepay\RpayPayments\Components\Checkout\Model\Collection;
 
 
-use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**

@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\OrderManagement\Subscriber;
+namespace Ratepay\RpayPayments\Components\OrderManagement\Subscriber;
 
 
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;

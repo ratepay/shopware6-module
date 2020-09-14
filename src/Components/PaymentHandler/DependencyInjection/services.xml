@@ -16,10 +16,10 @@
             <tag name="shopware.payment.method.sync"/>
         </defaults>
 
-        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\InvoicePaymentHandler" public="true" autowire="true" />
-        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\DebitPaymentHandler" public="true" autowire="true" />
-        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\PrepaymentPaymentHandler" public="true" autowire="true" />
-        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentPaymentHandler" public="true" autowire="true" />
-        <service id="Ratepay\RatepayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler" public="true" autowire="true" />
+        <service id="Ratepay\RpayPayments\Components\PaymentHandler\InvoicePaymentHandler" public="true" autowire="true" />
+        <service id="Ratepay\RpayPayments\Components\PaymentHandler\DebitPaymentHandler" public="true" autowire="true" />
+        <service id="Ratepay\RpayPayments\Components\PaymentHandler\PrepaymentPaymentHandler" public="true" autowire="true" />
+        <service id="Ratepay\RpayPayments\Components\PaymentHandler\InstallmentPaymentHandler" public="true" autowire="true" />
+        <service id="Ratepay\RpayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler" public="true" autowire="true" />
     </services>
 </container>

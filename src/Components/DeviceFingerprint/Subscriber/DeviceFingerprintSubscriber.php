@@ -6,18 +6,18 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\DeviceFingerprint\Subscriber;
+namespace Ratepay\RpayPayments\Components\DeviceFingerprint\Subscriber;
 
 use RatePAY\Model\Request\SubModel\Head;
 use RatePAY\Model\Request\SubModel\Head\CustomerDevice;
-use Ratepay\RatepayPayments\Components\Checkout\Service\ExtensionService;
-use Ratepay\RatepayPayments\Components\DeviceFingerprint\DfpService;
-use Ratepay\RatepayPayments\Components\PaymentHandler\Event\AbstractPaymentEvent;
-use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
-use Ratepay\RatepayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
-use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
-use Ratepay\RatepayPayments\Components\RatepayApi\Event\BuildEvent;
-use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
+use Ratepay\RpayPayments\Components\Checkout\Service\ExtensionService;
+use Ratepay\RpayPayments\Components\DeviceFingerprint\DfpService;
+use Ratepay\RpayPayments\Components\PaymentHandler\Event\AbstractPaymentEvent;
+use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
+use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
+use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
+use Ratepay\RpayPayments\Components\RatepayApi\Event\BuildEvent;
+use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
 use RatePAY\Service\DeviceFingerprint;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;

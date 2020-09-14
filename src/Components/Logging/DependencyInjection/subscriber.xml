@@ -16,7 +16,7 @@
             <tag name="kernel.event_subscriber"/>
         </defaults>
 
-        <service id="Ratepay\RatepayPayments\Components\Logging\Subscriber\RequestBuilderFailedSubscriber" autowire="true" />
-        <service id="Ratepay\RatepayPayments\Components\Logging\Subscriber\RequestSubscriber" autowire="true" />
+        <service id="Ratepay\RpayPayments\Components\Logging\Subscriber\RequestBuilderFailedSubscriber" autowire="true" />
+        <service id="Ratepay\RpayPayments\Components\Logging\Subscriber\RequestSubscriber" autowire="true" />
     </services>
 </container>

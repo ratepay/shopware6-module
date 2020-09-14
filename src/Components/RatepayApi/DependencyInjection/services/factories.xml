@@ -12,16 +12,16 @@
 
     <services>
 
-        <service id="Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory" autowire="true">
+        <service id="Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory" autowire="true">
             <argument key="$shopwareVersion">%kernel.shopware_version%</argument>
         </service>
 
-        <service id="Ratepay\RatepayPayments\Components\RatepayApi\Factory\CustomerFactory" autowire="true"/>
+        <service id="Ratepay\RpayPayments\Components\RatepayApi\Factory\CustomerFactory" autowire="true"/>
 
-        <service id="Ratepay\RatepayPayments\Components\RatepayApi\Factory\ExternalFactory" autowire="true"/>
-        <service id="Ratepay\RatepayPayments\Components\RatepayApi\Factory\InvoiceFactory" autowire="true"/>
-        <service id="Ratepay\RatepayPayments\Components\RatepayApi\Factory\PaymentFactory" autowire="true"/>
-        <service id="Ratepay\RatepayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory" autowire="true"/>
+        <service id="Ratepay\RpayPayments\Components\RatepayApi\Factory\ExternalFactory" autowire="true"/>
+        <service id="Ratepay\RpayPayments\Components\RatepayApi\Factory\InvoiceFactory" autowire="true"/>
+        <service id="Ratepay\RpayPayments\Components\RatepayApi\Factory\PaymentFactory" autowire="true"/>
+        <service id="Ratepay\RpayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory" autowire="true"/>
 
     </services>
 </container>

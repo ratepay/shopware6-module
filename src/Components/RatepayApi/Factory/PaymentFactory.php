@@ -6,12 +6,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\RatepayApi\Factory;
+namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 
 
 use RatePAY\Model\Request\SubModel\Content\Payment;
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\PaymentRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 
 class PaymentFactory extends AbstractFactory
 {

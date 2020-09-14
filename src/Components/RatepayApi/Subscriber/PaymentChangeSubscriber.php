@@ -6,24 +6,24 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\RatepayApi\Subscriber;
+namespace Ratepay\RpayPayments\Components\RatepayApi\Subscriber;
 
 use Exception;
 use Monolog\Logger;
-use Ratepay\RatepayPayments\Components\Checkout\Model\Extension\OrderExtension;
-use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
-use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
-use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayPositionEntity;
-use Ratepay\RatepayPayments\Components\Checkout\Service\ExtensionService;
-use Ratepay\RatepayPayments\Components\Logging\Service\HistoryLogger;
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\AddCreditData;
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
-use Ratepay\RatepayPayments\Components\RatepayApi\Event\ResponseEvent;
-use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentCancelService;
-use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentCreditService;
-use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentDeliverService;
-use Ratepay\RatepayPayments\Components\RatepayApi\Service\Request\PaymentReturnService;
-use Ratepay\RatepayPayments\Util\CriteriaHelper;
+use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayPositionEntity;
+use Ratepay\RpayPayments\Components\Checkout\Service\ExtensionService;
+use Ratepay\RpayPayments\Components\Logging\Service\HistoryLogger;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\AddCreditData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
+use Ratepay\RpayPayments\Components\RatepayApi\Event\ResponseEvent;
+use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentCancelService;
+use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentCreditService;
+use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentDeliverService;
+use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentReturnService;
+use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Order\RecalculationService;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;

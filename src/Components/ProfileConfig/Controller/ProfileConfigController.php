@@ -6,10 +6,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\ProfileConfig\Controller;
+namespace Ratepay\RpayPayments\Components\ProfileConfig\Controller;
 
-use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
-use Ratepay\RatepayPayments\Components\ProfileConfig\Service\ProfileConfigService;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
+use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigService;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;

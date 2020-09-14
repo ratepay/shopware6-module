@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\RatepayApi\Dto;
+namespace Ratepay\RpayPayments\Components\RatepayApi\Dto;
 
 
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;

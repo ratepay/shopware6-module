@@ -6,13 +6,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\RatepayApi\Factory;
+namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 
 
 use RatePAY\Model\Request\SubModel\Head\External;
 use RatePAY\Model\Request\SubModel\Head\External\Tracking;
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 
 class ExternalFactory extends AbstractFactory
 {

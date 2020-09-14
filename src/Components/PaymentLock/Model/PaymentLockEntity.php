@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\PaymentLock\Model;
+namespace Ratepay\RpayPayments\Components\PaymentLock\Model;
 
 use DateTime;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;

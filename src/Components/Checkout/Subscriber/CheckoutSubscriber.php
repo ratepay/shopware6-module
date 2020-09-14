@@ -6,10 +6,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\Checkout\Subscriber;
+namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
 
-use Ratepay\RatepayPayments\Components\Checkout\Service\ExtensionService;
-use Ratepay\RatepayPayments\Util\MethodHelper;
+use Ratepay\RpayPayments\Components\Checkout\Service\ExtensionService;
+use Ratepay\RpayPayments\Util\MethodHelper;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 

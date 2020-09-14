@@ -11,7 +11,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
 
-        <service id="Ratepay\RatepayPayments\Components\PaymentLock\Model\Definition\PaymentLockDefinition">
+        <service id="Ratepay\RpayPayments\Components\PaymentLock\Model\Definition\PaymentLockDefinition">
             <tag name="shopware.entity.definition" entity="ratepay_payment_lock" />
         </service>
 

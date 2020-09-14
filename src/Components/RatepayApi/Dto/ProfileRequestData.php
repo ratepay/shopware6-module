@@ -6,10 +6,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\RatepayApi\Dto;
+namespace Ratepay\RpayPayments\Components\RatepayApi\Dto;
 
 
-use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 
 class ProfileRequestData implements IRequestData
 {

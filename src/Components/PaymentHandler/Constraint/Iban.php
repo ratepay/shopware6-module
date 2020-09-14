@@ -6,10 +6,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\PaymentHandler\Constraint;
+namespace Ratepay\RpayPayments\Components\PaymentHandler\Constraint;
 
 
-use Ratepay\RatepayPayments\Components\PaymentHandler\AbstractPaymentHandler;
+use Ratepay\RpayPayments\Components\PaymentHandler\AbstractPaymentHandler;
 use Symfony\Component\Validator\Constraints\IbanValidator;
 
 class Iban extends \Symfony\Component\Validator\Constraints\Iban

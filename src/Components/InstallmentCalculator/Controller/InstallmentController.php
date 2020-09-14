@@ -6,9 +6,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\InstallmentCalculator\Controller;
+namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Controller;
 
-use Ratepay\RatepayPayments\Components\InstallmentCalculator\Service\InstallmentService;
+use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Request;

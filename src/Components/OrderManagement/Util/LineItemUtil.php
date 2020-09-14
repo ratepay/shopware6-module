@@ -6,10 +6,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\OrderManagement\Util;
+namespace Ratepay\RpayPayments\Components\OrderManagement\Util;
 
 
-use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayPositionEntity;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayPositionEntity;
 
 class LineItemUtil
 {

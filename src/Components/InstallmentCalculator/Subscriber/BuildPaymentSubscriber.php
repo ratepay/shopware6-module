@@ -6,22 +6,22 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\InstallmentCalculator\Subscriber;
+namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Subscriber;
 
 
 use Exception;
 use RatePAY\Model\Request\SubModel\Content\Payment;
 use RatePAY\Model\Request\SubModel\Content\ShoppingBasket;
-use Ratepay\RatepayPayments\Components\InstallmentCalculator\Exception\DebitNotAllowedOnInstallment;
-use Ratepay\RatepayPayments\Components\InstallmentCalculator\Service\InstallmentService;
-use Ratepay\RatepayPayments\Components\InstallmentCalculator\Util\PlanHasher;
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\AddCreditData;
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\OrderOperationData;
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\PaymentRequestData;
-use Ratepay\RatepayPayments\Components\RatepayApi\Event\BuildEvent;
-use Ratepay\RatepayPayments\Components\RatepayApi\Factory\PaymentFactory;
-use Ratepay\RatepayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
-use Ratepay\RatepayPayments\Util\MethodHelper;
+use Ratepay\RpayPayments\Components\InstallmentCalculator\Exception\DebitNotAllowedOnInstallment;
+use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
+use Ratepay\RpayPayments\Components\InstallmentCalculator\Util\PlanHasher;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\AddCreditData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Event\BuildEvent;
+use Ratepay\RpayPayments\Components\RatepayApi\Factory\PaymentFactory;
+use Ratepay\RpayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
+use Ratepay\RpayPayments\Util\MethodHelper;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 

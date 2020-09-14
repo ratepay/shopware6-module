@@ -6,23 +6,23 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\RatepayApi\Service\Request;
+namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 
 
 use Exception;
 use RatePAY\Exception\ExceptionAbstract;
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
-use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
-use Ratepay\RatepayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
-use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
-use Ratepay\RatepayPayments\Components\RatepayApi\Event\BuildEvent;
-use Ratepay\RatepayPayments\Components\RatepayApi\Event\RequestBuilderFailedEvent;
-use Ratepay\RatepayPayments\Components\RatepayApi\Event\RequestDoneEvent;
-use Ratepay\RatepayPayments\Components\RatepayApi\Event\ResponseEvent;
-use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
-use Ratepay\RatepayPayments\Exception\RatepayException;
+use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
+use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Event\BuildEvent;
+use Ratepay\RpayPayments\Components\RatepayApi\Event\RequestBuilderFailedEvent;
+use Ratepay\RpayPayments\Components\RatepayApi\Event\RequestDoneEvent;
+use Ratepay\RpayPayments\Components\RatepayApi\Event\ResponseEvent;
+use Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory;
+use Ratepay\RpayPayments\Exception\RatepayException;
 use RatePAY\RequestBuilder;
 use Shopware\Core\Framework\Context;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;

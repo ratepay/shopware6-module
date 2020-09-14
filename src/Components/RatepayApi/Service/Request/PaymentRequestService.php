@@ -6,20 +6,20 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\RatepayApi\Service\Request;
+namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 
 
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
 use RatePAY\Model\Request\SubModel\Head\External;
-use Ratepay\RatepayPayments\Components\PluginConfig\Service\ConfigService;
-use Ratepay\RatepayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\IRequestData;
-use Ratepay\RatepayPayments\Components\RatepayApi\Dto\PaymentRequestData;
-use Ratepay\RatepayPayments\Components\RatepayApi\Factory\CustomerFactory;
-use Ratepay\RatepayPayments\Components\RatepayApi\Factory\HeadFactory;
-use Ratepay\RatepayPayments\Components\RatepayApi\Factory\PaymentFactory;
-use Ratepay\RatepayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
+use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Factory\CustomerFactory;
+use Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory;
+use Ratepay\RpayPayments\Components\RatepayApi\Factory\PaymentFactory;
+use Ratepay\RpayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
 use RatePAY\RequestBuilder;
 use Shopware\Core\Framework\Context;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;

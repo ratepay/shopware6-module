@@ -6,11 +6,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RatepayPayments\Components\Checkout\Model\Definition;
+namespace Ratepay\RpayPayments\Components\Checkout\Model\Definition;
 
 
-use Ratepay\RatepayPayments\Components\Checkout\Model\Collection\RatepayPositionCollection;
-use Ratepay\RatepayPayments\Components\Checkout\Model\RatepayPositionEntity;
+use Ratepay\RpayPayments\Components\Checkout\Model\Collection\RatepayPositionCollection;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayPositionEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;

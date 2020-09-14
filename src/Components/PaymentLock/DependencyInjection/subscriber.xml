@@ -15,12 +15,12 @@
             <tag name="kernel.event_subscriber"/>
         </defaults>
 
-        <service id="Ratepay\RatepayPayments\Components\PaymentLock\Subscriber\PaymentFilterSubscriber">
-            <argument id="Ratepay\RatepayPayments\Components\PaymentLock\Service\LockService" type="service"/>
+        <service id="Ratepay\RpayPayments\Components\PaymentLock\Subscriber\PaymentFilterSubscriber">
+            <argument id="Ratepay\RpayPayments\Components\PaymentLock\Service\LockService" type="service"/>
         </service>
 
-        <service id="Ratepay\RatepayPayments\Components\PaymentLock\Subscriber\PaymentFailedSubscriber">
-            <argument id="Ratepay\RatepayPayments\Components\PaymentLock\Service\LockService" type="service"/>
+        <service id="Ratepay\RpayPayments\Components\PaymentLock\Subscriber\PaymentFailedSubscriber">
+            <argument id="Ratepay\RpayPayments\Components\PaymentLock\Service\LockService" type="service"/>
         </service>
 
     </services>
