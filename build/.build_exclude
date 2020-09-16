@@ -1,0 +1,17 @@
+.git
+.github
+.gitignore
+build
+build.sh
+Jenkinsfile
+phpunit.xml.dist
+phpunit.xml
+sonar-project.properties
+tests
+.release_exclude
+.DS_Store
+vendor
+src/Resources/node_modules
+.php_cs.dist
+phpstan.neon
+README-dev.md
