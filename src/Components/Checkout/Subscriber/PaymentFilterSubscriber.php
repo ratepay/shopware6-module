@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -15,7 +16,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentFilterSubscriber implements EventSubscriberInterface
 {
-
     public const PAYMENT_FILTER_PRIORITY = 600;
 
     /**
@@ -31,7 +31,7 @@ class PaymentFilterSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            RatepayPaymentFilterEvent::class => ['filterByDefaultConditions', self::PAYMENT_FILTER_PRIORITY]
+            RatepayPaymentFilterEvent::class => ['filterByDefaultConditions', self::PAYMENT_FILTER_PRIORITY],
         ];
     }
 
@@ -57,6 +57,7 @@ class PaymentFilterSubscriber implements EventSubscriberInterface
                 $customer->getActiveShippingAddress() === null
             ) {
                 $event->setIsAvailable(false);
+
                 return $event;
             }
             $addressCollection = new CustomerAddressCollection([
@@ -72,6 +73,7 @@ class PaymentFilterSubscriber implements EventSubscriberInterface
 
         if ($isB2b && $methodConfig->isAllowB2b() === false) {
             $event->setIsAvailable(false);
+
             return $event;
         }
 
@@ -79,6 +81,7 @@ class PaymentFilterSubscriber implements EventSubscriberInterface
         $amountMax = $isB2b ? $methodConfig->getLimitMaxB2b() : $methodConfig->getLimitMax();
         if ($totalPrice < $amountMin || $totalPrice > $amountMax) {
             $event->setIsAvailable(false);
+
             return $event;
         }
 
@@ -86,6 +89,7 @@ class PaymentFilterSubscriber implements EventSubscriberInterface
             $methodConfig->isAllowDifferentAddresses() === false
         ) {
             $event->setIsAvailable(false);
+
             return $event;
         }
 

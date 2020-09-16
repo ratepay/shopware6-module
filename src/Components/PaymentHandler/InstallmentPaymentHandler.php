@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +8,6 @@
  */
 
 namespace Ratepay\RpayPayments\Components\PaymentHandler;
-
 
 use Shopware\Core\Framework\Validation\DataValidationDefinition;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -17,7 +17,6 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class InstallmentPaymentHandler extends AbstractPaymentHandler
 {
-
     use DebitValidationTrait;
 
     public const RATEPAY_METHOD = 'INSTALLMENT';
@@ -51,6 +50,7 @@ class InstallmentPaymentHandler extends AbstractPaymentHandler
         }
 
         $validations['installment'] = $installment;
+
         return $validations;
     }
 }

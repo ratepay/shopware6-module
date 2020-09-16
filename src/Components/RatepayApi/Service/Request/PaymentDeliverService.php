@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +8,6 @@
  */
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
-
 
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
@@ -24,9 +24,10 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class PaymentDeliverService extends AbstractModifyRequest
 {
-
     public const EVENT_SUCCESSFUL = self::class . parent::EVENT_SUCCESSFUL;
+
     public const EVENT_FAILED = self::class . parent::EVENT_FAILED;
+
     public const EVENT_BUILD_HEAD = self::class . parent::EVENT_BUILD_HEAD;
 
     protected $_operation = self::CALL_DELIVER;
@@ -35,6 +36,7 @@ class PaymentDeliverService extends AbstractModifyRequest
      * @var InvoiceFactory
      */
     private $invoiceFactory;
+
     /**
      * @var ExternalFactory
      */
@@ -48,8 +50,7 @@ class PaymentDeliverService extends AbstractModifyRequest
         ShoppingBasketFactory $shoppingBasketFactory,
         InvoiceFactory $invoiceFactory,
         ExternalFactory $externalFactory
-    )
-    {
+    ) {
         parent::__construct($eventDispatcher, $configService, $headFactory, $profileConfigRepository, $shoppingBasketFactory);
         $this->invoiceFactory = $invoiceFactory;
         $this->externalFactory = $externalFactory;
@@ -62,6 +63,7 @@ class PaymentDeliverService extends AbstractModifyRequest
         if ($invoicing = $this->invoiceFactory->getData($requestData)) {
             $content->setInvoicing($invoicing);
         }
+
         return $content;
     }
 
@@ -72,7 +74,7 @@ class PaymentDeliverService extends AbstractModifyRequest
         if ($data) {
             $head->setExternal($data);
         }
+
         return $head;
     }
-
 }

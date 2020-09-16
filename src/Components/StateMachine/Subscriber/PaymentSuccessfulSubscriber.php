@@ -1,5 +1,8 @@
-<?php declare(strict_types=1);
-/**
+<?php
+
+declare(strict_types=1);
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +10,6 @@
  */
 
 namespace Ratepay\RpayPayments\Components\StateMachine\Subscriber;
-
 
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
 use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
@@ -19,7 +21,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentSuccessfulSubscriber implements EventSubscriberInterface
 {
-
     /**
      * @var StateMachineRegistry
      */
@@ -42,7 +43,6 @@ class PaymentSuccessfulSubscriber implements EventSubscriberInterface
             PaymentSuccessfulEvent::class => 'changeTransactionState',
         ];
     }
-
 
     public function changeTransactionState(PaymentSuccessfulEvent $event): void
     {

@@ -1,5 +1,8 @@
-<?php declare(strict_types=1);
-/**
+<?php
+
+declare(strict_types=1);
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -15,11 +18,11 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class BeforePaymentEvent extends Event implements ShopwareEvent
 {
-
     /**
      * @var PaymentRequestData
      */
     private $paymentRequestData;
+
     /**
      * @var Context
      */
@@ -36,9 +39,6 @@ class BeforePaymentEvent extends Event implements ShopwareEvent
         return $this->context;
     }
 
-    /**
-     * @return PaymentRequestData
-     */
     public function getPaymentRequestData(): PaymentRequestData
     {
         return $this->paymentRequestData;

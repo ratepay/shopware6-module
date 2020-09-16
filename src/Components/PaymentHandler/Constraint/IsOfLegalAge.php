@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -17,7 +18,7 @@ class IsOfLegalAge extends LessThanOrEqual
     public const TOO_YOUNG_ERROR_NAME = 'RP_AGE_TO_YOUNG';
 
     protected static $errorNames = [
-        self::TOO_HIGH_ERROR => self::TOO_YOUNG_ERROR_NAME
+        self::TOO_HIGH_ERROR => self::TOO_YOUNG_ERROR_NAME,
     ];
 
     public function __construct($options = null)

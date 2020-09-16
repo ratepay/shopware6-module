@@ -1,5 +1,8 @@
-<?php declare(strict_types=1);
-/**
+<?php
+
+declare(strict_types=1);
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -70,11 +73,9 @@ class Migration1576654631ConfigTables extends MigrationStep
                 FOREIGN KEY (`id`) REFERENCES `ratepay_profile_config_method` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         ');
-
     }
 
     public function updateDestructive(Connection $connection): void
     {
-
     }
 }

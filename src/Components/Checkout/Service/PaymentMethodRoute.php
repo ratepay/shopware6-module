@@ -1,5 +1,8 @@
-<?php declare(strict_types=1);
-/**
+<?php
+
+declare(strict_types=1);
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +10,6 @@
  */
 
 namespace Ratepay\RpayPayments\Components\Checkout\Service;
-
 
 use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Shopware\Core\Checkout\Payment\SalesChannel\AbstractPaymentMethodRoute;
@@ -20,7 +22,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class PaymentMethodRoute extends AbstractPaymentMethodRoute
 {
-
     /**
      * @var AbstractPaymentMethodRoute
      */
@@ -30,10 +31,12 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
      * @var PaymentFilterService
      */
     private $paymentFilterService;
+
     /**
      * @var RequestStack
      */
     private $requestStack;
+
     /**
      * @var EntityRepositoryInterface
      */
@@ -44,14 +47,12 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
         PaymentFilterService $paymentFilterService,
         RequestStack $requestStack,
         EntityRepositoryInterface $orderRepository
-    )
-    {
+    ) {
         $this->innerService = $innerService;
         $this->paymentFilterService = $paymentFilterService;
         $this->requestStack = $requestStack;
         $this->orderRepository = $orderRepository;
     }
-
 
     public function getDecorated(): AbstractPaymentMethodRoute
     {
@@ -77,6 +78,7 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
 
         if ($order || $request->query->getBoolean('onlyAvailable', false)) {
             $paymentMethods = $this->paymentFilterService->filterPaymentMethods($response->getPaymentMethods(), $salesChannelContext, $order);
+
             return new PaymentMethodRouteResponse($paymentMethods);
         }
 

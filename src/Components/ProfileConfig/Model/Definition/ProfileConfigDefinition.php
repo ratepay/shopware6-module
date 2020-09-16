@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -43,10 +44,8 @@ class ProfileConfigDefinition extends EntityDefinition
 
     protected function defineFields(): FieldCollection
     {
-
         //TODO primary keys over more than one column. Shopware does not support this currently
         return new FieldCollection([
-
             (new IdField(
                 'id',
                 ProfileConfigEntity::FIELD_ID
@@ -114,7 +113,7 @@ class ProfileConfigDefinition extends EntityDefinition
                 ProfileConfigMethodDefinition::class,
                 'profile_id',
                 ProfileConfigEntity::FIELD_ID
-            ))
+            )),
         ]);
     }
 }

@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +8,6 @@
  */
 
 namespace Ratepay\RpayPayments\Components\Checkout\Service;
-
 
 use Ratepay\RpayPayments\Components\Checkout\Model\Collection\RatepayOrderLineItemDataCollection;
 use Ratepay\RpayPayments\Components\Checkout\Model\Definition\RatepayOrderDataDefinition;
@@ -27,7 +27,6 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class ExtensionService
 {
-
     public const PAYMENT_PAGE_EXTENSION_NAME = 'ratepay';
 
     /**
@@ -49,8 +48,7 @@ class ExtensionService
         EntityRepositoryInterface $orderExtensionRepository,
         EntityRepositoryInterface $lineItemExtensionRepository,
         InstallmentService $installmentService
-    )
-    {
+    ) {
         $this->orderExtensionRepository = $orderExtensionRepository;
         $this->lineItemExtensionRepository = $lineItemExtensionRepository;
         $this->installmentService = $installmentService;
@@ -59,16 +57,15 @@ class ExtensionService
     public function createLineItemExtensionEntities(
         array $lineItems,
         Context $context
-    ): RatepayOrderLineItemDataCollection
-    {
+    ): RatepayOrderLineItemDataCollection {
         $data = [];
         foreach ($lineItems as $lineItem) {
             $data[] = [
                 RatepayOrderLineItemDataEntity::FIELD_ORDER_LINE_ITEM_ID => $lineItem->getId(),
                 RatepayOrderLineItemDataEntity::FIELD_ORDER_LINE_ITEM_VERSION_ID => $lineItem->getVersionId(),
                 RatepayOrderLineItemDataEntity::FIELD_POSITION => [
-                    RatepayPositionEntity::FIELD_ID => Uuid::randomHex()
-                ]
+                    RatepayPositionEntity::FIELD_ID => Uuid::randomHex(),
+                ],
             ];
         }
         $event = $this->lineItemExtensionRepository->upsert($data, $context);
@@ -87,8 +84,7 @@ class ExtensionService
         string $profileId,
         bool $successful,
         Context $context
-    ): RatepayOrderDataEntity
-    {
+    ): RatepayOrderDataEntity {
         $orderExtensionData = [
             RatepayOrderDataEntity::FIELD_ORDER_ID => $order->getId(),
             RatepayOrderDataEntity::FIELD_ORDER_VERSION_ID => $order->getVersionId(),
@@ -116,8 +112,7 @@ class ExtensionService
     public function buildPaymentDataExtension(
         SalesChannelContext $salesChannelContext,
         ?OrderEntity $order = null
-    ): ArrayStruct
-    {
+    ): ArrayStruct {
         $paymentMethod = $salesChannelContext->getPaymentMethod();
         $customer = $salesChannelContext->getCustomer();
 
@@ -131,7 +126,7 @@ class ExtensionService
                 if ($customerBillingAddress->getCompany()) {
                     $accountHolder = $customerBillingAddress->getCompany();
                 } else {
-                    $accountHolder = $customerBillingAddress->getFirstName() . " " . $customerBillingAddress->getLastName();
+                    $accountHolder = $customerBillingAddress->getFirstName() . ' ' . $customerBillingAddress->getLastName();
                 }
             }
         }
@@ -160,11 +155,10 @@ class ExtensionService
             $extension->set('installment', [
                 'translations' => $this->installmentService->getTranslations($salesChannelContext),
                 'calculator' => $installmentCalculator,
-                'plan' => $installmentPlan
+                'plan' => $installmentPlan,
             ]);
         }
 
         return $extension;
     }
-
 }

@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -12,10 +13,10 @@ use Ratepay\RpayPayments\Components\Logging\Model\HistoryLogEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**
- * @method void add(HistoryLogEntity $entity)
- * @method void set(string $key, HistoryLogEntity $entity)
- * @method HistoryLogEntity[] getIterator()
- * @method HistoryLogEntity[] getElements()
+ * @method void                  add(HistoryLogEntity $entity)
+ * @method void                  set(string $key, HistoryLogEntity $entity)
+ * @method HistoryLogEntity[]    getIterator()
+ * @method HistoryLogEntity[]    getElements()
  * @method HistoryLogEntity|null get(string $key)
  * @method HistoryLogEntity|null first()
  * @method HistoryLogEntity|null last()

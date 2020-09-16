@@ -1,5 +1,8 @@
-<?php declare(strict_types=1);
-/**
+<?php
+
+declare(strict_types=1);
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -8,14 +11,12 @@
 
 namespace Ratepay\RpayPayments\Components\PaymentHandler\Constraint;
 
-
 use Ratepay\RpayPayments\Components\PaymentHandler\AbstractPaymentHandler;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotBlankValidator;
 
 abstract class AbstractNotBlank extends NotBlank
 {
-
     abstract protected static function getRatepayErrorCode(): string;
 
     public function __construct($options = null)
@@ -29,6 +30,7 @@ abstract class AbstractNotBlank extends NotBlank
         if ($errorCode === static::IS_BLANK_ERROR) {
             return static::getRatepayErrorCode();
         }
+
         return parent::getErrorName($errorCode);
     }
 
@@ -36,5 +38,4 @@ abstract class AbstractNotBlank extends NotBlank
     {
         return NotBlankValidator::class;
     }
-
 }

@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -20,7 +21,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class PaymentFilterService
 {
-
     /**
      * @var EventDispatcherInterface
      */
@@ -34,12 +34,10 @@ class PaymentFilterService
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         ProfileConfigService $profileConfigService
-    )
-    {
+    ) {
         $this->eventDispatcher = $eventDispatcher;
         $this->profileConfigService = $profileConfigService;
     }
-
 
     public function filterPaymentMethods(PaymentMethodCollection $paymentMethodCollection, SalesChannelContext $salesChannelContext, OrderEntity $order = null): PaymentMethodCollection
     {
@@ -89,5 +87,4 @@ class PaymentFilterService
             return $filterEvent->isAvailable();
         });
     }
-
 }

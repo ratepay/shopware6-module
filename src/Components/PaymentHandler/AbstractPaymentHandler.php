@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +8,6 @@
  */
 
 namespace Ratepay\RpayPayments\Components\PaymentHandler;
-
 
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\Birthday;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\BirthdayNotBlank;
@@ -35,7 +35,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterface
 {
-
     public const ERROR_SNIPPET_VIOLATION_PREFIX = 'error.VIOLATION::';
 
     /**
@@ -52,6 +51,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
      * @var EventDispatcherInterface
      */
     private $eventDispatcher;
+
     /**
      * @var ProfileConfigService
      */
@@ -62,8 +62,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
         PaymentRequestService $paymentRequestService,
         ProfileConfigService $profileConfigService,
         EventDispatcherInterface $eventDispatcher
-    )
-    {
+    ) {
         $this->orderRepository = $orderRepository;
         $this->paymentRequestService = $paymentRequestService;
         $this->eventDispatcher = $eventDispatcher;
@@ -109,7 +108,6 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
                 $paymentRequestData
             );
 
-
             if ($response->getResponse()->isSuccessful()) {
                 $this->eventDispatcher->dispatch(new PaymentSuccessfulEvent(
                     $order,
@@ -118,12 +116,10 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
                     $salesChannelContext,
                     $response->getResponse()
                 ));
-
             } else {
                 // will be catched a few lines later.
                 throw new RatepayException($response->getResponse()->getReasonMessage());
             }
-
         } catch (RatepayException $e) {
             $this->eventDispatcher->dispatch(new PaymentFailedEvent(
                 $order,
@@ -138,8 +134,6 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
     }
 
     /**
-     * @param OrderEntity $order
-     * @param Context $context
      * @return OrderEntity|null
      */
     protected function getOrderWithAssociations(OrderEntity $order, Context $context): OrderEntity
@@ -165,7 +159,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
                 new IsOfLegalAge(['message' => self::ERROR_SNIPPET_VIOLATION_PREFIX . IsOfLegalAge::TOO_YOUNG_ERROR_NAME]),
             ];
         }
+
         return $validations;
     }
-
 }

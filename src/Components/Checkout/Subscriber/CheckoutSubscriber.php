@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -15,7 +16,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutSubscriber implements EventSubscriberInterface
 {
-
     /**
      * @var ExtensionService
      */
@@ -34,7 +34,6 @@ class CheckoutSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param CheckoutConfirmPageLoadedEvent $event
      * @codeCoverageIgnore
      */
     public function addRatepayTemplateData(CheckoutConfirmPageLoadedEvent $event): void
@@ -46,7 +45,5 @@ class CheckoutSubscriber implements EventSubscriberInterface
             $extension = $this->extensionService->buildPaymentDataExtension($event->getSalesChannelContext());
             $event->getPage()->addExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME, $extension);
         }
-
     }
-
 }

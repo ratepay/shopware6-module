@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -9,12 +10,12 @@
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Controller;
 
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
+use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 
 /**
  * @Route(path="/ratepay/installment")
@@ -29,8 +30,7 @@ class InstallmentController extends StorefrontController
 
     public function __construct(
         InstallmentService $installmentService
-    )
-    {
+    ) {
         $this->installmentService = $installmentService;
     }
 
@@ -51,7 +51,7 @@ class InstallmentController extends StorefrontController
             'installment' => [
                 'translations' => $installmentTranslations,
                 'plan' => $installmentPlan,
-            ]
+            ],
         ]);
     }
 }

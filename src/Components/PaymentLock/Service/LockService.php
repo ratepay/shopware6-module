@@ -1,5 +1,8 @@
-<?php declare(strict_types=1);
-/**
+<?php
+
+declare(strict_types=1);
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +10,6 @@
  */
 
 namespace Ratepay\RpayPayments\Components\PaymentLock\Service;
-
 
 use Ratepay\RpayPayments\Components\PaymentLock\Model\PaymentLockEntity;
 use Shopware\Core\Framework\Context;
@@ -18,7 +20,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
 
 class LockService
 {
-
     /**
      * @var EntityRepositoryInterface
      */
@@ -38,8 +39,8 @@ class LockService
             [
                 PaymentLockEntity::FIELD_CUSTOMER_ID => $customerId,
                 PaymentLockEntity::FIELD_PAYMENT_METHOD_ID => $paymentMethodId,
-                PaymentLockEntity::FIELD_LOCKED_UNTIL => $lockedUntil
-            ]
+                PaymentLockEntity::FIELD_LOCKED_UNTIL => $lockedUntil,
+            ],
         ], $context);
     }
 

@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -8,15 +9,14 @@
 
 namespace Ratepay\RpayPayments\Components\Logging\Model\Collection;
 
-
 use Ratepay\RpayPayments\Components\Logging\Model\ApiRequestLogEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**
- * @method void add(ApiRequestLogEntity $entity)
- * @method void set(string $key, ApiRequestLogEntity $entity)
- * @method ApiRequestLogEntity[] getIterator()
- * @method ApiRequestLogEntity[] getElements()
+ * @method void                     add(ApiRequestLogEntity $entity)
+ * @method void                     set(string $key, ApiRequestLogEntity $entity)
+ * @method ApiRequestLogEntity[]    getIterator()
+ * @method ApiRequestLogEntity[]    getElements()
  * @method ApiRequestLogEntity|null get(string $key)
  * @method ApiRequestLogEntity|null first()
  * @method ApiRequestLogEntity|null last()

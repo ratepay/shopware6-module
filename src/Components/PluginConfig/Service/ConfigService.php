@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +8,6 @@
  */
 
 namespace Ratepay\RpayPayments\Components\PluginConfig\Service;
-
 
 use Ratepay\RpayPayments\Components\PaymentHandler\DebitPaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
@@ -44,6 +44,7 @@ class ConfigService
     public function getDeviceFingerprintSnippetId()
     {
         $config = $this->getPluginConfiguration();
+
         return $config['ratepayDevicefingerprintingSnippetId'] ?? 'ratepay';
     }
 
@@ -61,6 +62,7 @@ class ConfigService
                 ->setLimit(1),
             $this->getContext()
         );
+
         return $plugins->first()->getVersion();
     }
 
@@ -72,24 +74,28 @@ class ConfigService
     public function isBidirectionalityEnabled(): bool
     {
         $config = $this->getPluginConfiguration();
+
         return $config['bidirectionalityEnabled'] ?? false;
     }
 
     public function getBidirectionalityFullDelivery(): string
     {
         $config = $this->getPluginConfiguration();
+
         return $config['bidirectionalityStatusFullDelivery'] ?? '';
     }
 
     public function getBidirectionalityFullCancel(): string
     {
         $config = $this->getPluginConfiguration();
+
         return $config['bidirectionalityStatusFullCancel'] ?? '';
     }
 
     public function getBidirectionalityFullReturn(): string
     {
         $config = $this->getPluginConfiguration();
+
         return $config['bidirectionalityStatusFullReturn'] ?? '';
     }
 

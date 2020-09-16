@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +8,6 @@
  */
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Subscriber;
-
 
 use RatePAY\Model\Response\PaymentRequest;
 use Ratepay\RpayPayments\Components\Checkout\Service\ExtensionService;
@@ -18,7 +18,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentRequestSubscriber implements EventSubscriberInterface
 {
-
     /**
      * @var ExtensionService
      */
@@ -26,8 +25,7 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
 
     public function __construct(
         ExtensionService $extensionService
-    )
-    {
+    ) {
         $this->extensionService = $extensionService;
     }
 
@@ -52,7 +50,7 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
             $requestData->getOrder(),
             $responseModel->getTransactionId(),
             $responseModel->getDescriptor(),
-            (string)$requestXml->head->credential->{"profile-id"},
+            (string) $requestXml->head->credential->{'profile-id'},
             false,
             $requestData->getSalesChannelContext()->getContext()
         );
@@ -81,15 +79,13 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
             $requestData->getSalesChannelContext()->getContext()
         );
 
-
         $this->extensionService->createOrderExtensionEntity(
             $requestData->getOrder(),
             $responseModel->getTransactionId(),
             $responseModel->getDescriptor(),
-            (string)$requestXml->head->credential->{"profile-id"},
+            (string) $requestXml->head->credential->{'profile-id'},
             true,
             $requestData->getSalesChannelContext()->getContext()
         );
-
     }
 }

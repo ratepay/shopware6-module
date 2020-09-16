@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -8,17 +9,16 @@
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 
-
 use RatePAY\Model\Request\SubModel\Head;
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
 use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class HeadFactory extends AbstractFactory
 {
-
     private $shopwareVersion;
+
     /**
      * @var ConfigService
      */
@@ -50,12 +50,8 @@ class HeadFactory extends AbstractFactory
                                     ->setVersion($this->shopwareVersion . '/' . $this->configService->getPluginVersion())
                             )
                     )
-
             );
 
         return $head;
-
     }
-
-
 }

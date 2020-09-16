@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +8,6 @@
  */
 
 namespace Ratepay\RpayPayments\Components\StateMachine\Subscriber;
-
 
 use Exception;
 use Monolog\Logger;
@@ -28,31 +28,36 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class TransitionSubscriber implements EventSubscriberInterface
 {
-
     /**
      * @var ConfigService
      */
     private $configService;
+
     /**
      * @var PaymentDeliverService
      */
     private $paymentDeliverService;
+
     /**
      * @var PaymentCancelService
      */
     private $paymentCancelService;
+
     /**
      * @var PaymentReturnService
      */
     private $paymentReturnService;
+
     /**
      * @var EntityRepositoryInterface
      */
     private $orderDeliveryRepository;
+
     /**
      * @var EntityRepositoryInterface
      */
     private $orderRepository;
+
     /**
      * @var Logger
      */
@@ -66,8 +71,7 @@ class TransitionSubscriber implements EventSubscriberInterface
         PaymentCancelService $paymentCancelService,
         PaymentReturnService $paymentReturnService,
         Logger $logger
-    )
-    {
+    ) {
         $this->orderDeliveryRepository = $orderDeliveryRepository;
         $this->orderRepository = $orderRepository;
         $this->configService = $configService;
@@ -80,7 +84,7 @@ class TransitionSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            StateMachineTransitionEvent::class => 'onTransition'
+            StateMachineTransitionEvent::class => 'onTransition',
         ];
     }
 
@@ -132,10 +136,8 @@ class TransitionSubscriber implements EventSubscriberInterface
                 'order' => $order->getId(),
                 'transactionId' => $ratepayData->getTransactionId(),
                 'orderNumber' => $order->getOrderNumber(),
-                'itemsToProcess' => $orderOperationData->getItems()
+                'itemsToProcess' => $orderOperationData->getItems(),
             ]);
         }
-
-
     }
 }

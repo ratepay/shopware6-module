@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -8,13 +9,11 @@
 
 namespace Ratepay\RpayPayments\Util;
 
-
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 
 class CriteriaHelper
 {
-
     public static function getCriteriaForOrder($orderId)
     {
         $criteria = new Criteria([$orderId]);

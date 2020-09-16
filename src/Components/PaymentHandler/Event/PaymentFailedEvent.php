@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +8,6 @@
  */
 
 namespace Ratepay\RpayPayments\Components\PaymentHandler\Event;
-
 
 use Exception;
 use RatePAY\Model\Response\PaymentRequest;
@@ -18,7 +18,6 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class PaymentFailedEvent extends AbstractPaymentEvent
 {
-
     /**
      * @var Exception
      */
@@ -31,18 +30,13 @@ class PaymentFailedEvent extends AbstractPaymentEvent
         SalesChannelContext $salesChannelContext,
         PaymentRequest $response = null,
         Exception $exception = null
-    )
-    {
+    ) {
         parent::__construct($order, $transaction, $requestDataBag, $salesChannelContext, $response);
         $this->exception = $exception;
     }
 
-    /**
-     * @return Exception
-     */
     public function getException(): Exception
     {
         return $this->exception;
     }
-
 }

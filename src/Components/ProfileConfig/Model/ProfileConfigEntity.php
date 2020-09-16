@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -15,19 +16,30 @@ use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 
 class ProfileConfigEntity extends Entity
 {
-
     public const FIELD_ID = 'id';
+
     public const FIELD_PROFILE_ID = 'profileId';
+
     public const FIELD_SECURITY_CODE = 'securityCode';
+
     public const FIELD_SANDBOX = 'sandbox';
+
     public const FIELD_BACKEND = 'backend';
+
     public const FIELD_SALES_CHANNEL = 'salesChannel';
+
     public const FIELD_SALES_CHANNEL_ID = 'salesChannelId';
+
     public const FIELD_COUNTRY_CODE_BILLING = 'countryCodeBilling';
+
     public const FIELD_COUNTRY_CODE_SHIPPING = 'countryCodeDelivery';
+
     public const FIELD_CURRENCY = 'currency';
+
     public const FIELD_STATUS = 'status';
+
     public const FIELD_STATUS_MESSAGE = 'statusMessage';
+
     public const FIELD_PAYMENT_METHOD_CONFIGS = 'paymentMethodConfigs';
 
     use EntityIdTrait;
@@ -36,41 +48,49 @@ class ProfileConfigEntity extends Entity
      * @var string
      */
     protected $profileId;
+
     /**
      * @var string
      */
     protected $securityCode;
+
     /**
      * @var SalesChannelEntity
      */
     protected $salesChannel;
+
     /**
-     * @var integer
+     * @var int
      */
     protected $salesChannelId;
+
     /**
      * @var string
      */
     protected $countryCodeBilling;
+
     /**
      * @var string
      */
     protected $countryCodeDelivery;
+
     /**
      * @var string
      */
     protected $currency;
+
     /**
-     * @var boolean
+     * @var bool
      */
     protected $sandbox;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $backend;
+
     /**
-     * @var boolean
+     * @var bool
      */
     protected $status;
 
@@ -204,9 +224,6 @@ class ProfileConfigEntity extends Entity
         return $this->status;
     }
 
-    /**
-     * @param bool $status
-     */
     public function setStatus(bool $status): void
     {
         $this->status = $status;
@@ -220,60 +237,38 @@ class ProfileConfigEntity extends Entity
         return $this->statusMessage;
     }
 
-    /**
-     * @param string $statusMessage
-     */
     public function setStatusMessage(string $statusMessage): void
     {
         $this->statusMessage = $statusMessage;
     }
 
-    /**
-     * @return int
-     */
     public function getSalesChannelId(): int
     {
         return $this->salesChannelId;
     }
 
-    /**
-     * @param int $salesChannelId
-     */
     public function setSalesChannelId(int $salesChannelId): void
     {
         $this->salesChannelId = $salesChannelId;
     }
 
-    /**
-     * @return bool
-     */
     public function isBackend(): bool
     {
         return $this->backend;
     }
 
-    /**
-     * @param bool $backend
-     */
     public function setBackend(bool $backend): void
     {
         $this->backend = $backend;
     }
 
-    /**
-     * @param ProfileConfigMethodCollection $paymentMethodConfigs
-     */
     public function setPaymentMethodConfigs(ProfileConfigMethodCollection $paymentMethodConfigs): void
     {
         $this->paymentMethodConfigs = $paymentMethodConfigs;
     }
 
-    /**
-     * @return ProfileConfigMethodCollection
-     */
     public function getPaymentMethodConfigs(): ProfileConfigMethodCollection
     {
         return $this->paymentMethodConfigs;
     }
-
 }

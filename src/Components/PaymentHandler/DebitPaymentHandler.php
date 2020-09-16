@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -20,7 +21,7 @@ class DebitPaymentHandler extends AbstractPaymentHandler
     public function getValidationDefinitions(Request $request, SalesChannelContext $salesChannelContext): array
     {
         $validations = parent::getValidationDefinitions($request, $salesChannelContext);
+
         return array_merge($validations, $this->getDebitConstraints($request, $salesChannelContext));
     }
-
 }

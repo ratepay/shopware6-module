@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -8,14 +9,12 @@
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Event;
 
-
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
 use RatePAY\RequestBuilder;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
 use Shopware\Core\Framework\Context;
 
 class ResponseEvent extends \Symfony\Contracts\EventDispatcher\Event
 {
-
     /**
      * @var Context
      */
@@ -25,6 +24,7 @@ class ResponseEvent extends \Symfony\Contracts\EventDispatcher\Event
      * @var RequestBuilder
      */
     private $requestBuilder;
+
     /**
      * @var IRequestData
      */
@@ -37,28 +37,18 @@ class ResponseEvent extends \Symfony\Contracts\EventDispatcher\Event
         $this->requestData = $requestData;
     }
 
-    /**
-     * @return Context
-     */
     public function getContext(): Context
     {
         return $this->context;
     }
 
-    /**
-     * @return RequestBuilder
-     */
     public function getRequestBuilder(): RequestBuilder
     {
         return $this->requestBuilder;
     }
 
-    /**
-     * @return IRequestData
-     */
     public function getRequestData(): IRequestData
     {
         return $this->requestData;
     }
-
 }

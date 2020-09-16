@@ -1,19 +1,19 @@
 <?php
-/**
+
+declare(strict_types=1);
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
-
 namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
 
 use Ratepay\RpayPayments\Components\PaymentHandler\AbstractPaymentHandler;
 use Shopware\Core\Framework\Validation\BuildValidationEvent;
 use Shopware\Core\Framework\Validation\DataValidationDefinition;
-use Shopware\Core\Framework\Validation\DataValidator;
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -22,7 +22,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class CheckoutValidationSubscriber implements EventSubscriberInterface
 {
-
     /** @var RequestStack */
     private $requestStack;
 
@@ -32,8 +31,7 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
     public function __construct(
         RequestStack $requestStack,
         ContainerInterface $container
-    )
-    {
+    ) {
         $this->requestStack = $requestStack;
         $this->container = $container;
     }
@@ -57,7 +55,6 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
         $paymentHandlerIdentifier = $context->getPaymentMethod()->getHandlerIdentifier();
 
         if (strpos($paymentHandlerIdentifier, 'RpayPayments') !== false) {
-
             /** @var $paymentHandler AbstractPaymentHandler */
             $paymentHandler = $this->container->get($paymentHandlerIdentifier);
 
@@ -67,7 +64,6 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
             $this->addSubConstraints($definitions, $validationDefinitions);
             $event->getDefinition()->addSub('ratepay', $definitions);
         }
-
     }
 
     private function getContextFromRequest($request): SalesChannelContext

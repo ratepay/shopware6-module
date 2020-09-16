@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -8,10 +9,10 @@
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 
-
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
 use RatePAY\Model\Request\SubModel\Head\External;
+use RatePAY\RequestBuilder;
 use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
@@ -20,7 +21,6 @@ use Ratepay\RpayPayments\Components\RatepayApi\Factory\CustomerFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\PaymentFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
-use RatePAY\RequestBuilder;
 use Shopware\Core\Framework\Context;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -29,9 +29,10 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 class PaymentRequestService extends AbstractRequest
 {
-
     public const EVENT_SUCCESSFUL = self::class . parent::EVENT_SUCCESSFUL;
+
     public const EVENT_FAILED = self::class . parent::EVENT_FAILED;
+
     public const EVENT_BUILD_HEAD = self::class . parent::EVENT_BUILD_HEAD;
 
     protected $_operation = self::CALL_PAYMENT_REQUEST;
@@ -40,10 +41,12 @@ class PaymentRequestService extends AbstractRequest
      * @var ShoppingBasketFactory
      */
     private $shoppingBasketFactory;
+
     /**
      * @var CustomerFactory
      */
     private $customerFactory;
+
     /**
      * @var PaymentFactory
      */
@@ -56,8 +59,7 @@ class PaymentRequestService extends AbstractRequest
         ShoppingBasketFactory $shoppingBasketFactory,
         CustomerFactory $customerFactory,
         PaymentFactory $paymentFactory
-    )
-    {
+    ) {
         parent::__construct($eventDispatcher, $configService, $headFactory);
         $this->shoppingBasketFactory = $shoppingBasketFactory;
         $this->customerFactory = $customerFactory;
@@ -66,7 +68,7 @@ class PaymentRequestService extends AbstractRequest
 
     protected function getProfileConfig(Context $context, IRequestData $requestData): ProfileConfigEntity
     {
-        /** @var $requestData PaymentRequestData */
+        /* @var $requestData PaymentRequestData */
         return $requestData->getProfileConfig();
     }
 
@@ -79,12 +81,13 @@ class PaymentRequestService extends AbstractRequest
                 ->setOrderId($requestData->getOrder()->getOrderNumber())
                 ->setMerchantConsumerId($requestData->getOrder()->getOrderCustomer()->getCustomerNumber())
         );
+
         return $head;
     }
 
     protected function getRequestContent(IRequestData $requestData): Content
     {
-        /** @var PaymentRequestData $requestData */
+        /* @var PaymentRequestData $requestData */
         return (new Content())
             ->setShoppingBasket($this->shoppingBasketFactory->getData($requestData))
             ->setCustomer($this->customerFactory->getData($requestData))

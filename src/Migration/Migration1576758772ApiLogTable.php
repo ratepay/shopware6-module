@@ -1,5 +1,8 @@
-<?php declare(strict_types=1);
-/**
+<?php
+
+declare(strict_types=1);
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -20,7 +23,7 @@ class Migration1576758772ApiLogTable extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->executeQuery("
+        $connection->executeQuery('
             CREATE TABLE `ratepay_api_log` (
                 `id` binary(16) NOT NULL,
                 `version` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -34,11 +37,10 @@ class Migration1576758772ApiLogTable extends MigrationStep
                 `updated_at` datetime NULL,
                 PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-        ");
+        ');
     }
 
     public function updateDestructive(Connection $connection): void
     {
-
     }
 }

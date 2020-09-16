@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +8,6 @@
  */
 
 namespace Ratepay\RpayPayments\Components\PaymentHandler\Event;
-
 
 use RatePAY\Model\Response\PaymentRequest;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -20,23 +20,26 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 abstract class AbstractPaymentEvent extends Event implements ShopwareEvent
 {
-
     /**
      * @var SyncPaymentTransactionStruct
      */
     private $transaction;
+
     /**
      * @var RequestDataBag
      */
     private $requestDataBag;
+
     /**
      * @var SalesChannelContext
      */
     private $salesChannelContext;
+
     /**
      * @var PaymentRequest
      */
     private $response;
+
     /**
      * @var OrderEntity
      */
@@ -48,8 +51,7 @@ abstract class AbstractPaymentEvent extends Event implements ShopwareEvent
         RequestDataBag $requestDataBag,
         SalesChannelContext $salesChannelContext,
         PaymentRequest $response = null
-    )
-    {
+    ) {
         $this->transaction = $transaction;
         $this->requestDataBag = $requestDataBag;
         $this->salesChannelContext = $salesChannelContext;
@@ -57,9 +59,6 @@ abstract class AbstractPaymentEvent extends Event implements ShopwareEvent
         $this->order = $order;
     }
 
-    /**
-     * @return OrderEntity
-     */
     public function getOrder(): OrderEntity
     {
         return $this->order;
@@ -70,25 +69,16 @@ abstract class AbstractPaymentEvent extends Event implements ShopwareEvent
         return $this->salesChannelContext->getContext();
     }
 
-    /**
-     * @return SyncPaymentTransactionStruct
-     */
     public function getTransaction(): SyncPaymentTransactionStruct
     {
         return $this->transaction;
     }
 
-    /**
-     * @return RequestDataBag
-     */
     public function getRequestDataBag(): RequestDataBag
     {
         return $this->requestDataBag;
     }
 
-    /**
-     * @return SalesChannelContext
-     */
     public function getSalesChannelContext(): SalesChannelContext
     {
         return $this->salesChannelContext;

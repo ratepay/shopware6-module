@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +8,6 @@
  */
 
 namespace Ratepay\RpayPayments\Bootstrap;
-
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
@@ -41,7 +41,7 @@ class Database extends AbstractBootstrap
             return;
         }
 
-        $this->connection->exec("SET FOREIGN_KEY_CHECKS=0;");
+        $this->connection->exec('SET FOREIGN_KEY_CHECKS=0;');
         $this->connection->exec('DROP TABLE IF EXISTS `ratepay_profile_config`');
         $this->connection->exec('DROP TABLE IF EXISTS `ratepay_profile_config_method_installment`');
         $this->connection->exec('DROP TABLE IF EXISTS `ratepay_profile_config_method`');
@@ -51,7 +51,7 @@ class Database extends AbstractBootstrap
         $this->connection->exec('DROP TABLE IF EXISTS `ratepay_order_line_item_data`');
         $this->connection->exec('DROP TABLE IF EXISTS `ratepay_position`');
         $this->connection->exec('DROP TABLE IF EXISTS `ratepay_payment_lock`');
-        $this->connection->exec("SET FOREIGN_KEY_CHECKS=1;");
+        $this->connection->exec('SET FOREIGN_KEY_CHECKS=1;');
     }
 
     public function activate(): void

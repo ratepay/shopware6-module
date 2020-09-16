@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -20,6 +21,7 @@ class RequestSubscriber implements EventSubscriberInterface
      * @var ApiLogger
      */
     protected $apiLogger;
+
     /**
      * @var Logger
      */
@@ -35,7 +37,7 @@ class RequestSubscriber implements EventSubscriberInterface
     {
         return [
             RequestDoneEvent::class => 'onRequestDone',
-            PaymentFailedEvent::class => 'onPaymentFailed'
+            PaymentFailedEvent::class => 'onPaymentFailed',
         ];
     }
 
@@ -45,14 +47,14 @@ class RequestSubscriber implements EventSubscriberInterface
         if ($exception) {
             $exception = $exception->getPrevious() ?? $exception;
             $message = $exception->getMessage();
-        } else if ($event->getResponse()) {
+        } elseif ($event->getResponse()) {
             $message = $event->getResponse()->getReasonMessage();
         }
 
         $this->fileLogger->addError($message ?? 'Unknown error', [
             'order_id' => $event->getOrder()->getId(),
             'order_number' => $event->getOrder()->getOrderNumber(),
-            'request_bag' => $event->getRequestDataBag()
+            'request_bag' => $event->getRequestDataBag(),
         ]);
     }
 

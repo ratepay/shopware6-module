@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -22,7 +23,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 class ProfileConfigMethodInstallmentDefinition extends EntityDefinition
 {
-
     public const ENTITY_NAME = 'ratepay_profile_config_method_installment';
 
     public function getEntityName(): string
@@ -43,7 +43,6 @@ class ProfileConfigMethodInstallmentDefinition extends EntityDefinition
     protected function defineFields(): FieldCollection
     {
         return new FieldCollection([
-
             (new IdField(
                 'id',
                 ProfileConfigMethodInstallmentEntity::FIELD_ID

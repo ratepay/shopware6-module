@@ -1,5 +1,8 @@
-<?php declare(strict_types=1);
-/**
+<?php
+
+declare(strict_types=1);
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +10,6 @@
  */
 
 namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
-
 
 use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
@@ -23,11 +25,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentFailedSubscriber implements EventSubscriberInterface
 {
-
     /**
      * @var EntityRepositoryInterface
      */
     private $ratepayApiLogRepository;
+
     /**
      * @var ContainerInterface
      */
@@ -36,8 +38,7 @@ class PaymentFailedSubscriber implements EventSubscriberInterface
     public function __construct(
         EntityRepositoryInterface $ratepayApiLogRepository,
         ContainerInterface $container
-    )
-    {
+    ) {
         $this->ratepayApiLogRepository = $ratepayApiLogRepository;
         $this->container = $container;
     }
@@ -45,7 +46,7 @@ class PaymentFailedSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutFinishPageLoadedEvent::class => 'onFinishPage'
+            CheckoutFinishPageLoadedEvent::class => 'onFinishPage',
         ];
     }
 

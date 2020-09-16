@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +8,6 @@
  */
 
 namespace Ratepay\RpayPayments\Components\OrderManagement\Controller;
-
 
 use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
 use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderLineItemExtension;
@@ -37,7 +37,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ProductPanel extends AbstractController
 {
-
     /**
      * @var EntityRepositoryInterface
      */
@@ -59,23 +58,22 @@ class ProductPanel extends AbstractController
         PaymentReturnService $paymentReturnService,
         PaymentCancelService $paymentCancelService,
         PaymentCreditService $creditService
-    )
-    {
+    ) {
         $this->orderRepository = $orderRepository;
         $this->creditService = $creditService;
 
         $this->requestServicesByOperation = [
             OrderOperationData::OPERATION_DELIVER => $paymentDeliverService,
             OrderOperationData::OPERATION_CANCEL => $paymentCancelService,
-            OrderOperationData::OPERATION_RETURN => $paymentReturnService
+            OrderOperationData::OPERATION_RETURN => $paymentReturnService,
         ];
     }
 
     /**
      * @param string $orderId
-     * @param Context $context
      * @RouteScope(scopes={"administration"})
      * @Route("/load/{orderId}", name="ratepay.order_management.product_panel.load", methods={"GET"})
+     *
      * @return JsonResponse
      */
     public function load($orderId, Context $context)
@@ -100,7 +98,7 @@ class ProductPanel extends AbstractController
                         'position' => LineItemUtil::addMaxActionValues(
                             $extension->getPosition(),
                             $lineItem->getQuantity()
-                        )
+                        ),
                     ];
                 }
             }
@@ -113,28 +111,27 @@ class ProductPanel extends AbstractController
                     'ordered' => 1,
                     'unitPrice' => $order->getShippingTotal(),
                     'totalPrice' => $order->getShippingTotal(),
-                    'position' => LineItemUtil::addMaxActionValues($orderExtension->getShippingPosition(), 1)
+                    'position' => LineItemUtil::addMaxActionValues($orderExtension->getShippingPosition(), 1),
                 ];
             }
 
             return $this->json([
                 'success' => true,
-                'data' => $items
+                'data' => $items,
             ], 200);
         } else {
             return $this->json([
                 'success' => false,
-                'message' => 'Order not found'
+                'message' => 'Order not found',
             ], 400);
         }
     }
 
     /**
      * @param string $orderId
-     * @param Request $request
-     * @param Context $context
      * @RouteScope(scopes={"administration"})
      * @Route("/deliver/{orderId}", name="ratepay.order_management.product_panel.deliver", methods={"POST"})
+     *
      * @return JsonResponse
      */
     public function deliver($orderId, Request $request, Context $context)
@@ -149,17 +146,17 @@ class ProductPanel extends AbstractController
         if ($order) {
             $items = [];
             foreach ($request->request->get('items') ?? [] as $data) {
-                $items[$data['id']] = (int)$data['quantity'];
+                $items[$data['id']] = (int) $data['quantity'];
             }
 
-            $items = array_filter($items, function($quantity) {
+            $items = array_filter($items, function ($quantity) {
                 return $quantity > 0;
             });
 
-            if(count($items) === 0) {
+            if (count($items) === 0) {
                 return $this->json([
                     'success' => false,
-                    'message' => 'Please provide at least on item' // todo translation - should we translate it?
+                    'message' => 'Please provide at least on item', // todo translation - should we translate it?
                 ], 200); // todo is this status OK ?
             }
 
@@ -170,22 +167,21 @@ class ProductPanel extends AbstractController
 
             return $this->json([
                 'success' => $response->getResponse()->isSuccessful(),
-                'message' => $response->getResponse()->getReasonMessage()
+                'message' => $response->getResponse()->getReasonMessage(),
             ], 200);
         } else {
             return $this->json([
                 'success' => false,
-                'message' => 'Order not found'
+                'message' => 'Order not found',
             ], 400);
         }
     }
 
     /**
      * @param string $orderId
-     * @param Request $request
-     * @param Context $context
      * @RouteScope(scopes={"administration"})
      * @Route("/cancel/{orderId}", name="ratepay.order_management.product_panel.cancel", methods={"POST"})
+     *
      * @return JsonResponse
      */
     public function cancel($orderId, Request $request, Context $context)
@@ -195,10 +191,9 @@ class ProductPanel extends AbstractController
 
     /**
      * @param string $orderId
-     * @param Request $request
-     * @param Context $context
      * @RouteScope(scopes={"administration"})
      * @Route("/return/{orderId}", name="ratepay.order_management.product_panel.return", methods={"POST"})
+     *
      * @return JsonResponse
      */
     public function return($orderId, Request $request, Context $context)
@@ -208,10 +203,9 @@ class ProductPanel extends AbstractController
 
     /**
      * @param string $orderId
-     * @param Request $request
-     * @param Context $context
      * @RouteScope(scopes={"administration"})
      * @Route("/addItem/{orderId}", name="ratepay.order_management.product_panel.add_item", methods={"POST"})
+     *
      * @return JsonResponse
      */
     public function addItem($orderId, Request $request, Context $context)
@@ -226,20 +220,19 @@ class ProductPanel extends AbstractController
 
         if ($response->getResponse()->isSuccessful()) {
             return $this->json([
-                'success' => true
+                'success' => true,
             ], 200);
         } else {
             return $this->json([
                 'success' => false,
-                'message' => $response->getResponse()->getReasonMessage()
+                'message' => $response->getResponse()->getReasonMessage(),
             ], 200);
         }
-
     }
 
     /**
-     * @param Context $context
      * @param string $orderId
+     *
      * @return OrderEntity|null
      */
     protected function fetchOrder(Context $context, $orderId)

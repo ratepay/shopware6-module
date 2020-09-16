@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -8,12 +9,10 @@
 
 namespace Ratepay\RpayPayments\Components\ProfileConfig\Exception;
 
-
 use Ratepay\RpayPayments\Exception\RatepayException;
 
 class ProfileNotFoundException extends RatepayException
 {
-
     public function __construct()
     {
         parent::__construct('Profile-ID was not found. Operation can not executed.');

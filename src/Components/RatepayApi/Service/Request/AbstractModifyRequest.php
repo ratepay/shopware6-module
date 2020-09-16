@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +8,6 @@
  */
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
-
 
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
@@ -28,24 +28,28 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 abstract class AbstractModifyRequest extends AbstractRequest
 {
-
     protected $_operation = self::CALL_CHANGE;
+
     /**
      * @var array
      */
     protected $items;
+
     /**
      * @var EntityRepositoryInterface
      */
     protected $productRepository;
+
     /**
      * @var EntityRepositoryInterface
      */
     protected $orderRepository;
+
     /**
      * @var ShoppingBasketFactory
      */
     private $shoppingBasketFactory;
+
     /**
      * @var EntityRepositoryInterface
      */
@@ -57,8 +61,7 @@ abstract class AbstractModifyRequest extends AbstractRequest
         HeadFactory $headFactory,
         EntityRepositoryInterface $profileConfigRepository,
         ShoppingBasketFactory $shoppingBasketFactory
-    )
-    {
+    ) {
         parent::__construct($eventDispatcher, $configService, $headFactory);
         $this->shoppingBasketFactory = $shoppingBasketFactory;
         $this->profileConfigRepository = $profileConfigRepository;
@@ -81,6 +84,7 @@ abstract class AbstractModifyRequest extends AbstractRequest
         if ($profileConfig === null) {
             throw new ProfileNotFoundException();
         }
+
         return $profileConfig;
     }
 
@@ -94,6 +98,7 @@ abstract class AbstractModifyRequest extends AbstractRequest
         /** @var RatepayOrderDataEntity $orderExtension */
         $orderExtension = $requestData->getOrder()->getExtension(OrderExtension::EXTENSION_NAME);
         $head->setTransactionId($orderExtension->getTransactionId());
+
         return $head;
     }
 
@@ -102,7 +107,7 @@ abstract class AbstractModifyRequest extends AbstractRequest
         /** @var OrderOperationData $requestData */
         $content = new Content();
         $content->setShoppingBasket($this->shoppingBasketFactory->getData($requestData));
+
         return $content;
     }
-
 }

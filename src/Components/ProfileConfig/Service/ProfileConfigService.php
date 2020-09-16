@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +8,6 @@
  */
 
 namespace Ratepay\RpayPayments\Components\ProfileConfig\Service;
-
 
 use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
@@ -30,27 +30,31 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class ProfileConfigService
 {
-
     /**
      * @var Context
      */
     protected $context;
+
     /**
      * @var EntityRepositoryInterface
      */
     private $repository;
+
     /**
      * @var ProfileRequestService
      */
     private $profileRequestService;
+
     /**
      * @var EntityRepositoryInterface
      */
     private $methodConfigRepository;
+
     /**
      * @var EntityRepositoryInterface
      */
     private $methodConfigInstallmentRepository;
+
     /**
      * @var EntityRepositoryInterface
      */
@@ -62,8 +66,7 @@ class ProfileConfigService
         EntityRepositoryInterface $methodConfigRepository,
         EntityRepositoryInterface $methodConfigInstallmentRepository,
         ProfileRequestService $profileRequestService
-    )
-    {
+    ) {
         $this->paymentRepository = $paymentRepository;
         $this->repository = $repository;
         $this->methodConfigRepository = $methodConfigRepository;
@@ -75,7 +78,6 @@ class ProfileConfigService
 
     public function refreshProfileConfigs(array $ids)
     {
-
         /** @var ProfileConfigCollection|ProfileConfigEntity[] $profileConfigs */
         $profileConfigs = $this->repository->search(new Criteria($ids), $this->context);
 
@@ -89,21 +91,21 @@ class ProfileConfigService
             if (count($deleteIds)) {
                 $this->methodConfigRepository->delete(array_values(array_map(function ($id) {
                     return [
-                        ProfileConfigMethodEntity::FIELD_ID => $id
+                        ProfileConfigMethodEntity::FIELD_ID => $id,
                     ];
                 }, $deleteIds)), $this->context);
             }
 
             $response = $this->profileRequestService->doRequest($this->context, new ProfileRequestData($profileConfig))->getResponse();
             $data = [
-                ProfileConfigEntity::FIELD_ID => $profileConfig->getId()
+                ProfileConfigEntity::FIELD_ID => $profileConfig->getId(),
             ];
 
             $responseData = $response->getResult();
             if ($response->isSuccessful() == false) {
                 $data[ProfileConfigEntity::FIELD_STATUS] = false;
                 $data[ProfileConfigEntity::FIELD_STATUS_MESSAGE] = $response->getReasonMessage();
-            } else if ($responseData['merchantConfig']['merchant-status'] == 1) {
+            } elseif ($responseData['merchantConfig']['merchant-status'] == 1) {
                 $data[ProfileConfigEntity::FIELD_STATUS] = false;
                 $data[ProfileConfigEntity::FIELD_STATUS_MESSAGE] = 'The profile is disabled. Please contact your account manager.';
             } else {
@@ -112,10 +114,8 @@ class ProfileConfigService
                 $data[ProfileConfigEntity::FIELD_COUNTRY_CODE_SHIPPING] = $responseData['merchantConfig']['country-code-delivery'];
                 $data[ProfileConfigEntity::FIELD_CURRENCY] = $responseData['merchantConfig']['currency'];
 
-
                 $methodConfigs = [];
                 $installmentConfigs = [];
-
 
                 $paymentMethods = $this->getPaymentMethods();
 
@@ -166,6 +166,7 @@ class ProfileConfigService
                 $this->methodConfigInstallmentRepository->upsert($installmentConfigs, $this->context);
             }
         }
+
         return $this->repository->search(new Criteria($ids), $this->context);
     }
 
@@ -177,15 +178,14 @@ class ProfileConfigService
         $criteria = new Criteria();
         $criteria->addAssociation('plugin');
         $criteria->addFilter(new EqualsFilter('plugin.baseClass', RpayPayments::class));
+
         return $this->paymentRepository->search($criteria, $this->context);
     }
 
     public function getProfileConfigBySalesChannel(
         SalesChannelContext $salesChannelContext,
         string $paymentMethodId = null
-    ): ?ProfileConfigEntity
-    {
-
+    ): ?ProfileConfigEntity {
         if (($customer = $salesChannelContext->getCustomer()) === null ||
             ($billingAddress = $customer->getActiveBillingAddress()) === null ||
             ($shippingAddress = $customer->getActiveShippingAddress()) === null
@@ -221,8 +221,7 @@ class ProfileConfigService
         string $salesChannelId,
         string $currencyIso,
         Context $context
-    )
-    {
+    ) {
         // TODO: Move this function to a repository
 
         $criteria = new Criteria();
@@ -274,6 +273,4 @@ class ProfileConfigService
             $context
         );
     }
-
-
 }

@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -8,12 +9,10 @@
 
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Exception;
 
-
 use Shopware\Core\Framework\ShopwareHttpException;
 
 class DebitNotAllowedOnInstallment extends ShopwareHttpException
 {
-
     public function __construct()
     {
         parent::__construct('Debit is not allowed on installment payment');

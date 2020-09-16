@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +8,6 @@
  */
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
-
 
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\BuildEvent;
@@ -17,7 +17,6 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 abstract class AbstractFactory
 {
-
     /**
      * @var EventDispatcherInterface
      */
@@ -42,6 +41,7 @@ abstract class AbstractFactory
             $event = $this->eventDispatcher->dispatch(new BuildEvent($requestData, $data), get_class($this));
             $data = $event->getBuildData();
         }
+
         return $data;
     }
 

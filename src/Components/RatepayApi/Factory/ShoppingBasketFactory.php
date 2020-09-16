@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +8,6 @@
  */
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
-
 
 use InvalidArgumentException;
 use RatePAY\Model\Request\SubModel\Content\ShoppingBasket;
@@ -21,12 +21,9 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 
 class ShoppingBasketFactory extends AbstractFactory
 {
-
-
     protected function _getData(IRequestData $requestData): ?object
     {
         /** @var OrderOperationData $requestData */
-
         $order = $requestData->getOrder();
 
         $basket = new ShoppingBasket();
@@ -55,7 +52,7 @@ class ShoppingBasketFactory extends AbstractFactory
                         ->setTaxRate($taxRule ? $taxRule->getTaxRate() : 0)
                 );
             } elseif ($id === 'shipping') {
-                if($order->getShippingCosts()->getTotalPrice()) {
+                if ($order->getShippingCosts()->getTotalPrice()) {
                     $basket->setShipping(
                         (new ShoppingBasket\Shipping())
                             ->setDescription('shipping')
@@ -75,9 +72,8 @@ class ShoppingBasketFactory extends AbstractFactory
         return $basket;
     }
 
-    protected function addOrderLineItemToBasket(ShoppingBasket $basket, OrderLineItemEntity $item, $qty) : void
+    protected function addOrderLineItemToBasket(ShoppingBasket $basket, OrderLineItemEntity $item, $qty): void
     {
-
         if ($item->getTotalPrice() > 0 || $item->getType() === LineItem::CUSTOM_LINE_ITEM_TYPE) {
             $basket->getItems()->addItem(
                 (new ShoppingBasket\Items\Item())
@@ -90,7 +86,7 @@ class ShoppingBasketFactory extends AbstractFactory
         } else {
             $discount = $basket->getDiscount() ?: new ShoppingBasket\Discount();
             $discount->setDescription('discount');
-            $discount->setDescriptionAddition(($discount->getDescriptionAddition() ? $discount->getDescriptionAddition() . ', ' : null). $item->getLabel());
+            $discount->setDescriptionAddition(($discount->getDescriptionAddition() ? $discount->getDescriptionAddition() . ', ' : null) . $item->getLabel());
             $discount->setUnitPriceGross($discount->getUnitPriceGross() + $item->getTotalPrice());
             $discount->setTaxRate($this->getTaxRate($item->getPrice()));
             $basket->setDiscount($discount);
@@ -100,7 +96,7 @@ class ShoppingBasketFactory extends AbstractFactory
     private function getTaxRate(CalculatedPrice $calculatedPrice): float
     {
         $tax = $calculatedPrice->getCalculatedTaxes()->first();
+
         return $tax ? $tax->getTaxRate() : 0;
     }
-
 }

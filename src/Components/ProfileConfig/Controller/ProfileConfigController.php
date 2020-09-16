@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -34,6 +35,7 @@ class ProfileConfigController extends AbstractController
     /**
      * @RouteScope(scopes={"administration"})
      * @Route("/reload-config/", name="ratepay.profile.config.reload", methods={"POST"})
+     *
      * @return JsonResponse
      */
     public function reloadProfileConfiguration(Request $request)
@@ -46,20 +48,21 @@ class ProfileConfigController extends AbstractController
                     'success' => [],
                 ];
                 /** @var ProfileConfigEntity $config */
-                foreach($configs->getEntities() as $config) {
+                foreach ($configs->getEntities() as $config) {
                     $response[$config->getStatus() ? 'success' : 'error'][$config->getProfileId()] = $config->getStatusMessage();
                 }
+
                 return $this->json($response, 200);
             } catch (\Exception $e) {
                 return $this->json([
                     'success' => false,
-                    'message' => $e->getMessage()
+                    'message' => $e->getMessage(),
                 ], 500);
             }
         } else {
             return $this->json([
                 'success' => false,
-                'message' => 'Invalid profile-id'
+                'message' => 'Invalid profile-id',
             ], 400);
         }
     }

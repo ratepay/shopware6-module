@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -24,7 +25,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 class ProfileConfigMethodDefinition extends EntityDefinition
 {
-
     public const ENTITY_NAME = 'ratepay_profile_config_method';
 
     public function getEntityName(): string

@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +8,6 @@
  */
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Dto;
-
 
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Order\IdStruct;
@@ -18,7 +18,6 @@ use Shopware\Core\Framework\Uuid\Uuid;
 
 class AddCreditData extends OrderOperationData
 {
-
     public function __construct(
         OrderEntity $order,
         string $label,
@@ -41,11 +40,10 @@ class AddCreditData extends OrderOperationData
                         'taxRate' => $taxRate,
                         'percentage' => 100,
                     ],
-                ]
+                ],
             ]));
         $lineItem->addExtension(OrderConverter::ORIGINAL_ID, new IdStruct($lineItem->getId()));
 
         parent::__construct($order, self::OPERATION_ADD, [$lineItem], false);
     }
-
 }

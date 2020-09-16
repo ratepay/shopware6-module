@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -40,12 +41,10 @@ class DeviceFingerprintSubscriber implements EventSubscriberInterface
     public function __construct(
         DfpService $dfpService,
         ConfigService $configService
-    )
-    {
+    ) {
         $this->dfpService = $dfpService;
         $this->configService = $configService;
     }
-
 
     public static function getSubscribedEvents(): array
     {
@@ -73,9 +72,6 @@ class DeviceFingerprintSubscriber implements EventSubscriberInterface
         $this->dfpService->deleteToken();
     }
 
-    /**
-     * @param PageLoadedEvent $event
-     */
     public function addRatepayTemplateData(PageLoadedEvent $event): void
     {
         if ($event->getPage()->hasExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME)) {
@@ -90,5 +86,4 @@ class DeviceFingerprintSubscriber implements EventSubscriberInterface
             }
         }
     }
-
 }

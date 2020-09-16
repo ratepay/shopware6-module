@@ -1,5 +1,8 @@
-<?php declare(strict_types=1);
-/**
+<?php
+
+declare(strict_types=1);
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +10,6 @@
  */
 
 namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
-
 
 use DateTime;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\BeforePaymentEvent;
@@ -17,15 +19,16 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class UserDataSubscriber implements EventSubscriberInterface
 {
-
     /**
      * @var EntityRepositoryInterface
      */
     private $addressRepository;
+
     /**
      * @var EntityRepositoryInterface
      */
     private $customerRepository;
+
     /**
      * @var EntityRepositoryInterface
      */
@@ -35,8 +38,7 @@ class UserDataSubscriber implements EventSubscriberInterface
         EntityRepositoryInterface $customerRepository,
         EntityRepositoryInterface $orderAddressRepository,
         EntityRepositoryInterface $addressRepository
-    )
-    {
+    ) {
         $this->customerRepository = $customerRepository;
         $this->orderAddressRepository = $orderAddressRepository;
         $this->addressRepository = $addressRepository;
@@ -45,10 +47,9 @@ class UserDataSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            BeforePaymentEvent::class => 'saveUserData'
+            BeforePaymentEvent::class => 'saveUserData',
         ];
     }
-
 
     public function saveUserData(BeforePaymentEvent $event)
     {
@@ -85,7 +86,7 @@ class UserDataSubscriber implements EventSubscriberInterface
                 $this->customerRepository->upsert([array_merge(
                     [
                         'id' => $customer->getId(),
-                        'versionId' => $customer->getVersionId()
+                        'versionId' => $customer->getVersionId(),
                     ],
                     $customerUpdates
                 )], $event->getContext());
@@ -107,12 +108,11 @@ class UserDataSubscriber implements EventSubscriberInterface
             }
 
             if (count($billingAddressUpdates) > 0) {
-
                 if ($orderBillingAddress) {
                     $this->orderAddressRepository->upsert([array_merge(
                         [
                             'id' => $orderBillingAddress->getId(),
-                            'versionId' => $orderBillingAddress->getVersionId()
+                            'versionId' => $orderBillingAddress->getVersionId(),
                         ],
                         $billingAddressUpdates
                     )], $event->getContext());
@@ -128,8 +128,5 @@ class UserDataSubscriber implements EventSubscriberInterface
                 }
             }
         }
-
-
     }
-
 }

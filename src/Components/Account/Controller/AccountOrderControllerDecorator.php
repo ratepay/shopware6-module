@@ -1,5 +1,8 @@
-<?php declare(strict_types=1);
-/**
+<?php
+
+declare(strict_types=1);
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -26,13 +29,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class AccountOrderControllerDecorator extends AccountOrderController
 {
-
     /**
      * @Route("/account/order/update/{orderId}", name="frontend.account.edit-order.update-order", methods={"POST"})
-     * @param string $orderId
-     * @param Request $request
-     * @param SalesChannelContext $context
-     * @return Response
      */
     public function updateOrder(string $orderId, Request $request, SalesChannelContext $context): Response
     {
@@ -50,6 +48,7 @@ class AccountOrderControllerDecorator extends AccountOrderController
     protected function fetchOrder(Context $context, string $orderId): ?OrderEntity
     {
         $orderRepository = $this->container->get('order.repository');
+
         return $orderRepository->search(CriteriaHelper::getCriteriaForOrder($orderId), $context)->first();
     }
 }

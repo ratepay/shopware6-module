@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -42,7 +43,6 @@ class PaymentLockDefinition extends EntityDefinition
     protected function defineFields(): FieldCollection
     {
         return new FieldCollection([
-
             (new IdField(
                 'id',
                 PaymentLockEntity::FIELD_ID
@@ -64,7 +64,6 @@ class PaymentLockDefinition extends EntityDefinition
                 'locked_until',
                 PaymentLockEntity::FIELD_LOCKED_UNTIL
             ))->setFlags(new Required()),
-
         ]);
     }
 }

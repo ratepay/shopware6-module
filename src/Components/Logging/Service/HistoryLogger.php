@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -8,16 +9,13 @@
 
 namespace Ratepay\RpayPayments\Components\Logging\Service;
 
-use DateTime;
 use Exception;
 use Monolog\Logger;
 use Ratepay\RpayPayments\Components\Logging\Model\HistoryLogEntity;
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Api\Context\AdminApiSource;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\User\UserEntity;
 
 class HistoryLogger
@@ -41,8 +39,7 @@ class HistoryLogger
         EntityRepositoryInterface $logRepository,
         EntityRepositoryInterface $userRepository,
         Logger $logger
-    )
-    {
+    ) {
         $this->logRepository = $logRepository;
         $this->userRepository = $userRepository;
         $this->logger = $logger;
@@ -55,8 +52,7 @@ class HistoryLogger
         string $articleName,
         string $articleNumber,
         int $quantity
-    ): void
-    {
+    ): void {
         try {
             $this->logRepository->create([
                 [
@@ -66,7 +62,7 @@ class HistoryLogger
                     HistoryLogEntity::FIELD_PRODUCT_NAME => $articleName,
                     HistoryLogEntity::FIELD_PRODUCT_NUMBER => $articleNumber,
                     HistoryLogEntity::FIELD_QTY => $quantity,
-                ]
+                ],
             ], $context);
         } catch (Exception $exception) {
             $this->logger->error('Ratepay was unable to log order history', [

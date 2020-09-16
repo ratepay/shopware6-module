@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -8,8 +9,6 @@
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Dto;
 
-
 interface IRequestData
 {
-
 }

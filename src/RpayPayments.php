@@ -1,12 +1,13 @@
 <?php
-/**
+
+declare(strict_types=1);
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-declare(strict_types=1);
 
 namespace Ratepay\RpayPayments;
 
@@ -42,7 +43,6 @@ class RpayPayments extends Plugin
     }
 
     /**
-     * @param Plugin\Context\InstallContext $context
      * @return AbstractBootstrap[]
      */
     protected function getBootstrapClasses(Plugin\Context\InstallContext $context)
@@ -50,7 +50,7 @@ class RpayPayments extends Plugin
         /** @var AbstractBootstrap[] $bootstrapper */
         $bootstrapper = [
             new Database(),
-            new PaymentMethods()
+            new PaymentMethods(),
         ];
 
         /** @var EntityRepositoryInterface $pluginRepository */
@@ -64,8 +64,8 @@ class RpayPayments extends Plugin
             $bootstrap->setContainer($this->container);
             $bootstrap->injectServices();
             $bootstrap->setPlugin($plugin);
-
         }
+
         return $bootstrapper;
     }
 
@@ -125,7 +125,6 @@ class RpayPayments extends Plugin
         }
     }
 
-
     public function boot(): void
     {
         parent::boot();
@@ -162,6 +161,5 @@ class RpayPayments extends Plugin
                 }
             }
         }
-
     }
 }

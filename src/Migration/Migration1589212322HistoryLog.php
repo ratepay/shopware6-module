@@ -1,5 +1,8 @@
-<?php declare(strict_types=1);
-/**
+<?php
+
+declare(strict_types=1);
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -20,8 +23,7 @@ class Migration1589212322HistoryLog extends MigrationStep
 
     public function update(Connection $connection): void
     {
-
-        $connection->executeQuery("
+        $connection->executeQuery('
             CREATE TABLE `ratepay_order_history` (
                 `id` binary(16) NOT NULL,
                 `order_id` binary(16) NOT NULL,
@@ -37,11 +39,10 @@ class Migration1589212322HistoryLog extends MigrationStep
                 FOREIGN KEY (`order_id`, `order_version_id`)
                     REFERENCES `order` (`id`, `version_id`) ON DELETE CASCADE ON UPDATE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-        ");
+        ');
     }
 
     public function updateDestructive(Connection $connection): void
     {
-
     }
 }

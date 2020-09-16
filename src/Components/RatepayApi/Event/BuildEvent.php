@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -8,17 +9,16 @@
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Event;
 
-
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class BuildEvent extends Event
 {
-
     /**
      * @var IRequestData
      */
     private $requestData;
+
     private $buildData;
 
     public function __construct(IRequestData $requestData, $buildData)
@@ -27,9 +27,6 @@ class BuildEvent extends Event
         $this->buildData = $buildData;
     }
 
-    /**
-     * @return IRequestData
-     */
     public function getRequestData(): IRequestData
     {
         return $this->requestData;
@@ -42,5 +39,4 @@ class BuildEvent extends Event
     {
         return $this->buildData;
     }
-
 }

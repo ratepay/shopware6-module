@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +8,6 @@
  */
 
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Subscriber;
-
 
 use Exception;
 use RatePAY\Model\Request\SubModel\Content\Payment;
@@ -27,7 +27,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class BuildPaymentSubscriber implements EventSubscriberInterface
 {
-
     /**
      * @var InstallmentService
      */
@@ -42,7 +41,7 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
     {
         return [
             PaymentFactory::class => 'buildPayment',
-            ShoppingBasketFactory::class => 'buildShoppingBasket'
+            ShoppingBasketFactory::class => 'buildShoppingBasket',
         ];
     }
 
@@ -101,6 +100,7 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
                 }
             }
         }
+
         return $event;
     }
 }

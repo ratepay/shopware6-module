@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +8,6 @@
  */
 
 namespace Ratepay\RpayPayments\Components\OrderManagement\Subscriber;
-
 
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Framework\Context;
@@ -18,7 +18,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class LineItemsListener implements EventSubscriberInterface
 {
-
     /**
      * @var EntityRepositoryInterface
      */
@@ -26,15 +25,14 @@ class LineItemsListener implements EventSubscriberInterface
 
     public function __construct(
         EntityRepositoryInterface $lineItemRepository
-    )
-    {
+    ) {
         $this->lineItemRepository = $lineItemRepository;
     }
 
     public static function getSubscribedEvents()
     {
         return [
-            'order_line_item.written' => 'onLineItemWritten'
+            'order_line_item.written' => 'onLineItemWritten',
         ];
     }
 
@@ -49,13 +47,13 @@ class LineItemsListener implements EventSubscriberInterface
             if (!isset($item->getCustomFields()['ratepay'])) {
                 $data[] = [
                     'id' => $item->getId(),
-                    'customFields' => array_merge($item->getCustomFields() ? : [], [
+                    'customFields' => array_merge($item->getCustomFields() ?: [], [
                         'ratepay' => [
                             'delivered' => 0,
                             'canceled' => 0,
-                            'returned' => 0
-                        ]
-                    ])
+                            'returned' => 0,
+                        ],
+                    ]),
                 ];
             }
         }

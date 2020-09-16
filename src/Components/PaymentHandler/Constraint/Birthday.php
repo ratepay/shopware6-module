@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -12,7 +13,6 @@ use Symfony\Component\Validator\Constraints\Date;
 
 class Birthday extends Date
 {
-
     public const ERROR_NAME = 'RP_INVALID_AGE';
 
     protected static $errorNames = [

@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +8,6 @@
  */
 
 namespace Ratepay\RpayPayments\Bootstrap;
-
 
 use Monolog\Logger;
 use Shopware\Core\Framework\Context;
@@ -18,7 +18,6 @@ use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 abstract class AbstractBootstrap implements ContainerAwareInterface
 {
-
     use ContainerAwareTrait;
 
     /**
@@ -119,5 +118,4 @@ abstract class AbstractBootstrap implements ContainerAwareInterface
     {
         return $this->container->getParameter('kernel.root_dir') . DIRECTORY_SEPARATOR . $this->plugin->getPath();
     }
-
 }

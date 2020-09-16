@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -38,30 +39,37 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
      * @var EntityRepositoryInterface
      */
     private $productRepository;
+
     /**
      * @var EntityRepositoryInterface
      */
     private $orderRepository;
+
     /**
      * @var Logger
      */
     private $logger;
+
     /**
      * @var HistoryLogger
      */
     private $historyLogger;
+
     /**
      * @var RecalculationService
      */
     private $recalculationService;
+
     /**
      * @var EventDispatcherInterface
      */
     private $eventDispatcher;
+
     /**
      * @var EntityRepositoryInterface
      */
     private $ratepayPositionRepository;
+
     /**
      * @var ExtensionService
      */
@@ -76,8 +84,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         RecalculationService $recalculationService,
         Logger $logger,
         HistoryLogger $historyLogger
-    )
-    {
+    ) {
         $this->eventDispatcher = $eventDispatcher;
         $this->productRepository = $productRepository;
         $this->orderRepository = $orderRepository;
@@ -104,7 +111,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         $requestData = $event->getRequestData();
 
         $positionUpdates = [];
-        /** @var OrderLineItemEntity $item */
+        /* @var OrderLineItemEntity $item */
         foreach ($requestData->getItems() as $id => $qty) {
             if ($id === 'shipping') {
                 /** @var RatepayOrderDataEntity $ratepayData */
@@ -202,6 +209,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
                 $updates[RatepayPositionEntity::FIELD_RETURNED] = $position->getReturned() + $qty;
                 break;
         }
+
         return $updates;
     }
 
@@ -239,5 +247,4 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
             ]);
         }
     }
-
 }

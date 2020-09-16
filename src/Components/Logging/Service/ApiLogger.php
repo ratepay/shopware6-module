@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -38,8 +39,7 @@ class ApiLogger
         EntityRepositoryInterface $logRepository,
         ConfigService $configService,
         Logger $logger
-    )
-    {
+    ) {
         $this->logRepository = $logRepository;
         $this->configService = $configService;
         $this->logger = $logger;
@@ -57,7 +57,7 @@ class ApiLogger
         if ($requestData instanceof OrderOperationData) {
             $order = $requestData->getOrder();
             $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
-            $additionalData['transactionId'] = (string)$requestBuilder->getRequestXmlElement()->head->{'transaction-id'};
+            $additionalData['transactionId'] = (string) $requestBuilder->getRequestXmlElement()->head->{'transaction-id'};
             $additionalData['orderNumber'] = $order->getOrderNumber();
             $additionalData['firstName'] = $billingAddress->getFirstName();
             $additionalData['lastName'] = $billingAddress->getLastName();
@@ -66,15 +66,14 @@ class ApiLogger
 
         /** @var SimpleXMLElement $operationNode */
         $operationNode = $requestBuilder->getRequestXmlElement()->head->operation;
-        $operationSubtype = (string)$operationNode->attributes()->subtype;
-        $operation = (string)$operationNode;
-
+        $operationSubtype = (string) $operationNode->attributes()->subtype;
+        $operation = (string) $operationNode;
 
         $reasonNode = $requestBuilder->getResponseXmlElement()->head->processing->reason;
         $resultNode = $requestBuilder->getResponseXmlElement()->head->processing->result;
-        $result = (string)$reasonNode;
-        if (in_array(((int)$reasonNode->attributes()->code), [303, 700], true) && ((int)$resultNode->attributes()->code) !== 402) {
-            $result = (string)$resultNode;
+        $result = (string) $reasonNode;
+        if (in_array(((int) $reasonNode->attributes()->code), [303, 700], true) && ((int) $resultNode->attributes()->code) !== 402) {
+            $result = (string) $resultNode;
         }
 
         foreach (['securitycode', 'owner', 'iban'] as $key) {
@@ -91,8 +90,8 @@ class ApiLogger
                         ApiRequestLogEntity::FIELD_RESULT => $result,
                         ApiRequestLogEntity::FIELD_REQUEST => $requestXml,
                         ApiRequestLogEntity::FIELD_RESPONSE => $responseXml,
-                        ApiRequestLogEntity::FIELD_ADDITIONAL_DATA => $additionalData
-                    ]
+                        ApiRequestLogEntity::FIELD_ADDITIONAL_DATA => $additionalData,
+                    ],
                 ],
                 $requestDoneEvent->getContext()
             );

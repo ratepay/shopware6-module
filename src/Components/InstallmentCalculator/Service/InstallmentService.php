@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -21,15 +22,16 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class InstallmentService
 {
-
     /**
      * @var ProfileConfigService
      */
     protected $profileConfigService;
+
     /**
      * @var CartService
      */
     private $cartService;
+
     /**
      * @var EntityRepositoryInterface
      */
@@ -41,8 +43,7 @@ class InstallmentService
         CartService $cartService,
         EntityRepositoryInterface $languageRepository,
         ProfileConfigService $profileConfigService
-    )
-    {
+    ) {
         $this->cartService = $cartService;
         $this->languageRepository = $languageRepository;
         $this->profileConfigService = $profileConfigService;
@@ -58,6 +59,7 @@ class InstallmentService
         $json = $installmentBuilder->getInstallmentPlanAsJson($cartTotalAmount, $type, $value);
         $data = json_decode($json, true);
         $data['hash'] = PlanHasher::hashPlan($data);
+
         return $data;
     }
 
@@ -76,6 +78,7 @@ class InstallmentService
             $context->getContext()->getLanguageId(),
             $context->getCustomer()->getActiveBillingAddress()->getCountry()->getIso()
         );
+
         return $installmentBuilder;
     }
 
@@ -90,6 +93,7 @@ class InstallmentService
         $data['defaults']['type'] = 'time';
         $data['defaults']['value'] = $data['rp_allowedMonths'][0];
         $data['defaults']['paymentType'] = $data['rp_debitPayType']['rp_paymentType_directDebit'] ? 'DIRECT-DEBIT' : 'BANK-TRANSFER';
+
         return $data;
     }
 
@@ -109,7 +113,7 @@ class InstallmentService
 
             $this->_translationCache[$langId] = $translations;
         }
+
         return $this->_translationCache[$langId];
     }
-
 }

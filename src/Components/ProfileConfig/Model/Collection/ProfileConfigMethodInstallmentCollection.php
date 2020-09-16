@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -12,10 +13,10 @@ use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodInsta
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**
- * @method void add(ProfileConfigMethodInstallmentEntity $entity)
- * @method void set(string $key, ProfileConfigMethodInstallmentEntity $entity)
- * @method ProfileConfigMethodInstallmentEntity[] getIterator()
- * @method ProfileConfigMethodInstallmentEntity[] getElements()
+ * @method void                                      add(ProfileConfigMethodInstallmentEntity $entity)
+ * @method void                                      set(string $key, ProfileConfigMethodInstallmentEntity $entity)
+ * @method ProfileConfigMethodInstallmentEntity[]    getIterator()
+ * @method ProfileConfigMethodInstallmentEntity[]    getElements()
  * @method ProfileConfigMethodInstallmentEntity|null get(string $key)
  * @method ProfileConfigMethodInstallmentEntity|null first()
  * @method ProfileConfigMethodInstallmentEntity|null last()

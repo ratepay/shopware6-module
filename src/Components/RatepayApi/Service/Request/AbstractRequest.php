@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -8,11 +9,10 @@
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 
-
-use Exception;
 use RatePAY\Exception\ExceptionAbstract;
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
+use RatePAY\RequestBuilder;
 use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
@@ -23,21 +23,24 @@ use Ratepay\RpayPayments\Components\RatepayApi\Event\RequestDoneEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\ResponseEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RpayPayments\Exception\RatepayException;
-use RatePAY\RequestBuilder;
 use Shopware\Core\Framework\Context;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 abstract class AbstractRequest
 {
-
     protected const EVENT_SUCCESSFUL = '.successful';
+
     protected const EVENT_FAILED = '.failed';
+
     protected const EVENT_BUILD_HEAD = '.build.head';
 
-    public const CALL_PAYMENT_REQUEST = "PaymentRequest";
-    public const CALL_DELIVER = "ConfirmationDeliver";
-    public const CALL_CHANGE = "PaymentChange";
-    public const CALL_PROFILE_REQUEST = "ProfileRequest";
+    public const CALL_PAYMENT_REQUEST = 'PaymentRequest';
+
+    public const CALL_DELIVER = 'ConfirmationDeliver';
+
+    public const CALL_CHANGE = 'PaymentChange';
+
+    public const CALL_PROFILE_REQUEST = 'ProfileRequest';
 
     /**
      * @var ConfigService
@@ -46,12 +49,14 @@ abstract class AbstractRequest
 
     /**
      * @var string
+     *
      * @deprecated
      */
     protected $_operation;
 
     /**
      * @var string
+     *
      * @deprecated
      */
     protected $_subType;
@@ -70,20 +75,16 @@ abstract class AbstractRequest
         EventDispatcherInterface $eventDispatcher,
         ConfigService $configService,
         HeadFactory $headFactory
-    )
-    {
+    ) {
         $this->configService = $configService;
         $this->headFactory = $headFactory;
         $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
-     * @param Context $context
-     * @param IRequestData $requestData
-     * @return RequestBuilder
      * @throws RatepayException
      */
-    final public function doRequest(Context $context, IRequestData $requestData) : RequestBuilder
+    final public function doRequest(Context $context, IRequestData $requestData): RequestBuilder
     {
         $profileConfig = $this->getProfileConfig($context, $requestData);
         if ($profileConfig === null) {
@@ -116,11 +117,6 @@ abstract class AbstractRequest
         return $requestBuilder;
     }
 
-    /**
-     * @param Context $context
-     * @param IRequestData $requestData
-     * @return ProfileConfigEntity
-     */
     abstract protected function getProfileConfig(Context $context, IRequestData $requestData): ProfileConfigEntity;
 
     protected function getRequestHead(IRequestData $requestData, ProfileConfigEntity $profileConfig): Head
@@ -133,11 +129,11 @@ abstract class AbstractRequest
         );
         /** @var BuildEvent $event */
         $event = $this->eventDispatcher->dispatch(new BuildEvent($requestData, $head), get_class($this) . self::EVENT_BUILD_HEAD);
+
         return $event->getBuildData();
     }
 
     /**
-     * @param IRequestData $requestData
      * @return Content
      */
     protected function getRequestContent(IRequestData $requestData): ?Content

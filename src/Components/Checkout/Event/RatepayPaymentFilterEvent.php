@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +8,6 @@
  */
 
 namespace Ratepay\RpayPayments\Components\Checkout\Event;
-
 
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
@@ -18,11 +18,11 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class RatepayPaymentFilterEvent extends Event
 {
-
     /**
      * @var PaymentMethodEntity
      */
     private $paymentMethod;
+
     /**
      * @var SalesChannelContext|null
      */
@@ -42,6 +42,7 @@ class RatepayPaymentFilterEvent extends Event
      * @var ProfileConfigMethodEntity
      */
     private $methodConfig;
+
     /**
      * @var OrderEntity|null
      */
@@ -53,8 +54,7 @@ class RatepayPaymentFilterEvent extends Event
         ProfileConfigMethodEntity $methodConfig,
         SalesChannelContext $salesChannelContext,
         OrderEntity $orderEntity = null
-    )
-    {
+    ) {
         $this->paymentMethod = $paymentMethod;
         $this->profileConfig = $profileConfig;
         $this->methodConfig = $methodConfig;
@@ -62,41 +62,26 @@ class RatepayPaymentFilterEvent extends Event
         $this->orderEntity = $orderEntity;
     }
 
-    /**
-     * @return PaymentMethodEntity
-     */
     public function getPaymentMethod(): PaymentMethodEntity
     {
         return $this->paymentMethod;
     }
 
-    /**
-     * @return ProfileConfigEntity
-     */
     public function getProfileConfig(): ProfileConfigEntity
     {
         return $this->profileConfig;
     }
 
-    /**
-     * @return ProfileConfigMethodEntity
-     */
     public function getMethodConfig(): ProfileConfigMethodEntity
     {
         return $this->methodConfig;
     }
 
-    /**
-     * @return SalesChannelContext
-     */
     public function getSalesChannelContext(): SalesChannelContext
     {
         return $this->salesChannelContext;
     }
 
-    /**
-     * @return bool
-     */
     public function isAvailable(): bool
     {
         return $this->isAvailable;
@@ -104,7 +89,6 @@ class RatepayPaymentFilterEvent extends Event
 
     /**
      * if <code>$isAvailable</code> is false, the event will stopped.
-     * @param bool $isAvailable
      */
     public function setIsAvailable(bool $isAvailable): void
     {
@@ -114,12 +98,8 @@ class RatepayPaymentFilterEvent extends Event
         $this->isAvailable = $isAvailable;
     }
 
-    /**
-     * @return OrderEntity|null
-     */
     public function getOrderEntity(): ?OrderEntity
     {
         return $this->orderEntity;
     }
-
 }

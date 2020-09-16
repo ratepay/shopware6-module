@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +8,6 @@
  */
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
-
 
 use RatePAY\Model\Request\SubModel\Content\Customer;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
@@ -17,7 +17,6 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 
 class CustomerFactory extends AbstractFactory
 {
-
     protected function _getData(IRequestData $requestData): ?object
     {
         /** @var PaymentRequestData $requestData */
@@ -98,7 +97,7 @@ class CustomerFactory extends AbstractFactory
     }
 
     /**
-     * Returns the IP Address for the current customer
+     * Returns the IP Address for the current customer.
      *
      * @return string
      */
@@ -140,5 +139,4 @@ class CustomerFactory extends AbstractFactory
 
         return $addressModel;
     }
-
 }

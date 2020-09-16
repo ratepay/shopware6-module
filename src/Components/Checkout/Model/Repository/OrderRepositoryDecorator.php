@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +8,6 @@
  */
 
 namespace Ratepay\RpayPayments\Components\Checkout\Model\Repository;
-
 
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\OrderManagement\Exception\OrderDeleteRestrictionException;
@@ -23,7 +23,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
 
 class OrderRepositoryDecorator implements EntityRepositoryInterface
 {
-
     /**
      * @var EntityRepositoryInterface
      */
@@ -37,8 +36,7 @@ class OrderRepositoryDecorator implements EntityRepositoryInterface
     public function __construct(
         EntityRepositoryInterface $innerRepo,
         EntityRepositoryInterface $ratepayOrderDataRepository
-    )
-    {
+    ) {
         $this->innerRepo = $innerRepo;
         $this->ratepayOrderDataRepository = $ratepayOrderDataRepository;
     }

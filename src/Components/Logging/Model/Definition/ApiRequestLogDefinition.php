@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -7,7 +8,6 @@
  */
 
 namespace Ratepay\RpayPayments\Components\Logging\Model\Definition;
-
 
 use Ratepay\RpayPayments\Components\Logging\Model\ApiRequestLogEntity;
 use Ratepay\RpayPayments\Components\Logging\Model\Collection\ApiRequestLogCollection;
@@ -50,7 +50,7 @@ class ApiRequestLogDefinition extends EntityDefinition
             (new StringField('result', ApiRequestLogEntity::FIELD_RESULT)),
             (new LongTextField('request', ApiRequestLogEntity::FIELD_REQUEST))->addFlags(new Required(), new AllowHtml()),
             (new LongTextField('response', ApiRequestLogEntity::FIELD_RESPONSE))->addFlags(new Required(), new AllowHtml()),
-            (new JsonField('additional_data', ApiRequestLogEntity::FIELD_ADDITIONAL_DATA))
+            (new JsonField('additional_data', ApiRequestLogEntity::FIELD_ADDITIONAL_DATA)),
         ]);
     }
 }

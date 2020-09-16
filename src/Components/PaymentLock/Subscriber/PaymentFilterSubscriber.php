@@ -1,5 +1,8 @@
-<?php declare(strict_types=1);
-/**
+<?php
+
+declare(strict_types=1);
+
+/*
  * Copyright (c) 2020 Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
@@ -8,14 +11,12 @@
 
 namespace Ratepay\RpayPayments\Components\PaymentLock\Subscriber;
 
-
 use Ratepay\RpayPayments\Components\Checkout\Event\RatepayPaymentFilterEvent;
 use Ratepay\RpayPayments\Components\PaymentLock\Service\LockService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentFilterSubscriber implements EventSubscriberInterface
 {
-
     /**
      * @var LockService
      */
@@ -29,13 +30,13 @@ class PaymentFilterSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            RatepayPaymentFilterEvent::class => 'filterPayments'
+            RatepayPaymentFilterEvent::class => 'filterPayments',
         ];
     }
 
     public function filterPayments(RatepayPaymentFilterEvent $event)
     {
-        if($event->getOrderEntity()) {
+        if ($event->getOrderEntity()) {
             $customerId = $event->getOrderEntity()->getOrderCustomer()->getCustomerId();
         } else {
             $customerId = $event->getSalesChannelContext()->getCustomer()->getId();
@@ -49,5 +50,4 @@ class PaymentFilterSubscriber implements EventSubscriberInterface
 
         $event->setIsAvailable($isLocked !== true);
     }
-
 }

@@ -36,13 +36,19 @@
         }
     },
     "require": {
+        "php": "^7.2",
         "ratepay/php-library": "^1.0",
         "shopware/core": "^6.3.0.0",
         "shopware/administration": "^6.3.0.0",
         "shopware/storefront": "^6.3.0.0"
     },
     "scripts": {
-        "pre-install-cmd": "Ratepay\\RpayPayments\\Dev\\ComposerInstall::removeShopwareFromRequirements",
-        "pre-update-cmd": "Ratepay\\RpayPayments\\Dev\\ComposerInstall::removeShopwareFromRequirements"
+        "static-code-check": "./vendor/bin/phpstan analyse -c phpstan.neon",
+        "lint": "vendor/bin/php-cs-fixer fix --dry-run --using-cache=no --verbose",
+        "lint-fix": "vendor/bin/php-cs-fixer fix --using-cache=no --verbose"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.16",
+        "phpstan/phpstan": "^0.12.42"
     }
 }
