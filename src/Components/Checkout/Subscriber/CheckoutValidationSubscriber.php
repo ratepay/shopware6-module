@@ -30,12 +30,10 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
     private $container;
 
     public function __construct(
-        DataValidator $validator,
         RequestStack $requestStack,
         ContainerInterface $container
     )
     {
-        $this->validator = $validator;
         $this->requestStack = $requestStack;
         $this->container = $container;
     }
