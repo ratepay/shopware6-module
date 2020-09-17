@@ -21,7 +21,6 @@
         </service>
 
         <service id="Ratepay\RpayPayments\Components\Checkout\Subscriber\CheckoutValidationSubscriber">
-            <argument type="service" id="Shopware\Core\Framework\Validation\DataValidator"/>
             <argument type="service" id="request_stack"/>
             <argument type="service" id="service_container"/>
         </service>

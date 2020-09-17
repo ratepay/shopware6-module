@@ -13,6 +13,7 @@ namespace Ratepay\RpayPayments\Components\Checkout\Service;
 
 use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Shopware\Core\Checkout\Payment\SalesChannel\AbstractPaymentMethodRoute;
+use Shopware\Core\Checkout\Payment\SalesChannel\PaymentMethodRoute as CorePaymentMethodRoute;
 use Shopware\Core\Checkout\Payment\SalesChannel\PaymentMethodRouteResponse;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -20,7 +21,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class PaymentMethodRoute extends AbstractPaymentMethodRoute
+class PaymentMethodRoute extends CorePaymentMethodRoute
 {
     /**
      * @var AbstractPaymentMethodRoute
