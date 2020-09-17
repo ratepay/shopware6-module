@@ -25,6 +25,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\Routing\RouteCollectionBuilder;
+use RatePAY\RequestBuilder;
 
 class RpayPayments extends Plugin
 {
@@ -128,10 +129,12 @@ class RpayPayments extends Plugin
     public function boot(): void
     {
         parent::boot();
-        if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
-            require_once __DIR__ . '/../vendor/autoload.php';
-        } else {
-            throw new Exception('Ratepay: the autoloader has not been created! Please run `composer install` in Ratepay plugin directory');
+        if (class_exists(RequestBuilder::class) === false) {
+            if (file_exists(__DIR__ . '../vendor/autoload.php')) {
+                require_once __DIR__ . '../vendor/autoload.php';
+            } else {
+                throw new Exception('Missing Ratepay dependencies! Please run `composer require ratepay/shopware6-module` in project directory');
+            }
         }
     }
 
