@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments;
 
 use Exception;
+use RatePAY\RequestBuilder;
 use Ratepay\RpayPayments\Bootstrap\AbstractBootstrap;
 use Ratepay\RpayPayments\Bootstrap\Database;
 use Ratepay\RpayPayments\Bootstrap\PaymentMethods;
@@ -25,7 +26,6 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\Routing\RouteCollectionBuilder;
-use RatePAY\RequestBuilder;
 
 class RpayPayments extends Plugin
 {
