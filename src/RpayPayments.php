@@ -130,8 +130,10 @@ class RpayPayments extends Plugin
     {
         parent::boot();
         if (class_exists(RequestBuilder::class) === false) {
-            if (file_exists(__DIR__ . '../vendor/autoload.php')) {
-                require_once __DIR__ . '../vendor/autoload.php';
+            $autoloaderPath = dirname(__DIR__) . '/vendor/autoload.php';
+            if (file_exists($autoloaderPath)) {
+                /** @noinspection PhpIncludeInspection */
+                require_once $autoloaderPath;
             } else {
                 throw new Exception('Missing Ratepay dependencies! Please run `composer require ratepay/shopware6-module` in project directory');
             }
