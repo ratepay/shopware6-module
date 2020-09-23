@@ -85,11 +85,11 @@ Component.register('ratepay-profile-config-detail', {
                     this.isLoading = false;
                     this.processSuccess = true;
                 }).catch((exception) => {
-                this.isLoading = false;
-                this.createNotificationError({
-                    title: this.$t('ratepay.profileConfig.messages.save.error'),
-                    message: exception
-                });
+                    this.isLoading = false;
+                    this.createNotificationError({
+                        title: this.$t('ratepay.profileConfig.messages.save.error.title'),
+                        message: exception
+                    });
             });
         },
 

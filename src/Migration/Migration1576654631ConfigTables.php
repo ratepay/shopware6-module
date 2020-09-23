@@ -38,7 +38,8 @@ class Migration1576654631ConfigTables extends MigrationStep
               `status_message` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
               `created_at` datetime NOT NULL,
               `updated_at` datetime DEFAULT NULL,
-                PRIMARY KEY (`id`)
+                PRIMARY KEY (`id`),
+                FOREIGN KEY (`sales_channel_id`) REFERENCES `sales_channel`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         ');
 

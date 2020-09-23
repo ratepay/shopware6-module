@@ -74,7 +74,11 @@
             "messages": {
                 "save": {
                     "success": "Die Profile-Konfiguration wurde erfolgreich gespeichert",
-                    "error": "Beim Speichern der Profile-Konfiguration ist ein Fehler aufgetreten"
+                    "error": {
+                        "title": "Beim Speichern der Profile-Konfiguration ist ein Fehler aufgetreten",
+                        "message": "Bitte prüfen Sie alle Eingabefelder.",
+                        "selectSalesChannel": "Bitte wählen Sie einen Sales Channel."
+                    }
                 },
                 "reload": {
                     "success": "Die Profile-Konfiguration wurde erfolgreich neu geladen",

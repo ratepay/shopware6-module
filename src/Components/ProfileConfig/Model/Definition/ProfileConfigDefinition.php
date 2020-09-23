@@ -13,6 +13,7 @@ use Ratepay\RpayPayments\Components\ProfileConfig\Model\Collection\ProfileConfig
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\CascadeDelete;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
@@ -44,7 +45,6 @@ class ProfileConfigDefinition extends EntityDefinition
 
     protected function defineFields(): FieldCollection
     {
-        //TODO primary keys over more than one column. Shopware does not support this currently
         return new FieldCollection([
             (new IdField(
                 'id',
@@ -79,10 +79,11 @@ class ProfileConfigDefinition extends EntityDefinition
                 false
             ))->addFlags(new CascadeDelete()),
 
-            (new IdField(
+            (new FkField(
                 'sales_channel_id',
-                ProfileConfigEntity::FIELD_SALES_CHANNEL_ID
-            )),
+                ProfileConfigEntity::FIELD_SALES_CHANNEL_ID,
+                SalesChannelDefinition::class
+            ))->addFlags(new Required()),
 
             (new StringField(
                 'country_code_billing',

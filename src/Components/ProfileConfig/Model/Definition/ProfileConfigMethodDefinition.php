@@ -14,6 +14,7 @@ use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntit
 use Shopware\Core\Checkout\Payment\PaymentMethodDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\CascadeDelete;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
@@ -58,9 +59,10 @@ class ProfileConfigMethodDefinition extends EntityDefinition
                 false
             ))->addFlags(new CascadeDelete()),
 
-            (new IdField(
+            (new FkField(
                 'profile_id',
-                ProfileConfigMethodEntity::FIELD_PROFILE_ID
+                ProfileConfigMethodEntity::FIELD_PROFILE_ID,
+                ProfileConfigDefinition::class
             )),
 
             (new ManyToOneAssociationField(
@@ -71,9 +73,10 @@ class ProfileConfigMethodDefinition extends EntityDefinition
                 false
             ))->addFlags(new CascadeDelete()),
 
-            (new IdField(
+            (new FkField(
                 'payment_method_id',
-                ProfileConfigMethodEntity::FIELD_PAYMENT_METHOD_ID
+                ProfileConfigMethodEntity::FIELD_PAYMENT_METHOD_ID,
+                PaymentMethodDefinition::class
             ))->addFlags(new Required()/*, new PrimaryKey()*/), // shopware does not support multiple primary keys
 
             (new FloatField(

@@ -74,7 +74,11 @@
             "messages": {
                 "save": {
                     "success": "The profile configuration has been saved",
-                    "error": "Error while saving the profile configuration"
+                    "error": {
+                        "title": "Error while saving the profile configuration",
+                        "message": "Please verify all input fields.",
+                        "selectSalesChannel": "Please select a sales channel."
+                    }
                 },
                 "reload": {
                     "success": "The profile configuration has been reloaded",

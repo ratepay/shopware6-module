@@ -30,8 +30,8 @@ Component.extend('ratepay-profile-config-create', 'ratepay-profile-config-detail
                     this.isLoading = false;
 
                     this.createNotificationError({
-                        title: this.$t('swag-bundle.detail.errorTitle'),
-                        message: exception
+                        title: this.$t('ratepay.profileConfig.messages.save.error.title'),
+                        message: this.$t('ratepay.profileConfig.messages.save.error.message')
                     });
                 });
         }
