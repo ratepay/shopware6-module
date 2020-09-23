@@ -11,10 +11,19 @@ import RatepayInstallmentPaymentSwitch from './RatepayCheckout/InstallmentPaymen
 
 // Register them via the existing PluginManager
 const PluginManager = window.PluginManager;
+let pluginList = PluginManager.getPluginList();
 
-PluginManager.register('ratepay-installment', RatepayInstallment, '[data-ratepay-installment="true"]');
-PluginManager.register(
-    'ratepay-installment-payment-switch',
-    RatepayInstallmentPaymentSwitch,
-    '[data-ratepay-installment-payment-switch="true"]'
-);
+if(typeof pluginList.RatepayInstallment === undefined) {
+    PluginManager.register('RatepayInstallment',
+        RatepayInstallment,
+        '[data-ratepay-installment="true"]'
+    );
+}
+
+if(typeof pluginList.RatepayInstallmentPaymentSwitch === undefined) {
+    PluginManager.register(
+        'RatepayInstallmentPaymentSwitch',
+        RatepayInstallmentPaymentSwitch,
+        '[data-ratepay-installment-payment-switch="true"]'
+    );
+}

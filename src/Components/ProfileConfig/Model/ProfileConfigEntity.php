@@ -65,17 +65,17 @@ class ProfileConfigEntity extends Entity
     protected $salesChannelId;
 
     /**
-     * @var string
+     * @var string[]
      */
     protected $countryCodeBilling;
 
     /**
-     * @var string
+     * @var string[]
      */
     protected $countryCodeDelivery;
 
     /**
-     * @var string
+     * @var string[]
      */
     protected $currency;
 
@@ -105,17 +105,17 @@ class ProfileConfigEntity extends Entity
     protected $paymentMethodConfigs;
 
     /**
-     * @return string
+     * @return string[]
      */
-    public function getCountryCodeBilling(): ?string
+    public function getCountryCodeBilling(): ?array
     {
         return $this->countryCodeBilling;
     }
 
     /**
-     * @param string $countryCodeBilling
+     * @param string[] $countryCodeBilling
      */
-    public function setCountryCodeBilling(string $countryCodeBilling = null): void
+    public function setCountryCodeBilling(array $countryCodeBilling = null): void
     {
         $this->countryCodeBilling = $countryCodeBilling;
     }
@@ -169,33 +169,33 @@ class ProfileConfigEntity extends Entity
     }
 
     /**
-     * @return string
+     * @return string[]
      */
-    public function getCountryCodeDelivery(): ?string
+    public function getCountryCodeDelivery(): ?array
     {
         return $this->countryCodeDelivery;
     }
 
     /**
-     * @param string $countryCodeDelivery
+     * @param string[] $countryCodeDelivery
      */
-    public function setCountryCodeDelivery(string $countryCodeDelivery = null): void
+    public function setCountryCodeDelivery(array $countryCodeDelivery = null): void
     {
         $this->countryCodeDelivery = $countryCodeDelivery;
     }
 
     /**
-     * @return string
+     * @return string[]
      */
-    public function getCurrency(): ?string
+    public function getCurrency(): ?array
     {
         return $this->currency;
     }
 
     /**
-     * @param string $currency
+     * @param string[] $currency
      */
-    public function setCurrency(string $currency = null): void
+    public function setCurrency(array $currency = null): void
     {
         $this->currency = $currency;
     }

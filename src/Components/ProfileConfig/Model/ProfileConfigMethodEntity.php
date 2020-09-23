@@ -109,35 +109,32 @@ class ProfileConfigMethodEntity extends Entity
         $this->allowB2b = $allowB2b;
     }
 
-    public function getLimitMin(): int
+    public function getLimitMin(): ?int
     {
         return $this->limitMin;
     }
 
-    public function setLimitMin(int $limitMin): void
+    public function setLimitMin(?int $limitMin): void
     {
         $this->limitMin = $limitMin;
     }
 
-    public function getLimitMax(): int
+    public function getLimitMax(): ?int
     {
         return $this->limitMax;
     }
 
-    public function setLimitMax(int $limitMax): void
+    public function setLimitMax(?int $limitMax): void
     {
         $this->limitMax = $limitMax;
     }
 
-    /**
-     * @return int
-     */
     public function getLimitMaxB2b(): ?int
     {
         return $this->limitMaxB2b;
     }
 
-    public function setLimitMaxB2b(int $limitMaxB2b): void
+    public function setLimitMaxB2b(?int $limitMaxB2b): void
     {
         $this->limitMaxB2b = $limitMaxB2b;
     }

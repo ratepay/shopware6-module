@@ -71,15 +71,15 @@
                                     <tbody>
                                     <tr>
                                         <th>{{ $t('ratepay.profileConfig.page.tabs.general.table.label.countryCodeBilling') }}</th>
-                                        <td>{{ entity.countryCodeBilling }}</td>
+                                        <td>{{ entity.countryCodeBilling.join(', ') }}</td>
                                     </tr>
                                     <tr>
                                         <th>{{ $t('ratepay.profileConfig.page.tabs.general.table.label.countryCodeDelivery') }}</th>
-                                        <td>{{ entity.countryCodeDelivery }}</td>
+                                        <td>{{ entity.countryCodeDelivery.join(', ') }}</td>
                                     </tr>
                                     <tr>
                                         <th>{{ $t('ratepay.profileConfig.page.tabs.general.table.label.currency') }}</th>
-                                        <td>{{ entity.currency }}</td>
+                                        <td>{{ entity.currency.join(', ') }}</td>
                                     </tr>
                                     <tr>
                                         <th>{{ $t('ratepay.profileConfig.page.tabs.general.table.label.errorDefault') }}</th>
@@ -87,7 +87,7 @@
                                     </tr>
                                     <tr>
                                         <th>{{ $t('ratepay.profileConfig.page.tabs.general.table.label.updatedAt') }}</th>
-                                        <td>{{ entity.updatedAt }}</td>
+                                        <td>{{ entity.updatedAt|date({hour: '2-digit', minute: '2-digit'}) }}</td>
                                     </tr>
                                     </tbody>
                                 </table>

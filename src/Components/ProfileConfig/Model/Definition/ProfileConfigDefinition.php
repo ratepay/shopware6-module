@@ -18,6 +18,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\CascadeDelete;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\ListField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
@@ -85,18 +86,22 @@ class ProfileConfigDefinition extends EntityDefinition
                 SalesChannelDefinition::class
             ))->addFlags(new Required()),
 
-            (new StringField(
+            (new ListField(
                 'country_code_billing',
-                ProfileConfigEntity::FIELD_COUNTRY_CODE_BILLING
-            )),
-            (new StringField(
-                'country_code_delivery',
-                ProfileConfigEntity::FIELD_COUNTRY_CODE_SHIPPING
+                ProfileConfigEntity::FIELD_COUNTRY_CODE_BILLING,
+                StringField::class
             )),
 
-            (new StringField(
+            (new ListField(
+                'country_code_delivery',
+                ProfileConfigEntity::FIELD_COUNTRY_CODE_SHIPPING,
+                StringField::class
+            )),
+
+            (new ListField(
                 'currency',
-                ProfileConfigEntity::FIELD_CURRENCY
+                ProfileConfigEntity::FIELD_CURRENCY,
+                StringField::class
             )),
 
             (new BoolField(

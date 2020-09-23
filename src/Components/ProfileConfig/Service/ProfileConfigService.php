@@ -24,6 +24,7 @@ use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -110,9 +111,9 @@ class ProfileConfigService
                 $data[ProfileConfigEntity::FIELD_STATUS_MESSAGE] = 'The profile is disabled. Please contact your account manager.';
             } else {
                 $data[ProfileConfigEntity::FIELD_STATUS] = true;
-                $data[ProfileConfigEntity::FIELD_COUNTRY_CODE_BILLING] = $responseData['merchantConfig']['country-code-billing'];
-                $data[ProfileConfigEntity::FIELD_COUNTRY_CODE_SHIPPING] = $responseData['merchantConfig']['country-code-delivery'];
-                $data[ProfileConfigEntity::FIELD_CURRENCY] = $responseData['merchantConfig']['currency'];
+                $data[ProfileConfigEntity::FIELD_COUNTRY_CODE_BILLING] = explode(',', $responseData['merchantConfig']['country-code-billing']);
+                $data[ProfileConfigEntity::FIELD_COUNTRY_CODE_SHIPPING] = explode(',', $responseData['merchantConfig']['country-code-delivery']);
+                $data[ProfileConfigEntity::FIELD_CURRENCY] = explode(',', $responseData['merchantConfig']['currency']);
 
                 $methodConfigs = [];
                 $installmentConfigs = [];
@@ -234,16 +235,16 @@ class ProfileConfigService
         ));
 
         // billing country
-        $criteria->addFilter(new EqualsFilter(ProfileConfigEntity::FIELD_COUNTRY_CODE_BILLING, $billingCountryIso));
+        $criteria->addFilter(new EqualsAnyFilter(ProfileConfigEntity::FIELD_COUNTRY_CODE_BILLING, [$billingCountryIso]));
 
         // delivery country
-        $criteria->addFilter(new EqualsFilter(ProfileConfigEntity::FIELD_COUNTRY_CODE_SHIPPING, $shippingCountryIso));
+        $criteria->addFilter(new EqualsAnyFilter(ProfileConfigEntity::FIELD_COUNTRY_CODE_SHIPPING, [$shippingCountryIso]));
 
         // sales channel
         $criteria->addFilter(new EqualsFilter(ProfileConfigEntity::FIELD_SALES_CHANNEL_ID, $salesChannelId));
 
         // currency
-        $criteria->addFilter(new EqualsFilter(ProfileConfigEntity::FIELD_CURRENCY, $currencyIso));
+        $criteria->addFilter(new EqualsAnyFilter(ProfileConfigEntity::FIELD_CURRENCY, [$currencyIso]));
 
         // status
         $criteria->addFilter(new EqualsFilter(ProfileConfigEntity::FIELD_STATUS, true));

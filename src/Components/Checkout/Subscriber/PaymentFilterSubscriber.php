@@ -79,7 +79,7 @@ class PaymentFilterSubscriber implements EventSubscriberInterface
 
         $amountMin = $methodConfig->getLimitMin();
         $amountMax = $isB2b ? $methodConfig->getLimitMaxB2b() : $methodConfig->getLimitMax();
-        if ($totalPrice < $amountMin || $totalPrice > $amountMax) {
+        if (($amountMin && $totalPrice < $amountMin) || ($amountMax && $totalPrice > $amountMax)) {
             $event->setIsAvailable(false);
 
             return $event;

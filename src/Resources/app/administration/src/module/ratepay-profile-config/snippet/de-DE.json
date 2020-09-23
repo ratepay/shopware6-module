@@ -28,8 +28,8 @@
                         "title": "Allgemein",
                         "table": {
                             "label": {
-                                "countryCodeBilling": "erlaube Länder (Rechnungsadresse)",
-                                "countryCodeDelivery": "erlaube Länder (Lieferadresse)",
+                                "countryCodeBilling": "erlaubte Länder (Rechnungsadresse)",
+                                "countryCodeDelivery": "erlaubte Länder (Lieferadresse)",
                                 "currency": "Währung",
                                 "errorDefault": "Standardfehlermeldung",
                                 "updatedAt": "Zuletzt aktualisiert"
