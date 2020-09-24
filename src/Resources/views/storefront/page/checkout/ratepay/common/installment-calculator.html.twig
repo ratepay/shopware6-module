@@ -18,7 +18,6 @@
 <div class="installment-calculator" data-ratepay-installment="true">
     <input type="hidden" name="ratepay[installment][type]" id="rp-calculation-type" value="{{ installment.calculator.defaults.type }}" form="confirmOrderForm" />
     <input type="hidden" name="ratepay[installment][value]" id="rp-calculation-value" value="{{ installment.calculator.defaults.value }}" form="confirmOrderForm" />
-    <input type="hidden" name="ratepay[installment][paymentType]" id="rp-calculation-payment-type" value="{{ installment.calculator.defaults.paymentType }}" form="confirmOrderForm" />
 
     <div class="rp-container-calculator">
         <div class="row">
@@ -87,31 +86,32 @@
         </div>
     </div>
 
-    {# only show sepa form if the payment method is available #}
-    {% if installment.calculator.rp_debitPayType.rp_paymentType_directDebit %}
-        <div id="rp-installment-payment-switch" data-ratepay-installment-payment-switch="true">
+    <div id="rp-installment-payment-switch" data-ratepay-installment-payment-switch="true">
+        <input type="hidden" name="ratepay[installment][paymentType]" id="rp-calculation-payment-type" value="{{ installment.calculator.defaults.paymentType }}" form="confirmOrderForm" />
 
+        {% if installment.calculator.rp_debitPayType.rp_paymentType_directDebit %}
+            {# only show sepa form if the payment method is available #}
             <div class="row d-block" id="rp-sepa-form">
                 <div class="col-md-12">
                     <hr>
                     {% sw_include '@RpayPayments/storefront/installment-calculator/bank-account.html.twig' %}
                 </div>
             </div>
+        {% endif %}
 
-            {# only show the switch if also bank transfer is available #}
-            {% if installment.calculator.rp_debitPayType.rp_paymentType_bankTransfer %}
-                <div class="row">
-                    <div class="col-md-12">
-                        <hr>
-                        <div class="rp-payment-type-switch d-block" id="rp-switch-payment-type-bank-transfer">
-                            <a href="javascript:;" class="rp-link">{{ installment.translations.rp_switch_payment_type_bank_transfer|raw }}</a>
-                        </div>
-                        <div class="rp-payment-type-switch d-none" id="rp-switch-payment-type-direct-debit">
-                            <a href="javascript:;" class="rp-link">{{ installment.translations.rp_switch_payment_type_direct_debit|raw }}</a>
-                        </div>
+        {# only show the switch if also bank transfer is available #}
+        {% if installment.calculator.rp_debitPayType.rp_paymentType_bankTransfer %}
+            <div class="row">
+                <div class="col-md-12">
+                    <hr>
+                    <div class="rp-payment-type-switch d-block" id="rp-switch-payment-type-bank-transfer">
+                        <a href="javascript:" class="rp-link">{{ installment.translations.rp_switch_payment_type_bank_transfer|raw }}</a>
+                    </div>
+                    <div class="rp-payment-type-switch d-none" id="rp-switch-payment-type-direct-debit">
+                        <a href="javascript:" class="rp-link">{{ installment.translations.rp_switch_payment_type_direct_debit|raw }}</a>
                     </div>
                 </div>
-            {% endif %}
-        </div>
-    {% endif %}
+            </div>
+        {% endif %}
+    </div>
 </div>

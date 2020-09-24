@@ -10,6 +10,7 @@
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Subscriber;
 
 use Exception;
+use InvalidArgumentException;
 use RatePAY\Model\Request\SubModel\Content\Payment;
 use RatePAY\Model\Request\SubModel\Content\ShoppingBasket;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Exception\DebitNotAllowedOnInstallment;
@@ -67,7 +68,20 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
                 throw new Exception('the hash value of the calculated plan does not match the given hash');
             }
 
-            $paymentObject->setDebitPayType('')
+            $paymentType = $requestedInstallment->get('paymentType');
+            switch ($paymentType) {
+                case 'DIRECT-DEBIT':
+                    $paymentFirstDay = 2;
+                    break;
+                case 'BANK-TRANSFER':
+                    $paymentFirstDay = 28;
+                    break;
+                default:
+                    throw new InvalidArgumentException('invalid paymentType');
+                    break;
+            }
+
+            $paymentObject
                 ->setAmount($plan['totalAmount'])
                 ->setInstallmentDetails(
                     (new Payment\InstallmentDetails())
@@ -75,9 +89,9 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
                         ->setInstallmentAmount($plan['rate'])
                         ->setLastInstallmentAmount($plan['lastRate'])
                         ->setInterestRate($plan['interestRate'])
-                        ->setPaymentFirstday($plan['paymentFirstday'])
+                        ->setPaymentFirstday($paymentFirstDay)
                 )
-                ->setDebitPayType($requestedInstallment->get('paymentType'));
+                ->setDebitPayType($paymentType);
         }
     }
 
