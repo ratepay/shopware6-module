@@ -29,9 +29,7 @@
         {% if installment.calculator.rp_allowedMonths|length > 1 %}
             <div class="row">
                 <div class="col-md-12">
-                    {{ installment.translations.rp_calculation_intro_part1|raw }}
-                    {{ installment.translations.rp_calculation_intro_part2|raw }}
-                    {{ installment.translations.rp_calculation_intro_part3|raw }}
+                    {{ "ratepay.storefront.checkout.installment.intro"|trans|sw_sanitize }}
                 </div>
             </div>
 
