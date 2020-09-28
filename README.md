@@ -25,6 +25,11 @@
 4. Click Upload Plugin and chose the previously downloaded ZIP file
 5. Choose Installation and after this activate the Ratepay module 
 
+## Installation via composer
+1. execute the follwong command in your main shopware directory: composer require ratepay/shopware6-module
+2. Click Settings > System > Plugins the Ratepay Payment Extension is now listed in My Plugins
+3. Choose Installation and after this activate the module 
+
 ## Changelog
 
 ### Version 1.0.0
