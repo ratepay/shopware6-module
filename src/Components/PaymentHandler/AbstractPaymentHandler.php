@@ -80,12 +80,16 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
 
         $order = $this->getOrderWithAssociations($transaction->getOrder(), $salesChannelContext->getContext());
         try {
+            $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
+            $shippingAddress = $order->getDeliveries()->getShippingAddress()->first();
+
             $profileConfig = $this->profileConfigService->getProfileConfigDefaultParams(
                 $transaction->getOrderTransaction()->getPaymentMethod()->getId(),
-                $order->getAddresses()->get($order->getBillingAddressId())->getCountry()->getIso(),
-                $order->getDeliveries()->getShippingAddress()->first()->getCountry()->getIso(),
+                $billingAddress->getCountry()->getIso(),
+                $shippingAddress->getCountry()->getIso(),
                 $order->getSalesChannelId(),
                 $order->getCurrency()->getIsoCode(),
+                $billingAddress->getId() !== $shippingAddress->getId(),
                 $salesChannelContext->getContext()
             );
 

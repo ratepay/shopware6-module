@@ -89,12 +89,12 @@ class ProfileConfigMethodEntity extends Entity
      */
     protected $installmentConfig;
 
-    public function getPaymentMethod(): string
+    public function getPaymentMethod(): PaymentMethodEntity
     {
         return $this->paymentMethod;
     }
 
-    public function setPaymentMethod(string $paymentMethod): void
+    public function setPaymentMethod(PaymentMethodEntity $paymentMethod): void
     {
         $this->paymentMethod = $paymentMethod;
     }

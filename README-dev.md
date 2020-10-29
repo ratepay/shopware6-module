@@ -7,8 +7,12 @@
 5. run `./psh.phar storefront:build`
 
 # Testing
-Just run the script from plugin dir
-`./../../../vendor/bin/phpunit`
+
+Please run the unit tests before committing!
+
+1. copy the file config.php.dist to config.php
+2. adjust the config.php file according the documentation (no public access. please contact your account manager.) 
+3. Just run the script from plugin dir `./bin/phpunit.sh`
 
 # Build package
 just call `./bin/build.sh` in the plugin dir an use the package `RpayPayments.zip` in `./build/dist/`

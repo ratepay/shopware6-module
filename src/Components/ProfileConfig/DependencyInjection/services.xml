@@ -12,14 +12,14 @@
 
     <services>
 
-        <service id="Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigService">
-            <argument id="payment_method.repository" type="service"/>
-            <argument id="ratepay_profile_config.repository" type="service"/>
-            <argument id="ratepay_profile_config_method.repository" type="service"/>
-            <argument id="ratepay_profile_config_method_installment.repository" type="service"/>
-            <argument id="Ratepay\RpayPayments\Components\RatepayApi\Service\Request\ProfileRequestService"
-                      type="service"/>
+        <service id="Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigService" autowire="true">
+            <argument key="$repository" id="ratepay_profile_config.repository" type="service"/>
+            <argument key="$methodConfigRepository" id="ratepay_profile_config_method.repository" type="service"/>
+            <argument key="$methodConfigInstallmentRepository" id="ratepay_profile_config_method_installment.repository" type="service"/>
         </service>
 
+        <service id="Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigResponseConverter" autowire="true">
+            <argument key="$paymentRepository" id="payment_method.repository" type="service"/>
+        </service>
     </services>
 </container>

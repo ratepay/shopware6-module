@@ -9,24 +9,18 @@
 
 namespace Ratepay\RpayPayments\Components\ProfileConfig\Service;
 
-use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
-use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\Collection\ProfileConfigCollection;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
-use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodInstallmentEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\ProfileRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\ProfileRequestService;
-use Ratepay\RpayPayments\RpayPayments;
+use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
-use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class ProfileConfigService
@@ -55,24 +49,24 @@ class ProfileConfigService
      * @var EntityRepositoryInterface
      */
     private $methodConfigInstallmentRepository;
-
     /**
-     * @var EntityRepositoryInterface
+     * @var ProfileConfigResponseConverter
      */
-    private $paymentRepository;
+    private $profileConfigResponseConverter;
 
     public function __construct(
-        EntityRepositoryInterface $paymentRepository,
         EntityRepositoryInterface $repository,
         EntityRepositoryInterface $methodConfigRepository,
         EntityRepositoryInterface $methodConfigInstallmentRepository,
-        ProfileRequestService $profileRequestService
-    ) {
-        $this->paymentRepository = $paymentRepository;
+        ProfileRequestService $profileRequestService,
+        ProfileConfigResponseConverter $profileConfigResponseConverter
+    )
+    {
         $this->repository = $repository;
         $this->methodConfigRepository = $methodConfigRepository;
         $this->methodConfigInstallmentRepository = $methodConfigInstallmentRepository;
         $this->profileRequestService = $profileRequestService;
+        $this->profileConfigResponseConverter = $profileConfigResponseConverter;
 
         $this->context = Context::createDefaultContext();
     }
@@ -83,82 +77,20 @@ class ProfileConfigService
         $profileConfigs = $this->repository->search(new Criteria($ids), $this->context);
 
         foreach ($profileConfigs as $profileConfig) {
-            // truncate payment configurations
-            $entitiesToDelete = $this->methodConfigRepository->search(
-                (new Criteria())->addFilter(new EqualsFilter(ProfileConfigMethodEntity::FIELD_PROFILE_ID, $profileConfig->getId())),
-                $this->context
+            $this->deleteMethodConfigsForProfile($profileConfig);
+
+            $response = $this->profileRequestService->doRequest(
+                $this->context,
+                new ProfileRequestData($profileConfig)
+            )->getResponse();
+
+            [$profileConfigData, $methodConfigs, $installmentConfigs] = $this->profileConfigResponseConverter->convert(
+                $response,
+                $profileConfig->getId()
             );
-            $deleteIds = $entitiesToDelete->getIds();
-            if (count($deleteIds)) {
-                $this->methodConfigRepository->delete(array_values(array_map(function ($id) {
-                    return [
-                        ProfileConfigMethodEntity::FIELD_ID => $id,
-                    ];
-                }, $deleteIds)), $this->context);
-            }
+            $profileConfigData[ProfileConfigEntity::FIELD_ID] = $profileConfig->getId();
 
-            $response = $this->profileRequestService->doRequest($this->context, new ProfileRequestData($profileConfig))->getResponse();
-            $data = [
-                ProfileConfigEntity::FIELD_ID => $profileConfig->getId(),
-            ];
-
-            $responseData = $response->getResult();
-            if ($response->isSuccessful() == false) {
-                $data[ProfileConfigEntity::FIELD_STATUS] = false;
-                $data[ProfileConfigEntity::FIELD_STATUS_MESSAGE] = $response->getReasonMessage();
-            } elseif ($responseData['merchantConfig']['merchant-status'] == 1) {
-                $data[ProfileConfigEntity::FIELD_STATUS] = false;
-                $data[ProfileConfigEntity::FIELD_STATUS_MESSAGE] = 'The profile is disabled. Please contact your account manager.';
-            } else {
-                $data[ProfileConfigEntity::FIELD_STATUS] = true;
-                $data[ProfileConfigEntity::FIELD_COUNTRY_CODE_BILLING] = explode(',', $responseData['merchantConfig']['country-code-billing']);
-                $data[ProfileConfigEntity::FIELD_COUNTRY_CODE_SHIPPING] = explode(',', $responseData['merchantConfig']['country-code-delivery']);
-                $data[ProfileConfigEntity::FIELD_CURRENCY] = explode(',', $responseData['merchantConfig']['currency']);
-
-                $methodConfigs = [];
-                $installmentConfigs = [];
-
-                $paymentMethods = $this->getPaymentMethods();
-
-                /** @var PaymentMethodEntity $paymentMethod */
-                foreach ($paymentMethods as $paymentMethod) {
-                    $arrayKey = strtolower(constant($paymentMethod->getHandlerIdentifier() . '::RATEPAY_METHOD'));
-                    if ($responseData['merchantConfig']['activation-status-' . $arrayKey] == 1) {
-                        // method is disabled.
-                        continue;
-                    }
-                    if ($paymentMethod->getHandlerIdentifier() === InstallmentZeroPercentPaymentHandler::class && $responseData['installmentConfig']['interestrate-min'] > 0) {
-                        // this is not a zero percent installment profile.
-                        continue;
-                    }
-                    if ($paymentMethod->getHandlerIdentifier() === InstallmentPaymentHandler::class && $responseData['installmentConfig']['interestrate-min'] == 0) {
-                        // this is a zero percent installment profile, not a standard installment.
-                        continue;
-                    }
-                    $id = Uuid::randomHex();
-                    $methodConfigs[] = [
-                        ProfileConfigMethodEntity::FIELD_ID => $id,
-                        ProfileConfigMethodEntity::FIELD_PROFILE_ID => $profileConfig->getId(),
-                        ProfileConfigMethodEntity::FIELD_PAYMENT_METHOD_ID => $paymentMethod->getId(),
-                        ProfileConfigMethodEntity::FIELD_LIMIT_MIN => floatval($responseData['merchantConfig']['tx-limit-' . $arrayKey . '-min']) ?: null,
-                        ProfileConfigMethodEntity::FIELD_LIMIT_MAX => floatval($responseData['merchantConfig']['tx-limit-' . $arrayKey . '-max']) ?: null,
-                        ProfileConfigMethodEntity::FIELD_LIMIT_MAX_B2B => floatval($responseData['merchantConfig']['tx-limit-' . $arrayKey . '-max-b2b']) ?: null,
-                        ProfileConfigMethodEntity::FIELD_ALLOW_B2B => $responseData['merchantConfig']['b2b-' . $arrayKey] == 'yes',
-                        ProfileConfigMethodEntity::FIELD_ALLOW_DIFFERENT_ADDRESSES => $responseData['merchantConfig']['delivery-address-' . $arrayKey] == 'yes',
-                    ];
-                    if ($arrayKey === 'installment') {
-                        $paymentFirstDay = explode(',', $responseData['installmentConfig']['valid-payment-firstdays']);
-                        $installmentConfigs[] = [
-                            ProfileConfigMethodInstallmentEntity::FIELD_ID => $id,
-                            ProfileConfigMethodInstallmentEntity::FIELD_ALLOWED_MONTHS => array_map('intval', explode(',', $responseData['installmentConfig']['month-allowed'])),
-                            ProfileConfigMethodInstallmentEntity::FIELD_IS_BANKTRANSFER_ALLOWED => in_array(28, $paymentFirstDay),
-                            ProfileConfigMethodInstallmentEntity::FIELD_IS_DEBIT_ALLOWED => in_array(2, $paymentFirstDay),
-                            ProfileConfigMethodInstallmentEntity::FIELD_RATE_MIN => floatval($responseData['installmentConfig']['rate-min-normal']),
-                        ];
-                    }
-                }
-            }
-            $this->repository->upsert([$data], $this->context);
+            $this->repository->upsert([$profileConfigData], $this->context);
 
             if (isset($methodConfigs) && count($methodConfigs)) {
                 $this->methodConfigRepository->upsert($methodConfigs, $this->context);
@@ -168,25 +100,30 @@ class ProfileConfigService
             }
         }
 
-        return $this->repository->search(new Criteria($ids), $this->context);
+        return $this->repository->search(CriteriaHelper::getCriteriaForProfileConfig($ids), $this->context);
     }
 
-    /**
-     * @returns PaymentMethodCollection
-     */
-    private function getPaymentMethods()
+    protected function deleteMethodConfigsForProfile(ProfileConfigEntity $profileConfig): void
     {
-        $criteria = new Criteria();
-        $criteria->addAssociation('plugin');
-        $criteria->addFilter(new EqualsFilter('plugin.baseClass', RpayPayments::class));
-
-        return $this->paymentRepository->search($criteria, $this->context);
+        $entitiesToDelete = $this->methodConfigRepository->search(
+            (new Criteria())->addFilter(new EqualsFilter(ProfileConfigMethodEntity::FIELD_PROFILE_ID, $profileConfig->getId())),
+            $this->context
+        );
+        $deleteIds = $entitiesToDelete->getIds();
+        if (count($deleteIds)) {
+            $this->methodConfigRepository->delete(array_values(array_map(static function ($id) {
+                return [
+                    ProfileConfigMethodEntity::FIELD_ID => $id,
+                ];
+            }, $deleteIds)), $this->context);
+        }
     }
 
     public function getProfileConfigBySalesChannel(
         SalesChannelContext $salesChannelContext,
         string $paymentMethodId = null
-    ): ?ProfileConfigEntity {
+    ): ?ProfileConfigEntity
+    {
         if (($customer = $salesChannelContext->getCustomer()) === null ||
             ($billingAddress = $customer->getActiveBillingAddress()) === null ||
             ($shippingAddress = $customer->getActiveShippingAddress()) === null
@@ -211,6 +148,7 @@ class ProfileConfigService
             $shippingCountry,
             $salesChannelContext->getSalesChannel()->getId(),
             $salesChannelContext->getCurrency()->getIsoCode(),
+            $billingAddress->getId() !== $shippingAddress->getId(),
             $salesChannelContext->getContext()
         );
     }
@@ -221,8 +159,10 @@ class ProfileConfigService
         string $shippingCountryIso,
         string $salesChannelId,
         string $currencyIso,
+        bool $differentAddresses,
         Context $context
-    ) {
+    )
+    {
         // TODO: Move this function to a repository
 
         $criteria = new Criteria();
@@ -233,6 +173,14 @@ class ProfileConfigService
             ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_PAYMENT_METHOD_ID,
             $paymentMethodId
         ));
+
+        // payment method
+        if($differentAddresses) {
+            $criteria->addFilter(new EqualsFilter(
+                ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_ALLOW_DIFFERENT_ADDRESSES,
+                true
+            ));
+        }
 
         // billing country
         $criteria->addFilter(new EqualsAnyFilter(ProfileConfigEntity::FIELD_COUNTRY_CODE_BILLING, [$billingCountryIso]));
@@ -271,6 +219,7 @@ class ProfileConfigService
             $shippingCountry,
             $order->getSalesChannelId(),
             $order->getCurrency()->getIsoCode(),
+            $billingAddress->getId() !== $shippingAddress->getId(),
             $context
         );
     }
