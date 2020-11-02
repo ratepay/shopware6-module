@@ -19,6 +19,7 @@
         <service id="Ratepay\RpayPayments\Components\Logging\Service\ApiLogger" autowire="true">
             <argument key="$logRepository" id="ratepay_api_log.repository" type="service"/>
             <argument key="$logger" id="ratepay.logger" type="service"/>
+            <argument key="$pluginVersion">%ratepay.shopware_payment.plugin_version%</argument>
         </service>
 
         <service id="Ratepay\RpayPayments\Components\Logging\Service\HistoryLogger">

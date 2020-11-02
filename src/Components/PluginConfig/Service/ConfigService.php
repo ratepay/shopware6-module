@@ -30,15 +30,9 @@ class ConfigService
      */
     private $systemConfigService;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $pluginRepository;
-
-    public function __construct(SystemConfigService $systemConfigService, EntityRepositoryInterface $pluginRepository)
+    public function __construct(SystemConfigService $systemConfigService)
     {
         $this->systemConfigService = $systemConfigService;
-        $this->pluginRepository = $pluginRepository;
     }
 
     public function getDeviceFingerprintSnippetId()
@@ -51,19 +45,6 @@ class ConfigService
     public function getPluginConfiguration(): array
     {
         return $this->systemConfigService->get('RpayPayments.config', null) ?: [];
-    }
-
-    public function getPluginVersion(): string
-    {
-        /** @var PluginCollection $plugin */
-        $plugins = $this->pluginRepository->search(
-            (new Criteria())
-                ->addFilter(new EqualsFilter('baseClass', RpayPayments::class))
-                ->setLimit(1),
-            $this->getContext()
-        );
-
-        return $plugins->first()->getVersion();
     }
 
     protected function getContext(): Context

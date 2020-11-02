@@ -14,6 +14,7 @@
 
         <service id="Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory" autowire="true">
             <argument key="$shopwareVersion">%kernel.shopware_version%</argument>
+            <argument key="$pluginVersion">%ratepay.shopware_payment.plugin_version%</argument>
         </service>
 
         <service id="Ratepay\RpayPayments\Components\RatepayApi\Factory\CustomerFactory" autowire="true"/>

@@ -12,7 +12,6 @@ namespace Ratepay\RpayPayments\Components\Logging\Service;
 use Exception;
 use Monolog\Logger;
 use Ratepay\RpayPayments\Components\Logging\Model\ApiRequestLogEntity;
-use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\RequestDoneEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -26,23 +25,23 @@ class ApiLogger
     protected $logRepository;
 
     /**
-     * @var ConfigService
-     */
-    protected $configService;
-
-    /**
      * @var Logger
      */
     protected $logger;
+    /**
+     * @var string
+     */
+    private $pluginVersion;
 
     public function __construct(
         EntityRepositoryInterface $logRepository,
-        ConfigService $configService,
-        Logger $logger
-    ) {
+        Logger $logger,
+        string $pluginVersion
+    )
+    {
         $this->logRepository = $logRepository;
-        $this->configService = $configService;
         $this->logger = $logger;
+        $this->pluginVersion = $pluginVersion;
     }
 
     public function logRequest(RequestDoneEvent $requestDoneEvent): void
@@ -57,7 +56,7 @@ class ApiLogger
         if ($requestData instanceof OrderOperationData) {
             $order = $requestData->getOrder();
             $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
-            $additionalData['transactionId'] = (string) $requestBuilder->getRequestXmlElement()->head->{'transaction-id'};
+            $additionalData['transactionId'] = (string)$requestBuilder->getRequestXmlElement()->head->{'transaction-id'};
             $additionalData['orderNumber'] = $order->getOrderNumber();
             $additionalData['firstName'] = $billingAddress->getFirstName();
             $additionalData['lastName'] = $billingAddress->getLastName();
@@ -66,14 +65,14 @@ class ApiLogger
 
         /** @var SimpleXMLElement $operationNode */
         $operationNode = $requestBuilder->getRequestXmlElement()->head->operation;
-        $operationSubtype = (string) $operationNode->attributes()->subtype;
-        $operation = (string) $operationNode;
+        $operationSubtype = (string)$operationNode->attributes()->subtype;
+        $operation = (string)$operationNode;
 
         $reasonNode = $requestBuilder->getResponseXmlElement()->head->processing->reason;
         $resultNode = $requestBuilder->getResponseXmlElement()->head->processing->result;
-        $result = (string) $reasonNode;
-        if (in_array(((int) $reasonNode->attributes()->code), [303, 700], true) && ((int) $resultNode->attributes()->code) !== 402) {
-            $result = (string) $resultNode;
+        $result = (string)$reasonNode;
+        if (in_array(((int)$reasonNode->attributes()->code), [303, 700], true) && ((int)$resultNode->attributes()->code) !== 402) {
+            $result = (string)$resultNode;
         }
 
         foreach (['securitycode', 'owner', 'iban'] as $key) {
@@ -84,7 +83,7 @@ class ApiLogger
             $this->logRepository->create(
                 [
                     [
-                        ApiRequestLogEntity::FIELD_VERSION => $this->configService->getPluginVersion(),
+                        ApiRequestLogEntity::FIELD_VERSION => $this->pluginVersion,
                         ApiRequestLogEntity::FIELD_OPERATION => $operation,
                         ApiRequestLogEntity::FIELD_SUB_OPERATION => $operationSubtype,
                         ApiRequestLogEntity::FIELD_RESULT => $result,

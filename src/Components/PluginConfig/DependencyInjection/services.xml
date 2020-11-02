@@ -13,7 +13,7 @@
 
         <service id="Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService">
             <argument id="Shopware\Core\System\SystemConfig\SystemConfigService" type="service"/>
-            <argument id="plugin.repository" type="service"/>
+            <argument>%ratepay.shopware_payment.plugin_version%</argument>
         </service>
 
     </services>
