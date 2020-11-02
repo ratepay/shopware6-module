@@ -179,7 +179,7 @@ class ProfileConfigResponseConverterTest extends TestCase
         ]);
 
         $paymentMethodsRepo = new PaymentMethodRepositoryMock(PaymentMethodMock::createArray([
-            InstallmentZeroPercentPaymentHandler::class
+            InstallmentPaymentHandler::class
         ]));
 
 
@@ -188,6 +188,7 @@ class ProfileConfigResponseConverterTest extends TestCase
         self::assertCount(3, $results);
 
         [$profileConfigData, $methodConfigs, $installmentConfigs] = $results;
+        self::assertNotNull($profileConfigData);
         self::assertCount(0, $methodConfigs);
         self::assertCount(0, $installmentConfigs);
     }
