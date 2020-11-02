@@ -13,6 +13,7 @@ use Ratepay\RpayPayments\Components\PaymentHandler\PrepaymentPaymentHandler;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\Definition\ProfileConfigDefinition;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigService;
+use Ratepay\RpayPayments\Tests\Mock\Model\AddressMock;
 use Ratepay\RpayPayments\Tests\TestConfig;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressCollection;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
@@ -36,8 +37,8 @@ class ProfileConfigServiceTest extends TestCase
     use SalesChannelApiTestBehaviour;
 
     private const CUSTOMER_ID = 'cd4fae8320be4f53825534151d29984e';
-    private const CUSTOMER_BILLING_ADDRESS_ID = '66d6bfb7aeb647dcbe397ad43f239d5c';
-    private const CUSTOMER_SHIPPING_ADDRESS_ID = '028fd84f82984a43a2888da520df12ca';
+//    private const CUSTOMER_BILLING_ADDRESS_ID = '66d6bfb7aeb647dcbe397ad43f239d5c';
+//    private const CUSTOMER_SHIPPING_ADDRESS_ID = '028fd84f82984a43a2888da520df12ca';
 
     /**
      * @var EntityRepositoryInterface
@@ -319,35 +320,27 @@ class ProfileConfigServiceTest extends TestCase
             $context
         )->first();
 
-        // create countries
-        $billingCountry = new CountryEntity();
-        $billingCountry->setIso($billingCountryIso);
+        // create customer
+        $customer = new CustomerEntity();
+        $customer->setId(self::CUSTOMER_ID);
 
-        $shippingCountry = new CountryEntity();
-        $shippingCountry->setIso($shippingCountryIso);
+
+        // create addresses
+        $billingAddress = AddressMock::createBillingAddress($customer, $billingCountryIso);
+        $shippingAddress = $sameAddress ? $billingAddress : AddressMock::createShippingAddress($customer, $shippingCountryIso);
+
+        $customer->setActiveBillingAddress($billingAddress);
+        $customer->setDefaultBillingAddressId($billingAddress->getId());
+        $customer->setActiveShippingAddress($shippingAddress);
+        $customer->setDefaultShippingAddressId($shippingAddress->getId());
+        $customer->setAddresses(new CustomerAddressCollection());
+        $customer->getAddresses()->set($billingAddress->getId(), $billingAddress);
+        $customer->getAddresses()->set($shippingAddress->getId(), $shippingAddress);
+
 
         // create currency
         $currency = new CurrencyEntity();
         $currency->setIsoCode($currencyIso);
-
-        // create addresses
-        $billingAddress = new CustomerAddressEntity();
-        $billingAddress->setId('7893a223b9bd45c2832fbea6506cc69b');
-        $billingAddress->setCountry($billingCountry);
-        $shippingAddress = new CustomerAddressEntity();
-        $shippingAddress->setId('e5aac0a5a8a14f3bad1e45b90d536ecd');
-        $shippingAddress->setCountry($shippingCountry);
-
-        // create customer
-        $customer = new CustomerEntity();
-        $customer->setActiveBillingAddress($billingAddress);
-        $customer->setDefaultBillingAddressId($customer->getActiveBillingAddress()->getId());
-        $customer->setActiveShippingAddress($sameAddress ? $billingAddress : $shippingAddress);
-        $customer->setDefaultShippingAddressId($customer->getActiveShippingAddress()->getId());
-        $customer->setAddresses(new CustomerAddressCollection([
-            $billingAddress->getId() => $billingAddress,
-            $shippingAddress->getId() => $shippingAddress,
-        ]));
 
         // create salesChannel
         $salesChannel = new SalesChannelEntity();

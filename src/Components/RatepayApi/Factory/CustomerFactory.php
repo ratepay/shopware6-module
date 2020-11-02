@@ -46,7 +46,7 @@ class CustomerFactory extends AbstractFactory
             ->setFirstName($billingAddress->getFirstName())
             ->setLastName($billingAddress->getLastName())
             ->setLanguage(strtolower(explode('-', $order->getLanguage()->getLocale()->getCode())[0]))
-            ->setIpAddress($this->_getCustomerIP())
+            ->setIpAddress($order->getOrderCustomer()->getRemoteAddress())
             ->setAddresses(
                 (new Customer\Addresses())
                     ->addAddress($this->_getCheckoutAddress($billingAddress, 'BILLING'))
@@ -96,28 +96,6 @@ class CustomerFactory extends AbstractFactory
         return $customer;
     }
 
-    /**
-     * Returns the IP Address for the current customer.
-     *
-     * @return string
-     */
-    private function _getCustomerIP(): ?string
-    {
-        if ($this->getRequest()) {
-            return $this->getRequest()->getClientIp();
-        }
-
-        if (isset($_SERVER['REMOTE_ADDR'])) {
-            return $_SERVER['REMOTE_ADDR'];
-        }
-
-        if (isset($_SERVER['SERVER_ADDR'])) {
-            return $_SERVER['SERVER_ADDR'];
-        }
-
-        return null;
-    }
-
     private function _getCheckoutAddress(OrderAddressEntity $address, $addressType)
     {
         $addressModel = new Customer\Addresses\Address();
@@ -127,10 +105,8 @@ class CustomerFactory extends AbstractFactory
             ->setCity($address->getCity())
             ->setCountryCode($address->getCountry()->getIso());
 
-        if ($addressType === 'DELIVERY') {
-            $addressModel->setFirstName($address->getFirstName());
-            $addressModel->setLastName($address->getLastName());
-        }
+        $addressModel->setFirstName($address->getFirstName());
+        $addressModel->setLastName($address->getLastName());
 
         $company = $address->getCompany();
         if (!empty($company)) {

@@ -22,8 +22,11 @@
     </php>
 
     <testsuites>
-        <testsuite name="Ratepay Plugin Testsuite">
-            <directory>tests</directory>
+        <testsuite name="ProfileConfiguration">
+            <directory>tests/Components/ProfileConfig</directory>
+        </testsuite>
+        <testsuite name="ApiFactories">
+            <directory>tests/Components/RatepayApi/Factory</directory>
         </testsuite>
     </testsuites>
 
