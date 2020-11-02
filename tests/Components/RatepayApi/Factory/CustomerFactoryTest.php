@@ -27,6 +27,8 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class CustomerFactoryTest extends TestCase
 {
@@ -45,7 +47,7 @@ class CustomerFactoryTest extends TestCase
             false
         );
 
-        $factory = $this->getContainer()->get(CustomerFactory::class);
+        $factory = new CustomerFactory(new EventDispatcher(), new RequestStack());
 
         /** @var Customer $customer */
         $customer = $factory->getData($requestData);
@@ -100,7 +102,7 @@ class CustomerFactoryTest extends TestCase
             false
         );
 
-        $factory = $this->getContainer()->get(CustomerFactory::class);
+        $factory = new CustomerFactory(new EventDispatcher(), new RequestStack());
         /** @var Customer $customer */
         $customer = $factory->getData($requestData);
 
@@ -120,7 +122,7 @@ class CustomerFactoryTest extends TestCase
             false,
             false
         );
-        $factory = $this->getContainer()->get(CustomerFactory::class);
+        $factory = new CustomerFactory(new EventDispatcher(), new RequestStack());
 
         /** @var Customer $customer */
         $customer = $factory->getData($requestData);
@@ -151,7 +153,7 @@ class CustomerFactoryTest extends TestCase
             false,
             false
         );
-        $factory = $this->getContainer()->get(CustomerFactory::class);
+        $factory = new CustomerFactory(new EventDispatcher(), new RequestStack());
 
         /** @var Customer $customer */
         $customer = $factory->getData($requestData);
@@ -179,7 +181,7 @@ class CustomerFactoryTest extends TestCase
             false,
             true
         );
-        $factory = $this->getContainer()->get(CustomerFactory::class);
+        $factory = new CustomerFactory(new EventDispatcher(), new RequestStack());
 
         /** @var Customer $customer */
         $customer = $factory->getData($requestData);

@@ -13,6 +13,8 @@ use PHPUnit\Framework\TestCase;
 use RatePAY\Model\Request\SubModel\Head;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class HeadFactoryTest extends TestCase
 {
@@ -20,28 +22,26 @@ class HeadFactoryTest extends TestCase
 
     public function testGetData(): void
     {
-        $headFactory = $this->getContainer()->get(HeadFactory::class);
+        $headFactory = new HeadFactory(new EventDispatcher(), new RequestStack(), '123', '456');
 
         /** @var Head $data */
         $data = $headFactory->getData($this->createMock(PaymentRequestData::class));
 
         self::assertEquals('cli/cronjob/api', $data->getSystemId());
         self::assertEquals('Shopware', $data->getMeta()->getSystems()->getSystem()->getName());
-        $shopwareVersion = $this->getContainer()->getParameter('kernel.shopware_version');
-        $ratepayVersion = $this->getContainer()->getParameter('ratepay.shopware_payment.plugin_version');
-        self::assertEquals($shopwareVersion . '/' . $ratepayVersion, $data->getMeta()->getSystems()->getSystem()->getVersion());
+        self::assertEquals('123/456', $data->getMeta()->getSystems()->getSystem()->getVersion());
     }
 
     public function testGetDataWithIP(): void
     {
-        $headFactory = $this->getContainer()->get(HeadFactory::class);
+        $headFactory = new HeadFactory(new EventDispatcher(), new RequestStack(), '', '');
 
-        $_SERVER['SERVER_ADDR'] = '123.456.789';
+        $_SERVER['SERVER_ADDR'] = '123.456.789.987';
 
         /** @var Head $data */
         $data = $headFactory->getData($this->createMock(PaymentRequestData::class));
 
-        self::assertEquals('123.456.789', $data->getSystemId());
+        self::assertEquals('123.456.789.987', $data->getSystemId());
     }
 
 }

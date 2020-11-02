@@ -78,7 +78,6 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
                     break;
                 default:
                     throw new InvalidArgumentException('invalid paymentType');
-                    break;
             }
 
             $paymentObject

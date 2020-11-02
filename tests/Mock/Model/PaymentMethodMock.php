@@ -24,7 +24,7 @@ class PaymentMethodMock
         ],
         InstallmentZeroPercentPaymentHandler::class => [
             'id' => 'e3989f3a124a4aa1806abb576bfef671',
-            'handler' => DebitPaymentHandler::class
+            'handler' => InstallmentZeroPercentPaymentHandler::class
         ],
         InvoicePaymentHandler::class => [
             'id' => '63445822a9f34e11b212a99fd723a08c',
@@ -32,7 +32,7 @@ class PaymentMethodMock
         ],
         PrepaymentPaymentHandler::class => [
             'id' => 'c820224bd6154613b2bfd47545838022',
-            'handler' => InstallmentZeroPercentPaymentHandler::class
+            'handler' => PrepaymentPaymentHandler::class
         ]
     ];
 
