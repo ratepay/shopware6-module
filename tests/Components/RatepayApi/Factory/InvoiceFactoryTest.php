@@ -28,7 +28,7 @@ class InvoiceFactoryTest extends TestCase
     {
         $invoiceFactory = new InvoiceFactory(new EventDispatcher(), new RequestStack());
 
-        $requestData = $this->createRequestData();
+        $requestData = $this->createRequestData(true);
 
         /** @var Invoicing $invoice */
         $invoice = $invoiceFactory->getData($requestData);
@@ -40,25 +40,38 @@ class InvoiceFactoryTest extends TestCase
 
     }
 
+    public function testGetDataFail()
+    {
+        $invoiceFactory = new InvoiceFactory(new EventDispatcher(), new RequestStack());
 
-    private function createRequestData()
+        $requestData = $this->createRequestData(false);
+        $invoice = $invoiceFactory->getData($requestData);
+        self::assertNull($invoice);
+
+    }
+
+
+    private function createRequestData($provideInvoice)
     {
 
         $order = new OrderEntity();
+        $order->setDocuments(new DocumentCollection([]));
 
-        $document1 = new DocumentEntity();
-        $document1->setId(Uuid::randomHex());
-        $document1->setDocumentType(new DocumentTypeEntity());
-        $document1->getDocumentType()->setTechnicalName('invoice');
-        $document1->setCreatedAt((new DateTime())->setDate(2020, 10, 15)->setTime(10, 50, 30));
-        $document1->setConfig(['documentNumber' => "123456789"]);
+        if($provideInvoice) {
+            $document1 = new DocumentEntity();
+            $document1->setId(Uuid::randomHex());
+            $document1->setDocumentType(new DocumentTypeEntity());
+            $document1->getDocumentType()->setTechnicalName('invoice');
+            $document1->setCreatedAt((new DateTime())->setDate(2020, 10, 15)->setTime(10, 50, 30));
+            $document1->setConfig(['documentNumber' => "123456789"]);
+            $order->getDocuments()->add($document1);
+        }
 
         $document2 = new DocumentEntity();
         $document2->setId(Uuid::randomHex());
         $document2->setDocumentType(new DocumentTypeEntity());
         $document2->getDocumentType()->setTechnicalName('something-else');
-
-        $order->setDocuments(new DocumentCollection([$document1, $document2]));
+        $order->getDocuments()->add($document2);
 
         return new OrderOperationData($order, '', [], false,);
     }
