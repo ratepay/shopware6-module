@@ -233,8 +233,7 @@ class ShoppingBasketFactoryTest extends TestCase
                 $orderLineItem5->getId() => $orderLineItem5,
                 $orderLineItem6->getId() => $orderLineItem6,
                 'shipping' => 'shipping'
-            ],
-            false,
+            ]
         );
     }
 }

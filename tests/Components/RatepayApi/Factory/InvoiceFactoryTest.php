@@ -73,6 +73,6 @@ class InvoiceFactoryTest extends TestCase
         $document2->getDocumentType()->setTechnicalName('something-else');
         $order->getDocuments()->add($document2);
 
-        return new OrderOperationData($order, '', [], false,);
+        return new OrderOperationData($order, '');
     }
 }
