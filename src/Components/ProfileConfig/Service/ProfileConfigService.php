@@ -49,6 +49,7 @@ class ProfileConfigService
      * @var EntityRepositoryInterface
      */
     private $methodConfigInstallmentRepository;
+
     /**
      * @var ProfileConfigResponseConverter
      */
@@ -60,8 +61,7 @@ class ProfileConfigService
         EntityRepositoryInterface $methodConfigInstallmentRepository,
         ProfileRequestService $profileRequestService,
         ProfileConfigResponseConverter $profileConfigResponseConverter
-    )
-    {
+    ) {
         $this->repository = $repository;
         $this->methodConfigRepository = $methodConfigRepository;
         $this->methodConfigInstallmentRepository = $methodConfigInstallmentRepository;
@@ -80,8 +80,7 @@ class ProfileConfigService
             $this->deleteMethodConfigsForProfile($profileConfig);
 
             $response = $this->profileRequestService->doRequest(
-                $this->context,
-                new ProfileRequestData($profileConfig)
+                new ProfileRequestData($this->context, $profileConfig)
             )->getResponse();
 
             [$profileConfigData, $methodConfigs, $installmentConfigs] = $this->profileConfigResponseConverter->convert(
@@ -122,8 +121,7 @@ class ProfileConfigService
     public function getProfileConfigBySalesChannel(
         SalesChannelContext $salesChannelContext,
         string $paymentMethodId = null
-    ): ?ProfileConfigEntity
-    {
+    ): ?ProfileConfigEntity {
         if (($customer = $salesChannelContext->getCustomer()) === null ||
             ($billingAddress = $customer->getActiveBillingAddress()) === null ||
             ($shippingAddress = $customer->getActiveShippingAddress()) === null
@@ -161,8 +159,7 @@ class ProfileConfigService
         string $currencyIso,
         bool $differentAddresses,
         Context $context
-    )
-    {
+    ) {
         // TODO: Move this function to a repository
 
         $criteria = new Criteria();
@@ -175,7 +172,7 @@ class ProfileConfigService
         ));
 
         // payment method
-        if($differentAddresses) {
+        if ($differentAddresses) {
             $criteria->addFilter(new EqualsFilter(
                 ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_ALLOW_DIFFERENT_ADDRESSES,
                 true

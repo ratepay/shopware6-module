@@ -9,7 +9,7 @@
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\BuildEvent;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -33,7 +33,7 @@ abstract class AbstractFactory
         $this->requestStack = $requestStack;
     }
 
-    public function getData(IRequestData $requestData): ?object
+    public function getData(AbstractRequestData $requestData): ?object
     {
         $data = $this->_getData($requestData);
         if ($data) {
@@ -45,7 +45,7 @@ abstract class AbstractFactory
         return $data;
     }
 
-    abstract protected function _getData(IRequestData $requestData): ?object;
+    abstract protected function _getData(AbstractRequestData $requestData): ?object;
 
     protected function getRequest(): ?Request
     {

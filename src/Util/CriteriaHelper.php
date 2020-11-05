@@ -47,6 +47,7 @@ class CriteriaHelper
         $criteria->addAssociation(ProfileConfigEntity::FIELD_SALES_CHANNEL);
         $criteria->addAssociation(ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_INSTALLMENT_CONFIG);
         $criteria->addAssociation(ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_PAYMENT_METHOD);
+
         return $criteria;
     }
 }

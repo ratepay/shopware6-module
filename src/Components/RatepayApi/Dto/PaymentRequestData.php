@@ -44,7 +44,7 @@ class PaymentRequestData extends OrderOperationData
         ProfileConfigEntity $profileConfig,
         RequestDataBag $requestDataBag
     ) {
-        parent::__construct($order, self::OPERATION_REQUEST, null);
+        parent::__construct($salesChannelContext->getContext(), $order, self::OPERATION_REQUEST, null);
         $this->transaction = $transaction;
         $this->requestDataBag = $requestDataBag;
         $this->salesChannelContext = $salesChannelContext;

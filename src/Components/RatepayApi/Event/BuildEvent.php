@@ -9,25 +9,25 @@
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Event;
 
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class BuildEvent extends Event
 {
     /**
-     * @var IRequestData
+     * @var AbstractRequestData
      */
     private $requestData;
 
     private $buildData;
 
-    public function __construct(IRequestData $requestData, $buildData)
+    public function __construct(AbstractRequestData $requestData, $buildData)
     {
         $this->requestData = $requestData;
         $this->buildData = $buildData;
     }
 
-    public function getRequestData(): IRequestData
+    public function getRequestData(): AbstractRequestData
     {
         return $this->requestData;
     }

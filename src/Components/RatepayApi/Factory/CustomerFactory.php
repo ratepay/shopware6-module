@@ -10,14 +10,14 @@
 namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 
 use RatePAY\Model\Request\SubModel\Content\Customer;
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 
 class CustomerFactory extends AbstractFactory
 {
-    protected function _getData(IRequestData $requestData): ?object
+    protected function _getData(AbstractRequestData $requestData): ?object
     {
         /** @var PaymentRequestData $requestData */
         $order = $requestData->getOrder();

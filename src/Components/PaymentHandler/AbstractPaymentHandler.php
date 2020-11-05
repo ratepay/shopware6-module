@@ -108,7 +108,6 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
             $this->eventDispatcher->dispatch(new BeforePaymentEvent($paymentRequestData, $salesChannelContext->getContext()));
 
             $response = $this->paymentRequestService->doRequest(
-                $salesChannelContext->getContext(),
                 $paymentRequestData
             );
 

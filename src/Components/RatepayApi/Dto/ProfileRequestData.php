@@ -10,21 +10,13 @@
 namespace Ratepay\RpayPayments\Components\RatepayApi\Dto;
 
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
+use Shopware\Core\Framework\Context;
 
-class ProfileRequestData implements IRequestData
+class ProfileRequestData extends AbstractRequestData
 {
-    /**
-     * @var ProfileConfigEntity
-     */
-    private $profileConfig;
-
-    public function __construct(ProfileConfigEntity $profileConfig)
+    public function __construct(Context $context, ProfileConfigEntity $profileConfig)
     {
-        $this->profileConfig = $profileConfig;
-    }
-
-    public function getProfileConfig(): ProfileConfigEntity
-    {
-        return $this->profileConfig;
+        parent::__construct($context);
+        $this->setProfileConfig($profileConfig);
     }
 }

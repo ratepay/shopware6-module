@@ -14,13 +14,8 @@ use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\InvoicePaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\PrepaymentPaymentHandler;
-use Ratepay\RpayPayments\RpayPayments;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\Plugin\PluginCollection;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class ConfigService

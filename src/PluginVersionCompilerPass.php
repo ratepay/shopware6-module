@@ -1,4 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
+/*
+ * Copyright (c) 2020 Ratepay GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Ratepay\RpayPayments;
 
@@ -18,7 +27,7 @@ class PluginVersionCompilerPass implements CompilerPassInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function process(ContainerBuilder $container)
     {
@@ -29,6 +38,7 @@ class PluginVersionCompilerPass implements CompilerPassInterface
     {
         $composerJsonString = file_get_contents($this->pluginDir);
         $composerJson = json_decode($composerJsonString, true);
+
         return $composerJson['version'];
     }
 }

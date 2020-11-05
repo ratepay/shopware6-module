@@ -11,12 +11,12 @@ namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 
 use RatePAY\Model\Request\SubModel\Head\External;
 use RatePAY\Model\Request\SubModel\Head\External\Tracking;
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 
 class ExternalFactory extends AbstractFactory
 {
-    protected function _getData(IRequestData $requestData): ?object
+    protected function _getData(AbstractRequestData $requestData): ?object
     {
         /** @var OrderOperationData $requestData */
         $order = $requestData->getOrder();

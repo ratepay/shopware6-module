@@ -28,6 +28,7 @@ class ApiLogger
      * @var Logger
      */
     protected $logger;
+
     /**
      * @var string
      */
@@ -37,8 +38,7 @@ class ApiLogger
         EntityRepositoryInterface $logRepository,
         Logger $logger,
         string $pluginVersion
-    )
-    {
+    ) {
         $this->logRepository = $logRepository;
         $this->logger = $logger;
         $this->pluginVersion = $pluginVersion;
@@ -56,7 +56,7 @@ class ApiLogger
         if ($requestData instanceof OrderOperationData) {
             $order = $requestData->getOrder();
             $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
-            $additionalData['transactionId'] = (string)$requestBuilder->getRequestXmlElement()->head->{'transaction-id'};
+            $additionalData['transactionId'] = (string) $requestBuilder->getRequestXmlElement()->head->{'transaction-id'};
             $additionalData['orderNumber'] = $order->getOrderNumber();
             $additionalData['firstName'] = $billingAddress->getFirstName();
             $additionalData['lastName'] = $billingAddress->getLastName();
@@ -65,14 +65,14 @@ class ApiLogger
 
         /** @var SimpleXMLElement $operationNode */
         $operationNode = $requestBuilder->getRequestXmlElement()->head->operation;
-        $operationSubtype = (string)$operationNode->attributes()->subtype;
-        $operation = (string)$operationNode;
+        $operationSubtype = (string) $operationNode->attributes()->subtype;
+        $operation = (string) $operationNode;
 
         $reasonNode = $requestBuilder->getResponseXmlElement()->head->processing->reason;
         $resultNode = $requestBuilder->getResponseXmlElement()->head->processing->result;
-        $result = (string)$reasonNode;
-        if (in_array(((int)$reasonNode->attributes()->code), [303, 700], true) && ((int)$resultNode->attributes()->code) !== 402) {
-            $result = (string)$resultNode;
+        $result = (string) $reasonNode;
+        if (in_array(((int) $reasonNode->attributes()->code), [303, 700], true) && ((int) $resultNode->attributes()->code) !== 402) {
+            $result = (string) $resultNode;
         }
 
         foreach (['securitycode', 'owner', 'iban'] as $key) {
