@@ -1,12 +1,20 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
 
-namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
+/*
+ * Copyright (c) 2020 Ratepay GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
+namespace Ratepay\RpayPayments\Tests\Components\RatepayApi\Factory;
 
 use PHPUnit\Framework\TestCase;
 use RatePAY\Model\Request\SubModel\Content\ShoppingBasket;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
+use Ratepay\RpayPayments\Tests\Mock\RatepayApi\Factory\Mock;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
@@ -17,25 +25,21 @@ use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRuleCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\System\Currency\CurrencyEntity;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 class ShoppingBasketFactoryTest extends TestCase
 {
-
     use KernelTestBehaviour;
-
 
     public function testGetData()
     {
-        $shoppingBasketFactory = new ShoppingBasketFactory(new EventDispatcher(), new RequestStack());
+        $factory = Mock::createShoppingBasketFactory();
 
         $requestData = $this->createRequestData();
         /** @var ShoppingBasket $shoppingBasket */
-        $shoppingBasket = $shoppingBasketFactory->getData($requestData);
-
+        $shoppingBasket = $factory->getData($requestData);
 
         /** @var ShoppingBasket\Items\Item[] $items */
         $items = $shoppingBasket->getItems()->getItems();
@@ -64,7 +68,6 @@ class ShoppingBasketFactoryTest extends TestCase
         self::assertEquals(15, $items[3]->getUnitPriceGross());
         self::assertEquals(19, $items[3]->getTaxRate());
 
-
         $discount = $shoppingBasket->getDiscount();
         self::assertNotNull($discount);
         self::assertEquals('discount', $discount->getDescription());
@@ -72,31 +75,28 @@ class ShoppingBasketFactoryTest extends TestCase
         self::assertEquals(-(3 + 10), $discount->getUnitPriceGross());
         self::assertEquals(19, $discount->getTaxRate());
 
-
         $shipping = $shoppingBasket->getShipping();
         self::assertNotNull($shipping);
         self::assertEquals('shipping', $shipping->getDescription());
         self::assertEquals(4.90, $shipping->getUnitPriceGross());
         self::assertEquals(19, $shipping->getTaxRate());
 
-
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('unknown-id does not belongs to the order ' . $requestData->getOrder()->getId());
 
-        $requestData = new OrderOperationData($requestData->getOrder(), $requestData->getOperation(), array_merge(
+        $requestData = new OrderOperationData(Context::createDefaultContext(), $requestData->getOrder(), $requestData->getOperation(), array_merge(
             $requestData->getItems(),
             [
-                'unknown-id' => 'unknown-id'
+                'unknown-id' => 'unknown-id',
             ]
         ), false);
-        $shoppingBasketFactory->getData($requestData);
+        $factory->getData($requestData);
 
+        // TODO test not finished ....
     }
-
 
     private function createRequestData()
     {
-
         $order = new OrderEntity();
         $order->setId('3ad87271180043478d4941bfdf675fca');
         $order->setLineItems(new OrderLineItemCollection());
@@ -111,7 +111,7 @@ class ShoppingBasketFactoryTest extends TestCase
             4.90,
             4.90,
             new CalculatedTaxCollection([
-                new CalculatedTax(0, 19, 0)
+                new CalculatedTax(0, 19, 0),
             ]),
             new TaxRuleCollection([]),
             1
@@ -129,7 +129,7 @@ class ShoppingBasketFactoryTest extends TestCase
             30,
             30 * $orderLineItem1->getQuantity(),
             new CalculatedTaxCollection([
-                new CalculatedTax(0, 19, 0)
+                new CalculatedTax(0, 19, 0),
             ]),
             new TaxRuleCollection([]),
             $orderLineItem1->getQuantity()
@@ -150,7 +150,7 @@ class ShoppingBasketFactoryTest extends TestCase
             5,
             5 * $orderLineItem2->getQuantity(),
             new CalculatedTaxCollection([
-                new CalculatedTax(0, 7, 0)
+                new CalculatedTax(0, 7, 0),
             ]),
             new TaxRuleCollection([]),
             $orderLineItem2->getQuantity()
@@ -169,7 +169,7 @@ class ShoppingBasketFactoryTest extends TestCase
             -10,
             -10 * $orderLineItem3->getQuantity(),
             new CalculatedTaxCollection([
-                new CalculatedTax(0, 19, 0)
+                new CalculatedTax(0, 19, 0),
             ]),
             new TaxRuleCollection([]),
             $orderLineItem3->getQuantity()
@@ -188,7 +188,7 @@ class ShoppingBasketFactoryTest extends TestCase
             -3,
             -3 * $orderLineItem4->getQuantity(),
             new CalculatedTaxCollection([
-                new CalculatedTax(0, 19, 0)
+                new CalculatedTax(0, 19, 0),
             ]),
             new TaxRuleCollection([]),
             $orderLineItem4->getQuantity()
@@ -204,7 +204,7 @@ class ShoppingBasketFactoryTest extends TestCase
         $orderLineItem5->setPriceDefinition(new QuantityPriceDefinition(
             -15,
             new TaxRuleCollection([
-                new TaxRule(19)
+                new TaxRule(19),
             ]),
             4,
             $orderLineItem5->getQuantity(),
@@ -216,13 +216,14 @@ class ShoppingBasketFactoryTest extends TestCase
         $orderLineItem6->setPriceDefinition(new QuantityPriceDefinition(
             15,
             new TaxRuleCollection([
-                new TaxRule(19)
+                new TaxRule(19),
             ]),
             4,
             $orderLineItem6->getQuantity()
         ));
 
         return new OrderOperationData(
+            Context::createDefaultContext(),
             $order,
             '',
             [
@@ -232,7 +233,7 @@ class ShoppingBasketFactoryTest extends TestCase
                 $orderLineItem4->getId() => $orderLineItem4->getQuantity(),
                 $orderLineItem5->getId() => $orderLineItem5,
                 $orderLineItem6->getId() => $orderLineItem6,
-                'shipping' => 'shipping'
+                'shipping' => 'shipping',
             ]
         );
     }

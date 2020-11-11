@@ -10,10 +10,7 @@
 namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 
 use RatePAY\Model\Request\SubModel\Content;
-use RatePAY\Model\Request\SubModel\Head;
-use RatePAY\Model\Request\SubModel\Head\External;
 use RatePAY\RequestBuilder;
-use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\CustomerFactory;
@@ -33,6 +30,8 @@ class PaymentRequestService extends AbstractRequest
     public const EVENT_FAILED = self::class . parent::EVENT_FAILED;
 
     public const EVENT_BUILD_HEAD = self::class . parent::EVENT_BUILD_HEAD;
+
+    public const EVENT_BUILD_CONTENT = self::class . parent::EVENT_BUILD_CONTENT;
 
     protected $_operation = self::CALL_PAYMENT_REQUEST;
 
@@ -64,26 +63,7 @@ class PaymentRequestService extends AbstractRequest
         $this->paymentFactory = $paymentFactory;
     }
 
-    protected function getProfileConfig(AbstractRequestData $requestData): ProfileConfigEntity
-    {
-        /* @var $requestData PaymentRequestData */
-        return $requestData->getProfileConfig();
-    }
-
-    protected function getRequestHead(AbstractRequestData $requestData): Head
-    {
-        /** @var PaymentRequestData $requestData */
-        $head = parent::getRequestHead($requestData);
-        $head->setExternal(
-            (new External())
-                ->setOrderId($requestData->getOrder()->getOrderNumber())
-                ->setMerchantConsumerId($requestData->getOrder()->getOrderCustomer()->getCustomerNumber())
-        );
-
-        return $head;
-    }
-
-    protected function getRequestContent(AbstractRequestData $requestData): Content
+    protected function getRequestContent(AbstractRequestData $requestData): ?Content
     {
         /* @var PaymentRequestData $requestData */
         return (new Content())

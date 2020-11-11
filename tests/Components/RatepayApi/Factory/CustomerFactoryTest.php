@@ -7,14 +7,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
+namespace Ratepay\RpayPayments\Tests\Components\RatepayApi\Factory;
 
 use DateTime;
 use PHPUnit\Framework\TestCase;
 use RatePAY\Model\Request\SubModel\Content\Customer;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Factory\CustomerFactory;
 use Ratepay\RpayPayments\Tests\Mock\Model\OrderAddressMock;
+use Ratepay\RpayPayments\Tests\Mock\RatepayApi\Factory\Mock;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderCustomer\OrderCustomerEntity;
@@ -22,6 +24,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryCollection
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Language\LanguageEntity;
@@ -36,7 +39,6 @@ class CustomerFactoryTest extends TestCase
 
     public function testGetDataBaseData(): void
     {
-
         $requestData = $this->createRequestDataMock(
             'DE',
             'DE',
@@ -47,7 +49,7 @@ class CustomerFactoryTest extends TestCase
             false
         );
 
-        $factory = new CustomerFactory(new EventDispatcher(), new RequestStack());
+        $factory = Mock::createCustomerFactory();
 
         /** @var Customer $customer */
         $customer = $factory->getData($requestData);
@@ -84,14 +86,11 @@ class CustomerFactoryTest extends TestCase
         self::assertEquals('DE', $shippingAddress->getCountryCode());
         self::assertNull($shippingAddress->getCompany());
 
-
         self::assertNull($customer->getBankAccount(), 'the whole bank account entity should be null.');
-
     }
 
     public function testGetDataDefaultPhoneNumber(): void
     {
-
         $requestData = $this->createRequestDataMock(
             'DE',
             'DE',
@@ -112,7 +111,6 @@ class CustomerFactoryTest extends TestCase
 
     public function testGetDataSameAddress(): void
     {
-
         $requestData = $this->createRequestDataMock(
             'DE',
             'DE',
@@ -139,7 +137,6 @@ class CustomerFactoryTest extends TestCase
         self::assertEquals($billingAddress->getZipCode(), $shippingAddress->getZipCode(), $errorMessage);
         self::assertEquals($billingAddress->getCity(), $shippingAddress->getCity(), $errorMessage);
         self::assertEquals($billingAddress->getCountryCode(), $shippingAddress->getCountryCode(), $errorMessage);
-
     }
 
     public function testGetDataCompany(): void
@@ -197,8 +194,7 @@ class CustomerFactoryTest extends TestCase
         bool $hasCompanyShipping,
         bool $hasPhoneNumber,
         bool $hasBankData
-    ): PaymentRequestData
-    {
+    ): PaymentRequestData {
         $order = new OrderEntity();
         $order->setId('e2b42780dfbd4fcc95e17f48ad29c871');
 
@@ -214,7 +210,7 @@ class CustomerFactoryTest extends TestCase
         $orderCustomer->setRemoteAddress('123.456.789.123');
         $orderCustomer->setEmail('phpunit@dev.local');
         $orderCustomer->setCustomer(new CustomerEntity());
-        $orderCustomer->getCustomer()->setBirthday((new DateTime())->setDate(1980, 12,30));
+        $orderCustomer->getCustomer()->setBirthday((new DateTime())->setDate(1980, 12, 30));
         $order->setOrderCustomer($orderCustomer);
 
         // create addresses
@@ -232,17 +228,24 @@ class CustomerFactoryTest extends TestCase
         $order->getDeliveries()->set($orderDeliveryAddress->getId(), $orderDeliveryAddress);
 
         $salesChannelContextMock = $this->createMock(SalesChannelContext::class);
+        $salesChannelContextMock->method('getContext')->willReturn(Context::createDefaultContext());
         $transaction = $this->createMock(OrderTransactionEntity::class);
         $profileConfig = $this->createMock(ProfileConfigEntity::class);
 
         $ratepayDataBag = new RequestDataBag();
-        if($hasBankData) {
+        if ($hasBankData) {
             $bankDataDataBag = new RequestDataBag([
-               'iban' => 'DE02120300000000202051'
+               'iban' => 'DE02120300000000202051',
             ]);
             $ratepayDataBag->set('bankData', $bankDataDataBag);
         }
-        return new PaymentRequestData($salesChannelContextMock, $order, $transaction, $profileConfig, new RequestDataBag(['ratepay' => $ratepayDataBag]));
-    }
 
+        return new PaymentRequestData(
+            $salesChannelContextMock,
+            $order,
+            $transaction,
+            $profileConfig,
+            new RequestDataBag(['ratepay' => $ratepayDataBag])
+        );
+    }
 }

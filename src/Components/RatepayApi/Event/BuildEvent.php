@@ -21,7 +21,7 @@ class BuildEvent extends Event
 
     private $buildData;
 
-    public function __construct(AbstractRequestData $requestData, $buildData)
+    public function __construct(AbstractRequestData $requestData, $buildData = null)
     {
         $this->requestData = $requestData;
         $this->buildData = $buildData;
@@ -32,10 +32,7 @@ class BuildEvent extends Event
         return $this->requestData;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getBuildData()
+    public function getBuildData(): ?object
     {
         return $this->buildData;
     }

@@ -1,34 +1,39 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
 
-namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
+/*
+ * Copyright (c) 2020 Ratepay GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
+namespace Ratepay\RpayPayments\Tests\Components\RatepayApi\Factory;
 
 use PHPUnit\Framework\TestCase;
 use RatePAY\Model\Request\SubModel\Head\External;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
+use Ratepay\RpayPayments\Tests\Mock\RatepayApi\Factory\Mock;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Shipping\ShippingMethodEntity;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 class ExternalFactoryTest extends TestCase
 {
-
     use KernelTestBehaviour;
-
 
     public function testGetData()
     {
-        $externalFactory = new ExternalFactory(new EventDispatcher(), new RequestStack());
+        $factory = Mock::createExternalFactory();
 
         $requestData = $this->createRequestData('DHL Versand');
         /** @var External $external */
-        $external = $externalFactory->getData($requestData);
+        $external = $factory->getData($requestData);
 
         self::assertInstanceOf(External::class, $external);
         self::assertInstanceOf(External\Tracking::class, $external->getTracking());
@@ -38,12 +43,12 @@ class ExternalFactoryTest extends TestCase
 
     public function testGetDataNoProvider()
     {
-        $externalFactory = new ExternalFactory(new EventDispatcher(), new RequestStack());
+        $factory = Mock::createExternalFactory();
 
         $requestData = $this->createRequestData('anything else');
 
         /** @var External $external */
-        $external = $externalFactory->getData($requestData);
+        $external = $factory->getData($requestData);
         self::assertInstanceOf(External::class, $external);
         self::assertInstanceOf(External\Tracking::class, $external->getTracking());
         self::assertNull($external->getTracking()->getProvider());
@@ -51,21 +56,19 @@ class ExternalFactoryTest extends TestCase
 
     public function testGetDataFail()
     {
-        $externalFactory = new ExternalFactory(new EventDispatcher(), new RequestStack());
+        $factory = Mock::createExternalFactory();
 
         $requestData = $this->createRequestData(null);
 
-        $external = $externalFactory->getData($requestData);
+        $external = $factory->getData($requestData);
         self::assertNull($external);
     }
 
     private function createRequestData($methodCode)
     {
-
         $order = new OrderEntity();
         $order->setDeliveries(new OrderDeliveryCollection([]));
         if ($methodCode !== null) {
-
             $document1 = new OrderDeliveryEntity();
             $document1->setId(Uuid::randomHex());
             $document1->setTrackingCodes(['my-code-1', 'my-code-2']);
@@ -81,6 +84,6 @@ class ExternalFactoryTest extends TestCase
             $order->getDeliveries()->add($document2);
         }
 
-        return new OrderOperationData($order, '', [], false);
+        return new OrderOperationData(Context::createDefaultContext(), $order, '', [], false);
     }
 }

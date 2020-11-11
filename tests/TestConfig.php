@@ -1,18 +1,28 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
+
+/*
+ * Copyright (c) 2020 Ratepay GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Ratepay\RpayPayments\Tests;
-
 
 use Exception;
 
 class TestConfig
 {
-
     public const MAPPING_DE = 'DE';
+
     public const MAPPING_AT = 'AT';
+
     public const MAPPING_CH = 'CH';
+
     public const MAPPING_DE_0RT = 'DE_0RT';
+
     public const MAPPING_AT_0RT = 'AT_0RT';
 
     /**
@@ -64,6 +74,7 @@ class TestConfig
                 $uuids[] = self::getUuid($key);
             }
         }
+
         return $uuids;
     }
 

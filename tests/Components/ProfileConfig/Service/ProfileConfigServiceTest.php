@@ -1,8 +1,15 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
+
+/*
+ * Copyright (c) 2020 Ratepay GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Ratepay\RpayPayments\Tests\Components\ProfileConfig\Service;
-
 
 use PHPUnit\Framework\TestCase;
 use Ratepay\RpayPayments\Components\PaymentHandler\DebitPaymentHandler;
@@ -16,7 +23,6 @@ use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigService;
 use Ratepay\RpayPayments\Tests\Mock\Model\AddressMock;
 use Ratepay\RpayPayments\Tests\TestConfig;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressCollection;
-use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
@@ -26,7 +32,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Test\TestCaseBase\SalesChannelApiTestBehaviour;
-use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SalesChannel\SalesChannelEntity;
@@ -37,6 +42,7 @@ class ProfileConfigServiceTest extends TestCase
     use SalesChannelApiTestBehaviour;
 
     private const CUSTOMER_ID = 'cd4fae8320be4f53825534151d29984e';
+
 //    private const CUSTOMER_BILLING_ADDRESS_ID = '66d6bfb7aeb647dcbe397ad43f239d5c';
 //    private const CUSTOMER_SHIPPING_ADDRESS_ID = '028fd84f82984a43a2888da520df12ca';
 
@@ -49,6 +55,7 @@ class ProfileConfigServiceTest extends TestCase
      * @var EntityRepositoryInterface
      */
     private $currencyRepository;
+
     /**
      * @var EntityRepositoryInterface
      */
@@ -58,7 +65,7 @@ class ProfileConfigServiceTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $container = $this->getContainer();
-        /** @var EntityRepositoryInterface $profileRepository */
+        /* @var EntityRepositoryInterface $profileRepository */
         $this->profileConfigRepository = $container->get(ProfileConfigDefinition::ENTITY_NAME . '.repository');
         $this->currencyRepository = $container->get('currency.repository');
         $this->paymentMethodRepository = $container->get('payment_method.repository');
@@ -169,7 +176,6 @@ class ProfileConfigServiceTest extends TestCase
 
     public function testGetProfileConfigBySalesChannel(): void
     {
-
         /** @var ProfileConfigService $profileConfigService */
         $profileConfigService = $this->getContainer()->get(ProfileConfigService::class);
 
@@ -240,7 +246,6 @@ class ProfileConfigServiceTest extends TestCase
         // init all profiles (except the zero percent installments)
         $profileConfigService->refreshProfileConfigs(TestConfig::getAllUuids(false));
 
-
         $salesChannelContext = $this->createSalesChannelContextMock(
             InstallmentZeroPercentPaymentHandler::class,
             'EUR',
@@ -250,7 +255,6 @@ class ProfileConfigServiceTest extends TestCase
         );
         $profileConfig = $profileConfigService->getProfileConfigBySalesChannel($salesChannelContext);
         self::assertNull($profileConfig, 'there should be no configuration found, cause the zero percent installment configuration has not been loaded, yet.');
-
 
         $salesChannelContext = $this->createSalesChannelContextMock(
             DebitPaymentHandler::class,
@@ -309,8 +313,7 @@ class ProfileConfigServiceTest extends TestCase
         string $billingCountryIso,
         string $shippingCountryIso,
         bool $sameAddress
-    ): SalesChannelContext
-    {
+    ): SalesChannelContext {
         $context = Context::createDefaultContext();
 
         $paymentMethod = $this->paymentMethodRepository->search(
@@ -324,7 +327,6 @@ class ProfileConfigServiceTest extends TestCase
         $customer = new CustomerEntity();
         $customer->setId(self::CUSTOMER_ID);
 
-
         // create addresses
         $billingAddress = AddressMock::createBillingAddress($customer, $billingCountryIso);
         $shippingAddress = $sameAddress ? $billingAddress : AddressMock::createShippingAddress($customer, $shippingCountryIso);
@@ -336,7 +338,6 @@ class ProfileConfigServiceTest extends TestCase
         $customer->setAddresses(new CustomerAddressCollection());
         $customer->getAddresses()->set($billingAddress->getId(), $billingAddress);
         $customer->getAddresses()->set($shippingAddress->getId(), $shippingAddress);
-
 
         // create currency
         $currency = new CurrencyEntity();
@@ -356,5 +357,4 @@ class ProfileConfigServiceTest extends TestCase
 
         return $salesChannelContext;
     }
-
 }

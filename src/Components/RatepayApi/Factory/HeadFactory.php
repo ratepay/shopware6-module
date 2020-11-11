@@ -14,6 +14,9 @@ use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * @method getData(AbstractRequestData $requestData) : ?Head
+ */
 class HeadFactory extends AbstractFactory
 {
     private $shopwareVersion;
@@ -49,6 +52,11 @@ class HeadFactory extends AbstractFactory
                                     ->setVersion($this->shopwareVersion . '/' . $this->pluginVersion)
                             )
                     )
+            )
+            ->setCredential(
+                (new Head\Credential())
+                    ->setProfileId($requestData->getProfileConfig()->getProfileId())
+                    ->setSecuritycode($requestData->getProfileConfig()->getSecurityCode())
             );
 
         return $head;

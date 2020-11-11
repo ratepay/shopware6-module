@@ -28,6 +28,9 @@
         <testsuite name="ApiFactories">
             <directory>tests/Components/RatepayApi/Factory</directory>
         </testsuite>
+        <testsuite name="RequestServices">
+            <directory>tests/Components/RatepayApi/Service/Request</directory>
+        </testsuite>
     </testsuites>
 
     <filter>

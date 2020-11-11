@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
+namespace Ratepay\RpayPayments\Tests\Components\RatepayApi\Factory;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
@@ -20,11 +20,11 @@ use Ratepay\RpayPayments\Components\PaymentHandler\InvoicePaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\PrepaymentPaymentHandler;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Tests\Mock\Model\PaymentMethodMock;
+use Ratepay\RpayPayments\Tests\Mock\RatepayApi\Factory\Mock;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 class PaymentFactoryTest extends TestCase
 {
@@ -32,14 +32,12 @@ class PaymentFactoryTest extends TestCase
 
     public function testGetData(): void
     {
-
-        /** @var PaymentFactory $paymentFactory */
-        $paymentFactory = new PaymentFactory(new EventDispatcher(), new RequestStack());
+        $factory = Mock::createPaymentFactory();
 
         foreach (PaymentMethods::PAYMENT_METHODS as $method) {
             $paymentRequestData = $this->createPaymentRequestData($method['handlerIdentifier']);
             /** @var Payment $payment */
-            $payment = $paymentFactory->getData($paymentRequestData);
+            $payment = $factory->getData($paymentRequestData);
 
             self::assertEquals(123.456, $payment->getAmount());
 
@@ -67,12 +65,13 @@ class PaymentFactoryTest extends TestCase
     {
         $paymentRequestData = $this->createMock(PaymentRequestData::class);
         $paymentRequestData->method('getTransaction')->willReturn(new OrderTransactionEntity());
+        $paymentRequestData->method('getContext')->willReturn(Context::createDefaultContext());
         $priceMock = $this->createMock(CalculatedPrice::class);
         $priceMock->method('getTotalPrice')->willReturn(123.456);
         $paymentRequestData->getTransaction()->setAmount($priceMock);
 
         $paymentRequestData->getTransaction()->setPaymentMethod(PaymentMethodMock::createMock($handlerClass));
+
         return $paymentRequestData;
     }
-
 }

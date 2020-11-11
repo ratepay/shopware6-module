@@ -32,6 +32,8 @@ abstract class AbstractRequest
 
     protected const EVENT_BUILD_HEAD = '.build.head';
 
+    protected const EVENT_BUILD_CONTENT = '.build.content';
+
     public const CALL_PAYMENT_REQUEST = 'PaymentRequest';
 
     public const CALL_DELIVER = 'ConfirmationDeliver';
@@ -77,8 +79,10 @@ abstract class AbstractRequest
      */
     final public function doRequest(AbstractRequestData $requestData): RequestBuilder
     {
-        $head = $this->getRequestHead($requestData);
-        $content = $this->getRequestContent($requestData);
+        $requestData->setProfileConfig($this->getProfileConfig($requestData));
+
+        $head = $this->_getRequestHead($requestData);
+        $content = $this->_getRequestContent($requestData);
 
         try {
             $requestBuilder = new RequestBuilder($requestData->getProfileConfig()->isSandbox());
@@ -105,25 +109,35 @@ abstract class AbstractRequest
 
     protected function getProfileConfig(AbstractRequestData $requestData): ProfileConfigEntity
     {
-        return $requestData->getProfileConfig();
+        $profileConfig = $requestData->getProfileConfig();
+        if ($profileConfig === null) {
+            throw new ProfileNotFoundException();
+        }
+
+        return $profileConfig;
+    }
+
+    private function _getRequestHead(AbstractRequestData $requestData): Head
+    {
+        $head = $this->getRequestHead($requestData);
+
+        /** @var BuildEvent $event */
+        $event = $this->eventDispatcher->dispatch(new BuildEvent($requestData, $head), get_class($this) . self::EVENT_BUILD_HEAD);
+
+        return $event->getBuildData();
     }
 
     protected function getRequestHead(AbstractRequestData $requestData): Head
     {
-        $profileConfig = $this->getProfileConfig($requestData);
-        if ($profileConfig === null) {
-            throw new ProfileNotFoundException();
-        }
-        $requestData->setProfileConfig($profileConfig);
+        return $this->headFactory->getData($requestData);
+    }
 
-        $head = $this->headFactory->getData($requestData);
-        $head->setCredential(
-            (new Head\Credential())
-                ->setProfileId($profileConfig->getProfileId())
-                ->setSecuritycode($profileConfig->getSecurityCode())
-        );
+    private function _getRequestContent(AbstractRequestData $requestData): ?Content
+    {
+        $content = $this->getRequestContent($requestData);
+
         /** @var BuildEvent $event */
-        $event = $this->eventDispatcher->dispatch(new BuildEvent($requestData, $head), get_class($this) . self::EVENT_BUILD_HEAD);
+        $event = $this->eventDispatcher->dispatch(new BuildEvent($requestData, $content), get_class($this) . self::EVENT_BUILD_CONTENT);
 
         return $event->getBuildData();
     }

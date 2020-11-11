@@ -17,5 +17,7 @@ class PaymentCreditService extends AbstractModifyRequest
 
     public const EVENT_BUILD_HEAD = self::class . parent::EVENT_BUILD_HEAD;
 
+    public const EVENT_BUILD_CONTENT = self::class . parent::EVENT_BUILD_CONTENT;
+
     protected $_subType = 'credit';
 }

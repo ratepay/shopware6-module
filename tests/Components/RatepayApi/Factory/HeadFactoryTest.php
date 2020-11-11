@@ -7,14 +7,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
+namespace Ratepay\RpayPayments\Tests\Components\RatepayApi\Factory;
 
 use PHPUnit\Framework\TestCase;
 use RatePAY\Model\Request\SubModel\Head;
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\ProfileRequestData;
+use Ratepay\RpayPayments\Tests\Mock\RatepayApi\Factory\Mock;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 class HeadFactoryTest extends TestCase
 {
@@ -22,26 +23,31 @@ class HeadFactoryTest extends TestCase
 
     public function testGetData(): void
     {
-        $headFactory = new HeadFactory(new EventDispatcher(), new RequestStack(), '123', '456');
+        $factory = Mock::createHeadFactory();
 
-        /** @var Head $data */
-        $data = $headFactory->getData($this->createMock(PaymentRequestData::class));
+        $profileConfig = new ProfileConfigEntity();
+        $profileConfig->setProfileId('test-123');
+        $profileConfig->setSecurityCode('123-test');
 
-        self::assertEquals('cli/cronjob/api', $data->getSystemId());
-        self::assertEquals('Shopware', $data->getMeta()->getSystems()->getSystem()->getName());
-        self::assertEquals('123/456', $data->getMeta()->getSystems()->getSystem()->getVersion());
+        /** @var Head $head */
+        $head = $factory->getData(new ProfileRequestData(Context::createDefaultContext(), $profileConfig));
+
+        self::assertEquals('cli/cronjob/api', $head->getSystemId());
+        self::assertEquals('Shopware', $head->getMeta()->getSystems()->getSystem()->getName());
+        self::assertEquals('123/456', $head->getMeta()->getSystems()->getSystem()->getVersion());
+        self::assertEquals('test-123', $head->getCredential()->getProfileId());
+        self::assertEquals('123-test', $head->getCredential()->getSecuritycode());
     }
 
     public function testGetDataWithIP(): void
     {
-        $headFactory = new HeadFactory(new EventDispatcher(), new RequestStack(), '', '');
+        $factory = Mock::createHeadFactory();
 
         $_SERVER['SERVER_ADDR'] = '123.456.789.987';
 
-        /** @var Head $data */
-        $data = $headFactory->getData($this->createMock(PaymentRequestData::class));
+        /** @var Head $head */
+        $head = $factory->getData(new ProfileRequestData(Context::createDefaultContext(), new ProfileConfigEntity()));
 
-        self::assertEquals('123.456.789.987', $data->getSystemId());
+        self::assertEquals('123.456.789.987', $head->getSystemId());
     }
-
 }

@@ -1,8 +1,15 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
+
+/*
+ * Copyright (c) 2020 Ratepay GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Ratepay\RpayPayments\Tests\Components\ProfileConfig\Service;
-
 
 use ArrayObject;
 use PHPUnit\Framework\TestCase;
@@ -20,7 +27,6 @@ use Ratepay\RpayPayments\Tests\Mock\Repository\PaymentMethodRepositoryMock;
 
 class ProfileConfigResponseConverterTest extends TestCase
 {
-
     public function testFullConvert(): void
     {
         $profileRequestResponse = $this->getProfileRequestResponse([
@@ -48,23 +54,21 @@ class ProfileConfigResponseConverterTest extends TestCase
                 'tx-limit-installment-max-b2b' => 20000,
                 'b2b-installment' => 'no',
                 'delivery-address-installment' => 'no',
-
             ],
             'installmentConfig' => [
                 'valid-payment-firstdays' => '2,28',
                 'month-allowed' => '3,6,12,24,48',
                 'rate-min-normal' => '9',
-                'interestrate-min' => '3'
-            ]
+                'interestrate-min' => '3',
+            ],
         ]);
 
         $paymentMethodsRepo = new PaymentMethodRepositoryMock(PaymentMethodMock::createArray([
-            DebitPaymentHandler::class, InvoicePaymentHandler::class, InstallmentPaymentHandler::class
+            DebitPaymentHandler::class, InvoicePaymentHandler::class, InstallmentPaymentHandler::class,
         ]));
 
-
         $converter = new ProfileConfigResponseConverter($paymentMethodsRepo);
-        $results = $converter->convert($profileRequestResponse, "123");
+        $results = $converter->convert($profileRequestResponse, '123');
         self::assertCount(3, $results);
 
         [$profileConfigData, $methodConfigs, $installmentConfigs] = $results;
@@ -124,7 +128,6 @@ class ProfileConfigResponseConverterTest extends TestCase
                 'tx-limit-installment-max-b2b' => 20000,
                 'b2b-installment' => 'no',
                 'delivery-address-installment' => 'no',
-
             ],
             'installmentConfig' => [
                 'valid-payment-firstdays' => '2',
@@ -132,17 +135,16 @@ class ProfileConfigResponseConverterTest extends TestCase
                 'rate-min-normal' => '9',
                 // this value should prevent creating the installment/method-config cause the normal
                 // installment must have a min-rate of zero
-                'interestrate-min' => '3'
-            ]
+                'interestrate-min' => '3',
+            ],
         ]);
 
         $paymentMethodsRepo = new PaymentMethodRepositoryMock(PaymentMethodMock::createArray([
-            InstallmentZeroPercentPaymentHandler::class
+            InstallmentZeroPercentPaymentHandler::class,
         ]));
 
-
         $converter = new ProfileConfigResponseConverter($paymentMethodsRepo);
-        $results = $converter->convert($profileRequestResponse, "123");
+        $results = $converter->convert($profileRequestResponse, '123');
         self::assertCount(3, $results);
 
         [$profileConfigData, $methodConfigs, $installmentConfigs] = $results;
@@ -166,7 +168,6 @@ class ProfileConfigResponseConverterTest extends TestCase
                 'tx-limit-installment-max-b2b' => 20000,
                 'b2b-installment' => 'no',
                 'delivery-address-installment' => 'no',
-
             ],
             'installmentConfig' => [
                 'valid-payment-firstdays' => '2',
@@ -174,17 +175,16 @@ class ProfileConfigResponseConverterTest extends TestCase
                 'rate-min-normal' => '9',
                 // this value should prevent creating the installment/method-config cause the normal
                 // installment can not have a min-rate of zero
-                'interestrate-min' => '0'
-            ]
+                'interestrate-min' => '0',
+            ],
         ]);
 
         $paymentMethodsRepo = new PaymentMethodRepositoryMock(PaymentMethodMock::createArray([
-            InstallmentPaymentHandler::class
+            InstallmentPaymentHandler::class,
         ]));
 
-
         $converter = new ProfileConfigResponseConverter($paymentMethodsRepo);
-        $results = $converter->convert($profileRequestResponse, "123");
+        $results = $converter->convert($profileRequestResponse, '123');
         self::assertCount(3, $results);
 
         [$profileConfigData, $methodConfigs, $installmentConfigs] = $results;
@@ -198,8 +198,7 @@ class ProfileConfigResponseConverterTest extends TestCase
         $profileRequestResponse = $this->createMock(ProfileRequest::class);
         $profileRequestResponse->method('isSuccessful')->willReturn(true);
         $profileRequestResponse->method('getResult')->willReturn(new ArrayObject($result));
+
         return $profileRequestResponse;
     }
-
-
 }
