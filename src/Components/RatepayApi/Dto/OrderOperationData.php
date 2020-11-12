@@ -18,8 +18,9 @@ use Ratepay\RpayPayments\Components\OrderManagement\Util\LineItemUtil;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Framework\Context;
 
-class OrderOperationData implements IRequestData
+class OrderOperationData extends AbstractRequestData
 {
     public const OPERATION_REQUEST = 'request';
 
@@ -62,8 +63,9 @@ class OrderOperationData implements IRequestData
      * @param array|null $items       array of IDs and quantity. if no array is provided, all items will be sent to the gateway, if the operation is allowed
      * @param bool       $updateStock
      */
-    public function __construct(OrderEntity $order, string $operation, $items = null, $updateStock = true)
+    public function __construct(Context $context, OrderEntity $order, string $operation, $items = null, $updateStock = true)
     {
+        parent::__construct($context);
         $this->order = $order;
         $this->transaction = $order->getTransactions() ? $order->getTransactions()->first() : null;
         $this->items = $items;

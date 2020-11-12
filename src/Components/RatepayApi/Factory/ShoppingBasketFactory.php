@@ -11,7 +11,7 @@ namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 
 use InvalidArgumentException;
 use RatePAY\Model\Request\SubModel\Content\ShoppingBasket;
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RpayPayments\Components\RatepayApi\Exception\EmptyBasketException;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
@@ -21,7 +21,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 
 class ShoppingBasketFactory extends AbstractFactory
 {
-    protected function _getData(IRequestData $requestData): ?object
+    protected function _getData(AbstractRequestData $requestData): ?object
     {
         /** @var OrderOperationData $requestData */
         $order = $requestData->getOrder();

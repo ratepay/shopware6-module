@@ -11,9 +11,7 @@ namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
-use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
-use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\ExternalFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory;
@@ -30,6 +28,8 @@ class PaymentDeliverService extends AbstractModifyRequest
 
     public const EVENT_BUILD_HEAD = self::class . parent::EVENT_BUILD_HEAD;
 
+    public const EVENT_BUILD_CONTENT = self::class . parent::EVENT_BUILD_CONTENT;
+
     protected $_operation = self::CALL_DELIVER;
 
     /**
@@ -44,19 +44,18 @@ class PaymentDeliverService extends AbstractModifyRequest
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
-        ConfigService $configService,
         HeadFactory $headFactory,
         EntityRepositoryInterface $profileConfigRepository,
         ShoppingBasketFactory $shoppingBasketFactory,
         InvoiceFactory $invoiceFactory,
         ExternalFactory $externalFactory
     ) {
-        parent::__construct($eventDispatcher, $configService, $headFactory, $profileConfigRepository, $shoppingBasketFactory);
+        parent::__construct($eventDispatcher, $headFactory, $profileConfigRepository, $shoppingBasketFactory);
         $this->invoiceFactory = $invoiceFactory;
         $this->externalFactory = $externalFactory;
     }
 
-    protected function getRequestContent(IRequestData $requestData): ?Content
+    protected function getRequestContent(AbstractRequestData $requestData): ?Content
     {
         /** @var OrderOperationData $requestData */
         $content = parent::getRequestContent($requestData);
@@ -67,9 +66,9 @@ class PaymentDeliverService extends AbstractModifyRequest
         return $content;
     }
 
-    protected function getRequestHead(IRequestData $requestData, ProfileConfigEntity $profileConfig): Head
+    protected function getRequestHead(AbstractRequestData $requestData): Head
     {
-        $head = parent::getRequestHead($requestData, $profileConfig);
+        $head = parent::getRequestHead($requestData);
         $data = $this->externalFactory->getData($requestData);
         if ($data) {
             $head->setExternal($data);

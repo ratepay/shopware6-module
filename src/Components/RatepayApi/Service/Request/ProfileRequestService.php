@@ -9,20 +9,15 @@
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 
-use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\ProfileRequestData;
-use Shopware\Core\Framework\Context;
-
 class ProfileRequestService extends AbstractRequest
 {
+    public const EVENT_SUCCESSFUL = self::class . parent::EVENT_SUCCESSFUL;
+
+    public const EVENT_FAILED = self::class . parent::EVENT_FAILED;
+
     public const EVENT_BUILD_HEAD = self::class . parent::EVENT_BUILD_HEAD;
 
-    protected $_operation = self::CALL_PROFILE_REQUEST;
+    public const EVENT_BUILD_CONTENT = self::class . parent::EVENT_BUILD_CONTENT;
 
-    protected function getProfileConfig(Context $context, IRequestData $requestData): ProfileConfigEntity
-    {
-        /* @var $requestData ProfileRequestData */
-        return $requestData->getProfileConfig();
-    }
+    protected $_operation = self::CALL_PROFILE_REQUEST;
 }

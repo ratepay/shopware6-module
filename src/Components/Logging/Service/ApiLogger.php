@@ -12,7 +12,6 @@ namespace Ratepay\RpayPayments\Components\Logging\Service;
 use Exception;
 use Monolog\Logger;
 use Ratepay\RpayPayments\Components\Logging\Model\ApiRequestLogEntity;
-use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\RequestDoneEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -26,23 +25,23 @@ class ApiLogger
     protected $logRepository;
 
     /**
-     * @var ConfigService
-     */
-    protected $configService;
-
-    /**
      * @var Logger
      */
     protected $logger;
 
+    /**
+     * @var string
+     */
+    private $pluginVersion;
+
     public function __construct(
         EntityRepositoryInterface $logRepository,
-        ConfigService $configService,
-        Logger $logger
+        Logger $logger,
+        string $pluginVersion
     ) {
         $this->logRepository = $logRepository;
-        $this->configService = $configService;
         $this->logger = $logger;
+        $this->pluginVersion = $pluginVersion;
     }
 
     public function logRequest(RequestDoneEvent $requestDoneEvent): void
@@ -84,7 +83,7 @@ class ApiLogger
             $this->logRepository->create(
                 [
                     [
-                        ApiRequestLogEntity::FIELD_VERSION => $this->configService->getPluginVersion(),
+                        ApiRequestLogEntity::FIELD_VERSION => $this->pluginVersion,
                         ApiRequestLogEntity::FIELD_OPERATION => $operation,
                         ApiRequestLogEntity::FIELD_SUB_OPERATION => $operationSubtype,
                         ApiRequestLogEntity::FIELD_RESULT => $result,

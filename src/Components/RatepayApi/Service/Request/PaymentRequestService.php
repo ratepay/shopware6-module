@@ -10,12 +10,8 @@
 namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 
 use RatePAY\Model\Request\SubModel\Content;
-use RatePAY\Model\Request\SubModel\Head;
-use RatePAY\Model\Request\SubModel\Head\External;
 use RatePAY\RequestBuilder;
-use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
-use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\CustomerFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory;
@@ -34,6 +30,8 @@ class PaymentRequestService extends AbstractRequest
     public const EVENT_FAILED = self::class . parent::EVENT_FAILED;
 
     public const EVENT_BUILD_HEAD = self::class . parent::EVENT_BUILD_HEAD;
+
+    public const EVENT_BUILD_CONTENT = self::class . parent::EVENT_BUILD_CONTENT;
 
     protected $_operation = self::CALL_PAYMENT_REQUEST;
 
@@ -54,38 +52,18 @@ class PaymentRequestService extends AbstractRequest
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
-        ConfigService $configService,
         HeadFactory $headFactory,
         ShoppingBasketFactory $shoppingBasketFactory,
         CustomerFactory $customerFactory,
         PaymentFactory $paymentFactory
     ) {
-        parent::__construct($eventDispatcher, $configService, $headFactory);
+        parent::__construct($eventDispatcher, $headFactory);
         $this->shoppingBasketFactory = $shoppingBasketFactory;
         $this->customerFactory = $customerFactory;
         $this->paymentFactory = $paymentFactory;
     }
 
-    protected function getProfileConfig(Context $context, IRequestData $requestData): ProfileConfigEntity
-    {
-        /* @var $requestData PaymentRequestData */
-        return $requestData->getProfileConfig();
-    }
-
-    protected function getRequestHead(IRequestData $requestData, ProfileConfigEntity $profileConfig): Head
-    {
-        /** @var PaymentRequestData $requestData */
-        $head = parent::getRequestHead($requestData, $profileConfig);
-        $head->setExternal(
-            (new External())
-                ->setOrderId($requestData->getOrder()->getOrderNumber())
-                ->setMerchantConsumerId($requestData->getOrder()->getOrderCustomer()->getCustomerNumber())
-        );
-
-        return $head;
-    }
-
-    protected function getRequestContent(IRequestData $requestData): Content
+    protected function getRequestContent(AbstractRequestData $requestData): ?Content
     {
         /* @var PaymentRequestData $requestData */
         return (new Content())

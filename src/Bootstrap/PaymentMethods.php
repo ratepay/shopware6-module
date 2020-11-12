@@ -21,7 +21,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 
 class PaymentMethods extends AbstractBootstrap
 {
-    private const PAYMENT_METHODS = [
+    public const PAYMENT_METHODS = [
         [
             'handlerIdentifier' => InvoicePaymentHandler::class,
             'name' => 'Ratepay Rechnung',

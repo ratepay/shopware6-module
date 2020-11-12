@@ -9,6 +9,8 @@
 
 namespace Ratepay\RpayPayments\Util;
 
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 
@@ -35,6 +37,16 @@ class CriteriaHelper
         $criteria->addAssociation('transactions.paymentMethod');
         $criteria->addAssociation('documents.documentType');
         $criteria->addSorting(new FieldSorting('lineItems.createdAt'));
+
+        return $criteria;
+    }
+
+    public static function getCriteriaForProfileConfig($profileConfigIds)
+    {
+        $criteria = new Criteria($profileConfigIds);
+        $criteria->addAssociation(ProfileConfigEntity::FIELD_SALES_CHANNEL);
+        $criteria->addAssociation(ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_INSTALLMENT_CONFIG);
+        $criteria->addAssociation(ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_PAYMENT_METHOD);
 
         return $criteria;
     }

@@ -14,13 +14,8 @@ use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\InvoicePaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\PrepaymentPaymentHandler;
-use Ratepay\RpayPayments\RpayPayments;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\Plugin\PluginCollection;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class ConfigService
@@ -30,15 +25,9 @@ class ConfigService
      */
     private $systemConfigService;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $pluginRepository;
-
-    public function __construct(SystemConfigService $systemConfigService, EntityRepositoryInterface $pluginRepository)
+    public function __construct(SystemConfigService $systemConfigService)
     {
         $this->systemConfigService = $systemConfigService;
-        $this->pluginRepository = $pluginRepository;
     }
 
     public function getDeviceFingerprintSnippetId()
@@ -51,19 +40,6 @@ class ConfigService
     public function getPluginConfiguration(): array
     {
         return $this->systemConfigService->get('RpayPayments.config', null) ?: [];
-    }
-
-    public function getPluginVersion(): string
-    {
-        /** @var PluginCollection $plugin */
-        $plugins = $this->pluginRepository->search(
-            (new Criteria())
-                ->addFilter(new EqualsFilter('baseClass', RpayPayments::class))
-                ->setLimit(1),
-            $this->getContext()
-        );
-
-        return $plugins->first()->getVersion();
     }
 
     protected function getContext(): Context

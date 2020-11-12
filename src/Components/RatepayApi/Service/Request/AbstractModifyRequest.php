@@ -13,14 +13,12 @@ use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
 use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
-use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -57,17 +55,16 @@ abstract class AbstractModifyRequest extends AbstractRequest
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
-        ConfigService $configService,
         HeadFactory $headFactory,
         EntityRepositoryInterface $profileConfigRepository,
         ShoppingBasketFactory $shoppingBasketFactory
     ) {
-        parent::__construct($eventDispatcher, $configService, $headFactory);
+        parent::__construct($eventDispatcher, $headFactory);
         $this->shoppingBasketFactory = $shoppingBasketFactory;
         $this->profileConfigRepository = $profileConfigRepository;
     }
 
-    protected function getProfileConfig(Context $context, IRequestData $requestData): ProfileConfigEntity
+    protected function getProfileConfig(AbstractRequestData $requestData): ProfileConfigEntity
     {
         /** @var OrderOperationData $requestData */
 
@@ -80,7 +77,7 @@ abstract class AbstractModifyRequest extends AbstractRequest
             $extension->getProfileId()
         ));
 
-        $profileConfig = $this->profileConfigRepository->search($criteria, $context)->first();
+        $profileConfig = $this->profileConfigRepository->search($criteria, $requestData->getContext())->first();
         if ($profileConfig === null) {
             throw new ProfileNotFoundException();
         }
@@ -88,10 +85,10 @@ abstract class AbstractModifyRequest extends AbstractRequest
         return $profileConfig;
     }
 
-    protected function getRequestHead(IRequestData $requestData, ProfileConfigEntity $profileConfig): Head
+    protected function getRequestHead(AbstractRequestData $requestData): Head
     {
         /** @var OrderOperationData $requestData */
-        $head = parent::getRequestHead($requestData, $profileConfig);
+        $head = parent::getRequestHead($requestData);
         $head->setExternal($head->getExternal() ?: new Head\External());
         $head->getExternal()->setOrderId($requestData->getOrder()->getOrderNumber());
 
@@ -102,7 +99,7 @@ abstract class AbstractModifyRequest extends AbstractRequest
         return $head;
     }
 
-    protected function getRequestContent(IRequestData $requestData): ?Content
+    protected function getRequestContent(AbstractRequestData $requestData): ?Content
     {
         /** @var OrderOperationData $requestData */
         $content = new Content();

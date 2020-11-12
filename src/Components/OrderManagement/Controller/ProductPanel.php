@@ -161,8 +161,7 @@ class ProductPanel extends AbstractController
             }
 
             $response = $this->requestServicesByOperation[$operation]->doRequest(
-                $context,
-                new OrderOperationData($order, $operation, $items, $request->request->get('updateStock') == true)
+                new OrderOperationData($context, $order, $operation, $items, $request->request->get('updateStock') == true)
             );
 
             return $this->json([
@@ -216,7 +215,7 @@ class ProductPanel extends AbstractController
 
         $order = $this->fetchOrder($context, $orderId);
 
-        $response = $this->creditService->doRequest($context, new AddCreditData($order, $name, $grossAmount, $taxRate));
+        $response = $this->creditService->doRequest(new AddCreditData($context, $order, $name, $grossAmount, $taxRate));
 
         if ($response->getResponse()->isSuccessful()) {
             return $this->json([

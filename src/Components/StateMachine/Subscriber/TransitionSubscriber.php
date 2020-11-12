@@ -120,9 +120,9 @@ class TransitionSubscriber implements EventSubscriberInterface
                 return;
         }
 
-        $orderOperationData = new OrderOperationData($order, $operation, null, false);
+        $orderOperationData = new OrderOperationData($event->getContext(), $order, $operation, null, false);
         try {
-            $response = $service->doRequest($event->getContext(), $orderOperationData);
+            $response = $service->doRequest($orderOperationData);
             if ($response->getResponse()->isSuccessful() === false) {
                 $this->logger->addError('Error during bidirectionality. (Exception: ' . $response->getResponse()->getReasonMessage() . ')', [
                     'order' => $order->getId(),

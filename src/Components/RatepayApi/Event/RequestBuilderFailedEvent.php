@@ -10,7 +10,7 @@
 namespace Ratepay\RpayPayments\Components\RatepayApi\Event;
 
 use Exception;
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class RequestBuilderFailedEvent extends Event
@@ -21,11 +21,11 @@ class RequestBuilderFailedEvent extends Event
     protected $exception;
 
     /**
-     * @var IRequestData
+     * @var AbstractRequestData
      */
     private $requestData;
 
-    public function __construct(Exception $exception, IRequestData $requestData)
+    public function __construct(Exception $exception, AbstractRequestData $requestData)
     {
         $this->exception = $exception;
         $this->requestData = $requestData;
@@ -36,7 +36,7 @@ class RequestBuilderFailedEvent extends Event
         return $this->exception;
     }
 
-    public function getRequestData(): IRequestData
+    public function getRequestData(): AbstractRequestData
     {
         return $this->requestData;
     }
