@@ -16,6 +16,11 @@ use Shopware\Core\Checkout\Document\DocumentEntity;
 
 class InvoiceFactory extends AbstractFactory
 {
+    protected function isSupported(AbstractRequestData $requestData): bool
+    {
+        return $requestData instanceof OrderOperationData;
+    }
+
     protected function _getData(AbstractRequestData $requestData): ?object
     {
         /** @var OrderOperationData $requestData */

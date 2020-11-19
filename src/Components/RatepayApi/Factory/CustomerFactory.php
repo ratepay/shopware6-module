@@ -9,26 +9,72 @@
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 
+use DateTime;
 use RatePAY\Model\Request\SubModel\Content\Customer;
+use Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Dto\PaymentQueryData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
+use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
+use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Shopware\Core\System\Language\LanguageEntity;
+use Shopware\Core\System\Locale\LocaleEntity;
+use Shopware\Core\System\Salutation\SalutationEntity;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class CustomerFactory extends AbstractFactory
 {
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $salutationRepository;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $languageRepository;
+
+    public function __construct(
+        EventDispatcherInterface $eventDispatcher,
+        EntityRepositoryInterface $salutationRepository,
+        EntityRepositoryInterface $languageRepository
+    ) {
+        parent::__construct($eventDispatcher);
+        $this->salutationRepository = $salutationRepository;
+        $this->languageRepository = $languageRepository;
+    }
+
+    protected function isSupported(AbstractRequestData $requestData): bool
+    {
+        return $requestData instanceof PaymentRequestData || $requestData instanceof PaymentQueryData;
+    }
+
     protected function _getData(AbstractRequestData $requestData): ?object
     {
-        /** @var PaymentRequestData $requestData */
-        $order = $requestData->getOrder();
         $requestDataBag = $requestData->getRequestDataBag();
+        $customerEntity = $this->getCustomer($requestData);
 
-        $customer = new Customer();
+        /**
+         * @var OrderAddressEntity|CustomerAddressEntity $billingAddress
+         * @var OrderAddressEntity|CustomerAddressEntity $shippingAddress
+         */
+        $billingAddress = $shippingAddress = null;
+        if ($requestData instanceof PaymentRequestData) {
+            $order = $requestData->getOrder();
+            $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
+            $shippingAddress = $order->getDeliveries()->first()->getShippingOrderAddress();
+        } elseif ($requestData instanceof PaymentQueryData) {
+            $billingAddress = $customerEntity->getActiveBillingAddress();
+            $shippingAddress = $customerEntity->getActiveShippingAddress();
+        }
 
-        $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
-        $shippingAddress = $order->getDeliveries()->first()->getShippingOrderAddress();
+        $salutationEntity = $this->getSalutation($billingAddress);
 
-        switch ($billingAddress->getSalutation()->getSalutationKey()) {
+        switch ($salutationEntity->getSalutationKey()) {
             case 'mrs':
                 $gender = 'f';
                 break;
@@ -39,30 +85,42 @@ class CustomerFactory extends AbstractFactory
                 $gender = 'u';
                 break;
         }
-
-        $customer
+        $customer = (new Customer())
             ->setGender($gender)
-            ->setSalutation($billingAddress->getSalutation()->getDisplayName())
+            ->setSalutation($salutationEntity->getDisplayName())
             ->setFirstName($billingAddress->getFirstName())
             ->setLastName($billingAddress->getLastName())
-            ->setLanguage(strtolower(explode('-', $order->getLanguage()->getLocale()->getCode())[0]))
-            ->setIpAddress($order->getOrderCustomer()->getRemoteAddress())
+            ->setLanguage(strtolower(explode('-', $this->getLocale($requestData)->getCode())[0]))
+            ->setIpAddress($this->getRemoteAddress($requestData))
             ->setAddresses(
                 (new Customer\Addresses())
-                    ->addAddress($this->_getCheckoutAddress($billingAddress, 'BILLING'))
-                    ->addAddress($this->_getCheckoutAddress($shippingAddress, 'DELIVERY'))
+                    ->addAddress($this->getAddressModel($billingAddress, 'BILLING'))
+                    ->addAddress($this->getAddressModel($shippingAddress, 'DELIVERY'))
             )
             ->setContacts(
                 (new Customer\Contacts())
-                    ->setEmail($order->getOrderCustomer()->getEmail())
+                    ->setEmail($customerEntity->getEmail())
             );
 
         /** @var RequestDataBag $requestData */
         $requestData = $requestDataBag->get('ratepay');
-        if ($billingAddress->getCompany() === null &&
-            $order->getOrderCustomer()->getCustomer()->getBirthday()
-        ) {
-            $customer->setDateOfBirth($order->getOrderCustomer()->getCustomer()->getBirthday()->format('Y-m-d'));
+
+        $birthday = null;
+
+        if ($requestData->has('birthday')) {
+            /** @var RequestDataBag $birthday */
+            $birthday = $requestData->get('birthday');
+            $birthday = (new DateTime())->setDate(
+                $birthday->getInt('year'),
+                $birthday->getInt('month'),
+                $birthday->getInt('day')
+            );
+        } elseif ($billingAddress->getCompany() === null && $customerEntity->getBirthday()) {
+            $birthday = $customerEntity->getBirthday();
+        }
+
+        if ($birthday) {
+            $customer->setDateOfBirth($birthday->format('Y-m-d'));
         }
 
         if ($billingAddress->getPhoneNumber()) {
@@ -84,7 +142,8 @@ class CustomerFactory extends AbstractFactory
             $customer->setVatId($billingAddress->getVatId());
         }
 
-        if ($requestData->has('bankData')) {
+        if ($requestData instanceof PaymentRequestData &&
+            $requestData->has('bankData')) {
             /** @var RequestDataBag $bankData */
             $bankData = $requestData->get('bankData');
             $bankAccount = new Customer\BankAccount();
@@ -96,7 +155,11 @@ class CustomerFactory extends AbstractFactory
         return $customer;
     }
 
-    private function _getCheckoutAddress(OrderAddressEntity $address, $addressType)
+    /**
+     * @param OrderAddressEntity|CustomerAddressEntity $address
+     * @param $addressType
+     */
+    private function getAddressModel($address, $addressType): Customer\Addresses\Address
     {
         $addressModel = new Customer\Addresses\Address();
         $addressModel->setType(strtolower($addressType))
@@ -114,5 +177,66 @@ class CustomerFactory extends AbstractFactory
         }
 
         return $addressModel;
+    }
+
+    private function getRemoteAddress(AbstractRequestData $requestData): string
+    {
+        if ($requestData instanceof PaymentRequestData) {
+            $customer = $requestData->getOrder()->getOrderCustomer();
+        }
+
+        if ($requestData instanceof PaymentQueryData) {
+            $customer = $requestData->getSalesChannelContext()->getCustomer();
+        }
+
+        /* @noinspection NullPointerExceptionInspection */
+        /* @noinspection PhpUndefinedVariableInspection */
+        return $customer->getRemoteAddress();
+    }
+
+    private function getLocale(AbstractRequestData $requestData): LocaleEntity
+    {
+        if ($requestData instanceof PaymentRequestData) {
+            $languageId = $requestData->getOrder()->getLanguageId();
+        }
+
+        if ($requestData instanceof PaymentQueryData) {
+            $languageId = $requestData->getSalesChannelContext()->getSalesChannel()->getLanguageId();
+        }
+
+        /** @noinspection NullPointerExceptionInspection */
+        /** @noinspection PhpUndefinedVariableInspection */
+
+        /** @var LanguageEntity $result */
+        $result = $this->languageRepository->search(
+            (new Criteria([$languageId]))->addAssociation('locale'),
+            Context::createDefaultContext()
+        )->first();
+
+        return $result->getLocale();
+    }
+
+    private function getCustomer(AbstractRequestData $requestData): CustomerEntity
+    {
+        if ($requestData instanceof PaymentRequestData) {
+            return $requestData->getOrder()->getOrderCustomer()->getCustomer();
+        }
+
+        if ($requestData instanceof PaymentQueryData) {
+            return $requestData->getSalesChannelContext()->getCustomer();
+        }
+
+        return null;
+    }
+
+    /**
+     * @param OrderAddressEntity|CustomerAddressEntity $address
+     */
+    private function getSalutation($address): SalutationEntity
+    {
+        return $this->salutationRepository->search(
+            new Criteria([$address->getSalutationId()]),
+            Context::createDefaultContext()
+        )->first();
     }
 }

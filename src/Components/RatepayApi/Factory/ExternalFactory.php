@@ -16,6 +16,11 @@ use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 
 class ExternalFactory extends AbstractFactory
 {
+    protected function isSupported(AbstractRequestData $requestData): bool
+    {
+        return $requestData instanceof OrderOperationData;
+    }
+
     protected function _getData(AbstractRequestData $requestData): ?object
     {
         /** @var OrderOperationData $requestData */

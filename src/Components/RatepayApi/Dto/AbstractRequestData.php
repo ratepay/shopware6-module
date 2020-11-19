@@ -17,12 +17,12 @@ abstract class AbstractRequestData
     /**
      * @var Context
      */
-    private $context;
+    protected $context;
 
     /**
      * @var ProfileConfigEntity|null
      */
-    private $profileConfig;
+    protected $profileConfig;
 
     public function __construct(Context $context)
     {

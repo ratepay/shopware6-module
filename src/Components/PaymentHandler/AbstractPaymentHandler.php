@@ -35,7 +35,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    public const ERROR_SNIPPET_VIOLATION_PREFIX = 'error.VIOLATION::';
+    public const ERROR_SNIPPET_VIOLATION_PREFIX = 'VIOLATION::';
 
     /**
      * @var PaymentRequestService
@@ -132,6 +132,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
                 isset($response) ? $response->getResponse() : null,
                 $e->getPrevious() ?? $e
             ));
+
             throw new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $e->getMessage());
         }
     }

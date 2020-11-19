@@ -11,8 +11,11 @@ namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 
 use InvalidArgumentException;
 use RatePAY\Model\Request\SubModel\Content\ShoppingBasket;
+use Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Dto\PaymentQueryData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\AddCreditData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Exception\EmptyBasketException;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
@@ -21,14 +24,27 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 
 class ShoppingBasketFactory extends AbstractFactory
 {
+    protected function isSupported(AbstractRequestData $requestData): bool
+    {
+        return ($requestData instanceof OrderOperationData || $requestData instanceof PaymentQueryData) && !$requestData instanceof AddCreditData;
+    }
+
     protected function _getData(AbstractRequestData $requestData): ?object
     {
-        /** @var OrderOperationData $requestData */
-        $order = $requestData->getOrder();
+        if ($requestData instanceof PaymentRequestData) {
+            $order = $requestData->getOrder();
+            $shippingCosts = $order->getShippingCosts();
+            $currency = $order->getCurrency()->getIsoCode();
+        } elseif ($requestData instanceof PaymentQueryData) {
+            $shippingCosts = $requestData->getCart()->getShippingCosts();
+            $currency = $requestData->getSalesChannelContext()->getCurrency()->getIsoCode();
+        } else {
+            return null;
+        }
 
         $basket = new ShoppingBasket();
         $basket->setItems(new ShoppingBasket\Items());
-        $basket->setCurrency($order->getCurrency()->getIsoCode());
+        $basket->setCurrency($currency);
 
         $items = $requestData->getItems();
         if (count($items) === 0) {
@@ -37,7 +53,6 @@ class ShoppingBasketFactory extends AbstractFactory
 
         foreach ($items as $id => $qty) {
             if ($qty instanceof LineItem) {
-                // this is a credit or a debit after the order has been placed
                 /** @var LineItem $item */
                 $item = $qty;
                 /** @var QuantityPriceDefinition $priceDefinition */
@@ -52,15 +67,16 @@ class ShoppingBasketFactory extends AbstractFactory
                         ->setTaxRate($taxRule ? $taxRule->getTaxRate() : 0)
                 );
             } elseif ($id === 'shipping') {
-                if ($order->getShippingCosts()->getTotalPrice()) {
+                if ($shippingCosts->getTotalPrice()) {
                     $basket->setShipping(
                         (new ShoppingBasket\Shipping())
                             ->setDescription('shipping')
-                            ->setUnitPriceGross($order->getShippingCosts()->getTotalPrice())
-                            ->setTaxRate($this->getTaxRate($order->getShippingCosts()))
+                            ->setUnitPriceGross($shippingCosts->getTotalPrice())
+                            ->setTaxRate($this->getTaxRate($shippingCosts))
                     );
                 }
-            } else {
+            } elseif ($requestData instanceof PaymentRequestData) {
+                $order = $requestData->getOrder();
                 $item = $order->getLineItems()->get($id);
                 if (!$item) {
                     throw new InvalidArgumentException($id . ' does not belongs to the order ' . $order->getId());
@@ -70,6 +86,13 @@ class ShoppingBasketFactory extends AbstractFactory
         }
 
         return $basket;
+    }
+
+    private function getTaxRate(CalculatedPrice $calculatedPrice): float
+    {
+        $tax = $calculatedPrice->getCalculatedTaxes()->first();
+
+        return $tax ? $tax->getTaxRate() : 0;
     }
 
     protected function addOrderLineItemToBasket(ShoppingBasket $basket, OrderLineItemEntity $item, $qty): void
@@ -91,12 +114,5 @@ class ShoppingBasketFactory extends AbstractFactory
             $discount->setTaxRate($this->getTaxRate($item->getPrice()));
             $basket->setDiscount($discount);
         }
-    }
-
-    private function getTaxRate(CalculatedPrice $calculatedPrice): float
-    {
-        $tax = $calculatedPrice->getCalculatedTaxes()->first();
-
-        return $tax ? $tax->getTaxRate() : 0;
     }
 }

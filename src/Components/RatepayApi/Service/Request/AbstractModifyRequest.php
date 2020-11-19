@@ -107,4 +107,9 @@ abstract class AbstractModifyRequest extends AbstractRequest
 
         return $content;
     }
+
+    protected function supportsRequestData(AbstractRequestData $requestData): bool
+    {
+        return $requestData instanceof OrderOperationData;
+    }
 }

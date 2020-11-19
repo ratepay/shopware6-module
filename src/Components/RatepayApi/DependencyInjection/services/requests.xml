@@ -13,16 +13,16 @@
     <services>
 
         <defaults>
-            <bind key="$profileConfigRepository" id="ratepay_profile_config.repository" type="service" />
+            <bind key="$profileConfigRepository" id="ratepay_profile_config.repository" type="service"/>
         </defaults>
 
-        <service id="Ratepay\RpayPayments\Components\RatepayApi\Service\Request\ProfileRequestService" autowire="true" />
+        <service id="Ratepay\RpayPayments\Components\RatepayApi\Service\Request\ProfileRequestService" autowire="true"/>
         <service id="Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentRequestService" autowire="true"/>
         <service id="Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentDeliverService" autowire="true"/>
         <service id="Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentReturnService" autowire="true"/>
         <service id="Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentCancelService" autowire="true"/>
         <service id="Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentCreditService" autowire="true"/>
-        <service id="Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentDebitService" autowire="true"/>
+        <service id="Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentInitService" autowire="true"/>
 
     </services>
 </container>

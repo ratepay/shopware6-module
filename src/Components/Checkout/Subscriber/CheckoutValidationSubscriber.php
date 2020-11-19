@@ -39,7 +39,7 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            'framework.validation.order.create' => 'validateOrderData',
+            'framework.validation.order.create' => ['validateOrderData', 10],
         ];
     }
 
@@ -71,7 +71,7 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
         return $request->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_CONTEXT_OBJECT);
     }
 
-    protected function addSubConstraints(DataValidationDefinition $parent, array $children)
+    protected function addSubConstraints(DataValidationDefinition $parent, array $children): void
     {
         foreach ($children as $key => $constraints) {
             if ($constraints instanceof DataValidationDefinition) {

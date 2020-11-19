@@ -9,6 +9,9 @@
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\ProfileRequestData;
+
 class ProfileRequestService extends AbstractRequest
 {
     public const EVENT_SUCCESSFUL = self::class . parent::EVENT_SUCCESSFUL;
@@ -19,5 +22,12 @@ class ProfileRequestService extends AbstractRequest
 
     public const EVENT_BUILD_CONTENT = self::class . parent::EVENT_BUILD_CONTENT;
 
+    public const EVENT_INIT_REQUEST = self::class . parent::EVENT_INIT_REQUEST;
+
     protected $_operation = self::CALL_PROFILE_REQUEST;
+
+    protected function supportsRequestData(AbstractRequestData $requestData): bool
+    {
+        return $requestData instanceof ProfileRequestData;
+    }
 }

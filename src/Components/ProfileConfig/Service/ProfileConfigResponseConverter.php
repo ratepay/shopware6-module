@@ -45,10 +45,8 @@ class ProfileConfigResponseConverter
 
     /**
      * converts the response of the ProfileRequest to the data which will be submitted to the database.
-     *
-     * @return array
      */
-    public function convert(ProfileRequest $response, string $profileId)
+    public function convert(ProfileRequest $response, string $profileId): array
     {
         $profileConfigData = [];
         $responseData = $response->getResult(false);

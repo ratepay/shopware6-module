@@ -11,7 +11,6 @@ namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 
 use RatePAY\Model\Request\SubModel\Head;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -28,11 +27,10 @@ class HeadFactory extends AbstractFactory
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
-        RequestStack $requestStack,
         string $shopwareVersion,
         string $pluginVersion
     ) {
-        parent::__construct($eventDispatcher, $requestStack);
+        parent::__construct($eventDispatcher);
         $this->shopwareVersion = $shopwareVersion;
         $this->pluginVersion = $pluginVersion;
     }
@@ -60,5 +58,10 @@ class HeadFactory extends AbstractFactory
             );
 
         return $head;
+    }
+
+    protected function isSupported(AbstractRequestData $requestData): bool
+    {
+        return $requestData instanceof AbstractRequestData;
     }
 }

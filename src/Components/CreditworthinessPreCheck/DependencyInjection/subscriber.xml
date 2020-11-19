@@ -9,15 +9,13 @@
 <container xmlns="http://symfony.com/schema/dic/services"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
-
-    <imports>
-        <import resource="services/factories.xml"/>
-        <import resource="services/requests.xml"/>
-    </imports>
-
     <services>
-        <service id="Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService" autowire="true">
-            <argument id="ratepay_transaction_id.repository" type="service"/>
-        </service>
+
+        <defaults>
+            <tag name="kernel.event_subscriber"/>
+        </defaults>
+
+        <service id="Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Subscriber\CheckoutValidationSubscriber" autowire="true" />
+
     </services>
 </container>

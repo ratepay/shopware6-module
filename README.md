@@ -33,6 +33,7 @@
 ## Changelog
 
 ### Version 1.1.0 - WIP
+- RATESWSX-150: introduce payment query
 
 ### Version 1.0.0
 - initial release

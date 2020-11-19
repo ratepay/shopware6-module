@@ -9,6 +9,7 @@
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 
+use InvalidArgumentException;
 use RatePAY\Exception\ExceptionAbstract;
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
@@ -17,6 +18,7 @@ use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundExcep
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\BuildEvent;
+use Ratepay\RpayPayments\Components\RatepayApi\Event\InitEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\RequestBuilderFailedEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\RequestDoneEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\ResponseEvent;
@@ -34,6 +36,8 @@ abstract class AbstractRequest
 
     protected const EVENT_BUILD_CONTENT = '.build.content';
 
+    protected const EVENT_INIT_REQUEST = '.init.request';
+
     public const CALL_PAYMENT_REQUEST = 'PaymentRequest';
 
     public const CALL_DELIVER = 'ConfirmationDeliver';
@@ -41,6 +45,10 @@ abstract class AbstractRequest
     public const CALL_CHANGE = 'PaymentChange';
 
     public const CALL_PROFILE_REQUEST = 'ProfileRequest';
+
+    public const CALL_PAYMENT_QUERY = 'PaymentQuery';
+
+    public const CALL_PAYMENT_INIT = 'PaymentInit';
 
     /**
      * @var string
@@ -74,12 +82,17 @@ abstract class AbstractRequest
         $this->eventDispatcher = $eventDispatcher;
     }
 
+    abstract protected function supportsRequestData(AbstractRequestData $requestData): bool;
+
     /**
      * @throws RatepayException
      */
     final public function doRequest(AbstractRequestData $requestData): RequestBuilder
     {
-        $requestData->setProfileConfig($this->getProfileConfig($requestData));
+        if (!$this->supportsRequestData($requestData)) {
+            throw new InvalidArgumentException(get_class($requestData) . ' is not supported by ' . self::class);
+        }
+        $this->_initRequest($requestData);
 
         $head = $this->_getRequestHead($requestData);
         $content = $this->_getRequestContent($requestData);
@@ -95,14 +108,14 @@ abstract class AbstractRequest
             throw new RatepayException($e->getMessage(), $e->getCode(), $e);
         }
 
-        $this->eventDispatcher->dispatch(new RequestDoneEvent($requestData->getContext(), $requestData, $requestBuilder));
+        $this->eventDispatcher->dispatch(new RequestDoneEvent($requestData, $requestBuilder));
 
-        $requestEvent = new ResponseEvent($requestData->getContext(), $requestBuilder, $requestData);
-        if ($requestBuilder->getResponse()->isSuccessful()) {
-            $this->eventDispatcher->dispatch($requestEvent, get_class($this) . self::EVENT_SUCCESSFUL);
-        } else {
-            $this->eventDispatcher->dispatch($requestEvent, get_class($this) . self::EVENT_FAILED);
-        }
+        $eventName = $requestBuilder->getResponse()->isSuccessful() ? self::EVENT_SUCCESSFUL : self::EVENT_FAILED;
+        $this->eventDispatcher->dispatch(new ResponseEvent(
+            $requestData->getContext(),
+            $requestBuilder,
+            $requestData
+        ), get_class($this) . $eventName);
 
         return $requestBuilder;
     }
@@ -127,6 +140,15 @@ abstract class AbstractRequest
         return $event->getBuildData();
     }
 
+    private function _initRequest(AbstractRequestData $requestData): void
+    {
+        $requestData->setProfileConfig($this->getProfileConfig($requestData));
+
+        $this->initRequest($requestData);
+        /* @var BuildEvent $event */
+        $this->eventDispatcher->dispatch(new InitEvent($requestData), get_class($this) . self::EVENT_INIT_REQUEST);
+    }
+
     protected function getRequestHead(AbstractRequestData $requestData): Head
     {
         return $this->headFactory->getData($requestData);
@@ -142,11 +164,12 @@ abstract class AbstractRequest
         return $event->getBuildData();
     }
 
-    /**
-     * @return Content
-     */
     protected function getRequestContent(AbstractRequestData $requestData): ?Content
     {
         return null;
+    }
+
+    protected function initRequest(AbstractRequestData $requestData): void
+    {
     }
 }

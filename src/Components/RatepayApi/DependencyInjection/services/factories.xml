@@ -17,7 +17,10 @@
             <argument key="$pluginVersion">%ratepay.shopware_payment.plugin_version%</argument>
         </service>
 
-        <service id="Ratepay\RpayPayments\Components\RatepayApi\Factory\CustomerFactory" autowire="true"/>
+        <service id="Ratepay\RpayPayments\Components\RatepayApi\Factory\CustomerFactory" autowire="true">
+            <argument key="$salutationRepository" type="service" id="salutation.repository"/>
+            <argument key="$languageRepository" type="service" id="language.repository"/>
+        </service>
 
         <service id="Ratepay\RpayPayments\Components\RatepayApi\Factory\ExternalFactory" autowire="true"/>
         <service id="Ratepay\RpayPayments\Components\RatepayApi\Factory\InvoiceFactory" autowire="true"/>

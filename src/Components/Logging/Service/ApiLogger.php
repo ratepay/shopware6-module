@@ -53,10 +53,18 @@ class ApiLogger
         $additionalData = [];
 
         $requestData = $requestDoneEvent->getRequestData();
+
+        $requestXmlElement = $requestBuilder->getRequestXmlElement();
+        $responseXmlElement = $requestBuilder->getResponseXmlElement();
+        if (isset($requestXmlElement->head->{'transaction-id'})) {
+            $additionalData['transactionId'] = (string) $requestXmlElement->head->{'transaction-id'};
+        } elseif (isset($responseXmlElement->head->{'transaction-id'})) {
+            $additionalData['transactionId'] = (string) $responseXmlElement->head->{'transaction-id'};
+        }
+
         if ($requestData instanceof OrderOperationData) {
             $order = $requestData->getOrder();
             $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
-            $additionalData['transactionId'] = (string) $requestBuilder->getRequestXmlElement()->head->{'transaction-id'};
             $additionalData['orderNumber'] = $order->getOrderNumber();
             $additionalData['firstName'] = $billingAddress->getFirstName();
             $additionalData['lastName'] = $billingAddress->getLastName();
@@ -92,7 +100,7 @@ class ApiLogger
                         ApiRequestLogEntity::FIELD_ADDITIONAL_DATA => $additionalData,
                     ],
                 ],
-                $requestDoneEvent->getContext()
+                $requestDoneEvent->getRequestData()->getContext()
             );
         } catch (Exception $exception) {
             $this->logger->error('Ratepay was unable to log request history', [
