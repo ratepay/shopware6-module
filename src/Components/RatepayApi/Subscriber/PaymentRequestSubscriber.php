@@ -50,6 +50,8 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
         /** @var PaymentRequestData $requestData */
         $requestData = $requestEvent->getRequestData();
 
+        $this->transactionIdService->deleteTransactionId($requestData->getSalesChannelContext());
+
         /** @var PaymentRequest $responseModel */
         $responseModel = $requestEvent->getRequestBuilder()->getResponse();
 
@@ -68,9 +70,7 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
         /** @var PaymentRequestData $requestData */
         $requestData = $requestEvent->getRequestData();
 
-        if ($requestEvent->getRequestBuilder()->getResponse()->isSuccessful()) {
-            $this->transactionIdService->deleteTransactionId($requestData->getSalesChannelContext());
-        }
+        $this->transactionIdService->deleteTransactionId($requestData->getSalesChannelContext());
 
         /** @var PaymentRequest $responseModel */
         $responseModel = $requestEvent->getRequestBuilder()->getResponse();
