@@ -55,7 +55,9 @@ class CustomerFactory extends AbstractFactory
 
     protected function _getData(AbstractRequestData $requestData): ?object
     {
+        /** @var RequestDataBag $requestDataBag */
         $requestDataBag = $requestData->getRequestDataBag();
+        $requestDataBag = $requestDataBag->get('ratepay', new RequestDataBag());
         $customerEntity = $this->getCustomer($requestData);
 
         /**
@@ -102,14 +104,11 @@ class CustomerFactory extends AbstractFactory
                     ->setEmail($customerEntity->getEmail())
             );
 
-        /** @var RequestDataBag $requestData */
-        $requestData = $requestDataBag->get('ratepay');
-
         $birthday = null;
 
-        if ($requestData->has('birthday')) {
+        if ($requestDataBag->has('birthday')) {
             /** @var RequestDataBag $birthday */
-            $birthday = $requestData->get('birthday');
+            $birthday = $requestDataBag->get('birthday');
             $birthday = (new DateTime())->setDate(
                 $birthday->getInt('year'),
                 $birthday->getInt('month'),
@@ -142,10 +141,9 @@ class CustomerFactory extends AbstractFactory
             $customer->setVatId($billingAddress->getVatId());
         }
 
-        if ($requestData instanceof PaymentRequestData &&
-            $requestData->has('bankData')) {
+        if ($requestData instanceof PaymentRequestData && $requestDataBag->has('bankData')) {
             /** @var RequestDataBag $bankData */
-            $bankData = $requestData->get('bankData');
+            $bankData = $requestDataBag->get('bankData');
             $bankAccount = new Customer\BankAccount();
             $bankAccount->setOwner($billingAddress->getFirstName() . ' ' . $billingAddress->getLastName());
             $bankAccount->setIban($bankData->get('iban'));
