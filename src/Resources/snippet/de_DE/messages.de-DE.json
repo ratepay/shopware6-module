@@ -8,6 +8,7 @@
     "error.VIOLATION::RP_NOT_SUPPORTED_COUNTRY_CODE_ERROR": "Das eingegeben Land der IBAN ist ungültig.",
     "error.VIOLATION::RP_MISSING_SEPA_CONFIRM": "Bitte bestätigen Sie das SEPA-Mandat.",
     "error.VIOLATION::RP_METHOD_NOT_AVAILABLE": "Leider ist eine Bezahlung mit der gewählten Zahlungsart nicht möglich. Diese Entscheidung ist auf Grundlage einer automatisierten Datenverarbeitung getroffen worden. Einzelheiten finden sie in den <a href=\"https://www.ratepay.com/zusaetzliche-geschaeftsbedingungen-und-datenschutzhinweis-dach/\" target=\"_blank\">zusätzlichen Allgemeinen Geschäftsbedingungen und dem Datenschutzhinweis für RatePAY-Zahlungsarten</a>.",
+    "error.VIOLATION::METHOD_NOT_AVAILABLE": "Leider ist eine Bezahlung mit der gewählten Zahlungsart nicht möglich.",
     "ratepay": {
         "storefront": {
             "checkout": {

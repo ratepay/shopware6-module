@@ -34,6 +34,7 @@
 
 ### Version 1.1.0 - WIP
 - RATESWSX-150: introduce payment query
+- RATESWSX-150: add payment-lock validation during confirm
 
 ### Version 1.0.0
 - initial release
