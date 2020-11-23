@@ -58,7 +58,7 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
             /** @var RequestDataBag $requestedInstallment */
             $requestedInstallment = $requestData->getRequestDataBag()->get('ratepay')->get('installment');
             $plan = $this->installmentService->getInstallmentPlanData(
-                $requestData->getContext(),
+                $requestData->getSalesChannelContext(),
                 $requestedInstallment->get('type'),
                 $requestedInstallment->get('value'),
                 $paymentObject->getAmount()
