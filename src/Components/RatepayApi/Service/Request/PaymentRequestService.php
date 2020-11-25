@@ -106,6 +106,9 @@ class PaymentRequestService extends AbstractRequest
             $head->setTransactionId($requestData->getRatepayTransactionId());
         }
 
+        $head->setExternal($head->getExternal() ?? new Head\External());
+        $head->getExternal()->setOrderId($requestData->getOrder()->getOrderNumber());
+
         return $head;
     }
 
