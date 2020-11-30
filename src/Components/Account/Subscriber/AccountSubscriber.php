@@ -178,7 +178,7 @@ class AccountSubscriber implements EventSubscriberInterface
         $this->eventDispatcher->dispatch(new PaymentUpdateRequestBagValidatedEvent(
             $orderEntity,
             $paymentHandler,
-            new RequestDataBag($requestData),
+            new RequestDataBag(['ratepay' => $requestData]),
             $event->getSalesChannelContext()
         ));
 
