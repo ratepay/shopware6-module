@@ -22,6 +22,7 @@ use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -87,9 +88,9 @@ class ExtensionService
 
     public function createOrderExtensionEntity(
         OrderEntity $order,
-        string $transactionId,
-        string $descriptor,
-        string $profileId,
+        string $transactionId = null,
+        string $descriptor = null,
+        string $profileId = null,
         bool $successful,
         Context $context
     ): RatepayOrderDataEntity {
@@ -102,10 +103,20 @@ class ExtensionService
             RatepayOrderDataEntity::FIELD_SUCCESSFUL => $successful,
         ];
 
-        if ($order->getShippingCosts()->getTotalPrice() > 0) {
+        if ($successful && $order->getShippingCosts()->getTotalPrice() > 0) {
             $orderExtensionData[RatepayOrderDataEntity::FIELD_SHIPPING_POSITION] = [
                 RatepayPositionEntity::FIELD_ID => Uuid::randomHex(),
             ];
+        }
+
+        // check if an entry already exists, e.g. after a failed payment
+        $criteria = new Criteria();
+        foreach ([RatepayOrderDataEntity::FIELD_ORDER_ID, RatepayOrderDataEntity::FIELD_ORDER_VERSION_ID] as $filterKey) {
+            $criteria->addFilter(new EqualsFilter($filterKey, $orderExtensionData[$filterKey]));
+        }
+        $ids = $this->orderExtensionRepository->searchIds($criteria, $context);
+        if ($ids->firstId()) {
+            $orderExtensionData[RatepayOrderDataEntity::FIELD_ID] = $ids->firstId();
         }
 
         $event = $this->orderExtensionRepository->upsert([$orderExtensionData], $context);

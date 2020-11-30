@@ -217,7 +217,7 @@ class CustomerFactory extends AbstractFactory
         return $result->getLocale();
     }
 
-    private function getCustomer(AbstractRequestData $requestData): CustomerEntity
+    private function getCustomer(AbstractRequestData $requestData): ?CustomerEntity
     {
         if ($requestData instanceof PaymentRequestData) {
             return $requestData->getOrder()->getOrderCustomer()->getCustomer();
@@ -226,6 +226,8 @@ class CustomerFactory extends AbstractFactory
         if ($requestData instanceof PaymentQueryData) {
             return $requestData->getSalesChannelContext()->getCustomer();
         }
+
+        return null;
     }
 
     /**

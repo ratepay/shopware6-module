@@ -37,6 +37,7 @@
 - RATESWSX-150: introduce payment query
 - RATESWSX-150: add payment-lock validation during confirm
 - RATESWSX-150: fix loading of transaction (wrong order)
+- RATESWSX-150: fix duplicate order-data save
 
 ### Version 1.0.0
 - initial release

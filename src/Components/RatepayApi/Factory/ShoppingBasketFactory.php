@@ -13,7 +13,6 @@ use InvalidArgumentException;
 use RatePAY\Model\Request\SubModel\Content\ShoppingBasket;
 use Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Dto\PaymentQueryData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\AddCreditData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Exception\EmptyBasketException;
@@ -23,18 +22,18 @@ use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 
 /**
- * @method getData(PaymentRequestData|PaymentQueryData $requestData) : ?Head
+ * @method getData(PaymentRequestData|PaymentQueryData|OrderOperationData $requestData) : ?Head
  */
 class ShoppingBasketFactory extends AbstractFactory
 {
     protected function isSupported(AbstractRequestData $requestData): bool
     {
-        return ($requestData instanceof OrderOperationData || $requestData instanceof PaymentQueryData) && !$requestData instanceof AddCreditData;
+        return $requestData instanceof OrderOperationData || $requestData instanceof PaymentQueryData;
     }
 
     protected function _getData(AbstractRequestData $requestData): ?object
     {
-        if ($requestData instanceof PaymentRequestData) {
+        if ($requestData instanceof OrderOperationData) {
             $order = $requestData->getOrder();
             $shippingCosts = $order->getShippingCosts();
             $currency = $order->getCurrency()->getIsoCode();
@@ -78,7 +77,7 @@ class ShoppingBasketFactory extends AbstractFactory
                             ->setTaxRate($this->getTaxRate($shippingCosts))
                     );
                 }
-            } elseif ($requestData instanceof PaymentRequestData) {
+            } elseif ($requestData instanceof OrderOperationData) {
                 $order = $requestData->getOrder();
                 $item = $order->getLineItems()->get($id);
                 if (!$item) {
