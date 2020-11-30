@@ -38,6 +38,8 @@ class CriteriaHelper
         $criteria->addAssociation('documents.documentType');
         $criteria->addSorting(new FieldSorting('lineItems.createdAt'));
 
+        $criteria->getAssociation('transactions')->addSorting(new FieldSorting('createdAt'));
+
         return $criteria;
     }
 

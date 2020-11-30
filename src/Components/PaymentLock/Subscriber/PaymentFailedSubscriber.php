@@ -54,7 +54,7 @@ class PaymentFailedSubscriber implements EventSubscriberInterface
                 $paymentMethodIds = [];
                 /* @noinspection NotOptimalIfConditionsInspection */
                 if ($requestData instanceof PaymentRequestData) {
-                    $paymentMethodIds[] = $requestData->getOrder()->getTransactions()->first()->getPaymentMethodId();
+                    $paymentMethodIds[] = $requestData->getOrder()->getTransactions()->last()->getPaymentMethodId();
                 }
 
                 $this->lockService->lockPaymentMethod(

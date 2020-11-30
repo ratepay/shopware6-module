@@ -33,8 +33,10 @@
 ## Changelog
 
 ### Version 1.1.0 - WIP
+- RATESWSX-150: add compatibility with Shopware 6.3.3.x
 - RATESWSX-150: introduce payment query
 - RATESWSX-150: add payment-lock validation during confirm
+- RATESWSX-150: fix loading of transaction (wrong order)
 
 ### Version 1.0.0
 - initial release

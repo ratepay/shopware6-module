@@ -67,7 +67,7 @@ class OrderOperationData extends AbstractRequestData
     {
         parent::__construct($context);
         $this->order = $order;
-        $this->transaction = $order->getTransactions() ? $order->getTransactions()->first() : null;
+        $this->transaction = $order->getTransactions() ? $order->getTransactions()->last() : null;
         $this->items = $items;
         $this->operation = $operation;
         $this->updateStock = $items === null ? false : $updateStock;
@@ -110,13 +110,10 @@ class OrderOperationData extends AbstractRequestData
         switch ($this->operation) {
             case self::OPERATION_DELIVER:
                 return $maxValues['maxDelivery'];
-                break;
             case self::OPERATION_CANCEL:
                 return $maxValues['maxCancel'];
-                break;
             case self::OPERATION_RETURN:
                 return $maxValues['maxReturn'];
-                break;
             default:
                 throw new RuntimeException('the operation ' . $this->operation . '` is not supported for automatic delivery');
         }
