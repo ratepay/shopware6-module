@@ -67,7 +67,7 @@ class AccountSubscriber implements EventSubscriberInterface
                 $event->getSalesChannelContext(),
                 $this->orderConverter->convertToCart($event->getOrderEntity(), $event->getContext()),
                 $event->getRequestDataBag(),
-                $event->getRequestDataBag()->get('transactionId')
+                $event->getRequestDataBag()->get('ratepay')->get('transactionId')
             ));
 
             $response = isset($paymentQuery) ? $paymentQuery->getResponse() : null;
