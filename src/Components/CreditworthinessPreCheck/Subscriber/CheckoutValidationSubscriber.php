@@ -32,7 +32,7 @@ use Symfony\Component\Validator\ConstraintViolationList;
 
 class CheckoutValidationSubscriber implements EventSubscriberInterface
 {
-    const CODE_METHOD_NOT_AVAILABLE = 'RP_METHOD_NOT_AVAILABLE';
+    public const CODE_METHOD_NOT_AVAILABLE = 'RP_METHOD_NOT_AVAILABLE';
 
     /** @var RequestStack */
     private $requestStack;
@@ -95,7 +95,8 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
                 $requestBuilder = $this->paymentQueryService->doRequest(new PaymentQueryData(
                     $context,
                     $this->cartService->getCart($context->getToken(), $context),
-                    new RequestDataBag($request->request->all())
+                    new RequestDataBag($request->request->all()),
+                    $request->request->get('ratepay')['transactionId']
                 ));
             } catch (RatepayException $e) {
                 $this->throwException(
@@ -116,11 +117,9 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
                     );
                 }
             } else {
-                /* @noinspection PhpStrictTypeCheckingInspection */
                 $this->throwException(
                     $context,
                     $request,
-//                    AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . self::CODE_METHOD_NOT_AVAILABLE
                     $response->getReasonMessage()
                 );
             }

@@ -23,7 +23,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 class TransactionIdEntityDefinition extends EntityDefinition
 {
-    public const ENTITY_NAME = 'ratepay_transaction_id';
+    public const ENTITY_NAME = 'ratepay_transaction_id_temp';
 
     public function getEntityName(): string
     {

@@ -38,7 +38,7 @@ class PaymentQueryData extends AbstractRequestData
         SalesChannelContext $salesChannelContext,
         Cart $cart,
         RequestDataBag $requestDataBag,
-        string $transactionId = null
+        string $transactionId
     ) {
         parent::__construct($salesChannelContext->getContext());
         $this->requestDataBag = $requestDataBag;
@@ -83,10 +83,5 @@ class PaymentQueryData extends AbstractRequestData
     public function getTransactionId(): ?string
     {
         return $this->transactionId;
-    }
-
-    public function setTransactionId(?string $transactionId): void
-    {
-        $this->transactionId = $transactionId;
     }
 }

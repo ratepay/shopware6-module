@@ -18,6 +18,12 @@
 
         <service id="Ratepay\RpayPayments\Components\Account\Subscriber\AccountSubscriber" public="true">
             <argument type="service" id="Ratepay\RpayPayments\Components\Checkout\Service\ExtensionService" />
+            <argument type="service" id="Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PaymentHandlerRegistry"/>
+            <argument type="service" id="payment_method.repository"/>
+            <argument type="service" id="order.repository"/>
+            <argument type="service" id="Shopware\Core\Framework\Validation\DataValidator"/>
+            <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
         </service>
 
     </services>

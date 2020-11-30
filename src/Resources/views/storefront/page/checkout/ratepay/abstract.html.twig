@@ -5,6 +5,14 @@
   ~ file that was distributed with this source code.
 #}
 
+<input type="hidden"
+       value="{{ page.extensions.ratepay.transactionId }}"
+       name="ratepay[transactionId]"
+       form="confirmOrderForm"
+       readonly
+       required="required"
+>
+
 {% block ratepay_checkout_fields %}
     {% if (page.extensions.ratepay.company) %}
         {#% if page.extensions.ratepay.vatId is null %#}

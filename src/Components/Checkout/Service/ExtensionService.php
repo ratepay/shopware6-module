@@ -16,6 +16,7 @@ use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayPositionEntity;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
+use Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService;
 use Ratepay\RpayPayments\Util\MethodHelper;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
@@ -44,14 +45,21 @@ class ExtensionService
      */
     private $installmentService;
 
+    /**
+     * @var TransactionIdService
+     */
+    private $transactionIdService;
+
     public function __construct(
         EntityRepositoryInterface $orderExtensionRepository,
         EntityRepositoryInterface $lineItemExtensionRepository,
-        InstallmentService $installmentService
+        InstallmentService $installmentService,
+        TransactionIdService $transactionIdService
     ) {
         $this->orderExtensionRepository = $orderExtensionRepository;
         $this->lineItemExtensionRepository = $lineItemExtensionRepository;
         $this->installmentService = $installmentService;
+        $this->transactionIdService = $transactionIdService;
     }
 
     public function createLineItemExtensionEntities(
@@ -131,7 +139,13 @@ class ExtensionService
             }
         }
 
+        $transactionId = $this->transactionIdService->getTransactionId(
+            $salesChannelContext,
+            $order ? 'order-' . $order->getId() . '-' : 'cart-'
+        );
+
         $extension = new ArrayStruct();
+        $extension->set('transactionId', $transactionId);
         $extension->set('birthday', $customerBirthday ?? null);
         $extension->set('vatId', $customerVatId ?? null);
         $extension->set('phoneNumber', $customerPhoneNumber ?? null);

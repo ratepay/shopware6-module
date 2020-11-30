@@ -26,6 +26,9 @@ use Shopware\Core\System\Locale\LocaleEntity;
 use Shopware\Core\System\Salutation\SalutationEntity;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * @method getData(PaymentRequestData|PaymentQueryData $requestData) : ?Head
+ */
 class CustomerFactory extends AbstractFactory
 {
     /**
@@ -223,8 +226,6 @@ class CustomerFactory extends AbstractFactory
         if ($requestData instanceof PaymentQueryData) {
             return $requestData->getSalesChannelContext()->getCustomer();
         }
-
-        return null;
     }
 
     /**

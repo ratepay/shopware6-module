@@ -13,6 +13,9 @@ use RatePAY\Model\Request\SubModel\Content\Payment;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 
+/**
+ * @method getData(PaymentRequestData $requestData) : ?Head
+ */
 class PaymentFactory extends AbstractFactory
 {
     protected function isSupported(AbstractRequestData $requestData): bool

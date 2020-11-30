@@ -21,7 +21,6 @@ use Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\AbstractRequest;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService;
-use Ratepay\RpayPayments\Exception\RatepayException;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -66,30 +65,17 @@ class PaymentQueryService extends AbstractRequest
         HeadFactory $headFactory,
         ShoppingBasketFactory $shoppingBasketFactory,
         CustomerFactory $customerFactory,
-        TransactionIdService $transactionIdService,
         ProfileConfigService $profileConfigService
     ) {
         parent::__construct($eventDispatcher, $headFactory);
         $this->shoppingBasketFactory = $shoppingBasketFactory;
         $this->customerFactory = $customerFactory;
-        $this->transactionIdService = $transactionIdService;
         $this->profileConfigService = $profileConfigService;
-    }
-
-    protected function initRequest(AbstractRequestData $requestData): void
-    {
-        /* @var $requestData PaymentQueryData */
-        parent::initRequest($requestData);
-
-        $transactionId = $this->transactionIdService->getTransactionId($requestData->getSalesChannelContext());
-        if ($transactionId === null) {
-            throw new RatepayException('Payment is failed'); // todo message for customer
-        }
-        $requestData->setTransactionId($transactionId);
     }
 
     protected function getRequestHead(AbstractRequestData $requestData): Head
     {
+        /* @var PaymentQueryData $requestData */
         $head = parent::getRequestHead($requestData);
         $head->setTransactionId($requestData->getTransactionId());
 

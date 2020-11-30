@@ -46,9 +46,9 @@ class TransactionIdService
     /**
      * @throws TransactionIdFetchFailedException
      */
-    public function getTransactionId(SalesChannelContext $salesChannelContext): string
+    public function getTransactionId(SalesChannelContext $salesChannelContext, string $prefix): string
     {
-        $identifier = $salesChannelContext->getToken();
+        $identifier = $prefix . $salesChannelContext->getToken();
         $transactionIdEntity = $this->findByIdentifier($identifier, $salesChannelContext->getContext());
 
         $transactionId = null;
@@ -79,7 +79,7 @@ class TransactionIdService
         throw new TransactionIdFetchFailedException();
     }
 
-    protected function findByIdentifier($identifier, Context $context): ?TransactionIdEntity
+    protected function findByIdentifier(string $identifier, Context $context): ?TransactionIdEntity
     {
         $criteria = (new Criteria())
             ->addFilter(new EqualsFilter(TransactionIdEntity::FIELD_IDENTIFIER, $identifier))
@@ -90,15 +90,26 @@ class TransactionIdService
             ->first();
     }
 
-    public function deleteTransactionId(SalesChannelContext $salesChannelContext): void
+    protected function findByTransactionId(string $transactionId, Context $context): ?TransactionIdEntity
     {
-        $entity = $this->findByIdentifier($salesChannelContext->getToken(), $salesChannelContext->getContext());
+        $criteria = (new Criteria())
+            ->addFilter(new EqualsFilter(TransactionIdEntity::FIELD_TRANSACTION_ID, $transactionId))
+            ->setLimit(1);
+
+        return $this->transactionIdRepository
+            ->search($criteria, $context)
+            ->first();
+    }
+
+    public function deleteTransactionId(string $transactionId, Context $context): void
+    {
+        $entity = $this->findByTransactionId($transactionId, $context);
         if ($entity) {
             $this->transactionIdRepository->delete([
                 [
                     TransactionIdEntity::FIELD_ID => $entity->getId(),
                 ],
-            ], $salesChannelContext->getContext());
+            ], $context);
         }
     }
 }

@@ -17,7 +17,7 @@
 
     <services>
         <service id="Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService" autowire="true">
-            <argument id="ratepay_transaction_id.repository" type="service"/>
+            <argument id="ratepay_transaction_id_temp.repository" type="service"/>
         </service>
     </services>
 </container>

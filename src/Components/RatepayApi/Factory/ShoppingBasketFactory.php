@@ -22,6 +22,9 @@ use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 
+/**
+ * @method getData(PaymentRequestData|PaymentQueryData $requestData) : ?Head
+ */
 class ShoppingBasketFactory extends AbstractFactory
 {
     protected function isSupported(AbstractRequestData $requestData): bool

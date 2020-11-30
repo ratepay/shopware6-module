@@ -9,6 +9,7 @@
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 
+use Enqueue\Util\UUID;
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
 use RatePAY\RequestBuilder;
@@ -85,8 +86,10 @@ class PaymentRequestService extends AbstractRequest
     protected function initRequest(AbstractRequestData $requestData): void
     {
         /* @var PaymentRequestData $requestData */
-        $transactionId = $this->transactionIdService->getTransactionId($requestData->getSalesChannelContext());
-        $requestData->setRatepayTransactionId($transactionId);
+        if ($requestData->getRatepayTransactionId() === null) {
+            $transactionId = $this->transactionIdService->getTransactionId($requestData->getSalesChannelContext(), UUID::generate());
+            $requestData->setRatepayTransactionId($transactionId);
+        }
     }
 
     protected function getRequestContent(AbstractRequestData $requestData): ?Content
