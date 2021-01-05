@@ -18,7 +18,7 @@ use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Exception\EmptyBasketException;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
-use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
+use Shopware\Core\Checkout\Cart\Price\Struct\PriceDefinitionInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 
 /**
@@ -57,16 +57,19 @@ class ShoppingBasketFactory extends AbstractFactory
             if ($qty instanceof LineItem) {
                 /** @var LineItem $item */
                 $item = $qty;
-                /** @var QuantityPriceDefinition $priceDefinition */
+                /** @var PriceDefinitionInterface $priceDefinition */
                 $priceDefinition = $item->getPriceDefinition();
-                $taxRule = $priceDefinition->getTaxRules()->first();
+                if (method_exists($priceDefinition, 'getTaxRules')) {
+                    $taxRule = $priceDefinition->getTaxRules()->first();
+                }
+
                 $basket->getItems()->addItem(
                     (new ShoppingBasket\Items\Item())
                         ->setArticleNumber($item->getId())
                         ->setDescription($item->getLabel())
-                        ->setQuantity($priceDefinition->getQuantity())
-                        ->setUnitPriceGross($priceDefinition->getPrice())
-                        ->setTaxRate($taxRule ? $taxRule->getTaxRate() : 0)
+                        ->setQuantity($item->getQuantity())
+                        ->setUnitPriceGross($item->getPrice() ? $item->getPrice()->getUnitPrice() : 0)
+                        ->setTaxRate(isset($taxRule) ? $taxRule->getTaxRate() : 0)
                 );
             } elseif ($id === 'shipping') {
                 if ($shippingCosts->getTotalPrice()) {
