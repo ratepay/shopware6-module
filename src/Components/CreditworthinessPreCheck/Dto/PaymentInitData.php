@@ -11,24 +11,15 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Dto;
 
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Shopware\Core\Framework\Context;
 
 class PaymentInitData extends AbstractRequestData
 {
-    /**
-     * @var SalesChannelContext
-     */
-    private $salesChannelContext;
-
-    public function __construct(SalesChannelContext $salesChannelContext)
+    public function __construct(ProfileConfigEntity $profileConfig, Context $context)
     {
-        parent::__construct($salesChannelContext->getContext());
-        $this->salesChannelContext = $salesChannelContext;
-    }
-
-    public function getSalesChannelContext(): SalesChannelContext
-    {
-        return $this->salesChannelContext;
+        parent::__construct($context);
+        $this->setProfileConfig($profileConfig);
     }
 }

@@ -13,6 +13,8 @@ namespace Ratepay\RpayPayments\Components\RatepayApi\Service;
 
 use RatePAY\Model\Response\PaymentInit;
 use Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Dto\PaymentInitData;
+use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
+use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigService;
 use Ratepay\RpayPayments\Components\RatepayApi\Exception\TransactionIdFetchFailedException;
 use Ratepay\RpayPayments\Components\RatepayApi\Model\TransactionIdEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentInitService;
@@ -20,6 +22,7 @@ use Ratepay\RpayPayments\Exception\RatepayException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\ContainsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
@@ -35,12 +38,16 @@ class TransactionIdService
      */
     private $paymentInitService;
 
+    private ProfileConfigService $profileConfigService;
+
     public function __construct(
         EntityRepositoryInterface $transactionIdRepository,
+        ProfileConfigService $profileConfigService,
         PaymentInitService $paymentInitService
     ) {
         $this->transactionIdRepository = $transactionIdRepository;
         $this->paymentInitService = $paymentInitService;
+        $this->profileConfigService = $profileConfigService;
     }
 
     /**
@@ -48,18 +55,29 @@ class TransactionIdService
      */
     public function getTransactionId(SalesChannelContext $salesChannelContext, string $prefix): string
     {
+        $profileConfig = $this->profileConfigService->getProfileConfigBySalesChannel($salesChannelContext);
+        if ($profileConfig === null) {
+            throw new ProfileNotFoundException();
+        }
+
         $identifier = $prefix . $salesChannelContext->getToken();
-        $transactionIdEntity = $this->findByIdentifier($identifier, $salesChannelContext->getContext());
+
+        $criteria = (new Criteria())
+            ->addFilter(new EqualsFilter(TransactionIdEntity::FIELD_IDENTIFIER, $identifier))
+            ->addFilter(new EqualsFilter(TransactionIdEntity::FIELD_PROFILE_ID, $profileConfig->getId()))
+            ->setLimit(1);
+        $transactionIdEntity = $this->transactionIdRepository->search($criteria, $salesChannelContext->getContext())->first();
 
         $transactionId = null;
         try {
             if ($transactionIdEntity === null) {
                 /** @var PaymentInit $paymentInitResponse */
-                $paymentInitResponse = $this->paymentInitService->doRequest(new PaymentInitData($salesChannelContext));
+                $paymentInitResponse = $this->paymentInitService->doRequest(new PaymentInitData($profileConfig, $salesChannelContext->getContext()));
                 if ($paymentInitResponse->isSuccessful()) {
                     $this->transactionIdRepository->upsert([
                         [
                             TransactionIdEntity::FIELD_IDENTIFIER => $identifier,
+                            TransactionIdEntity::FIELD_PROFILE_ID => $profileConfig->getId(),
                             TransactionIdEntity::FIELD_TRANSACTION_ID => $paymentInitResponse->getTransactionId(),
                         ],
                     ], $salesChannelContext->getContext());
@@ -79,37 +97,20 @@ class TransactionIdService
         throw new TransactionIdFetchFailedException();
     }
 
-    protected function findByIdentifier(string $identifier, Context $context): ?TransactionIdEntity
-    {
-        $criteria = (new Criteria())
-            ->addFilter(new EqualsFilter(TransactionIdEntity::FIELD_IDENTIFIER, $identifier))
-            ->setLimit(1);
-
-        return $this->transactionIdRepository
-            ->search($criteria, $context)
-            ->first();
-    }
-
-    protected function findByTransactionId(string $transactionId, Context $context): ?TransactionIdEntity
-    {
-        $criteria = (new Criteria())
-            ->addFilter(new EqualsFilter(TransactionIdEntity::FIELD_TRANSACTION_ID, $transactionId))
-            ->setLimit(1);
-
-        return $this->transactionIdRepository
-            ->search($criteria, $context)
-            ->first();
-    }
-
     public function deleteTransactionId(string $transactionId, Context $context): void
     {
-        $entity = $this->findByTransactionId($transactionId, $context);
-        if ($entity) {
-            $this->transactionIdRepository->delete([
-                [
-                    TransactionIdEntity::FIELD_ID => $entity->getId(),
-                ],
-            ], $context);
+        // do not delete all transactions for the sales-channel-token. Only for the processed transaction-id.
+        $criteria = (new Criteria())
+            ->addFilter(new ContainsFilter(TransactionIdEntity::FIELD_TRANSACTION_ID, $transactionId));
+
+        $ids = $this->transactionIdRepository->searchIds($criteria, $context);
+
+        if (count($ids->getIds())) {
+            $this->transactionIdRepository->delete(array_map(static function ($id) {
+                return [
+                    TransactionIdEntity::FIELD_ID => $id,
+                ];
+            }, $ids->getIds()), $context);
         }
     }
 }

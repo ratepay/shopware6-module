@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Model;
 
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 
@@ -20,7 +21,13 @@ class TransactionIdEntity extends Entity
 
     public const FIELD_IDENTIFIER = 'identifier';
 
+    public const FIELD_PROFILE = 'profile';
+
+    public const FIELD_PROFILE_ID = 'profileId';
+
     public const FIELD_TRANSACTION_ID = 'transactionId';
+
+    public const FIELD_CREATED_AT = 'created_at';
 
     use EntityIdTrait;
 
@@ -30,6 +37,12 @@ class TransactionIdEntity extends Entity
     /** @var string|null */
     protected $transactionId;
 
+    /** @var string|null */
+    protected $profileId;
+
+    /** @var ProfileConfigEntity|null */
+    protected $profile;
+
     public function getIdentifier(): ?string
     {
         return $this->identifier;
@@ -38,5 +51,15 @@ class TransactionIdEntity extends Entity
     public function getTransactionId(): ?string
     {
         return $this->transactionId;
+    }
+
+    public function getProfile(): ?ProfileConfigEntity
+    {
+        return $this->profile;
+    }
+
+    public function getProfileId(): ?string
+    {
+        return $this->profileId;
     }
 }
