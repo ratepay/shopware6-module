@@ -38,7 +38,10 @@ class TransactionIdService
      */
     private $paymentInitService;
 
-    private ProfileConfigService $profileConfigService;
+    /**
+     * @var ProfileConfigService
+     */
+    private $profileConfigService;
 
     public function __construct(
         EntityRepositoryInterface $transactionIdRepository,
