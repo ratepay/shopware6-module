@@ -17,7 +17,7 @@
                     }
                 },
                 "label": {
-                    "birthday": "Birthday"
+                    "birthday": "Date of birth"
                 },
                 "fields": {
                     "accountholder": "First- and lastname (accountholder)",
