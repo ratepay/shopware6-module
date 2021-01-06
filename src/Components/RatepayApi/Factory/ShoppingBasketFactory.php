@@ -42,14 +42,18 @@ class ShoppingBasketFactory extends AbstractFactory
                 $item = $qty;
                 /** @var QuantityPriceDefinition $priceDefinition */
                 $priceDefinition = $item->getPriceDefinition();
-                $taxRule = $priceDefinition->getTaxRules()->first();
+                if (method_exists($priceDefinition, 'getTaxRules')) {
+                    $taxRule = $priceDefinition->getTaxRules()->first();
+                    $price = $priceDefinition->getPrice();
+                }
+
                 $basket->getItems()->addItem(
                     (new ShoppingBasket\Items\Item())
                         ->setArticleNumber($item->getId())
                         ->setDescription($item->getLabel())
                         ->setQuantity($priceDefinition->getQuantity())
-                        ->setUnitPriceGross($priceDefinition->getPrice())
-                        ->setTaxRate($taxRule ? $taxRule->getTaxRate() : 0)
+                        ->setUnitPriceGross($item->getPrice() ? $item->getPrice()->getUnitPrice() : (isset($price) ? $price : 0))
+                        ->setTaxRate(isset($taxRule) ? $taxRule->getTaxRate() : 0)
                 );
             } elseif ($id === 'shipping') {
                 if ($order->getShippingCosts()->getTotalPrice()) {

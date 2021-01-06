@@ -271,8 +271,8 @@ Component.register('ratepay-order-management', {
                 .addItem(
                     this.order.id,
                     this.addDebit.data.name,
-                    this.addDebit.data.amount[0].gross,
-                    this.addDebit.data.tax.taxRate
+                    this.addDebit.data.amount,
+                    this.addDebit.data.taxId
                 ).then(response => {
                     this.showMessage(response, 'addDebit');
                     this.loadList().then(() => {
@@ -297,8 +297,8 @@ Component.register('ratepay-order-management', {
                 .addItem(
                     this.order.id,
                     this.addCredit.data.name,
-                    (this.addCredit.data.amount[0].gross * -1),
-                    this.addCredit.data.tax.taxRate
+                    this.addCredit.data.amount * -1,
+                    this.addCredit.data.taxId
                 ).then(response => {
                     this.showMessage(response, 'addCredit');
                     this.loadList().then(() => {
@@ -330,15 +330,7 @@ Component.register('ratepay-order-management', {
                 return false;
             }
 
-            if (!creditDebit.amount[0]) {
-                this.showMessage({
-                    success: false,
-                    message: this.$tc('ratepay.orderManagement.messages.creditDebitValidation.missingAmount')
-                });
-                return false;
-            }
-
-            if (creditDebit.amount[0].gross <= 0) {
+            if (creditDebit.amount <= 0) {
                 this.showMessage({
                     success: false,
                     message: this.$tc('ratepay.orderManagement.messages.creditDebitValidation.amountTooLow')

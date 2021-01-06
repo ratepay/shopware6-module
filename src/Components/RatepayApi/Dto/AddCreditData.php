@@ -13,6 +13,8 @@ use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Order\IdStruct;
 use Shopware\Core\Checkout\Cart\Order\OrderConverter;
 use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
+use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRule;
+use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRuleCollection;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Uuid\Uuid;
 
@@ -30,18 +32,13 @@ class AddCreditData extends OrderOperationData
             ->setLabel($label)
             ->setDescription($label)
             ->setPayload([])
-            ->setPriceDefinition(QuantityPriceDefinition::fromArray([
-                'isCalculated' => true,
-                'price' => $grossAmount,
-                'quantity' => 1,
-                'precision' => $order->getCurrency()->getDecimalPrecision(),
-                'taxRules' => [
-                    [
-                        'taxRate' => $taxRate,
-                        'percentage' => 100,
-                    ],
-                ],
-            ]));
+            ->setPriceDefinition(new QuantityPriceDefinition(
+                $grossAmount,
+                new TaxRuleCollection([new TaxRule($taxRate, 100)]),
+                $order->getCurrency()->getDecimalPrecision(),
+                1,
+                true)
+            );
         $lineItem->addExtension(OrderConverter::ORIGINAL_ID, new IdStruct($lineItem->getId()));
 
         parent::__construct($order, self::OPERATION_ADD, [$lineItem], false);

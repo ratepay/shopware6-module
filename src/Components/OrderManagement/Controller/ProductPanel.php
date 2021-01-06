@@ -22,6 +22,7 @@ use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentCreditServ
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentDeliverService;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentReturnService;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
+use Shopware\Core\Checkout\Cart\Order\OrderConverter;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -52,13 +53,20 @@ class ProductPanel extends AbstractController
      */
     private $requestServicesByOperation;
 
+    /**
+     * @var OrderConverter
+     */
+    private $orderConverter;
+
     public function __construct(
+        OrderConverter $orderConverter,
         EntityRepositoryInterface $orderRepository,
         PaymentDeliverService $paymentDeliverService,
         PaymentReturnService $paymentReturnService,
         PaymentCancelService $paymentCancelService,
         PaymentCreditService $creditService
     ) {
+        $this->orderConverter = $orderConverter;
         $this->orderRepository = $orderRepository;
         $this->creditService = $creditService;
 
@@ -212,22 +220,23 @@ class ProductPanel extends AbstractController
     {
         $name = $request->request->get('name');
         $grossAmount = $request->request->get('grossAmount');
-        $taxRate = $request->request->get('taxRate');
+        $taxRuleId = $request->request->get('taxId');
 
         $order = $this->fetchOrder($context, $orderId);
 
-        $response = $this->creditService->doRequest($context, new AddCreditData($order, $name, $grossAmount, $taxRate));
+        $salesChannelContext = $this->orderConverter->assembleSalesChannelContext($order, $context);
+        $taxRule = $salesChannelContext->getTaxRules()->get($taxRuleId)->getRules()->first();
+        $response = $this->creditService->doRequest($context, new AddCreditData($order, $name, $grossAmount, $taxRule ? $taxRule->getTaxRate() : 0));
 
         if ($response->getResponse()->isSuccessful()) {
             return $this->json([
                 'success' => true,
             ], 200);
-        } else {
-            return $this->json([
-                'success' => false,
-                'message' => $response->getResponse()->getReasonMessage(),
-            ], 200);
         }
+        return $this->json([
+            'success' => false,
+            'message' => $response->getResponse()->getReasonMessage(),
+        ], 200);
     }
 
     /**

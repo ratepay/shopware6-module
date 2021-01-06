@@ -136,6 +136,7 @@
         <template>
             <label>{{ $t('ratepay.orderManagement.modal.addDebit.label.name') }}</label>
             <sw-text-field :value="addDebit.data.name" v-model="addDebit.data.name"></sw-text-field>
+            <sw-number-field class="rp-price-field" v-model="addDebit.data.amount"></sw-number-field>
             <label>{{ $t('ratepay.orderManagement.modal.addDebit.label.tax') }}</label>
             <sw-field type="select"
                       name="sw-field--product-taxId"
@@ -150,13 +151,6 @@
                     {{ tax.name }}
                 </option>
             </sw-field>
-            <sw-price-field class="rp-price-field hide-lock"
-                            :taxRate="addDebit.data.tax"
-                            :price="addDebit.data.amount"
-                            :currency="order.currency"
-                            :grossLabel="$tc('ratepay.orderManagement.modal.addDebit.label.amountGross')"
-                            :netLabel="$tc('ratepay.orderManagement.modal.addDebit.label.amountNet')">
-            </sw-price-field>
         </template>
         <template slot="modal-footer">
             <sw-button-process
@@ -175,6 +169,7 @@
         <template>
             <label>{{ $t('ratepay.orderManagement.modal.addCredit.label.name') }}</label>
             <sw-text-field :value="addCredit.data.name" v-model="addCredit.data.name"></sw-text-field>
+            <sw-number-field class="rp-price-field" v-model="addCredit.data.amount"></sw-number-field>
             <label>{{ $t('ratepay.orderManagement.modal.addCredit.label.tax') }}</label>
             <sw-field type="select"
                       name="sw-field--product-taxId"
@@ -189,13 +184,6 @@
                     {{ tax.name }}
                 </option>
             </sw-field>
-            <sw-price-field class="rp-price-field hide-lock"
-                            :taxRate="addCredit.data.tax"
-                            :price="addCredit.data.amount"
-                            :currency="order.currency"
-                            :grossLabel="$tc('ratepay.orderManagement.modal.addCredit.label.amountGross')"
-                            :netLabel="$tc('ratepay.orderManagement.modal.addCredit.label.amountNet')">
-            </sw-price-field>
         </template>
         <template slot="modal-footer">
             <sw-button-process
