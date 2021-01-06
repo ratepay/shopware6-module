@@ -27,10 +27,12 @@ class Migration1605784192TransactionIds extends MigrationStep
             CREATE TABLE `ratepay_transaction_id_temp` (
                 `id` binary(16) NOT NULL,
                 `identifier` varchar(255) NOT NULL,
+                `profile_id` binary(16) NOT NULL,
                 `transaction_id` varchar(255) NOT NULL,
                 `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (`id`),
-                UNIQUE(`identifier`)
+                FOREIGN KEY (`profile_id`) REFERENCES `ratepay_profile_config` (`id`),
+                UNIQUE KEY `identifier` (`identifier`,`profile_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         ');
     }
