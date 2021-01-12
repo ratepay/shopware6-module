@@ -10,13 +10,30 @@
 namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 
 use RatePAY\Model\Request\SubModel\Content\Customer;
+use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class CustomerFactory extends AbstractFactory
 {
+    /**
+     * @var ConfigService
+     */
+    private $configService;
+
+    public function __construct(
+        EventDispatcherInterface $eventDispatcher,
+        RequestStack $requestStack,
+        ConfigService $configService
+    ) {
+        parent::__construct($eventDispatcher, $requestStack);
+        $this->configService = $configService;
+    }
+
     protected function _getData(IRequestData $requestData): ?object
     {
         /** @var PaymentRequestData $requestData */
@@ -135,6 +152,18 @@ class CustomerFactory extends AbstractFactory
         $company = $address->getCompany();
         if (!empty($company)) {
             $addressModel->setCompany($address->getCompany());
+        }
+
+        switch ($this->configService->getSubmitAdditionalAddress()) {
+            case 'line-1':
+                $addressModel->setStreetAdditional($address->getAdditionalAddressLine1());
+                break;
+            case 'line-2':
+                $addressModel->setStreetAdditional($address->getAdditionalAddressLine2());
+                break;
+            case 'combined':
+                $addressModel->setStreetAdditional($address->getAdditionalAddressLine1() . ' ' . $address->getAdditionalAddressLine2());
+                break;
         }
 
         return $addressModel;

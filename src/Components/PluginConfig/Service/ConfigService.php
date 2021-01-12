@@ -99,6 +99,13 @@ class ConfigService
         return $config['bidirectionalityStatusFullReturn'] ?? '';
     }
 
+    public function getSubmitAdditionalAddress(): string
+    {
+        $config = $this->getPluginConfiguration();
+
+        return $config['additionalAddressLine'] ?? 'disabled';
+    }
+
     public function getPaymentStatusForMethod(PaymentMethodEntity $paymentMethod): ?string
     {
         $config = $this->getPluginConfiguration();
