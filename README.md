@@ -35,6 +35,7 @@
 ### Version 1.1.0 - WIP
 - RATESWSX-149: fixed translation issue
 - RATESWSX-151: fixed missing dependency during `administration:build` (`node_modules`)
+- RATESWSX-157: api-logs: add search function
 
 ### Version 1.0.0
 - initial release
