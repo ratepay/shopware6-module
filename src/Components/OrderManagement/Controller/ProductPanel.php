@@ -233,6 +233,7 @@ class ProductPanel extends AbstractController
                 'success' => true,
             ], 200);
         }
+
         return $this->json([
             'success' => false,
             'message' => $response->getResponse()->getReasonMessage(),

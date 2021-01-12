@@ -56,8 +56,7 @@
                     "label": {
                         "name": "Bezeichnung",
                         "tax": "Steuersatz",
-                        "amountGross": "Betrag (Brutto)",
-                        "amountNet": "Betrag (Netto)"
+                        "amount": "Betrag (Brutto)"
                     },
                     "placeholder": {
                         "tax": "Wähle einen Steuersatz aus ..."
@@ -70,8 +69,7 @@
                     "label": {
                         "name": "Bezeichnung",
                         "tax": "Steuersatz",
-                        "amountGross": "Betrag (Brutto)",
-                        "amountNet": "Betrag (Netto)"
+                        "amount": "Betrag (Brutto)"
                     },
                     "placeholder": {
                         "tax": "Wähle einen Steuersatz aus ..."
