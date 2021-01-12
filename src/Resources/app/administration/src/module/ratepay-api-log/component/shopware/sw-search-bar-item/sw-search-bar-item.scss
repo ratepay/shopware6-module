@@ -1,0 +1,16 @@
+.sw-search-bar-item__label.ratepay-api-log-search-result {
+    .sw-highlight-text {
+        display: inline;
+    }
+
+    .order-info {
+        font-size: 12px;
+
+        span + span {
+            &::before {
+                display: inline;
+                content: ' - ';
+            }
+        }
+    }
+}

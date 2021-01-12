@@ -8,6 +8,15 @@
 {% block ratepay_api_log_list %}
 <sw-page class="ratepay-log-viewer-list">
 
+    {% block ratepay_api_log_list_search_bar %}
+        <template #search-bar>
+            <sw-search-bar initialSearchType="ratepay_api_log"
+                           :initialSearch="searchTerm"
+                           @search="onSearch">
+            </sw-search-bar>
+        </template>
+    {% endblock %}
+
     <template slot="smart-bar-header">
         <h2>{{ $t('ratepay.apiLog.componentTitle') }}</h2>
     </template>

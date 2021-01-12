@@ -1,4 +1,12 @@
 {
+    "global": {
+        "entities": {
+            "ratepay_api_log": "Ratepay API-Logs"
+        },
+        "placeholderSearchBar": {
+            "ratepay_api_log": "Ratepay API-Logs durchsuchen"
+        }
+    },
     "ratepay": {
         "apiLog": {
             "componentTitle": "Ratepay API-Logs",

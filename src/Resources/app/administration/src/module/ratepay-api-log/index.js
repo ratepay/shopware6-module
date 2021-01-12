@@ -6,6 +6,7 @@
  */
 
 import './page/ratepay-api-log-list';
+import './component/shopware/sw-search-bar-item';
 
 import deDE from './snippet/de-DE.json';
 import enGB from "./snippet/en-GB.json";

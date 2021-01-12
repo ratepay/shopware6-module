@@ -31,7 +31,9 @@ Component.register('ratepay-api-log-list', {
         return {
             repository: null,
             entities: null,
-            modalItem: null
+            modalItem: null,
+            searchTerm: null,
+            initialLogId: null
         };
     },
 
@@ -97,22 +99,45 @@ Component.register('ratepay-api-log-list', {
     },
 
     created() {
+        this.searchTerm = this.$route.query.term !== undefined ?  this.$route.query.term.trim() : "";
+        this.initalLogId = this.$route.query.logId !== undefined ?  this.$route.query.logId.trim() : null;
         this.repository = this.repositoryFactory.create('ratepay_api_log');
-        let criteria = new Criteria();
-        criteria.addSorting(Criteria.sort('createdAt', 'DESC'));
-        this.repository
-            .search(criteria, Shopware.Context.api)
-            .then((result) => {
-                this.entities = result;
-            });
-
         hljs.registerLanguage('xml', hljsXml);
         hljs.configure({useBR: true});
+        this.loadData();
+    },
+
+    watch: {
+        $route() {
+            this.searchTerm = this.$route.query.term !== undefined ?  this.$route.query.term.trim() : "";
+            this.initalLogId = this.$route.query.logId !== undefined ?  this.$route.query.logId.trim() : null;
+            this.loadData();
+        }
     },
 
     methods: {
         formatXml(str) {
             return hljs.highlight('xml', xmlFormatter(str)).value
+        },
+        loadData() {
+            let criteria = new Criteria();
+            if(this.searchTerm.length > 0) {
+                criteria.addFilter(Criteria.contains('additionalData', this.searchTerm))
+            }
+            criteria.addSorting(Criteria.sort('createdAt', 'DESC'));
+            this.repository
+                .search(criteria, Shopware.Context.api)
+                .then((result) => {
+                    this.entities = result;
+                    if(this.initalLogId && this.entities.has(this.initalLogId)) {
+                        this.modalItem = result.get(this.initalLogId);
+                    }
+                });
+        },
+        onSearch(searchTerm) {
+            this.initalLogId = null;
+            this.searchTerm = searchTerm.trim();
+            this.loadData();
         }
     }
 });

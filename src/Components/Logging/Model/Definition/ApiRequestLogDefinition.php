@@ -12,6 +12,7 @@ namespace Ratepay\RpayPayments\Components\Logging\Model\Definition;
 use Ratepay\RpayPayments\Components\Logging\Model\ApiRequestLogEntity;
 use Ratepay\RpayPayments\Components\Logging\Model\Collection\ApiRequestLogCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\CreatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\AllowHtml;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
@@ -38,6 +39,13 @@ class ApiRequestLogDefinition extends EntityDefinition
     public function getCollectionClass(): string
     {
         return ApiRequestLogCollection::class;
+    }
+
+    protected function defaultFields(): array
+    {
+        return [
+            new CreatedAtField(),
+        ];
     }
 
     protected function defineFields(): FieldCollection

@@ -1,0 +1,26 @@
+{% block sw_search_bar_item_cms_page %}
+    {% parent %}
+
+    {% block sw_search_bar_item_ratepay_api_log %}
+        <router-link v-else-if="type === 'ratepay_api_log'"
+                     v-bind:to="{ name: 'ratepay.api.log.list', query: { logId: item.id, term: searchTerm } }"
+                     ref="routerLink"
+                     class="sw-search-bar-item__link">
+            {% block sw_search_bar_item_ratepay_api_log_label %}
+                <span class="sw-search-bar-item__label ratepay-api-log-search-result">
+                    <div>
+                        <sw-highlight-text v-bind:searchTerm="searchTerm"
+                                           v-bind:text="item.additionalData.transactionId">
+                        </sw-highlight-text>
+                        <span>({{ item.operation }})</span>
+                    </div>
+                    <div class="order-info" v-if="item.additionalData.orderNumber">
+                        <span class="order-info--number">{{ item.additionalData.orderNumber }}</span>
+                        <span v-if="item.additionalData.mail" class="order-info--mail">{{ item.additionalData.mail }}</span>
+                        <span v-if="item.additionalData.firstName" class="order-info--name">{{ item.additionalData.firstName }} {{ item.additionalData.lastName }}</span>
+                    </div>
+                </span>
+            {% endblock %}
+        </router-link>
+    {% endblock %}
+{% endblock %}

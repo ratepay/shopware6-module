@@ -30,6 +30,8 @@ class ApiRequestLogEntity extends Entity
 
     public const FIELD_ADDITIONAL_DATA = 'additionalData';
 
+    public const FIELD_CREATED_AT = 'createdAt';
+
     use EntityIdTrait;
 
     /**
