@@ -173,7 +173,7 @@
         <input-field type="single-select">
             <name>additionalAddressLine</name>
             <options>
-                <option><id>disabled</id><name>Disable</name><name lang="de-DE">Fehlgeschlagen</name></option>
+                <option><id>disabled</id><name>Disable</name><name lang="de-DE">Deaktiviert</name></option>
                 <option><id>line-1</id><name>Additional address line 1</name><name lang="de-DE">Adresszusatz Zeile 1</name></option>
                 <option><id>line-2</id><name>Additional address line 2</name><name lang="de-DE">Adresszusatz Zeile 2</name></option>
                 <option><id>combined</id><name>Additional address line 1 + line 2 (concatenated by a space)</name><name lang="de-DE">Adresszusatz Zeile 1 + Adresszusatz Zeile 2 (kombiniert, getrennt mit einem Leerzeichen)</name></option>
