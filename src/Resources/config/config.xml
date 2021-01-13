@@ -178,7 +178,7 @@
                 <option><id>line-1</id><name>Additional address line 1</name><name lang="de-DE">Adresszusatz Zeile 1</name></option>
                 <option><id>line-2</id><name>Additional address line 2</name><name lang="de-DE">Adresszusatz Zeile 2</name></option>
             </options>
-            <defaultValue>disable</defaultValue>
+            <defaultValue>disabled</defaultValue>
             <label>Submit additional address line</label>
             <label lang="de-DE">Übertrage Adresszusatz</label>
         </input-field>
