@@ -14,6 +14,9 @@ use RatePAY\Model\Request\SubModel\Head\External\Tracking;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 
+/**
+ * @method External getData(AbstractRequestData $requestData)
+ */
 class ExternalFactory extends AbstractFactory
 {
     protected function isSupported(AbstractRequestData $requestData): bool
@@ -25,24 +28,27 @@ class ExternalFactory extends AbstractFactory
     {
         /** @var OrderOperationData $requestData */
         $order = $requestData->getOrder();
-        $delivery = $order->getDeliveries()->first();
-        if ($delivery && count($delivery->getTrackingCodes()) > 0) {
-            $trackingCode = $delivery->getTrackingCodes()[0];
-            $external = new External();
-            $tracking = new Tracking();
-            $tracking->setId($trackingCode);
-            $supportedMethods = ['DHL', 'DPD', 'GLS', 'HLG', 'HVS', 'OTH', 'TNT', 'UPS'];
-            foreach ($supportedMethods as $supportedMethod) {
-                if (strpos($delivery->getShippingMethod()->getName(), $supportedMethod) === 0) {
-                    $tracking->setProvider($supportedMethod);
-                    break;
+
+        $external = new External();
+        $external->setOrderId($order->getOrderNumber());
+
+        if ($requestData->getOperation() === OrderOperationData::OPERATION_DELIVER) {
+            $delivery = $order->getDeliveries()->first();
+            if ($delivery && count($delivery->getTrackingCodes()) > 0) {
+                $trackingCode = $delivery->getTrackingCodes()[0];
+
+                $tracking = new Tracking();
+                $tracking->setId($trackingCode);
+                $supportedMethods = ['DHL', 'DPD', 'GLS', 'HLG', 'HVS', 'OTH', 'TNT', 'UPS'];
+                foreach ($supportedMethods as $supportedMethod) {
+                    if (strpos($delivery->getShippingMethod()->getName(), $supportedMethod) === 0) {
+                        $tracking->setProvider($supportedMethod);
+                        break;
+                    }
                 }
+                $external->setTracking($tracking);
             }
-            $external->setTracking($tracking);
-
-            return $external;
         }
-
-        return null;
+        return $external;
     }
 }

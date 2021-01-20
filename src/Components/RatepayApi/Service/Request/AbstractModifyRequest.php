@@ -17,6 +17,7 @@ use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundExcep
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
+use Ratepay\RpayPayments\Components\RatepayApi\Factory\ExternalFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -52,16 +53,22 @@ abstract class AbstractModifyRequest extends AbstractRequest
      * @var EntityRepositoryInterface
      */
     private $profileConfigRepository;
+    /**
+     * @var ExternalFactory
+     */
+    private $externalFactory;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         HeadFactory $headFactory,
         EntityRepositoryInterface $profileConfigRepository,
-        ShoppingBasketFactory $shoppingBasketFactory
+        ShoppingBasketFactory $shoppingBasketFactory,
+        ExternalFactory $externalFactory
     ) {
         parent::__construct($eventDispatcher, $headFactory);
         $this->shoppingBasketFactory = $shoppingBasketFactory;
         $this->profileConfigRepository = $profileConfigRepository;
+        $this->externalFactory = $externalFactory;
     }
 
     protected function getProfileConfig(AbstractRequestData $requestData): ProfileConfigEntity
@@ -89,13 +96,7 @@ abstract class AbstractModifyRequest extends AbstractRequest
     {
         /** @var OrderOperationData $requestData */
         $head = parent::getRequestHead($requestData);
-        $head->setExternal($head->getExternal() ?: new Head\External());
-        $head->getExternal()->setOrderId($requestData->getOrder()->getOrderNumber());
-
-        /** @var RatepayOrderDataEntity $orderExtension */
-        $orderExtension = $requestData->getOrder()->getExtension(OrderExtension::EXTENSION_NAME);
-        $head->setTransactionId($orderExtension->getTransactionId());
-
+        $head->setExternal($this->externalFactory->getData($requestData));
         return $head;
     }
 

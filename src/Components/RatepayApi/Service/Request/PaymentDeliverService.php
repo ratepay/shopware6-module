@@ -39,11 +39,6 @@ class PaymentDeliverService extends AbstractModifyRequest
      */
     private $invoiceFactory;
 
-    /**
-     * @var ExternalFactory
-     */
-    private $externalFactory;
-
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         HeadFactory $headFactory,
@@ -52,9 +47,8 @@ class PaymentDeliverService extends AbstractModifyRequest
         InvoiceFactory $invoiceFactory,
         ExternalFactory $externalFactory
     ) {
-        parent::__construct($eventDispatcher, $headFactory, $profileConfigRepository, $shoppingBasketFactory);
+        parent::__construct($eventDispatcher, $headFactory, $profileConfigRepository, $shoppingBasketFactory, $externalFactory);
         $this->invoiceFactory = $invoiceFactory;
-        $this->externalFactory = $externalFactory;
     }
 
     protected function getRequestContent(AbstractRequestData $requestData): ?Content
@@ -66,16 +60,5 @@ class PaymentDeliverService extends AbstractModifyRequest
         }
 
         return $content;
-    }
-
-    protected function getRequestHead(AbstractRequestData $requestData): Head
-    {
-        $head = parent::getRequestHead($requestData);
-        $data = $this->externalFactory->getData($requestData);
-        if ($data) {
-            $head->setExternal($data);
-        }
-
-        return $head;
     }
 }

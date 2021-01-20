@@ -10,7 +10,11 @@
 namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 
 use RatePAY\Model\Request\SubModel\Head;
+use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -56,6 +60,14 @@ class HeadFactory extends AbstractFactory
                     ->setProfileId($requestData->getProfileConfig()->getProfileId())
                     ->setSecuritycode($requestData->getProfileConfig()->getSecurityCode())
             );
+
+        if($requestData instanceof PaymentRequestData && $requestData->getRatepayTransactionId()) {
+            $head->setTransactionId($requestData->getRatepayTransactionId());
+        } else if($requestData instanceof OrderOperationData && $requestData->getTransaction()) {
+            /** @var RatepayOrderDataEntity $orderExtension */
+            $orderExtension = $requestData->getOrder()->getExtension(OrderExtension::EXTENSION_NAME);
+            $head->setTransactionId($orderExtension->getTransactionId());
+        }
 
         return $head;
     }

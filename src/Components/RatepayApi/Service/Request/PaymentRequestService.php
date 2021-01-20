@@ -18,6 +18,7 @@ use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigService;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\CustomerFactory;
+use Ratepay\RpayPayments\Components\RatepayApi\Factory\ExternalFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\PaymentFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
@@ -65,6 +66,10 @@ class PaymentRequestService extends AbstractRequest
      * @var TransactionIdService
      */
     private $transactionIdService;
+    /**
+     * @var ExternalFactory
+     */
+    private $externalFactory;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
@@ -73,7 +78,8 @@ class PaymentRequestService extends AbstractRequest
         ProfileConfigService $profileConfigService,
         ShoppingBasketFactory $shoppingBasketFactory,
         CustomerFactory $customerFactory,
-        PaymentFactory $paymentFactory
+        PaymentFactory $paymentFactory,
+        ExternalFactory $externalFactory
     ) {
         parent::__construct($eventDispatcher, $headFactory);
         $this->shoppingBasketFactory = $shoppingBasketFactory;
@@ -81,6 +87,7 @@ class PaymentRequestService extends AbstractRequest
         $this->paymentFactory = $paymentFactory;
         $this->profileConfigService = $profileConfigService;
         $this->transactionIdService = $transactionIdService;
+        $this->externalFactory = $externalFactory;
     }
 
     protected function initRequest(AbstractRequestData $requestData): void
@@ -94,6 +101,7 @@ class PaymentRequestService extends AbstractRequest
 
     protected function getRequestContent(AbstractRequestData $requestData): ?Content
     {
+
         /* @var PaymentRequestData $requestData */
         return (new Content())
             ->setShoppingBasket($this->shoppingBasketFactory->getData($requestData))
@@ -105,12 +113,10 @@ class PaymentRequestService extends AbstractRequest
     {
         /* @var PaymentRequestData $requestData */
         $head = parent::getRequestHead($requestData);
+        $head->setExternal($this->externalFactory->getData($requestData));
         if ($requestData->getRatepayTransactionId()) {
             $head->setTransactionId($requestData->getRatepayTransactionId());
         }
-
-        $head->setExternal($head->getExternal() ?? new Head\External());
-        $head->getExternal()->setOrderId($requestData->getOrder()->getOrderNumber());
 
         return $head;
     }

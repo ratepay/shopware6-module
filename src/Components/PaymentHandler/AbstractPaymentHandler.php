@@ -10,6 +10,7 @@
 namespace Ratepay\RpayPayments\Components\PaymentHandler;
 
 use InvalidArgumentException;
+use RatePAY\Model\Response\PaymentRequest;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\Birthday;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\BirthdayNotBlank;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\IsOfLegalAge;
@@ -111,19 +112,21 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
 
             $this->eventDispatcher->dispatch(new BeforePaymentEvent($paymentRequestData));
 
-            $response = $this->paymentRequestService->doRequest($paymentRequestData);
+            /** @var PaymentRequest $response */
+            $requestBuilder = $this->paymentRequestService->doRequest($paymentRequestData);
+            $response = $requestBuilder->getResponse();
 
-            if ($response->getResponse()->isSuccessful()) {
+            if ($response->isSuccessful()) {
                 $this->eventDispatcher->dispatch(new PaymentSuccessfulEvent(
                     $order,
                     $transaction,
                     $dataBag,
                     $salesChannelContext,
-                    $response->getResponse()
+                    $response
                 ));
             } else {
                 // will be catched a few lines later.
-                throw new RatepayException($response->getResponse()->getReasonMessage());
+                throw new RatepayException($response->getCustomerMessage() ? : $response->getReasonMessage());
             }
         } catch (RatepayException $e) {
             $this->eventDispatcher->dispatch(new PaymentFailedEvent(
@@ -131,7 +134,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
                 $transaction,
                 $dataBag,
                 $salesChannelContext,
-                isset($response) ? $response->getResponse() : null,
+                isset($response) ? $response : null,
                 $e->getPrevious() ?? $e
             ));
 
