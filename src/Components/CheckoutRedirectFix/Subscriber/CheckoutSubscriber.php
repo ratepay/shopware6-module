@@ -1,5 +1,4 @@
-<?php
-
+<?php declare(strict_types=1);
 /*
  * Copyright (c) 2020 Ratepay GmbH
  *
@@ -7,9 +6,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
+namespace Ratepay\RpayPayments\Components\CheckoutRedirectFix\Subscriber;
 
 use Ratepay\RpayPayments\Components\Checkout\Service\ExtensionService;
+use Ratepay\RpayPayments\Components\CheckoutRedirectFix\Helper\AddressHelper;
 use Ratepay\RpayPayments\Util\MethodHelper;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
@@ -17,16 +17,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var ExtensionService
-     */
-    protected $extensionService;
-
-    public function __construct(ExtensionService $extensionService)
-    {
-        $this->extensionService = $extensionService;
-    }
-
     public static function getSubscribedEvents(): array
     {
         return [
@@ -34,17 +24,20 @@ class CheckoutSubscriber implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @codeCoverageIgnore
-     */
     public function addRatepayTemplateData(CheckoutConfirmPageLoadedEvent $event): void
     {
         $paymentMethod = $event->getSalesChannelContext()->getPaymentMethod();
         if (MethodHelper::isRatepayMethod($paymentMethod->getHandlerIdentifier()) &&
             $event->getPage()->getPaymentMethods()->has($paymentMethod->getId())
         ) {
+            $customer = $event->getSalesChannelContext()->getCustomer();
             $extension = $event->getPage()->getExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME) ?? new ArrayStruct();
-            $extension->assign($this->extensionService->buildPaymentDataExtension($event->getSalesChannelContext())->getVars());
+            $extension->assign([
+                'validation' => [
+                    'billing_address_md5' => AddressHelper::createMd5Hash($customer->getActiveBillingAddress()),
+                    'shipping_address_md5' => AddressHelper::createMd5Hash($customer->getActiveShippingAddress())
+                ]
+            ]);
             $event->getPage()->addExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME, $extension);
         }
     }

@@ -12,6 +12,10 @@
        readonly
        required="required"
 >
+{% if page.extensions.ratepay.validation %}
+    <input type="hidden" name="ratepay[validation][billing_address_md5]" value="{{ page.extensions.ratepay.validation.billing_address_md5 }}" form="confirmOrderForm"/>
+    <input type="hidden" name="ratepay[validation][shipping_address_md5]" value="{{ page.extensions.ratepay.validation.shipping_address_md5 }}" form="confirmOrderForm"/>
+{% endif %}
 
 {% block ratepay_checkout_fields %}
     {% if (page.extensions.ratepay.company) %}
