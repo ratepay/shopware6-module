@@ -32,16 +32,15 @@
 
 ## Changelog
 
-### Version 1.1.0 - WIP
-- RATESWSX-149: fixed translation issue
-- RATESWSX-150: add compatibility with Shopware 6.3.3.x
-- RATESWSX-150: introduce payment query
-- RATESWSX-150: add payment-lock validation during confirm
-- RATESWSX-150: fix loading of transaction (wrong order)
-- RATESWSX-150: fix duplicate order-data save
-- RATESWSX-151: fixed missing dependency during `administration:build` (`node_modules`)
-- RATESWSX-157: api-logs: add search function 
-- RATESWSX-164: add customer number to requests
+### Version 1.1.0 - Released on 2021-02-15
+* RATESWSX-149 - change translation of "date of birth"
+* RATESWSX-150 - introduce payment query into payment flow
+* RATESWSX-151 - fixed missing dependency during `administration:build` (`node_modules`)
+* RATESWSX-157 - api-logs: add search function
+* RATESWSX-158 - credit/debit: set custom tax rate
+* RATESWSX-160 - add street-additional PaymentRequest operation
+* RATESWSX-161 - Modul 1.0.1 // fehlende Bestellnummer (order-id) in Folgeoperationen
+* RATESWSX-164 - add customer number to PaymentRequest operation
 
 ### Version 1.0.0
 - initial release
