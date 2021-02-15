@@ -32,6 +32,10 @@ class ExternalFactory extends AbstractFactory
         $external = new External();
         $external->setOrderId($order->getOrderNumber());
 
+        if ($requestData->getOperation() === OrderOperationData::OPERATION_REQUEST) {
+            $external->setMerchantConsumerId($order->getOrderCustomer()->getCustomerNumber());
+        }
+
         if ($requestData->getOperation() === OrderOperationData::OPERATION_DELIVER) {
             $delivery = $order->getDeliveries()->first();
             if ($delivery && count($delivery->getTrackingCodes()) > 0) {

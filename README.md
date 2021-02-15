@@ -40,7 +40,8 @@
 - RATESWSX-150: fix loading of transaction (wrong order)
 - RATESWSX-150: fix duplicate order-data save
 - RATESWSX-151: fixed missing dependency during `administration:build` (`node_modules`)
-- RATESWSX-157: api-logs: add search function
+- RATESWSX-157: api-logs: add search function 
+- RATESWSX-164: add customer number to requests
 
 ### Version 1.0.0
 - initial release
