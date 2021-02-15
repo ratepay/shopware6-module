@@ -11,5 +11,5 @@ namespace Ratepay\RpayPayments\Components\PaymentHandler;
 
 class PrepaymentPaymentHandler extends AbstractPaymentHandler
 {
-    const RATEPAY_METHOD = 'PREPAYMENT';
+    public const RATEPAY_METHOD = 'PREPAYMENT';
 }

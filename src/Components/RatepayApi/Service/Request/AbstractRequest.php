@@ -9,21 +9,21 @@
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 
+use InvalidArgumentException;
 use RatePAY\Exception\ExceptionAbstract;
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
 use RatePAY\RequestBuilder;
-use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\BuildEvent;
+use Ratepay\RpayPayments\Components\RatepayApi\Event\InitEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\RequestBuilderFailedEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\RequestDoneEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\ResponseEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RpayPayments\Exception\RatepayException;
-use Shopware\Core\Framework\Context;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 abstract class AbstractRequest
@@ -34,6 +34,10 @@ abstract class AbstractRequest
 
     protected const EVENT_BUILD_HEAD = '.build.head';
 
+    protected const EVENT_BUILD_CONTENT = '.build.content';
+
+    protected const EVENT_INIT_REQUEST = '.init.request';
+
     public const CALL_PAYMENT_REQUEST = 'PaymentRequest';
 
     public const CALL_DELIVER = 'ConfirmationDeliver';
@@ -42,10 +46,9 @@ abstract class AbstractRequest
 
     public const CALL_PROFILE_REQUEST = 'ProfileRequest';
 
-    /**
-     * @var ConfigService
-     */
-    protected $configService;
+    public const CALL_PAYMENT_QUERY = 'PaymentQuery';
+
+    public const CALL_PAYMENT_INIT = 'PaymentInit';
 
     /**
      * @var string
@@ -73,29 +76,29 @@ abstract class AbstractRequest
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
-        ConfigService $configService,
         HeadFactory $headFactory
     ) {
-        $this->configService = $configService;
         $this->headFactory = $headFactory;
         $this->eventDispatcher = $eventDispatcher;
     }
 
+    abstract protected function supportsRequestData(AbstractRequestData $requestData): bool;
+
     /**
      * @throws RatepayException
      */
-    final public function doRequest(Context $context, IRequestData $requestData): RequestBuilder
+    final public function doRequest(AbstractRequestData $requestData): RequestBuilder
     {
-        $profileConfig = $this->getProfileConfig($context, $requestData);
-        if ($profileConfig === null) {
-            throw new ProfileNotFoundException();
+        if (!$this->supportsRequestData($requestData)) {
+            throw new InvalidArgumentException(get_class($requestData) . ' is not supported by ' . self::class);
         }
+        $this->_initRequest($requestData);
 
-        $head = $this->getRequestHead($requestData, $profileConfig);
-        $content = $this->getRequestContent($requestData);
+        $head = $this->_getRequestHead($requestData);
+        $content = $this->_getRequestContent($requestData);
 
         try {
-            $requestBuilder = new RequestBuilder($profileConfig->isSandbox());
+            $requestBuilder = new RequestBuilder($requestData->getProfileConfig()->isSandbox());
             $requestBuilder = $requestBuilder->__call('call' . $this->_operation, $content ? [$head, $content] : [$head]);
             if ($this->_subType) {
                 $requestBuilder = $requestBuilder->subtype($this->_subType);
@@ -105,39 +108,68 @@ abstract class AbstractRequest
             throw new RatepayException($e->getMessage(), $e->getCode(), $e);
         }
 
-        $this->eventDispatcher->dispatch(new RequestDoneEvent($context, $requestData, $requestBuilder));
+        $this->eventDispatcher->dispatch(new RequestDoneEvent($requestData, $requestBuilder));
 
-        $requestEvent = new ResponseEvent($context, $requestBuilder, $requestData);
-        if ($requestBuilder->getResponse()->isSuccessful()) {
-            $this->eventDispatcher->dispatch($requestEvent, get_class($this) . self::EVENT_SUCCESSFUL);
-        } else {
-            $this->eventDispatcher->dispatch($requestEvent, get_class($this) . self::EVENT_FAILED);
-        }
+        $eventName = $requestBuilder->getResponse()->isSuccessful() ? self::EVENT_SUCCESSFUL : self::EVENT_FAILED;
+        $this->eventDispatcher->dispatch(new ResponseEvent(
+            $requestData->getContext(),
+            $requestBuilder,
+            $requestData
+        ), get_class($this) . $eventName);
 
         return $requestBuilder;
     }
 
-    abstract protected function getProfileConfig(Context $context, IRequestData $requestData): ProfileConfigEntity;
-
-    protected function getRequestHead(IRequestData $requestData, ProfileConfigEntity $profileConfig): Head
+    protected function getProfileConfig(AbstractRequestData $requestData): ProfileConfigEntity
     {
-        $head = $this->headFactory->getData($requestData);
-        $head->setCredential(
-            (new Head\Credential())
-                ->setProfileId($profileConfig->getProfileId())
-                ->setSecuritycode($profileConfig->getSecurityCode())
-        );
+        $profileConfig = $requestData->getProfileConfig();
+        if ($profileConfig === null) {
+            throw new ProfileNotFoundException();
+        }
+
+        return $profileConfig;
+    }
+
+    private function _getRequestHead(AbstractRequestData $requestData): Head
+    {
+        $head = $this->getRequestHead($requestData);
+
         /** @var BuildEvent $event */
         $event = $this->eventDispatcher->dispatch(new BuildEvent($requestData, $head), get_class($this) . self::EVENT_BUILD_HEAD);
 
         return $event->getBuildData();
     }
 
-    /**
-     * @return Content
-     */
-    protected function getRequestContent(IRequestData $requestData): ?Content
+    private function _initRequest(AbstractRequestData $requestData): void
+    {
+        $requestData->setProfileConfig($this->getProfileConfig($requestData));
+
+        $this->initRequest($requestData);
+        /* @var BuildEvent $event */
+        $this->eventDispatcher->dispatch(new InitEvent($requestData), get_class($this) . self::EVENT_INIT_REQUEST);
+    }
+
+    protected function getRequestHead(AbstractRequestData $requestData): Head
+    {
+        return $this->headFactory->getData($requestData);
+    }
+
+    private function _getRequestContent(AbstractRequestData $requestData): ?Content
+    {
+        $content = $this->getRequestContent($requestData);
+
+        /** @var BuildEvent $event */
+        $event = $this->eventDispatcher->dispatch(new BuildEvent($requestData, $content), get_class($this) . self::EVENT_BUILD_CONTENT);
+
+        return $event->getBuildData();
+    }
+
+    protected function getRequestContent(AbstractRequestData $requestData): ?Content
     {
         return null;
+    }
+
+    protected function initRequest(AbstractRequestData $requestData): void
+    {
     }
 }

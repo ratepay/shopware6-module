@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
 
 use Ratepay\RpayPayments\Components\PaymentHandler\AbstractPaymentHandler;
+use Ratepay\RpayPayments\Util\DataValidationHelper;
+use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PaymentHandlerRegistry;
 use Shopware\Core\Framework\Validation\BuildValidationEvent;
 use Shopware\Core\Framework\Validation\DataValidationDefinition;
 use Shopware\Core\PlatformRequest;
@@ -28,18 +30,23 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
     /** @var ContainerInterface */
     private $container;
 
+    /**
+     * @var PaymentHandlerRegistry
+     */
+    private $paymentHandlerRegistry;
+
     public function __construct(
         RequestStack $requestStack,
-        ContainerInterface $container
+        PaymentHandlerRegistry $paymentHandlerRegistry
     ) {
         $this->requestStack = $requestStack;
-        $this->container = $container;
+        $this->paymentHandlerRegistry = $paymentHandlerRegistry;
     }
 
     public static function getSubscribedEvents(): array
     {
         return [
-            'framework.validation.order.create' => 'validateOrderData',
+            'framework.validation.order.create' => ['validateOrderData', 10],
         ];
     }
 
@@ -51,34 +58,23 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $context = $this->getContextFromRequest($request);
-        $paymentHandlerIdentifier = $context->getPaymentMethod()->getHandlerIdentifier();
+        $salesChannelContext = $this->getSalesContextFromRequest($request);
+        $paymentHandlerIdentifier = $salesChannelContext->getPaymentMethod()->getHandlerIdentifier();
 
         if (strpos($paymentHandlerIdentifier, 'RpayPayments') !== false) {
             /** @var $paymentHandler AbstractPaymentHandler */
-            $paymentHandler = $this->container->get($paymentHandlerIdentifier);
+            $paymentHandler = $this->paymentHandlerRegistry->getHandler($paymentHandlerIdentifier);
 
-            $validationDefinitions = $paymentHandler->getValidationDefinitions($request, $context);
+            $validationDefinitions = $paymentHandler->getValidationDefinitions($request, $salesChannelContext);
 
             $definitions = new DataValidationDefinition();
-            $this->addSubConstraints($definitions, $validationDefinitions);
+            DataValidationHelper::addSubConstraints($definitions, $validationDefinitions);
             $event->getDefinition()->addSub('ratepay', $definitions);
         }
     }
 
-    private function getContextFromRequest($request): SalesChannelContext
+    private function getSalesContextFromRequest($request): SalesChannelContext
     {
         return $request->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_CONTEXT_OBJECT);
-    }
-
-    protected function addSubConstraints(DataValidationDefinition $parent, array $children)
-    {
-        foreach ($children as $key => $constraints) {
-            if ($constraints instanceof DataValidationDefinition) {
-                $parent->addSub($key, $constraints);
-            } else {
-                call_user_func_array([$parent, 'add'], array_merge([$key], $constraints));
-            }
-        }
     }
 }

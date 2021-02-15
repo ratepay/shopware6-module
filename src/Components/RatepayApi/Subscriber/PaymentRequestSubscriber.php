@@ -14,6 +14,7 @@ use Ratepay\RpayPayments\Components\Checkout\Service\ExtensionService;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\ResponseEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
+use Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentRequestSubscriber implements EventSubscriberInterface
@@ -23,9 +24,16 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
      */
     private $extensionService;
 
+    /**
+     * @var TransactionIdService
+     */
+    private $transactionIdService;
+
     public function __construct(
+        TransactionIdService $transactionIdService,
         ExtensionService $extensionService
     ) {
+        $this->transactionIdService = $transactionIdService;
         $this->extensionService = $extensionService;
     }
 
@@ -42,17 +50,18 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
         /** @var PaymentRequestData $requestData */
         $requestData = $requestEvent->getRequestData();
 
+        $this->transactionIdService->deleteTransactionId($requestData->getRatepayTransactionId(), $requestData->getContext());
+
         /** @var PaymentRequest $responseModel */
         $responseModel = $requestEvent->getRequestBuilder()->getResponse();
-        $requestXml = $requestEvent->getRequestBuilder()->getRequestXmlElement();
 
         $this->extensionService->createOrderExtensionEntity(
             $requestData->getOrder(),
             $responseModel->getTransactionId(),
             $responseModel->getDescriptor(),
-            (string) $requestXml->head->credential->{'profile-id'},
+            $requestData->getProfileConfig()->getProfileId(),
             false,
-            $requestData->getSalesChannelContext()->getContext()
+            $requestData->getContext()
         );
     }
 
@@ -61,9 +70,10 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
         /** @var PaymentRequestData $requestData */
         $requestData = $requestEvent->getRequestData();
 
+        $this->transactionIdService->deleteTransactionId($requestData->getRatepayTransactionId(), $requestData->getContext());
+
         /** @var PaymentRequest $responseModel */
         $responseModel = $requestEvent->getRequestBuilder()->getResponse();
-        $requestXml = $requestEvent->getRequestBuilder()->getRequestXmlElement();
 
         $orderItems = $requestData->getOrder()->getLineItems();
 
@@ -74,18 +84,15 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
                 $lineItems[] = $orderItems->get($id);
             }
         }
-        $this->extensionService->createLineItemExtensionEntities(
-            $lineItems,
-            $requestData->getSalesChannelContext()->getContext()
-        );
+        $this->extensionService->createLineItemExtensionEntities($lineItems, $requestData->getContext());
 
         $this->extensionService->createOrderExtensionEntity(
             $requestData->getOrder(),
             $responseModel->getTransactionId(),
             $responseModel->getDescriptor(),
-            (string) $requestXml->head->credential->{'profile-id'},
+            $requestData->getProfileConfig()->getProfileId(),
             true,
-            $requestData->getSalesChannelContext()->getContext()
+            $requestData->getContext()
         );
     }
 }

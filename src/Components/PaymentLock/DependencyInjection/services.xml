@@ -12,6 +12,7 @@
     <services>
 
         <service id="Ratepay\RpayPayments\Components\PaymentLock\Service\LockService">
+            <argument id="payment_method.repository" type="service"/>
             <argument id="ratepay_payment_lock.repository" type="service"/>
         </service>
 

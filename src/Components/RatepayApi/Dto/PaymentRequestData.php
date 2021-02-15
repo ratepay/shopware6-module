@@ -18,11 +18,6 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 class PaymentRequestData extends OrderOperationData
 {
     /**
-     * @var OrderTransactionEntity
-     */
-    protected $transaction;
-
-    /**
      * @var RequestDataBag
      */
     private $requestDataBag;
@@ -33,22 +28,24 @@ class PaymentRequestData extends OrderOperationData
     private $salesChannelContext;
 
     /**
-     * @var ProfileConfigEntity
+     * @var null
      */
-    private $profileConfig;
+    private $ratepayTransactionId;
 
     public function __construct(
         SalesChannelContext $salesChannelContext,
         OrderEntity $order,
         OrderTransactionEntity $transaction,
         ProfileConfigEntity $profileConfig,
-        RequestDataBag $requestDataBag
+        RequestDataBag $requestDataBag,
+        $ratepayTransactionId
     ) {
-        parent::__construct($order, self::OPERATION_REQUEST, null);
+        parent::__construct($salesChannelContext->getContext(), $order, self::OPERATION_REQUEST, null, false);
         $this->transaction = $transaction;
         $this->requestDataBag = $requestDataBag;
         $this->salesChannelContext = $salesChannelContext;
         $this->profileConfig = $profileConfig;
+        $this->ratepayTransactionId = $ratepayTransactionId;
     }
 
     public function getItems(): array
@@ -68,11 +65,6 @@ class PaymentRequestData extends OrderOperationData
         return $items;
     }
 
-    public function getTransaction(): OrderTransactionEntity
-    {
-        return $this->transaction;
-    }
-
     public function getRequestDataBag(): RequestDataBag
     {
         return $this->requestDataBag;
@@ -83,8 +75,19 @@ class PaymentRequestData extends OrderOperationData
         return $this->salesChannelContext;
     }
 
-    public function getProfileConfig(): ProfileConfigEntity
+    /**
+     * @return null
+     */
+    public function getRatepayTransactionId()
     {
-        return $this->profileConfig;
+        return $this->ratepayTransactionId;
+    }
+
+    /**
+     * @param null $ratepayTransactionId
+     */
+    public function setRatepayTransactionId($ratepayTransactionId): void
+    {
+        $this->ratepayTransactionId = $ratepayTransactionId;
     }
 }

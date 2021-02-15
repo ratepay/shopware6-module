@@ -11,5 +11,5 @@ namespace Ratepay\RpayPayments\Components\PaymentHandler;
 
 class InstallmentZeroPercentPaymentHandler extends AbstractPaymentHandler
 {
-    const RATEPAY_METHOD = 'INSTALLMENT';
+    public const RATEPAY_METHOD = 'INSTALLMENT';
 }

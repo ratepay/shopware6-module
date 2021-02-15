@@ -11,9 +11,7 @@ namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
-use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
-use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\ExternalFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory;
@@ -30,6 +28,10 @@ class PaymentDeliverService extends AbstractModifyRequest
 
     public const EVENT_BUILD_HEAD = self::class . parent::EVENT_BUILD_HEAD;
 
+    public const EVENT_BUILD_CONTENT = self::class . parent::EVENT_BUILD_CONTENT;
+
+    public const EVENT_INIT_REQUEST = self::class . parent::EVENT_INIT_REQUEST;
+
     protected $_operation = self::CALL_DELIVER;
 
     /**
@@ -37,26 +39,19 @@ class PaymentDeliverService extends AbstractModifyRequest
      */
     private $invoiceFactory;
 
-    /**
-     * @var ExternalFactory
-     */
-    private $externalFactory;
-
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
-        ConfigService $configService,
         HeadFactory $headFactory,
         EntityRepositoryInterface $profileConfigRepository,
         ShoppingBasketFactory $shoppingBasketFactory,
         InvoiceFactory $invoiceFactory,
         ExternalFactory $externalFactory
     ) {
-        parent::__construct($eventDispatcher, $configService, $headFactory, $profileConfigRepository, $shoppingBasketFactory);
+        parent::__construct($eventDispatcher, $headFactory, $profileConfigRepository, $shoppingBasketFactory, $externalFactory);
         $this->invoiceFactory = $invoiceFactory;
-        $this->externalFactory = $externalFactory;
     }
 
-    protected function getRequestContent(IRequestData $requestData): ?Content
+    protected function getRequestContent(AbstractRequestData $requestData): ?Content
     {
         /** @var OrderOperationData $requestData */
         $content = parent::getRequestContent($requestData);
@@ -65,16 +60,5 @@ class PaymentDeliverService extends AbstractModifyRequest
         }
 
         return $content;
-    }
-
-    protected function getRequestHead(IRequestData $requestData, ProfileConfigEntity $profileConfig): Head
-    {
-        $head = parent::getRequestHead($requestData, $profileConfig);
-        $data = $this->externalFactory->getData($requestData);
-        if ($data) {
-            $head->setExternal($data);
-        }
-
-        return $head;
     }
 }

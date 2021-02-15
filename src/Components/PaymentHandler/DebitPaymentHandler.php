@@ -9,7 +9,6 @@
 
 namespace Ratepay\RpayPayments\Components\PaymentHandler;
 
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\Request;
 
 class DebitPaymentHandler extends AbstractPaymentHandler
@@ -18,10 +17,11 @@ class DebitPaymentHandler extends AbstractPaymentHandler
 
     public const RATEPAY_METHOD = 'ELV';
 
-    public function getValidationDefinitions(Request $request, SalesChannelContext $salesChannelContext): array
+    public function getValidationDefinitions(Request $request, $baseData): array
     {
-        $validations = parent::getValidationDefinitions($request, $salesChannelContext);
-
-        return array_merge($validations, $this->getDebitConstraints($request, $salesChannelContext));
+        return array_merge(
+            parent::getValidationDefinitions($request, $baseData),
+            $this->getDebitConstraints($request, $baseData)
+        );
     }
 }

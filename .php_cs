@@ -3,12 +3,10 @@
 use PhpCsFixer\Config;
 use PhpCsFixer\Finder;
 
-$header = <<<EOF
-Copyright (c) 2020 Ratepay GmbH
+$header = "Copyright (c) ".date('Y')." Ratepay GmbH
 
 For the full copyright and license information, please view the LICENSE
-file that was distributed with this source code.
-EOF;
+file that was distributed with this source code.";
 
 $finder = Finder::create()->in(__DIR__ . '/src');
 

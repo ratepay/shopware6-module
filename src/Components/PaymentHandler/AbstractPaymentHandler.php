@@ -9,6 +9,8 @@
 
 namespace Ratepay\RpayPayments\Components\PaymentHandler;
 
+use InvalidArgumentException;
+use RatePAY\Model\Response\PaymentRequest;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\Birthday;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\BirthdayNotBlank;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\IsOfLegalAge;
@@ -19,6 +21,7 @@ use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundExcep
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigService;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
+use Ratepay\RpayPayments\Components\RedirectException\Exception\ForwardException;
 use Ratepay\RpayPayments\Exception\RatepayException;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -32,10 +35,11 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    public const ERROR_SNIPPET_VIOLATION_PREFIX = 'error.VIOLATION::';
+    public const ERROR_SNIPPET_VIOLATION_PREFIX = 'VIOLATION::';
 
     /**
      * @var PaymentRequestService
@@ -71,21 +75,25 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
 
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
-        $ratepayData = $dataBag->get('ratepay');
-        if ($ratepayData === null) {
-            // if no fields are submitted via the storefront, variable will be null. to avoid problems with the missing
-            // object, we create a "dummy" object for this key.
-            $dataBag->set('ratepay', new ParameterBag([]));
-        }
+        /** @var ParameterBag $ratepayData */
+        $ratepayData = $dataBag->get('ratepay', new ParameterBag([]));
 
         $order = $this->getOrderWithAssociations($transaction->getOrder(), $salesChannelContext->getContext());
+
+        if ($order === null || $ratepayData->count() === 0) {
+            throw new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'unknown error during payment');
+        }
         try {
+            $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
+            $shippingAddress = $order->getDeliveries()->getShippingAddress()->first();
+
             $profileConfig = $this->profileConfigService->getProfileConfigDefaultParams(
                 $transaction->getOrderTransaction()->getPaymentMethod()->getId(),
-                $order->getAddresses()->get($order->getBillingAddressId())->getCountry()->getIso(),
-                $order->getDeliveries()->getShippingAddress()->first()->getCountry()->getIso(),
+                $billingAddress->getCountry()->getIso(),
+                $shippingAddress->getCountry()->getIso(),
                 $order->getSalesChannelId(),
                 $order->getCurrency()->getIsoCode(),
+                $billingAddress->getId() !== $shippingAddress->getId(),
                 $salesChannelContext->getContext()
             );
 
@@ -98,27 +106,27 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
                 $order,
                 $transaction->getOrderTransaction(),
                 $profileConfig,
-                $dataBag
+                $dataBag,
+                $ratepayData->get('transactionId')
             );
 
-            $this->eventDispatcher->dispatch(new BeforePaymentEvent($paymentRequestData, $salesChannelContext->getContext()));
+            $this->eventDispatcher->dispatch(new BeforePaymentEvent($paymentRequestData));
 
-            $response = $this->paymentRequestService->doRequest(
-                $salesChannelContext->getContext(),
-                $paymentRequestData
-            );
+            /** @var PaymentRequest $response */
+            $requestBuilder = $this->paymentRequestService->doRequest($paymentRequestData);
+            $response = $requestBuilder->getResponse();
 
-            if ($response->getResponse()->isSuccessful()) {
+            if ($response->isSuccessful()) {
                 $this->eventDispatcher->dispatch(new PaymentSuccessfulEvent(
                     $order,
                     $transaction,
                     $dataBag,
                     $salesChannelContext,
-                    $response->getResponse()
+                    $response
                 ));
             } else {
                 // will be catched a few lines later.
-                throw new RatepayException($response->getResponse()->getReasonMessage());
+                throw new RatepayException($response->getCustomerMessage() ? : $response->getReasonMessage());
             }
         } catch (RatepayException $e) {
             $this->eventDispatcher->dispatch(new PaymentFailedEvent(
@@ -126,10 +134,11 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
                 $transaction,
                 $dataBag,
                 $salesChannelContext,
-                isset($response) ? $response->getResponse() : null,
+                isset($response) ? $response : null,
                 $e->getPrevious() ?? $e
             ));
-            throw new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $e->getMessage());
+
+            throw new ForwardException('frontend.account.edit-order.page', ['orderId' => $order->getId()], ['ratepay-errors' => [$e->getMessage()]], new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $e->getMessage()));
         }
     }
 
@@ -141,18 +150,30 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
         return $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($order->getId()), $context)->first();
     }
 
-    public function getValidationDefinitions(Request $request, SalesChannelContext $salesChannelContext): array
+    /**
+     * @param OrderEntity|SalesChannelContext $baseData
+     */
+    public function getValidationDefinitions(Request $request, $baseData): array
     {
-        $validations = [];
+        $validations = [
+            'transactionId' => [
+                new NotBlank(['message' => 'Unknown error.']),
+            ],
+        ];
 
         $ratepayData = $request->get('ratepay');
 
-        if (isset($ratepayData['birthday']) ||
-            (
-                $salesChannelContext->getCustomer()->getBirthday() === null &&
-                empty($salesChannelContext->getCustomer()->getActiveBillingAddress()->getCompany())
-            )
-        ) {
+        if ($baseData instanceof SalesChannelContext) {
+            $birthday = $baseData->getCustomer()->getBirthday();
+            $isCompany = !empty($baseData->getCustomer()->getActiveBillingAddress()->getCompany());
+        } elseif ($baseData instanceof OrderEntity) {
+            $birthday = $baseData->getOrderCustomer()->getCustomer()->getBirthday();
+            $isCompany = !empty($baseData->getAddresses()->get($baseData->getBillingAddressId())->getCompany());
+        } else {
+            throw new InvalidArgumentException('please provide a ' . SalesChannelContext::class . ' or an ' . OrderEntity::class . '. You provided a ' . get_class($baseData) . ' object');
+        }
+
+        if (isset($ratepayData['birthday']) || ($birthday === null && $isCompany === false)) {
             $validations['birthday'] = [
                 new BirthdayNotBlank(),
                 new Birthday(['message' => self::ERROR_SNIPPET_VIOLATION_PREFIX . Birthday::ERROR_NAME]),

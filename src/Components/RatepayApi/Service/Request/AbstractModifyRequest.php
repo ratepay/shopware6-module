@@ -13,14 +13,13 @@ use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
 use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
-use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
+use Ratepay\RpayPayments\Components\RatepayApi\Factory\ExternalFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -54,20 +53,25 @@ abstract class AbstractModifyRequest extends AbstractRequest
      * @var EntityRepositoryInterface
      */
     private $profileConfigRepository;
+    /**
+     * @var ExternalFactory
+     */
+    private $externalFactory;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
-        ConfigService $configService,
         HeadFactory $headFactory,
         EntityRepositoryInterface $profileConfigRepository,
-        ShoppingBasketFactory $shoppingBasketFactory
+        ShoppingBasketFactory $shoppingBasketFactory,
+        ExternalFactory $externalFactory
     ) {
-        parent::__construct($eventDispatcher, $configService, $headFactory);
+        parent::__construct($eventDispatcher, $headFactory);
         $this->shoppingBasketFactory = $shoppingBasketFactory;
         $this->profileConfigRepository = $profileConfigRepository;
+        $this->externalFactory = $externalFactory;
     }
 
-    protected function getProfileConfig(Context $context, IRequestData $requestData): ProfileConfigEntity
+    protected function getProfileConfig(AbstractRequestData $requestData): ProfileConfigEntity
     {
         /** @var OrderOperationData $requestData */
 
@@ -80,7 +84,7 @@ abstract class AbstractModifyRequest extends AbstractRequest
             $extension->getProfileId()
         ));
 
-        $profileConfig = $this->profileConfigRepository->search($criteria, $context)->first();
+        $profileConfig = $this->profileConfigRepository->search($criteria, $requestData->getContext())->first();
         if ($profileConfig === null) {
             throw new ProfileNotFoundException();
         }
@@ -88,26 +92,25 @@ abstract class AbstractModifyRequest extends AbstractRequest
         return $profileConfig;
     }
 
-    protected function getRequestHead(IRequestData $requestData, ProfileConfigEntity $profileConfig): Head
+    protected function getRequestHead(AbstractRequestData $requestData): Head
     {
         /** @var OrderOperationData $requestData */
-        $head = parent::getRequestHead($requestData, $profileConfig);
-        $head->setExternal($head->getExternal() ?: new Head\External());
-        $head->getExternal()->setOrderId($requestData->getOrder()->getOrderNumber());
-
-        /** @var RatepayOrderDataEntity $orderExtension */
-        $orderExtension = $requestData->getOrder()->getExtension(OrderExtension::EXTENSION_NAME);
-        $head->setTransactionId($orderExtension->getTransactionId());
-
+        $head = parent::getRequestHead($requestData);
+        $head->setExternal($this->externalFactory->getData($requestData));
         return $head;
     }
 
-    protected function getRequestContent(IRequestData $requestData): ?Content
+    protected function getRequestContent(AbstractRequestData $requestData): ?Content
     {
         /** @var OrderOperationData $requestData */
         $content = new Content();
         $content->setShoppingBasket($this->shoppingBasketFactory->getData($requestData));
 
         return $content;
+    }
+
+    protected function supportsRequestData(AbstractRequestData $requestData): bool
+    {
+        return $requestData instanceof OrderOperationData;
     }
 }

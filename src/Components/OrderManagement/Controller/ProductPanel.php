@@ -169,8 +169,7 @@ class ProductPanel extends AbstractController
             }
 
             $response = $this->requestServicesByOperation[$operation]->doRequest(
-                $context,
-                new OrderOperationData($order, $operation, $items, $request->request->get('updateStock') == true)
+                new OrderOperationData($context, $order, $operation, $items, $request->request->get('updateStock') == true)
             );
 
             return $this->json([
@@ -226,7 +225,7 @@ class ProductPanel extends AbstractController
 
         $salesChannelContext = $this->orderConverter->assembleSalesChannelContext($order, $context);
         $taxRule = $salesChannelContext->getTaxRules()->get($taxRuleId)->getRules()->first();
-        $response = $this->creditService->doRequest($context, new AddCreditData($order, $name, $grossAmount, $taxRule ? $taxRule->getTaxRate() : 0));
+        $response = $this->creditService->doRequest(new AddCreditData($context, $order, $name, $grossAmount, $taxRule ? $taxRule->getTaxRate() : 0));
 
         if ($response->getResponse()->isSuccessful()) {
             return $this->json([

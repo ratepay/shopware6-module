@@ -28,15 +28,14 @@ class BeforePaymentEvent extends Event implements ShopwareEvent
      */
     private $context;
 
-    public function __construct(PaymentRequestData $paymentRequestData, Context $context)
+    public function __construct(PaymentRequestData $paymentRequestData)
     {
         $this->paymentRequestData = $paymentRequestData;
-        $this->context = $context;
     }
 
     public function getContext(): Context
     {
-        return $this->context;
+        return $this->paymentRequestData->getContext();
     }
 
     public function getPaymentRequestData(): PaymentRequestData

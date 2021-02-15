@@ -18,6 +18,7 @@ use Ratepay\RpayPayments\Util\MethodHelper;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
+use Shopware\Core\Framework\Validation\Exception\ConstraintViolationException;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\AccountOrderController;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,5 +51,20 @@ class AccountOrderControllerDecorator extends AccountOrderController
         $orderRepository = $this->container->get('order.repository');
 
         return $orderRepository->search(CriteriaHelper::getCriteriaForOrder($orderId), $context)->first();
+    }
+
+    protected function renderStorefront(string $view, array $parameters = []): Response
+    {
+        $request = $this->get('request_stack')->getCurrentRequest();
+        $formValidation = $request ? $request->attributes->get('formViolations') : null;
+        if ($formValidation instanceof ConstraintViolationException) {
+            $parameters['formViolations'] = $formValidation;
+        }
+
+        foreach ($request->get('ratepay-errors', []) as $error) {
+            $this->addFlash('danger', $error);
+        }
+
+        return parent::renderStorefront($view, $parameters);
     }
 }

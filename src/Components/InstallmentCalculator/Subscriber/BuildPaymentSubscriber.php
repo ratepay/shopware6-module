@@ -78,7 +78,6 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
                     break;
                 default:
                     throw new InvalidArgumentException('invalid paymentType');
-                    break;
             }
 
             $paymentObject
@@ -99,6 +98,11 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
     {
         /** @var OrderOperationData $requestData */
         $requestData = $event->getRequestData();
+
+        if ($requestData instanceof PaymentRequestData === false) {
+            return $event;
+        }
+
         $paymentMethod = $requestData->getTransaction()->getPaymentMethod();
 
         /** @var ShoppingBasket $basket */

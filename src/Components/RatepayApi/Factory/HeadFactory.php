@@ -10,32 +10,36 @@
 namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 
 use RatePAY\Model\Request\SubModel\Head;
-use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
-use Symfony\Component\HttpFoundation\RequestStack;
+use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * @method getData(AbstractRequestData $requestData) : ?Head
+ */
 class HeadFactory extends AbstractFactory
 {
     private $shopwareVersion;
 
     /**
-     * @var ConfigService
+     * @var string
      */
-    private $configService;
+    private $pluginVersion;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
-        RequestStack $requestStack,
-        ConfigService $configService,
-        $shopwareVersion
+        string $shopwareVersion,
+        string $pluginVersion
     ) {
-        parent::__construct($eventDispatcher, $requestStack);
-        $this->configService = $configService;
+        parent::__construct($eventDispatcher);
         $this->shopwareVersion = $shopwareVersion;
+        $this->pluginVersion = $pluginVersion;
     }
 
-    public function _getData(IRequestData $requestData): ?object
+    public function _getData(AbstractRequestData $requestData): ?object
     {
         $head = new Head();
         $head
@@ -47,11 +51,29 @@ class HeadFactory extends AbstractFactory
                             ->setSystem(
                                 (new Head\Meta\Systems\System())
                                     ->setName('Shopware')
-                                    ->setVersion($this->shopwareVersion . '/' . $this->configService->getPluginVersion())
+                                    ->setVersion($this->shopwareVersion . '/' . $this->pluginVersion)
                             )
                     )
+            )
+            ->setCredential(
+                (new Head\Credential())
+                    ->setProfileId($requestData->getProfileConfig()->getProfileId())
+                    ->setSecuritycode($requestData->getProfileConfig()->getSecurityCode())
             );
 
+        if($requestData instanceof PaymentRequestData && $requestData->getRatepayTransactionId()) {
+            $head->setTransactionId($requestData->getRatepayTransactionId());
+        } else if($requestData instanceof OrderOperationData && $requestData->getTransaction()) {
+            /** @var RatepayOrderDataEntity $orderExtension */
+            $orderExtension = $requestData->getOrder()->getExtension(OrderExtension::EXTENSION_NAME);
+            $head->setTransactionId($orderExtension->getTransactionId());
+        }
+
         return $head;
+    }
+
+    protected function isSupported(AbstractRequestData $requestData): bool
+    {
+        return $requestData instanceof AbstractRequestData;
     }
 }

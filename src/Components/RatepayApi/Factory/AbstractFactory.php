@@ -9,9 +9,9 @@
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\IRequestData;
+use InvalidArgumentException;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\BuildEvent;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -27,14 +27,19 @@ abstract class AbstractFactory
      */
     private $requestStack;
 
-    public function __construct(EventDispatcherInterface $eventDispatcher, RequestStack $requestStack)
+    public function __construct(EventDispatcherInterface $eventDispatcher)
     {
         $this->eventDispatcher = $eventDispatcher;
-        $this->requestStack = $requestStack;
     }
 
-    public function getData(IRequestData $requestData): ?object
+    abstract protected function isSupported(AbstractRequestData $requestData): bool;
+
+    final public function getData(AbstractRequestData $requestData): ?object
     {
+        if (!$this->isSupported($requestData)) {
+            throw new InvalidArgumentException(get_class($requestData) . ' is no supported by ' . self::class);
+        }
+
         $data = $this->_getData($requestData);
         if ($data) {
             /** @var BuildEvent $event */
@@ -45,10 +50,5 @@ abstract class AbstractFactory
         return $data;
     }
 
-    abstract protected function _getData(IRequestData $requestData): ?object;
-
-    protected function getRequest(): ?Request
-    {
-        return $this->requestStack->getCurrentRequest();
-    }
+    abstract protected function _getData(AbstractRequestData $requestData): ?object;
 }

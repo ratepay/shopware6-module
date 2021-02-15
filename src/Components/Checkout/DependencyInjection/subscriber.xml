@@ -22,7 +22,7 @@
 
         <service id="Ratepay\RpayPayments\Components\Checkout\Subscriber\CheckoutValidationSubscriber">
             <argument type="service" id="request_stack"/>
-            <argument type="service" id="service_container"/>
+            <argument type="service" id="Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PaymentHandlerRegistry"/>
         </service>
 
         <service id="Ratepay\RpayPayments\Components\Checkout\Subscriber\PaymentFilterSubscriber" autowire="true" />

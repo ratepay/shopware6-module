@@ -23,5 +23,10 @@
             <argument id="Ratepay\RpayPayments\Components\PaymentLock\Service\LockService" type="service"/>
         </service>
 
+        <service id="Ratepay\RpayPayments\Components\PaymentLock\Subscriber\CheckoutValidationSubscriber">
+            <argument id="request_stack" type="service"/>
+            <argument id="Ratepay\RpayPayments\Components\PaymentLock\Service\LockService" type="service"/>
+        </service>
+
     </services>
 </container>

@@ -16,11 +16,13 @@ use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
 use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRule;
 use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRuleCollection;
 use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
 
 class AddCreditData extends OrderOperationData
 {
     public function __construct(
+        Context $context,
         OrderEntity $order,
         string $label,
         float $grossAmount,
@@ -41,6 +43,6 @@ class AddCreditData extends OrderOperationData
             );
         $lineItem->addExtension(OrderConverter::ORIGINAL_ID, new IdStruct($lineItem->getId()));
 
-        parent::__construct($order, self::OPERATION_ADD, [$lineItem], false);
+        parent::__construct($context, $order, self::OPERATION_ADD, [$lineItem], false);
     }
 }

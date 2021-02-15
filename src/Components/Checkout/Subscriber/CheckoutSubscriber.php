@@ -11,6 +11,7 @@ namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
 
 use Ratepay\RpayPayments\Components\Checkout\Service\ExtensionService;
 use Ratepay\RpayPayments\Util\MethodHelper;
+use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -42,7 +43,8 @@ class CheckoutSubscriber implements EventSubscriberInterface
         if (MethodHelper::isRatepayMethod($paymentMethod->getHandlerIdentifier()) &&
             $event->getPage()->getPaymentMethods()->has($paymentMethod->getId())
         ) {
-            $extension = $this->extensionService->buildPaymentDataExtension($event->getSalesChannelContext());
+            $extension = $event->getPage()->getExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME) ?? new ArrayStruct();
+            $extension->assign($this->extensionService->buildPaymentDataExtension($event->getSalesChannelContext())->getVars());
             $event->getPage()->addExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME, $extension);
         }
     }

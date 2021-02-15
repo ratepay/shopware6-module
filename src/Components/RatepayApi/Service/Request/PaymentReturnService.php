@@ -17,5 +17,9 @@ class PaymentReturnService extends AbstractModifyRequest
 
     public const EVENT_BUILD_HEAD = self::class . parent::EVENT_BUILD_HEAD;
 
+    public const EVENT_BUILD_CONTENT = self::class . parent::EVENT_BUILD_CONTENT;
+
+    public const EVENT_INIT_REQUEST = self::class . parent::EVENT_INIT_REQUEST;
+
     protected $_subType = 'return';
 }

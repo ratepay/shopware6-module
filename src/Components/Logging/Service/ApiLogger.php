@@ -12,7 +12,6 @@ namespace Ratepay\RpayPayments\Components\Logging\Service;
 use Exception;
 use Monolog\Logger;
 use Ratepay\RpayPayments\Components\Logging\Model\ApiRequestLogEntity;
-use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\RequestDoneEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -26,23 +25,23 @@ class ApiLogger
     protected $logRepository;
 
     /**
-     * @var ConfigService
-     */
-    protected $configService;
-
-    /**
      * @var Logger
      */
     protected $logger;
 
+    /**
+     * @var string
+     */
+    private $pluginVersion;
+
     public function __construct(
         EntityRepositoryInterface $logRepository,
-        ConfigService $configService,
-        Logger $logger
+        Logger $logger,
+        string $pluginVersion
     ) {
         $this->logRepository = $logRepository;
-        $this->configService = $configService;
         $this->logger = $logger;
+        $this->pluginVersion = $pluginVersion;
     }
 
     public function logRequest(RequestDoneEvent $requestDoneEvent): void
@@ -54,10 +53,18 @@ class ApiLogger
         $additionalData = [];
 
         $requestData = $requestDoneEvent->getRequestData();
+
+        $requestXmlElement = $requestBuilder->getRequestXmlElement();
+        $responseXmlElement = $requestBuilder->getResponseXmlElement();
+        if (isset($requestXmlElement->head->{'transaction-id'})) {
+            $additionalData['transactionId'] = (string) $requestXmlElement->head->{'transaction-id'};
+        } elseif (isset($responseXmlElement->head->{'transaction-id'})) {
+            $additionalData['transactionId'] = (string) $responseXmlElement->head->{'transaction-id'};
+        }
+
         if ($requestData instanceof OrderOperationData) {
             $order = $requestData->getOrder();
             $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
-            $additionalData['transactionId'] = (string) $requestBuilder->getRequestXmlElement()->head->{'transaction-id'};
             $additionalData['orderNumber'] = $order->getOrderNumber();
             $additionalData['firstName'] = $billingAddress->getFirstName();
             $additionalData['lastName'] = $billingAddress->getLastName();
@@ -84,7 +91,7 @@ class ApiLogger
             $this->logRepository->create(
                 [
                     [
-                        ApiRequestLogEntity::FIELD_VERSION => $this->configService->getPluginVersion(),
+                        ApiRequestLogEntity::FIELD_VERSION => $this->pluginVersion,
                         ApiRequestLogEntity::FIELD_OPERATION => $operation,
                         ApiRequestLogEntity::FIELD_SUB_OPERATION => $operationSubtype,
                         ApiRequestLogEntity::FIELD_RESULT => $result,
@@ -93,7 +100,7 @@ class ApiLogger
                         ApiRequestLogEntity::FIELD_ADDITIONAL_DATA => $additionalData,
                     ],
                 ],
-                $requestDoneEvent->getContext()
+                $requestDoneEvent->getRequestData()->getContext()
             );
         } catch (Exception $exception) {
             $this->logger->error('Ratepay was unable to log request history', [
