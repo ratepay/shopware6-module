@@ -4,7 +4,7 @@
 |Module | Ratepay Payment Plugin for Shopware 6
 |------|----------
 |Author | Interlutions GmbH
-|Shop Version | `6.3.0.2` - `6.3.1.x`
+|Shop Version | `6.3.0.2` - `6.3.5.x`
 |Version | `1.1.0`
 |Link | http://www.ratepay.com
 |Mail | integration@ratepay.com
@@ -39,7 +39,7 @@
 * RATESWSX-157 - api-logs: add search function
 * RATESWSX-158 - credit/debit: set custom tax rate
 * RATESWSX-160 - add street-additional PaymentRequest operation
-* RATESWSX-161 - Modul 1.0.1 // fehlende Bestellnummer (order-id) in Folgeoperationen
+* RATESWSX-161 - add missing oder-id to operation requests
 * RATESWSX-164 - add customer number to PaymentRequest operation
 
 ### Version 1.0.0
