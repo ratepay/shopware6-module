@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2020 Ratepay GmbH
+ * Copyright (c) Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -126,7 +126,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
                 ));
             } else {
                 // will be catched a few lines later.
-                throw new RatepayException($response->getCustomerMessage() ? : $response->getReasonMessage());
+                throw new RatepayException($response->getCustomerMessage() ?: $response->getReasonMessage());
             }
         } catch (RatepayException $e) {
             $this->eventDispatcher->dispatch(new PaymentFailedEvent(

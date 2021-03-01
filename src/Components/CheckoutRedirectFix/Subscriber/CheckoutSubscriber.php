@@ -1,6 +1,9 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 /*
- * Copyright (c) 2020 Ratepay GmbH
+ * Copyright (c) Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -35,8 +38,8 @@ class CheckoutSubscriber implements EventSubscriberInterface
             $extension->assign([
                 'validation' => [
                     'billing_address_md5' => AddressHelper::createMd5Hash($customer->getActiveBillingAddress()),
-                    'shipping_address_md5' => AddressHelper::createMd5Hash($customer->getActiveShippingAddress())
-                ]
+                    'shipping_address_md5' => AddressHelper::createMd5Hash($customer->getActiveShippingAddress()),
+                ],
             ]);
             $event->getPage()->addExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME, $extension);
         }

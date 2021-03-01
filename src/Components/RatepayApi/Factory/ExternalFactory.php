@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2020 Ratepay GmbH
+ * Copyright (c) Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -53,6 +53,7 @@ class ExternalFactory extends AbstractFactory
                 $external->setTracking($tracking);
             }
         }
+
         return $external;
     }
 }

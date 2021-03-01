@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2020 Ratepay GmbH
+ * Copyright (c) Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -66,6 +66,7 @@ class PaymentRequestService extends AbstractRequest
      * @var TransactionIdService
      */
     private $transactionIdService;
+
     /**
      * @var ExternalFactory
      */
@@ -101,7 +102,6 @@ class PaymentRequestService extends AbstractRequest
 
     protected function getRequestContent(AbstractRequestData $requestData): ?Content
     {
-
         /* @var PaymentRequestData $requestData */
         return (new Content())
             ->setShoppingBasket($this->shoppingBasketFactory->getData($requestData))

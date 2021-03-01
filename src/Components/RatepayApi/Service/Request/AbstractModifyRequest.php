@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2020 Ratepay GmbH
+ * Copyright (c) Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -53,6 +53,7 @@ abstract class AbstractModifyRequest extends AbstractRequest
      * @var EntityRepositoryInterface
      */
     private $profileConfigRepository;
+
     /**
      * @var ExternalFactory
      */
@@ -97,6 +98,7 @@ abstract class AbstractModifyRequest extends AbstractRequest
         /** @var OrderOperationData $requestData */
         $head = parent::getRequestHead($requestData);
         $head->setExternal($this->externalFactory->getData($requestData));
+
         return $head;
     }
 

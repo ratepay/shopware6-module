@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2020 Ratepay GmbH
+ * Copyright (c) Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -61,9 +61,9 @@ class HeadFactory extends AbstractFactory
                     ->setSecuritycode($requestData->getProfileConfig()->getSecurityCode())
             );
 
-        if($requestData instanceof PaymentRequestData && $requestData->getRatepayTransactionId()) {
+        if ($requestData instanceof PaymentRequestData && $requestData->getRatepayTransactionId()) {
             $head->setTransactionId($requestData->getRatepayTransactionId());
-        } else if($requestData instanceof OrderOperationData && $requestData->getTransaction()) {
+        } elseif ($requestData instanceof OrderOperationData && $requestData->getTransaction()) {
             /** @var RatepayOrderDataEntity $orderExtension */
             $orderExtension = $requestData->getOrder()->getExtension(OrderExtension::EXTENSION_NAME);
             $head->setTransactionId($orderExtension->getTransactionId());
