@@ -28,18 +28,37 @@
     {% block ratepay_personal_data_bank_account_fields %}
         <div class="form-row">
             <div class="form-group col-sm-4">
-                <input type="text"
-                       class="form-control{% if formViolations.getViolations('/ratepay/bankData/accountHolder') is not empty %} is-invalid{% endif %}"
-                       id="rp-iban-account-holder"
-                       placeholder="{{ "ratepay.storefront.checkout.fields.accountholder"|trans|sw_sanitize }}"
-                       value="{{ page.extensions.ratepay.accountHolder }}"
-                       name="ratepay[bankData][accountHolder]"
-                       form="confirmOrderForm"
-                       readonly
-                       required="required"
-                >
+                <label class="form-label" for="rp-iban-account-holder">
+                    <strong>{{ "ratepay.storefront.checkout.fields.accountHolder"|trans|sw_sanitize }}</strong>
+                </label>
+                {% if page.extensions.ratepay.accountHolders|length == 1 %}
+                    <input type="text"
+                           class="form-control{% if formViolations.getViolations('/ratepay/bankData/accountHolder') is not empty %} is-invalid{% endif %}"
+                           id="rp-iban-account-holder"
+                           placeholder="{{ "ratepay.storefront.checkout.fields.accountHolder"|trans|sw_sanitize }}"
+                           value="{{ page.extensions.ratepay.accountHolders[0] }}"
+                           name="ratepay[bankData][accountHolder]"
+                           form="confirmOrderForm"
+                           readonly
+                           required="required"
+                    >
+                {% else %}
+                    <select class="form-control{% if formViolations.getViolations('/ratepay/bankData/accountHolder') is not empty %} is-invalid{% endif %}"
+                           id="rp-iban-account-holder"
+                           name="ratepay[bankData][accountHolder]"
+                           form="confirmOrderForm"
+                           required="required"
+                    >
+                        {% for name in page.extensions.ratepay.accountHolders %}
+                            <option value="{{ name }}">{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                {% endif %}
             </div>
             <div class="form-group col-sm-4">
+                <label class="form-label" for="rp-iban-account-number">
+                    <strong>{{ "ratepay.storefront.checkout.fields.iban"|trans|sw_sanitize }}</strong>
+                </label>
                 <input
                     type="text"
                     class="form-control{% if formViolations.getViolations('/ratepay/bankData/iban') is not empty %} is-invalid{% endif %}"

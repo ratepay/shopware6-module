@@ -15,6 +15,7 @@ use Ratepay\RpayPayments\Components\Checkout\Model\Definition\RatepayOrderLineIt
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayPositionEntity;
+use Ratepay\RpayPayments\Components\Checkout\Util\BankAccountHolderHelper;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService;
 use Ratepay\RpayPayments\Util\MethodHelper;
@@ -142,11 +143,7 @@ class ExtensionService
                 $customerVatId = $customerBillingAddress->getVatId();
                 $customerPhoneNumber = $customerBillingAddress->getPhoneNumber();
                 $customerCompany = $customerBillingAddress->getCompany();
-                if ($customerBillingAddress->getCompany()) {
-                    $accountHolder = $customerBillingAddress->getCompany();
-                } else {
-                    $accountHolder = $customerBillingAddress->getFirstName() . ' ' . $customerBillingAddress->getLastName();
-                }
+                $accountHolders = BankAccountHolderHelper::getAvailableNames($salesChannelContext);
             }
         }
 
@@ -156,13 +153,13 @@ class ExtensionService
         );
 
         $extension = new ArrayStruct();
-        $extension->set('transactionId', $transactionId);
-        $extension->set('birthday', $customerBirthday ?? null);
-        $extension->set('vatId', $customerVatId ?? null);
-        $extension->set('phoneNumber', $customerPhoneNumber ?? null);
-        $extension->set('company', $customerCompany ?? null);
-        $extension->set('accountHolder', $accountHolder ?? null);
-        $extension->set(
+        $extension->offsetSet('transactionId', $transactionId);
+        $extension->offsetSet('birthday', $customerBirthday ?? null);
+        $extension->offsetSet('vatId', $customerVatId ?? null);
+        $extension->offsetSet('phoneNumber', $customerPhoneNumber ?? null);
+        $extension->offsetSet('company', $customerCompany ?? null);
+        $extension->offsetSet('accountHolders', $accountHolders ?? null);
+        $extension->offsetSet(
             'paymentMethod',
             strtolower(constant($paymentMethod->getHandlerIdentifier() . '::RATEPAY_METHOD'))
         );
@@ -177,7 +174,7 @@ class ExtensionService
                 $order ? $order->getAmountTotal() : null
             );
 
-            $extension->set('installment', [
+            $extension->offsetSet('installment', [
                 'translations' => $this->installmentService->getTranslations($salesChannelContext),
                 'calculator' => $installmentCalculator,
                 'plan' => $installmentPlan,

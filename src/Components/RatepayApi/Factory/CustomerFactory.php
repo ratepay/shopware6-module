@@ -156,7 +156,7 @@ class CustomerFactory extends AbstractFactory
             /** @var RequestDataBag $bankData */
             $bankData = $requestDataBag->get('bankData');
             $bankAccount = new Customer\BankAccount();
-            $bankAccount->setOwner($billingAddress->getFirstName() . ' ' . $billingAddress->getLastName());
+            $bankAccount->setOwner($bankData->get('accountHolder'));
             $bankAccount->setIban($bankData->get('iban'));
             $customer->setBankAccount($bankAccount);
         }

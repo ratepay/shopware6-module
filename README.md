@@ -35,6 +35,7 @@
 ### Version 1.2.0 - WIP
 * RATESWSX-115 - apply Shopware fix + increase Shopware min. compatibility
 * RATESWSX-162: add support for multiple tracking ids
+* RATESWSX-169 - add account holder select for B2B accounts
 
 ### Version 1.1.0 - Released on 2021-02-15
 * RATESWSX-149 - change translation of "date of birth"
