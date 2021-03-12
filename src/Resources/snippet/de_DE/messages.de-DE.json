@@ -9,6 +9,8 @@
     "error.VIOLATION::RP_MISSING_SEPA_CONFIRM": "Bitte bestätigen Sie das SEPA-Mandat.",
     "error.VIOLATION::RP_METHOD_NOT_AVAILABLE": "Leider ist eine Bezahlung mit der gewählten Zahlungsart nicht möglich. Diese Entscheidung ist auf Grundlage einer automatisierten Datenverarbeitung getroffen worden. Einzelheiten finden sie in den <a href=\"https://www.ratepay.com/legal-payment-terms/\" target=\"_blank\">zusätzlichen Allgemeinen Geschäftsbedingungen und den Datenschutzhinweisen unseres Zahlungspartners</a>.",
     "error.VIOLATION::METHOD_NOT_AVAILABLE": "Leider ist eine Bezahlung mit der gewählten Zahlungsart nicht möglich.",
+    "error.VIOLATION::RP_MISSING_BANK_ACCOUNT_HOLDER": "Bitte geben Sie den Kontoinhaber an.",
+    "error.VIOLATION::RP_INVALID_BANK_ACCOUNT_HOLDER": "Bitte geben Sie einen gültigen Kontoinhaber an.",
     "ratepay": {
         "storefront": {
             "checkout": {
@@ -22,7 +24,7 @@
                     "birthday": "Geburtsdatum"
                 },
                 "fields": {
-                    "accountholder": "Vorname und Name (Kontoinhaber)",
+                    "accountHolder": "Kontoinhaber",
                     "iban": "IBAN",
                     "bic": "BIC"
                 },

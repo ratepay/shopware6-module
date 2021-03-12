@@ -9,6 +9,9 @@
 
 namespace Ratepay\RpayPayments\Components\PaymentHandler;
 
+use Ratepay\RpayPayments\Components\Checkout\Util\BankAccountHolderHelper;
+use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\BankAccountHolderChoice;
+use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\BankAccountHolderNotBlank;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\Iban;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\IbanNotBlank;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\SepaConfirmNotBlank;
@@ -25,7 +28,9 @@ trait DebitValidationTrait
     public function getDebitConstraints(Request $request, $baseData): array
     {
         $bankData = new DataValidationDefinition();
-        //$bankData->add('accountHolder', new NotBlank()); // Not required, it will be overridden by the customerFactory
+        $bankData->add('accountHolder', new BankAccountHolderNotBlank(), new BankAccountHolderChoice(
+            BankAccountHolderHelper::getAvailableNames($baseData)
+        ));
         $bankData->add('iban',
             new IbanNotBlank(),
             new Iban()
