@@ -38,19 +38,23 @@ class ExternalFactory extends AbstractFactory
 
         if ($requestData->getOperation() === OrderOperationData::OPERATION_DELIVER) {
             $delivery = $order->getDeliveries()->first();
-            if ($delivery && count($delivery->getTrackingCodes()) > 0) {
-                $trackingCode = $delivery->getTrackingCodes()[0];
-
+            if ($delivery) {
                 $tracking = new Tracking();
-                $tracking->setId($trackingCode);
-                $supportedMethods = ['DHL', 'DPD', 'GLS', 'HLG', 'HVS', 'OTH', 'TNT', 'UPS'];
-                foreach ($supportedMethods as $supportedMethod) {
-                    if (strpos($delivery->getShippingMethod()->getName(), $supportedMethod) === 0) {
-                        $tracking->setProvider($supportedMethod);
-                        break;
+                foreach($delivery->getTrackingCodes() as $trackingCode) {
+                    $id = new Tracking\Id();
+                    $id->setId($trackingCode);
+                    $supportedMethods = ['DHL', 'DPD', 'GLS', 'HLG', 'HVS', 'OTH', 'TNT', 'UPS'];
+                    foreach ($supportedMethods as $supportedMethod) {
+                        if (strpos($delivery->getShippingMethod()->getName(), $supportedMethod) === 0) {
+                            $id->setProvider($supportedMethod);
+                            break;
+                        }
                     }
+                    $tracking->addId($id);
                 }
-                $external->setTracking($tracking);
+                if(count($tracking->getIds() ? : [])) {
+                    $external->setTracking($tracking);
+                }
             }
         }
 
