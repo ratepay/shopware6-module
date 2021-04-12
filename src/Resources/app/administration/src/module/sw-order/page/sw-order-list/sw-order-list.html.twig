@@ -4,6 +4,24 @@
   ~ For the full copyright and license information, please view the LICENSE
   ~ file that was distributed with this source code.
 #}
+{% block sw_order_list_smart_bar_actions_add %}
+    {% parent %}
+
+    {% block sw_order_list_smart_bar_actions_add_ratepay %}
+        <sw-button @click="openRatepayCreateOrderModal">
+            {{ $t('order.ratepay.create-order.newButtonText') }}
+        </sw-button>
+    {% endblock %}
+{% endblock %}
+
+{% block sw_order_list_content_slot %}
+     {% parent %}
+    <sw-modal :title="$tc('order.ratepay.create-order.newButtonText')"
+              v-if="ratepayCreateOrderModal"
+              @modal-close="ratepayCreateOrderModal = null">
+        <ratepay-admin-create-order-form></ratepay-admin-create-order-form>
+    </sw-modal>
+{% endblock %}
 
 {% block sw_order_list_delete_modal_confirm_delete_text %}
     <p v-if="item.extensions.ratepayData">
@@ -19,3 +37,4 @@
         {{ $tc('sw-order.list.buttonDelete') }}
     </sw-button>
 {% endblock %}
+

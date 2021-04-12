@@ -13,6 +13,11 @@
     "error.VIOLATION::RP_INVALID_BANK_ACCOUNT_HOLDER": "Bitte geben Sie einen gültigen Kontoinhaber an.",
     "ratepay": {
         "storefront": {
+            "admin-order": {
+                "notice": "Sie erstellen gerade eine Bestellung im Admin Modus. Ihnen stehen die Ratepay Profile zur Verfügung, die im Admin als 'für Admin-Bestellung' definiert sind. Die anderen Profile sind nicht verfügbar.",
+                "close-session": "Sitzung beenden",
+                "session-destroyed": "Die Admin-Sitzung wurde beendet. Sie können nun wieder Bestellungen im normalen Modus erstellen."
+            },
             "checkout": {
                 "finish": {
                     "info": {

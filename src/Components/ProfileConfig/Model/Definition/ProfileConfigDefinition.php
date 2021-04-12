@@ -68,8 +68,8 @@ class ProfileConfigDefinition extends EntityDefinition
             ))->addFlags(new Required()/*, new PrimaryKey()*/),
 
             (new BoolField(
-                'backend',
-                ProfileConfigEntity::FIELD_BACKEND
+                'only_admin_orders',
+                ProfileConfigEntity::FIELD_ONLY_ADMIN_ORDERS
             ))->addFlags(new Required()/*, new PrimaryKey()*/),
 
             (new OneToOneAssociationField(

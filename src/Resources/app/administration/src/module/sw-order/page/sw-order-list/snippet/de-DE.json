@@ -1,6 +1,12 @@
 {
     "order": {
         "ratepay": {
+            "create-order": {
+                "newButtonText": "Ratepay Bestellung erstellen",
+                "modalTitle": "Bestellung erstellen",
+                "modalInstructions": "Bitte wählen Sie eine SalesChannel aus, in welchem Sie die Bestellung anlegen wollen.",
+                "modalNext": "Weiter"
+            },
             "modal": {
                 "orderDeleteRestriction": {
                     "text": "Eine Bestellung, die mit einer Ratepay Zahlungsart bezahlt wurde, kann nicht gelöscht werden!"

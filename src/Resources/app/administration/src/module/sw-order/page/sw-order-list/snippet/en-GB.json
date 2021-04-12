@@ -1,6 +1,12 @@
 {
     "order": {
         "ratepay": {
+            "create-order": {
+                "newButtonText": "Create Ratepay order",
+                "modalTitle": "Create order",
+                "modalInstructions": "Please select the saleschannel for which you want to create a new order",
+                "modalNext": "Next"
+            },
             "modal": {
                 "orderDeleteRestriction": {
                     "text": "You can't delete an order which was processed by a Ratepay payment."

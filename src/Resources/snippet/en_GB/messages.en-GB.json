@@ -13,6 +13,11 @@
     "error.VIOLATION::RP_INVALID_BANK_ACCOUNT_HOLDER": "Please provide a valid bank account owner.",
     "ratepay": {
         "storefront": {
+            "admin-order": {
+                "notice": "You are going create a new order as admin. So the Ratepay profiles, which are available for admin orders will be used. The other profiles will be not available.",
+                "close-session": "Terminate session",
+                "session-destroyed": "The admin session has been terminated. Now you can create normal orders again."
+            },
             "checkout": {
                 "finish": {
                     "info": {

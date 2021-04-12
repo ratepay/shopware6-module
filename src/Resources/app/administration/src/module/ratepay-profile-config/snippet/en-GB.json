@@ -11,12 +11,13 @@
                     "backend": "For admin orders",
                     "status": "Status",
                     "active": "Active",
-                    "inactive": "Inactive"
+                    "inactive": "Inactive",
+                    "onlyAdminOrders": "Only for admin orders"
                 }
             },
             "page": {
                 "list": {
-                    "createButton": "Add Profil"
+                    "createButton": "Add Profile"
                 },
                 "detail": {
                     "cancelButtonText": "Cancel",

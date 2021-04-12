@@ -6,6 +6,24 @@
 @import "ratepay/common/installment-plan";
 
 .rp-link {
+  cursor: pointer;
+  color: $primary;
+}
+
+.ratepay-admin-session-notice {
+  position: fixed;
+  width: 320px;
+  bottom: 0;
+  left: 0;
+  background: #ccc;
+  padding: 20px;
+  z-index: 3;
+
+  .close {
     cursor: pointer;
-    color: $primary;
+
+    .icon {
+      color: #000;
+    }
+  }
 }
