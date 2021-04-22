@@ -31,7 +31,7 @@ class Migration1605784192TransactionIds extends MigrationStep
                 `transaction_id` varchar(255) NOT NULL,
                 `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (`id`),
-                FOREIGN KEY (`profile_id`) REFERENCES `ratepay_profile_config` (`id`),
+                CONSTRAINT fk_ratepay_transaction_id_temp__profile FOREIGN KEY (`profile_id`) REFERENCES `ratepay_profile_config` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
                 UNIQUE KEY `identifier` (`identifier`,`profile_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         ');

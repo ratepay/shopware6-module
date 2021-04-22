@@ -39,7 +39,7 @@ class Migration1576654631ConfigTables extends MigrationStep
               `created_at` datetime NOT NULL,
               `updated_at` datetime DEFAULT NULL,
                 PRIMARY KEY (`id`),
-                FOREIGN KEY (`sales_channel_id`) REFERENCES `sales_channel`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+               CONSTRAINT fk_ratepay_profile_config__sales_channel FOREIGN KEY (`sales_channel_id`) REFERENCES `sales_channel`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         ');
 
@@ -56,8 +56,8 @@ class Migration1576654631ConfigTables extends MigrationStep
               `created_at` datetime NOT NULL,
               `updated_at` datetime DEFAULT NULL,
                 PRIMARY KEY (`id`),
-                FOREIGN KEY (`profile_id`) REFERENCES `ratepay_profile_config` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-                FOREIGN KEY (`payment_method_id`) REFERENCES `payment_method` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+               CONSTRAINT fk_ratepay_profile_config_method__profile FOREIGN KEY (`profile_id`) REFERENCES `ratepay_profile_config` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+               CONSTRAINT fk_ratepay_profile_config_method__payment_method FOREIGN KEY (`payment_method_id`) REFERENCES `payment_method` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         ');
 
@@ -71,7 +71,7 @@ class Migration1576654631ConfigTables extends MigrationStep
                 `created_at` datetime NOT NULL,
                 `updated_at` datetime DEFAULT NULL,
                 PRIMARY KEY (`id`),
-                FOREIGN KEY (`id`) REFERENCES `ratepay_profile_config_method` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+                CONSTRAINT fk_ratepay_profile_config_method_installment__method_config FOREIGN KEY (`id`) REFERENCES `ratepay_profile_config_method` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         ');
     }

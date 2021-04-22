@@ -32,8 +32,8 @@ class Migration1589212324PaymentLocks extends MigrationStep
             `created_at` DATETIME NOT NULL,
             `updated_at` DATETIME NULL,
             PRIMARY KEY (`id`),
-            FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-            FOREIGN KEY (`payment_method_id`) REFERENCES `payment_method` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+            CONSTRAINT fk_ratepay_payment_lock__customer FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+            CONSTRAINT fk_ratepay_payment_lock__payment_method FOREIGN KEY (`payment_method_id`) REFERENCES `payment_method` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
         ');
     }

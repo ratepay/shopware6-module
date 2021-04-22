@@ -36,8 +36,7 @@ class Migration1589212322HistoryLog extends MigrationStep
                 `created_at` datetime NOT NULL,
                 `updated_at` datetime NULL,
                 PRIMARY KEY (`id`),
-                FOREIGN KEY (`order_id`, `order_version_id`)
-                    REFERENCES `order` (`id`, `version_id`) ON DELETE CASCADE ON UPDATE CASCADE
+                CONSTRAINT fk_ratepay_order_history__order FOREIGN KEY (`order_id`, `order_version_id`) REFERENCES `order` (`id`, `version_id`) ON DELETE CASCADE ON UPDATE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         ');
     }
