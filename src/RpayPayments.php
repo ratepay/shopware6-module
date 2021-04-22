@@ -140,12 +140,6 @@ class RpayPayments extends Plugin
         }
     }
 
-    public function configureRoutes(RouteCollectionBuilder $routes, string $environment): void
-    {
-        parent::configureRoutes($routes, $environment);
-        $routes->import(__DIR__ . '/Components/**/DependencyInjection/routes' . Kernel::CONFIG_EXTS, '/', 'glob');
-    }
-
     public function build(ContainerBuilder $containerBuilder): void
     {
         parent::build($containerBuilder);
