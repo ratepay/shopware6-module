@@ -11,4 +11,4 @@ Just run the script from plugin dir
 `./../../../vendor/bin/phpunit`
 
 # Build package
-just call `./bin/build.sh` in the plugin dir an use the package `RpayPayments.zip` in `./build/dist/`
+just call `./bin/build.sh` in the plugin dir and use the package `RpayPayments.zip` in `./build/dist/`
