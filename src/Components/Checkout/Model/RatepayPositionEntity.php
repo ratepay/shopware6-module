@@ -14,6 +14,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 
 class RatepayPositionEntity extends Entity
 {
+    use EntityIdTrait;
+
     public const FIELD_ID = 'id';
 
     public const FIELD_CANCELED = 'canceled';
@@ -21,8 +23,6 @@ class RatepayPositionEntity extends Entity
     public const FIELD_RETURNED = 'returned';
 
     public const FIELD_DELIVERED = 'delivered';
-
-    use EntityIdTrait;
 
     /**
      * @var int

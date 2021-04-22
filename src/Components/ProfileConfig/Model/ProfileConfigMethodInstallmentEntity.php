@@ -14,6 +14,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 
 class ProfileConfigMethodInstallmentEntity extends Entity
 {
+    use EntityIdTrait;
+
     public const FIELD_ID = 'id';
 
     public const FIELD_ALLOWED_MONTHS = 'allowedMonths';
@@ -23,8 +25,6 @@ class ProfileConfigMethodInstallmentEntity extends Entity
     public const FIELD_IS_DEBIT_ALLOWED = 'isDebitAllowed';
 
     public const FIELD_RATE_MIN = 'rateMin';
-
-    use EntityIdTrait;
 
     /**
      * @var string

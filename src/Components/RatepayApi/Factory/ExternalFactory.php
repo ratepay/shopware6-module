@@ -40,7 +40,7 @@ class ExternalFactory extends AbstractFactory
             $delivery = $order->getDeliveries()->first();
             if ($delivery) {
                 $tracking = new Tracking();
-                foreach($delivery->getTrackingCodes() as $trackingCode) {
+                foreach ($delivery->getTrackingCodes() as $trackingCode) {
                     $id = new Tracking\Id();
                     $id->setId($trackingCode);
                     $supportedMethods = ['DHL', 'DPD', 'GLS', 'HLG', 'HVS', 'OTH', 'TNT', 'UPS'];
@@ -52,7 +52,7 @@ class ExternalFactory extends AbstractFactory
                     }
                     $tracking->addId($id);
                 }
-                if(count($tracking->getIds() ? : [])) {
+                if (count($tracking->getIds() ?: [])) {
                     $external->setTracking($tracking);
                 }
             }

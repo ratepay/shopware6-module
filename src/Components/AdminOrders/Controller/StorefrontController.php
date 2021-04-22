@@ -1,8 +1,15 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
+
+/*
+ * Copyright (c) Ratepay GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Ratepay\RpayPayments\Components\AdminOrders\Controller;
-
 
 use Ratepay\RpayPayments\Components\AdminOrders\Model\RatepayAdminOrderTokenEntity;
 use Shopware\Core\Framework\Adapter\Translation\Translator;
@@ -27,14 +34,17 @@ class StorefrontController extends AbstractController
      * @var EntityRepositoryInterface
      */
     private $tokenRepository;
+
     /**
      * @var SessionInterface
      */
     private $session;
+
     /**
      * @var string
      */
     private $sessionKey;
+
     /**
      * @var Translator
      */
@@ -45,8 +55,7 @@ class StorefrontController extends AbstractController
         SessionInterface $session,
         Translator $translator,
         string $sessionKey
-    )
-    {
+    ) {
         $this->tokenRepository = $tokenRepository;
         $this->session = $session;
         $this->sessionKey = $sessionKey;
@@ -55,9 +64,6 @@ class StorefrontController extends AbstractController
 
     /**
      * @Route("/ratepay-admin-login/{token}", name="ratepay.frontend.admin-login", methods={"GET"})
-     * @param Request $request
-     * @param SalesChannelContext $context
-     * @return Response
      */
     public function login(Request $request, SalesChannelContext $context): Response
     {
@@ -71,6 +77,7 @@ class StorefrontController extends AbstractController
 
         if ($result->getTotal() !== 1) {
             $this->addFlash('danger', 'Invalid token to start a Ratepay storefront order!');
+
             return $this->redirectToRoute('frontend.home.page');
         }
 
@@ -80,8 +87,8 @@ class StorefrontController extends AbstractController
             $this->tokenRepository->update([
                 [
                     RatepayAdminOrderTokenEntity::FIELD_ID => $tokenEntity->getId(),
-                    RatepayAdminOrderTokenEntity::FIELD_CART_TOKEN => $context->getToken()
-                ]
+                    RatepayAdminOrderTokenEntity::FIELD_CART_TOKEN => $context->getToken(),
+                ],
             ], $context->getContext());
 
             $this->session->set($this->sessionKey, true);
@@ -99,7 +106,7 @@ class StorefrontController extends AbstractController
     {
         $this->session->set($this->sessionKey, false);
         $this->addFlash('success', $this->translator->trans('ratepay.storefront.admin-order.session-destroyed'));
+
         return $this->redirectToRoute('frontend.home.page');
     }
-
 }

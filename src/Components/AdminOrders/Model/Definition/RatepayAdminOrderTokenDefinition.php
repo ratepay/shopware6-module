@@ -49,7 +49,7 @@ class RatepayAdminOrderTokenDefinition extends EntityDefinition
     protected function defaultFields(): array
     {
         return [
-            new CreatedAtField()
+            new CreatedAtField(),
         ];
     }
 

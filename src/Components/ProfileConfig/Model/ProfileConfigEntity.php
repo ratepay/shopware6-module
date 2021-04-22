@@ -16,6 +16,8 @@ use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 
 class ProfileConfigEntity extends Entity
 {
+    use EntityIdTrait;
+
     public const FIELD_ID = 'id';
 
     public const FIELD_PROFILE_ID = 'profileId';
@@ -41,8 +43,6 @@ class ProfileConfigEntity extends Entity
     public const FIELD_STATUS_MESSAGE = 'statusMessage';
 
     public const FIELD_PAYMENT_METHOD_CONFIGS = 'paymentMethodConfigs';
-
-    use EntityIdTrait;
 
     /**
      * @var string

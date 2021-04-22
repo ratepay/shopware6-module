@@ -14,6 +14,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 
 class ApiRequestLogEntity extends Entity
 {
+    use EntityIdTrait;
+
     public const FIELD_ID = 'id';
 
     public const FIELD_VERSION = 'version';
@@ -31,8 +33,6 @@ class ApiRequestLogEntity extends Entity
     public const FIELD_ADDITIONAL_DATA = 'additionalData';
 
     public const FIELD_CREATED_AT = 'createdAt';
-
-    use EntityIdTrait;
 
     /**
      * @var string

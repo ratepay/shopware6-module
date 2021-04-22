@@ -15,6 +15,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 
 class ProfileConfigMethodEntity extends Entity
 {
+    use EntityIdTrait;
+
     public const FIELD_ID = 'id';
 
     public const FIELD_PROFILE = 'profile';
@@ -36,8 +38,6 @@ class ProfileConfigMethodEntity extends Entity
     public const FIELD_ALLOW_B2B = 'allowB2b';
 
     public const FIELD_INSTALLMENT_CONFIG = 'installmentConfig';
-
-    use EntityIdTrait;
 
     /**
      * @var PaymentMethodEntity

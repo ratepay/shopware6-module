@@ -1,4 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
+/*
+ * Copyright (c) Ratepay GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Ratepay\RpayPayments\Migration;
 
@@ -14,7 +23,7 @@ class Migration1615564688AdminOrder extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->exec("
+        $connection->exec('
             CREATE TABLE `ratepay_admin_order_token` (
                 `id` binary(16) NOT NULL,
                 `token` varchar(255) NOT NULL,
@@ -27,7 +36,7 @@ class Migration1615564688AdminOrder extends MigrationStep
                 FOREIGN KEY (`sales_channel_id`) REFERENCES `sales_channel`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
                 FOREIGN KEY (`sales_channel_domain_id`) REFERENCES `sales_channel_domain`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-        ");
+        ');
 
         $connection->exec("
             ALTER TABLE `ratepay_profile_config`
@@ -38,7 +47,7 @@ class Migration1615564688AdminOrder extends MigrationStep
 
     public function updateDestructive(Connection $connection): void
     {
-        $connection->exec("DROP TABLE `ratepay_admin_order_token`");
+        $connection->exec('DROP TABLE `ratepay_admin_order_token`');
         $connection->exec("
             ALTER TABLE `ratepay_profile_config` CHANGE `only_admin_orders` `backend` TINYINT(1) NULL DEFAULT '0';
         ");

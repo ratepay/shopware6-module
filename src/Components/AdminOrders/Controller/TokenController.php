@@ -1,8 +1,15 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
+
+/*
+ * Copyright (c) Ratepay GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Ratepay\RpayPayments\Components\AdminOrders\Controller;
-
 
 use Ratepay\RpayPayments\Components\AdminOrders\Model\RatepayAdminOrderTokenEntity;
 use Shopware\Core\Framework\Context;
@@ -43,8 +50,7 @@ class TokenController extends AbstractController
         EntityRepositoryInterface $tokenRepository,
         EntityRepositoryInterface $salesChannelDomainRepository,
         Router $router
-    )
-    {
+    ) {
         $this->tokenRepository = $tokenRepository;
         $this->salesChannelDomainRepository = $salesChannelDomainRepository;
         $this->router = $router;
@@ -52,8 +58,6 @@ class TokenController extends AbstractController
 
     /**
      * @Route("/login-token", name="ratepay.admin.admin-orders.token", methods={"POST"})
-     * @param Request $request
-     * @return Response
      */
     public function login(Request $request): Response
     {
@@ -73,8 +77,8 @@ class TokenController extends AbstractController
                 RatepayAdminOrderTokenEntity::FIELD_TOKEN => $token,
                 RatepayAdminOrderTokenEntity::FIELD_SALES_CHANNEL_ID => $salesChannelId,
                 RatepayAdminOrderTokenEntity::FIELD_SALES_CHANNEL_DOMAIN_ID => $salesChannelDomainId,
-                RatepayAdminOrderTokenEntity::FIELD_VAlID_UNTIL => (new \DateTime())->modify('+30 min')
-            ]
+                RatepayAdminOrderTokenEntity::FIELD_VAlID_UNTIL => (new \DateTime())->modify('+30 min'),
+            ],
         ], $context);
 
         $urlInfo = parse_url($saleChannelDomain->getUrl());
@@ -85,13 +89,12 @@ class TokenController extends AbstractController
             ->setBaseUrl($urlInfo['path'] ?? null);
 
         $storefrontUrl = $this->router->generate('ratepay.frontend.admin-login', [
-            'token' => $token
+            'token' => $token,
         ], RouterInterface::ABSOLUTE_URL);
 
         return $this->json([
             'success' => true,
-            'url' => $storefrontUrl
+            'url' => $storefrontUrl,
         ]);
     }
-
 }

@@ -15,6 +15,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 
 class RatepayOrderLineItemDataEntity extends Entity
 {
+    use EntityIdTrait;
+
     public const FIELD_ID = 'id';
 
     public const FIELD_ORDER_LINE_ITEM_ID = 'orderLineItemId';
@@ -26,8 +28,6 @@ class RatepayOrderLineItemDataEntity extends Entity
     public const FIELD_POSITION_ID = 'positionId';
 
     public const FIELD_POSITION = 'position';
-
-    use EntityIdTrait;
 
     /**
      * @var string

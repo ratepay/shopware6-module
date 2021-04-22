@@ -1,8 +1,13 @@
 <?php
 
+/*
+ * Copyright (c) Ratepay GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Ratepay\RpayPayments\Components\AdminOrders\Subscriber;
-
 
 use Shopware\Storefront\Event\StorefrontRenderEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -10,7 +15,6 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class PageSubscriber implements EventSubscriberInterface
 {
-
     /**
      * @var SessionInterface
      */
@@ -30,7 +34,7 @@ class PageSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            StorefrontRenderEvent::class => 'onPage'
+            StorefrontRenderEvent::class => 'onPage',
         ];
     }
 

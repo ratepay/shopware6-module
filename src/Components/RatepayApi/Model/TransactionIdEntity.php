@@ -17,6 +17,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 
 class TransactionIdEntity extends Entity
 {
+    use EntityIdTrait;
+
     public const FIELD_ID = 'id';
 
     public const FIELD_IDENTIFIER = 'identifier';
@@ -28,8 +30,6 @@ class TransactionIdEntity extends Entity
     public const FIELD_TRANSACTION_ID = 'transactionId';
 
     public const FIELD_CREATED_AT = 'created_at';
-
-    use EntityIdTrait;
 
     /** @var string|null */
     protected $identifier;

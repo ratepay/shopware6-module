@@ -15,6 +15,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 
 class RatepayAdminOrderTokenEntity extends Entity
 {
+    use EntityIdTrait;
+
     public const FIELD_ID = 'id';
 
     public const FIELD_TOKEN = 'token';
@@ -28,8 +30,6 @@ class RatepayAdminOrderTokenEntity extends Entity
     public const FIELD_VAlID_UNTIL = 'validUntil';
 
     public const FIELD_CREATED_AT = 'createdAt';
-
-    use EntityIdTrait;
 
     /**
      * @var string
@@ -61,41 +61,26 @@ class RatepayAdminOrderTokenEntity extends Entity
      */
     protected $createdAt;
 
-    /**
-     * @return string
-     */
     public function getToken(): string
     {
         return $this->token;
     }
 
-    /**
-     * @return string
-     */
     public function getSalesChannelId(): string
     {
         return $this->salesChannelId;
     }
 
-    /**
-     * @return string
-     */
     public function getSalesChannelDomainId(): string
     {
         return $this->salesChannelDomainId;
     }
 
-    /**
-     * @return string
-     */
     public function getCartToken(): string
     {
         return $this->cartToken;
     }
 
-    /**
-     * @return DateTime
-     */
     public function getValidUntil(): DateTime
     {
         return $this->validUntil;

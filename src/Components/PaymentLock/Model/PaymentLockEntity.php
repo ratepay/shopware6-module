@@ -17,6 +17,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 
 class PaymentLockEntity extends Entity
 {
+    use EntityIdTrait;
+
     public const FIELD_ID = 'id';
 
     public const FIELD_CUSTOMER_ID = 'customerId';
@@ -24,8 +26,6 @@ class PaymentLockEntity extends Entity
     public const FIELD_PAYMENT_METHOD_ID = 'paymentMethodId';
 
     public const FIELD_LOCKED_UNTIL = 'locketUntil';
-
-    use EntityIdTrait;
 
     /**
      * @var string

@@ -56,6 +56,7 @@ class ProfileConfigService
      * @var ProfileConfigResponseConverter
      */
     private $profileConfigResponseConverter;
+
     /**
      * @var EventDispatcherInterface
      */
@@ -212,6 +213,7 @@ class ProfileConfigService
             $differentAddresses,
             $context
         ));
+
         return $this->repository->search($criteria, $context)->first();
     }
 
