@@ -1,0 +1,35 @@
+{#
+  ~ Copyright (c) Ratepay GmbH
+  ~
+  ~ For the full copyright and license information, please view the LICENSE
+  ~ file that was distributed with this source code.
+#}
+<div>
+    <sw-select-field v-model="selectedSalesChannelId"
+                     :label="$tc('ratepay.admin.create-order.modal.labels.salesChannel')"
+                     @change="selectSalesChannel">
+        <option>{{ $t('ratepay.admin.create-order.modal.please-select') }}</option>
+        <option v-for="salesChannel in salesChannels"
+                :value="salesChannel.id"
+                :selected="salesChannel.id === selectedSalesChannelId">
+            {{ salesChannel.name }}
+        </option>
+    </sw-select-field>
+
+
+    <sw-select-field v-model="selectedSalesChannelDomainId"
+                     :label="$tc('ratepay.admin.create-order.modal.labels.salesChannelDomain')"
+                     v-if="selectedSalesChannelId">
+        <option>{{ $t('ratepay.admin.create-order.modal.please-select') }}</option>
+        <option v-for="salesChannelDomain in salesChannelDomains"
+                :value="salesChannelDomain.id"
+                :selected="salesChannelDomain.id === selectedSalesChannelDomainId">
+            {{ salesChannelDomain.url }}
+        </option>
+    </sw-select-field>
+
+    <sw-button @click="navigateToFrontend" class="sw-button--primary">
+        {{ $t('ratepay.admin.create-order.modal.start-session') }}
+    </sw-button>
+</div>
+

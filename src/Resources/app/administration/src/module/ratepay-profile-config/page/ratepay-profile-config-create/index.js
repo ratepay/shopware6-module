@@ -11,6 +11,11 @@ Component.extend('ratepay-profile-config-create', 'ratepay-profile-config-detail
     methods: {
         loadEntity() {
             this.entity = this.repository.create(Shopware.Context.api);
+
+            // shopware issue: fix bug that no false values will be submitted
+            this.entity.onlyAdminOrders = false;
+            this.entity.sandbox = false;
+
             return new Promise((resolve, reject) => {resolve(this.entity)});
         },
 

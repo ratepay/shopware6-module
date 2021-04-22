@@ -9,6 +9,7 @@
 
 namespace Ratepay\RpayPayments\Components\ProfileConfig\Service;
 
+use Ratepay\RpayPayments\Components\ProfileConfig\Event\CreateProfileConfigCriteriaEvent;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\Collection\ProfileConfigCollection;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
@@ -22,6 +23,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ProfileConfigService
 {
@@ -54,8 +56,13 @@ class ProfileConfigService
      * @var ProfileConfigResponseConverter
      */
     private $profileConfigResponseConverter;
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
 
     public function __construct(
+        EventDispatcherInterface $eventDispatcher,
         EntityRepositoryInterface $repository,
         EntityRepositoryInterface $methodConfigRepository,
         EntityRepositoryInterface $methodConfigInstallmentRepository,
@@ -67,6 +74,7 @@ class ProfileConfigService
         $this->methodConfigInstallmentRepository = $methodConfigInstallmentRepository;
         $this->profileRequestService = $profileRequestService;
         $this->profileConfigResponseConverter = $profileConfigResponseConverter;
+        $this->eventDispatcher = $eventDispatcher;
 
         $this->context = Context::createDefaultContext();
     }
@@ -194,6 +202,16 @@ class ProfileConfigService
         // status
         $criteria->addFilter(new EqualsFilter(ProfileConfigEntity::FIELD_STATUS, true));
 
+        $this->eventDispatcher->dispatch(new CreateProfileConfigCriteriaEvent(
+            $criteria,
+            $paymentMethodId,
+            $billingCountryIso,
+            $shippingCountryIso,
+            $salesChannelId,
+            $currencyIso,
+            $differentAddresses,
+            $context
+        ));
         return $this->repository->search($criteria, $context)->first();
     }
 

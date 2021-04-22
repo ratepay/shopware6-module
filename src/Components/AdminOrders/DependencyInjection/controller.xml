@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <defaults autowire="true">
+            <tag name="controller.service_arguments"/>
+            <bind key="$tokenRepository" type="service" id="ratepay_admin_order_token.repository"/>
+        </defaults>
+
+        <service id="Ratepay\RpayPayments\Components\AdminOrders\Controller\TokenController">
+            <argument key="$salesChannelDomainRepository" type="service" id="sales_channel_domain.repository"/>
+            <call method="setContainer">
+                <argument id="service_container" type="service"/>
+            </call>
+        </service>
+
+        <service id="Ratepay\RpayPayments\Components\AdminOrders\Controller\StorefrontController" >
+            <argument key="$sessionKey">%ratepay.admin.storefront-login.token%</argument>
+        </service>
+
+    </services>
+
+</container>

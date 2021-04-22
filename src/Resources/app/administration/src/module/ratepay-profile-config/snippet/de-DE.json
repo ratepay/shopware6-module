@@ -11,7 +11,8 @@
                     "backend": "Für Adminbestellungen",
                     "status": "Status",
                     "active": "Aktiv",
-                    "inactive": "Inaktiv"
+                    "inactive": "Inaktiv",
+                    "onlyAdminOrders": "Nur für Admin Bestellungen"
                 }
             },
             "page": {

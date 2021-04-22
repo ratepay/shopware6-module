@@ -24,7 +24,7 @@ class ProfileConfigEntity extends Entity
 
     public const FIELD_SANDBOX = 'sandbox';
 
-    public const FIELD_BACKEND = 'backend';
+    public const FIELD_ONLY_ADMIN_ORDERS = 'onlyAdminOrders';
 
     public const FIELD_SALES_CHANNEL = 'salesChannel';
 
@@ -87,7 +87,7 @@ class ProfileConfigEntity extends Entity
     /**
      * @var bool
      */
-    protected $backend;
+    protected $onlyAdminOrders;
 
     /**
      * @var bool
@@ -209,6 +209,14 @@ class ProfileConfigEntity extends Entity
     }
 
     /**
+     * @return bool
+     */
+    public function isOnlyAdminOrders(): ?bool
+    {
+        return $this->onlyAdminOrders;
+    }
+
+    /**
      * @param bool $sandbox
      */
     public function setSandbox(bool $sandbox = null): void
@@ -250,16 +258,6 @@ class ProfileConfigEntity extends Entity
     public function setSalesChannelId(int $salesChannelId): void
     {
         $this->salesChannelId = $salesChannelId;
-    }
-
-    public function isBackend(): bool
-    {
-        return $this->backend;
-    }
-
-    public function setBackend(bool $backend): void
-    {
-        $this->backend = $backend;
     }
 
     public function setPaymentMethodConfigs(ProfileConfigMethodCollection $paymentMethodConfigs): void

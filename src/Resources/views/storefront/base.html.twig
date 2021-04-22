@@ -1,0 +1,17 @@
+{% sw_extends '@Storefront/storefront/base.html.twig' %}
+
+{% block base_main %}
+    {{ parent() }}
+
+    {% if ratepayAdminOrderSession %}
+        <div class="ratepay-admin-session-notice">
+            <div class="inner">
+                <div class="close" onClick="this.parentElement.parentElement.remove()">{% sw_icon 'x' %}</div>
+                <span>{{ "ratepay.storefront.admin-order.notice"|trans }}</span>
+            </div>
+            <div class="actions">
+                <a href="{{ url('ratepay.frontend.admin-logout') }}">{{ "ratepay.storefront.admin-order.close-session"|trans }}</a>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

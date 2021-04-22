@@ -1,0 +1,16 @@
+{
+    "ratepay": {
+        "admin": {
+            "create-order": {
+                "modal": {
+                    "please-select": "-- Bitte auswählen --",
+                    "start-session": "Sitzung starten",
+                    "labels": {
+                        "salesChannel": "Sales Channel",
+                        "salesChannelDomain": "Domain"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -10,6 +10,7 @@
  */
 import './component/ratepay/ratepay-order-history-log-grid';
 import './component/ratepay/ratepay-order-management';
+import './component/ratepay/ratepay-admin-create-order-form';
 
 /**
  * Custom Modules
@@ -22,6 +23,7 @@ import './module/ratepay-profile-config';
  */
 import './init/order-management-api-service.init';
 import './init/profile-config-api-service.init';
+import './init/admin-order-token-service.init';
 
 /**
  * Shopware Extensions
