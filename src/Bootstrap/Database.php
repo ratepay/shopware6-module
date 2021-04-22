@@ -51,6 +51,7 @@ class Database extends AbstractBootstrap
         $this->connection->exec('DROP TABLE IF EXISTS `ratepay_order_line_item_data`');
         $this->connection->exec('DROP TABLE IF EXISTS `ratepay_position`');
         $this->connection->exec('DROP TABLE IF EXISTS `ratepay_payment_lock`');
+        $this->connection->exec('DROP TABLE IF EXISTS `ratepay_transaction_id_temp`');
         $this->connection->exec('SET FOREIGN_KEY_CHECKS=1;');
     }
 
