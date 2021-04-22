@@ -31,10 +31,13 @@
 
 ## Changelog
 
-### Version 1.2.0 - WIP
+### Version 1.2.0 - Released on 2021-04-22
+* RATESWSX-84 - adds functionality "admin orders"
 * RATESWSX-115 - apply Shopware fix + increase Shopware min. compatibility
-* RATESWSX-162: add support for multiple tracking ids
+* RATESWSX-162 - add support for multiple tracking ids
 * RATESWSX-169 - add account holder select for B2B accounts
+* RATESWSX-173 - removes `configureRoutes` from bundle class
+* RATESWSX-185 - fix foreign keys
 
 ### Version 1.1.0 - Released on 2021-02-15
 * RATESWSX-149 - change translation of "date of birth"
