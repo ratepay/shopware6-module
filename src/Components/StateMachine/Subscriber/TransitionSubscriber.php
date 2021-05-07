@@ -28,40 +28,19 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class TransitionSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var ConfigService
-     */
-    private $configService;
+    private ConfigService $configService;
 
-    /**
-     * @var PaymentDeliverService
-     */
-    private $paymentDeliverService;
+    private PaymentDeliverService $paymentDeliverService;
 
-    /**
-     * @var PaymentCancelService
-     */
-    private $paymentCancelService;
+    private PaymentCancelService $paymentCancelService;
 
-    /**
-     * @var PaymentReturnService
-     */
-    private $paymentReturnService;
+    private PaymentReturnService $paymentReturnService;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $orderDeliveryRepository;
+    private EntityRepositoryInterface $orderDeliveryRepository;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $orderRepository;
+    private EntityRepositoryInterface $orderRepository;
 
-    /**
-     * @var Logger
-     */
-    private $logger;
+    private Logger $logger;
 
     public function __construct(
         EntityRepositoryInterface $orderDeliveryRepository,
@@ -81,14 +60,14 @@ class TransitionSubscriber implements EventSubscriberInterface
         $this->logger = $logger;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             StateMachineTransitionEvent::class => 'onTransition',
         ];
     }
 
-    public function onTransition(StateMachineTransitionEvent $event)
+    public function onTransition(StateMachineTransitionEvent $event): void
     {
         if ($event->getEntityName() !== 'order_delivery' || $this->configService->isBidirectionalityEnabled() === false) {
             return;
@@ -124,7 +103,7 @@ class TransitionSubscriber implements EventSubscriberInterface
         try {
             $response = $service->doRequest($orderOperationData);
             if ($response->getResponse()->isSuccessful() === false) {
-                $this->logger->addError('Error during bidirectionality. (Exception: ' . $response->getResponse()->getReasonMessage() . ')', [
+                $this->logger->error('Error during bidirectionality. (Exception: ' . $response->getResponse()->getReasonMessage() . ')', [
                     'order' => $order->getId(),
                     'transactionId' => $ratepayData->getTransactionId(),
                     'orderNumber' => $order->getOrderNumber(),

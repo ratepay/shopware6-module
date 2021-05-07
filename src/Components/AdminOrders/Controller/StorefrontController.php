@@ -70,7 +70,7 @@ class StorefrontController extends AbstractController
             return $this->redirectToRoute('frontend.home.page');
         }
 
-        /** @var RatepayAdminOrderTokenEntity $login */
+        /** @var RatepayAdminOrderTokenEntity $tokenEntity */
         $tokenEntity = $result->first();
         try {
             $this->tokenRepository->update([
