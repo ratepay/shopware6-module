@@ -17,24 +17,21 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentFilterSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var LockService
-     */
-    private $lockService;
+    private LockService $lockService;
 
     public function __construct(LockService $lockService)
     {
         $this->lockService = $lockService;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             RatepayPaymentFilterEvent::class => 'filterPayments',
         ];
     }
 
-    public function filterPayments(RatepayPaymentFilterEvent $event)
+    public function filterPayments(RatepayPaymentFilterEvent $event): void
     {
         if ($event->getOrderEntity()) {
             $customerId = $event->getOrderEntity()->getOrderCustomer()->getCustomerId();

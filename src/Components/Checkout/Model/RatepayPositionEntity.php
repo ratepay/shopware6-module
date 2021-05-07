@@ -24,20 +24,11 @@ class RatepayPositionEntity extends Entity
 
     public const FIELD_DELIVERED = 'delivered';
 
-    /**
-     * @var int
-     */
-    protected $canceled = 0;
+    protected int $canceled = 0;
 
-    /**
-     * @var int
-     */
-    protected $returned = 0;
+    protected int $returned = 0;
 
-    /**
-     * @var int
-     */
-    protected $delivered = 0;
+    protected int $delivered = 0;
 
     public function getCanceled(): int
     {

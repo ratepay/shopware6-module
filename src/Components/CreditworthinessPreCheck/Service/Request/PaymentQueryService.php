@@ -20,7 +20,6 @@ use Ratepay\RpayPayments\Components\RatepayApi\Factory\CustomerFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\AbstractRequest;
-use Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -36,29 +35,15 @@ class PaymentQueryService extends AbstractRequest
 
     public const EVENT_BUILD_CONTENT = self::class . parent::EVENT_BUILD_CONTENT;
 
-    protected $_operation = self::CALL_PAYMENT_QUERY;
+    protected string $_operation = self::CALL_PAYMENT_QUERY;
 
-    protected $_subType = 'full';
+    protected ?string $_subType = 'full';
 
-    /**
-     * @var ProfileConfigService
-     */
-    private $profileConfigService;
+    private ProfileConfigService $profileConfigService;
 
-    /**
-     * @var TransactionIdService
-     */
-    private $transactionIdService;
+    private ShoppingBasketFactory $shoppingBasketFactory;
 
-    /**
-     * @var ShoppingBasketFactory
-     */
-    private $shoppingBasketFactory;
-
-    /**
-     * @var CustomerFactory
-     */
-    private $customerFactory;
+    private CustomerFactory $customerFactory;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,

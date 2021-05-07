@@ -32,38 +32,17 @@ class OrderOperationData extends AbstractRequestData
 
     public const OPERATION_ADD = 'add';
 
-    /**
-     * @var OrderEntity
-     */
-    protected $order;
+    protected OrderEntity $order;
 
-    /**
-     * @var null
-     */
-    protected $items;
+    protected ?array $items;
 
-    /**
-     * @var OrderTransactionEntity
-     */
-    protected $transaction;
+    protected ?OrderTransactionEntity $transaction;
 
-    /**
-     * @var string
-     */
-    protected $operation;
+    protected string $operation;
 
-    /**
-     * @var bool
-     */
-    protected $updateStock;
+    protected bool $updateStock;
 
-    /**
-     * OrderOperationData constructor.
-     *
-     * @param array|null $items       array of IDs and quantity. if no array is provided, all items will be sent to the gateway, if the operation is allowed
-     * @param bool       $updateStock
-     */
-    public function __construct(Context $context, OrderEntity $order, string $operation, $items = null, $updateStock = true)
+    public function __construct(Context $context, OrderEntity $order, string $operation, ?array $items = null, bool $updateStock = true)
     {
         parent::__construct($context);
         $this->order = $order;
@@ -124,7 +103,7 @@ class OrderOperationData extends AbstractRequestData
         return $this->order;
     }
 
-    public function getTransaction(): OrderTransactionEntity
+    public function getTransaction(): ?OrderTransactionEntity
     {
         return $this->transaction;
     }

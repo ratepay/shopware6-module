@@ -20,17 +20,14 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class ConfigService
 {
-    /**
-     * @var SystemConfigService
-     */
-    private $systemConfigService;
+    private SystemConfigService $systemConfigService;
 
     public function __construct(SystemConfigService $systemConfigService)
     {
         $this->systemConfigService = $systemConfigService;
     }
 
-    public function getDeviceFingerprintSnippetId()
+    public function getDeviceFingerprintSnippetId(): string
     {
         $config = $this->getPluginConfiguration();
 

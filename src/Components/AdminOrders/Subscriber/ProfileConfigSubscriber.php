@@ -17,15 +17,9 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class ProfileConfigSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var SessionInterface
-     */
-    private $session;
+    private SessionInterface $session;
 
-    /**
-     * @var string
-     */
-    private $sessionKey;
+    private string $sessionKey;
 
     public function __construct(SessionInterface $session, string $sessionKey)
     {
@@ -33,14 +27,14 @@ class ProfileConfigSubscriber implements EventSubscriberInterface
         $this->sessionKey = $sessionKey;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             CreateProfileConfigCriteriaEvent::class => 'onLoadConfig',
         ];
     }
 
-    public function onLoadConfig(CreateProfileConfigCriteriaEvent $event)
+    public function onLoadConfig(CreateProfileConfigCriteriaEvent $event): void
     {
         if ($this->session->get($this->sessionKey) === true) {
             $event->getCriteria()->addFilter(new EqualsFilter(ProfileConfigEntity::FIELD_ONLY_ADMIN_ORDERS, true));

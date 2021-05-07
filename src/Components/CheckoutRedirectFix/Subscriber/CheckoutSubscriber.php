@@ -34,14 +34,16 @@ class CheckoutSubscriber implements EventSubscriberInterface
             $event->getPage()->getPaymentMethods()->has($paymentMethod->getId())
         ) {
             $customer = $event->getSalesChannelContext()->getCustomer();
-            $extension = $event->getPage()->getExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME) ?? new ArrayStruct();
-            $extension->assign([
-                'validation' => [
-                    'billing_address_md5' => AddressHelper::createMd5Hash($customer->getActiveBillingAddress()),
-                    'shipping_address_md5' => AddressHelper::createMd5Hash($customer->getActiveShippingAddress()),
-                ],
-            ]);
-            $event->getPage()->addExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME, $extension);
+            if ($customer) {
+                $extension = $event->getPage()->getExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME) ?? new ArrayStruct();
+                $extension->assign([
+                    'validation' => [
+                        'billing_address_md5' => AddressHelper::createMd5Hash($customer->getActiveBillingAddress()),
+                        'shipping_address_md5' => AddressHelper::createMd5Hash($customer->getActiveShippingAddress()),
+                    ],
+                ]);
+                $event->getPage()->addExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME, $extension);
+            }
         }
     }
 }

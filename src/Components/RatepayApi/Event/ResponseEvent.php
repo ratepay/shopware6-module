@@ -15,20 +15,11 @@ use Shopware\Core\Framework\Context;
 
 class ResponseEvent extends \Symfony\Contracts\EventDispatcher\Event
 {
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
-    /**
-     * @var RequestBuilder
-     */
-    private $requestBuilder;
+    private RequestBuilder $requestBuilder;
 
-    /**
-     * @var AbstractRequestData
-     */
-    private $requestData;
+    private AbstractRequestData $requestData;
 
     public function __construct(Context $context, RequestBuilder $requestBuilder, AbstractRequestData $requestData)
     {

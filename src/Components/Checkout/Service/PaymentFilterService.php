@@ -21,15 +21,9 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class PaymentFilterService
 {
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
+    private EventDispatcherInterface $eventDispatcher;
 
-    /**
-     * @var ProfileConfigService
-     */
-    private $profileConfigService;
+    private ProfileConfigService $profileConfigService;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,

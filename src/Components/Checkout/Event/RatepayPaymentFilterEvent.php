@@ -18,35 +18,17 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class RatepayPaymentFilterEvent extends Event
 {
-    /**
-     * @var PaymentMethodEntity
-     */
-    private $paymentMethod;
+    private PaymentMethodEntity $paymentMethod;
 
-    /**
-     * @var SalesChannelContext|null
-     */
-    private $salesChannelContext;
+    private ?SalesChannelContext $salesChannelContext;
 
-    /**
-     * @var bool
-     */
-    private $isAvailable = true;
+    private bool $isAvailable = true;
 
-    /**
-     * @var ProfileConfigEntity
-     */
-    private $profileConfig;
+    private ProfileConfigEntity $profileConfig;
 
-    /**
-     * @var ProfileConfigMethodEntity
-     */
-    private $methodConfig;
+    private ProfileConfigMethodEntity $methodConfig;
 
-    /**
-     * @var OrderEntity|null
-     */
-    private $orderEntity;
+    private ?OrderEntity $orderEntity;
 
     public function __construct(
         PaymentMethodEntity $paymentMethod,

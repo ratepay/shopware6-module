@@ -20,30 +20,15 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 abstract class AbstractPaymentEvent extends Event implements ShopwareEvent
 {
-    /**
-     * @var SyncPaymentTransactionStruct
-     */
-    private $transaction;
+    private SyncPaymentTransactionStruct $transaction;
 
-    /**
-     * @var RequestDataBag
-     */
-    private $requestDataBag;
+    private RequestDataBag $requestDataBag;
 
-    /**
-     * @var SalesChannelContext
-     */
-    private $salesChannelContext;
+    private SalesChannelContext $salesChannelContext;
 
-    /**
-     * @var PaymentRequest
-     */
-    private $response;
+    private ?PaymentRequest $response;
 
-    /**
-     * @var OrderEntity
-     */
-    private $order;
+    private OrderEntity $order;
 
     public function __construct(
         OrderEntity $order,
@@ -84,9 +69,6 @@ abstract class AbstractPaymentEvent extends Event implements ShopwareEvent
         return $this->salesChannelContext;
     }
 
-    /**
-     * @return PaymentRequest
-     */
     public function getResponse(): ?PaymentRequest
     {
         return $this->response;

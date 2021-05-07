@@ -23,7 +23,7 @@ class Migration1615564688AdminOrder extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->exec('
+        $connection->executeStatement('
             CREATE TABLE `ratepay_admin_order_token` (
                 `id` binary(16) NOT NULL,
                 `token` varchar(255) NOT NULL,
@@ -38,7 +38,7 @@ class Migration1615564688AdminOrder extends MigrationStep
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         ');
 
-        $connection->exec("
+        $connection->executeStatement("
             ALTER TABLE `ratepay_profile_config`
                 CHANGE `backend` `only_admin_orders` TINYINT(1) NOT NULL DEFAULT '0',
                 CHANGE `sandbox` `sandbox` TINYINT(1) NOT NULL DEFAULT '0';
@@ -47,8 +47,8 @@ class Migration1615564688AdminOrder extends MigrationStep
 
     public function updateDestructive(Connection $connection): void
     {
-        $connection->exec('DROP TABLE `ratepay_admin_order_token`');
-        $connection->exec("
+        $connection->executeStatement('DROP TABLE `ratepay_admin_order_token`');
+        $connection->executeStatement("
             ALTER TABLE `ratepay_profile_config` CHANGE `only_admin_orders` `backend` TINYINT(1) NULL DEFAULT '0';
         ");
     }

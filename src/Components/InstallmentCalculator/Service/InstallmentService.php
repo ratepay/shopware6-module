@@ -22,22 +22,13 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class InstallmentService
 {
-    /**
-     * @var ProfileConfigService
-     */
-    protected $profileConfigService;
+    protected ProfileConfigService $profileConfigService;
 
-    /**
-     * @var CartService
-     */
-    private $cartService;
+    private CartService $cartService;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $languageRepository;
+    private EntityRepositoryInterface $languageRepository;
 
-    private $_translationCache;
+    private array $_translationCache = [];
 
     public function __construct(
         CartService $cartService,

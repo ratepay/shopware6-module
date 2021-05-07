@@ -17,15 +17,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class RequestSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var ApiLogger
-     */
-    protected $apiLogger;
+    protected ApiLogger $apiLogger;
 
-    /**
-     * @var Logger
-     */
-    private $fileLogger;
+    private Logger $fileLogger;
 
     public function __construct(ApiLogger $apiLogger, Logger $fileLogger)
     {
@@ -41,7 +35,7 @@ class RequestSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onPaymentFailed(PaymentFailedEvent $event)
+    public function onPaymentFailed(PaymentFailedEvent $event): void
     {
         $exception = $event->getException();
         if ($exception) {
@@ -51,7 +45,7 @@ class RequestSubscriber implements EventSubscriberInterface
             $message = $event->getResponse()->getReasonMessage();
         }
 
-        $this->fileLogger->addError($message ?? 'Unknown error', [
+        $this->fileLogger->error($message ?? 'Unknown error', [
             'order_id' => $event->getOrder()->getId(),
             'order_number' => $event->getOrder()->getOrderNumber(),
             'request_bag' => $event->getRequestDataBag(),

@@ -23,7 +23,7 @@ class Migration1605784192TransactionIds extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->executeQuery('
+        $connection->executeStatement('
             CREATE TABLE `ratepay_transaction_id_temp` (
                 `id` binary(16) NOT NULL,
                 `identifier` varchar(255) NOT NULL,

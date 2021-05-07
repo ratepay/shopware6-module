@@ -14,10 +14,7 @@ use Doctrine\DBAL\DBALException;
 
 class Database extends AbstractBootstrap
 {
-    /**
-     * @var Connection
-     */
-    protected $connection;
+    protected Connection $connection;
 
     public function injectServices(): void
     {
@@ -41,19 +38,19 @@ class Database extends AbstractBootstrap
             return;
         }
 
-        $this->connection->exec('SET FOREIGN_KEY_CHECKS=0;');
-        $this->connection->exec('DROP TABLE IF EXISTS `ratepay_profile_config`');
-        $this->connection->exec('DROP TABLE IF EXISTS `ratepay_profile_config_method_installment`');
-        $this->connection->exec('DROP TABLE IF EXISTS `ratepay_profile_config_method`');
-        $this->connection->exec('DROP TABLE IF EXISTS `ratepay_api_log`');
-        $this->connection->exec('DROP TABLE IF EXISTS `ratepay_order_history`');
-        $this->connection->exec('DROP TABLE IF EXISTS `ratepay_order_data`');
-        $this->connection->exec('DROP TABLE IF EXISTS `ratepay_order_line_item_data`');
-        $this->connection->exec('DROP TABLE IF EXISTS `ratepay_position`');
-        $this->connection->exec('DROP TABLE IF EXISTS `ratepay_payment_lock`');
-        $this->connection->exec('DROP TABLE IF EXISTS `ratepay_transaction_id_temp`');
-        $this->connection->exec('DROP TABLE IF EXISTS `ratepay_admin_order_token`');
-        $this->connection->exec('SET FOREIGN_KEY_CHECKS=1;');
+        $this->connection->executeStatement('SET FOREIGN_KEY_CHECKS=0;');
+        $this->connection->executeStatement('DROP TABLE IF EXISTS `ratepay_profile_config`');
+        $this->connection->executeStatement('DROP TABLE IF EXISTS `ratepay_profile_config_method_installment`');
+        $this->connection->executeStatement('DROP TABLE IF EXISTS `ratepay_profile_config_method`');
+        $this->connection->executeStatement('DROP TABLE IF EXISTS `ratepay_api_log`');
+        $this->connection->executeStatement('DROP TABLE IF EXISTS `ratepay_order_history`');
+        $this->connection->executeStatement('DROP TABLE IF EXISTS `ratepay_order_data`');
+        $this->connection->executeStatement('DROP TABLE IF EXISTS `ratepay_order_line_item_data`');
+        $this->connection->executeStatement('DROP TABLE IF EXISTS `ratepay_position`');
+        $this->connection->executeStatement('DROP TABLE IF EXISTS `ratepay_payment_lock`');
+        $this->connection->executeStatement('DROP TABLE IF EXISTS `ratepay_transaction_id_temp`');
+        $this->connection->executeStatement('DROP TABLE IF EXISTS `ratepay_admin_order_token`');
+        $this->connection->executeStatement('SET FOREIGN_KEY_CHECKS=1;');
     }
 
     public function activate(): void

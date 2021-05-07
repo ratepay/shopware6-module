@@ -22,12 +22,9 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 class HeadFactory extends AbstractFactory
 {
-    private $shopwareVersion;
+    private string $shopwareVersion;
 
-    /**
-     * @var string
-     */
-    private $pluginVersion;
+    private string $pluginVersion;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,

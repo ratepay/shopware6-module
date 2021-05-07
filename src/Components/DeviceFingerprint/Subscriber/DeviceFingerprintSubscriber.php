@@ -28,15 +28,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class DeviceFingerprintSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var DfpService
-     */
-    protected $dfpService;
+    protected DfpService $dfpService;
 
-    /**
-     * @var ConfigService
-     */
-    private $configService;
+    private ConfigService $configService;
 
     public function __construct(
         DfpService $dfpService,

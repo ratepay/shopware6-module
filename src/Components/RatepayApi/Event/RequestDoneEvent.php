@@ -15,15 +15,9 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class RequestDoneEvent extends Event
 {
-    /**
-     * @var RequestBuilder
-     */
-    private $requestBuilder;
+    private RequestBuilder $requestBuilder;
 
-    /**
-     * @var AbstractRequestData
-     */
-    private $requestData;
+    private AbstractRequestData $requestData;
 
     public function __construct(AbstractRequestData $requestData, RequestBuilder $requestBuilder)
     {

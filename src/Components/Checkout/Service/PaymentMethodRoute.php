@@ -22,36 +22,28 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class PaymentMethodRoute extends AbstractPaymentMethodRoute
 {
-    /**
-     * @var AbstractPaymentMethodRoute
-     */
-    private $innerService;
+    private AbstractPaymentMethodRoute $innerService;
 
-    /**
-     * @var PaymentFilterService
-     */
-    private $paymentFilterService;
+    private PaymentFilterService $paymentFilterService;
 
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
+    private RequestStack $requestStack;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $orderRepository;
+    private EntityRepositoryInterface $orderRepository;
+
+    private EntityRepositoryInterface $paymentMethodRepository;
 
     public function __construct(
         AbstractPaymentMethodRoute $innerService,
         PaymentFilterService $paymentFilterService,
         RequestStack $requestStack,
-        EntityRepositoryInterface $orderRepository
+        EntityRepositoryInterface $orderRepository,
+        EntityRepositoryInterface $paymentMethodRepository
     ) {
         $this->innerService = $innerService;
         $this->paymentFilterService = $paymentFilterService;
         $this->requestStack = $requestStack;
         $this->orderRepository = $orderRepository;
+        $this->paymentMethodRepository = $paymentMethodRepository;
     }
 
     public function getDecorated(): AbstractPaymentMethodRoute
@@ -59,7 +51,7 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
         return $this;
     }
 
-    public function load(Request $request, SalesChannelContext $salesChannelContext, ?Criteria $criteria = null): PaymentMethodRouteResponse
+    public function load(Request $request, SalesChannelContext $salesChannelContext, Criteria $criteria): PaymentMethodRouteResponse
     {
         $response = $this->innerService->load($request, $salesChannelContext, $criteria);
 
@@ -73,13 +65,27 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
         $orderId = $currentRequest->get('orderId');
         $order = null;
         if ($orderId) {
-            $order = $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($orderId), $salesChannelContext->getContext())->first();
+            $order = $this->orderRepository->search(
+                CriteriaHelper::getCriteriaForOrder($orderId),
+                $salesChannelContext->getContext()
+            )->first();
         }
 
         if ($order || $request->query->getBoolean('onlyAvailable', false)) {
-            $paymentMethods = $this->paymentFilterService->filterPaymentMethods($response->getPaymentMethods(), $salesChannelContext, $order);
+            $paymentMethods = $this->paymentFilterService->filterPaymentMethods(
+                $response->getPaymentMethods(),
+                $salesChannelContext,
+                $order
+            );
 
-            return new PaymentMethodRouteResponse($paymentMethods);
+            // We need to reload the entities because the response expects an EntitySearchResult
+            $paymentMethodCriteria = new Criteria($paymentMethods->getIds());
+            $searchResult = $this->paymentMethodRepository->search(
+                $paymentMethodCriteria,
+                $salesChannelContext->getContext()
+            );
+
+            return new PaymentMethodRouteResponse($searchResult);
         }
 
         return $response;

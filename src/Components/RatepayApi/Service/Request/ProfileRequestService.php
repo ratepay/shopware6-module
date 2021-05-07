@@ -24,7 +24,7 @@ class ProfileRequestService extends AbstractRequest
 
     public const EVENT_INIT_REQUEST = self::class . parent::EVENT_INIT_REQUEST;
 
-    protected $_operation = self::CALL_PROFILE_REQUEST;
+    protected string $_operation = self::CALL_PROFILE_REQUEST;
 
     protected function supportsRequestData(AbstractRequestData $requestData): bool
     {

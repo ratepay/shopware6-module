@@ -28,10 +28,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 
 class ProfileConfigResponseConverter
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $paymentRepository;
+    private EntityRepositoryInterface $paymentRepository;
 
     /**
      * @var EntitySearchResult|PaymentMethodEntity[]

@@ -39,40 +39,19 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class AccountSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var ExtensionService
-     */
-    protected $extensionService;
+    protected ExtensionService $extensionService;
 
-    /**
-     * @var DataValidator
-     */
-    private $dataValidator;
+    private DataValidator $dataValidator;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $paymentMethodRepository;
+    private EntityRepositoryInterface $paymentMethodRepository;
 
-    /**
-     * @var PaymentHandlerRegistry
-     */
-    private $paymentHandlerRegistry;
+    private PaymentHandlerRegistry $paymentHandlerRegistry;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $orderRepository;
+    private EntityRepositoryInterface $orderRepository;
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
+    private EventDispatcherInterface $eventDispatcher;
 
-    /**
-     * @var OrderTransactionStateHandler
-     */
-    private $orderTransactionStateHandler;
+    private OrderTransactionStateHandler $orderTransactionStateHandler;
 
     public function __construct(
         ExtensionService $extensionService,

@@ -20,6 +20,7 @@ use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -27,40 +28,19 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ProfileConfigService
 {
-    /**
-     * @var Context
-     */
-    protected $context;
+    protected Context $context;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $repository;
+    private EntityRepositoryInterface $repository;
 
-    /**
-     * @var ProfileRequestService
-     */
-    private $profileRequestService;
+    private ProfileRequestService $profileRequestService;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $methodConfigRepository;
+    private EntityRepositoryInterface $methodConfigRepository;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $methodConfigInstallmentRepository;
+    private EntityRepositoryInterface $methodConfigInstallmentRepository;
 
-    /**
-     * @var ProfileConfigResponseConverter
-     */
-    private $profileConfigResponseConverter;
+    private ProfileConfigResponseConverter $profileConfigResponseConverter;
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
+    private EventDispatcherInterface $eventDispatcher;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
@@ -80,7 +60,7 @@ class ProfileConfigService
         $this->context = Context::createDefaultContext();
     }
 
-    public function refreshProfileConfigs(array $ids)
+    public function refreshProfileConfigs(array $ids): EntitySearchResult
     {
         /** @var ProfileConfigCollection|ProfileConfigEntity[] $profileConfigs */
         $profileConfigs = $this->repository->search(new Criteria($ids), $this->context);

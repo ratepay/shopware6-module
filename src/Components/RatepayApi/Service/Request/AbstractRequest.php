@@ -51,28 +51,18 @@ abstract class AbstractRequest
     public const CALL_PAYMENT_INIT = 'PaymentInit';
 
     /**
-     * @var string
-     *
      * @deprecated
      */
-    protected $_operation;
+    protected string $_operation;
 
     /**
-     * @var string
-     *
      * @deprecated
      */
-    protected $_subType;
+    protected ?string $_subType = null;
 
-    /**
-     * @var HeadFactory
-     */
-    private $headFactory;
+    private HeadFactory $headFactory;
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
+    private EventDispatcherInterface $eventDispatcher;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,

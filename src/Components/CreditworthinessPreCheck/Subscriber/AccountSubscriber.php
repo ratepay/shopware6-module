@@ -25,20 +25,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AccountSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var PaymentQueryService
-     */
-    private $paymentQueryService;
+    private PaymentQueryService $paymentQueryService;
 
-    /**
-     * @var OrderConverter
-     */
-    private $orderConverter;
+    private OrderConverter $orderConverter;
 
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private TranslatorInterface $translator;
 
     public function __construct(
         TranslatorInterface $translator,

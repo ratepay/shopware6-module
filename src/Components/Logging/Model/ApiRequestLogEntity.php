@@ -34,40 +34,19 @@ class ApiRequestLogEntity extends Entity
 
     public const FIELD_CREATED_AT = 'createdAt';
 
-    /**
-     * @var string
-     */
-    protected $version;
+    protected string $version;
 
-    /**
-     * @var string
-     */
-    protected $operation;
+    protected string $operation;
 
-    /**
-     * @var string
-     */
-    protected $subOperation;
+    protected string $subOperation;
 
-    /**
-     * @var string
-     */
-    protected $result;
+    protected string $result;
 
-    /**
-     * @var array
-     */
-    protected $additionalData;
+    protected array $additionalData;
 
-    /**
-     * @var string
-     */
-    protected $request;
+    protected string $request;
 
-    /**
-     * @var string
-     */
-    protected $response;
+    protected string $response;
 
     public function getVersion(): string
     {

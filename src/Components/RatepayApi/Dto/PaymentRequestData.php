@@ -17,20 +17,11 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class PaymentRequestData extends OrderOperationData
 {
-    /**
-     * @var RequestDataBag
-     */
-    private $requestDataBag;
+    private RequestDataBag $requestDataBag;
 
-    /**
-     * @var SalesChannelContext
-     */
-    private $salesChannelContext;
+    private SalesChannelContext $salesChannelContext;
 
-    /**
-     * @var null
-     */
-    private $ratepayTransactionId;
+    private string $ratepayTransactionId;
 
     public function __construct(
         SalesChannelContext $salesChannelContext,
@@ -38,7 +29,7 @@ class PaymentRequestData extends OrderOperationData
         OrderTransactionEntity $transaction,
         ProfileConfigEntity $profileConfig,
         RequestDataBag $requestDataBag,
-        $ratepayTransactionId
+        string $ratepayTransactionId
     ) {
         parent::__construct($salesChannelContext->getContext(), $order, self::OPERATION_REQUEST, null, false);
         $this->transaction = $transaction;
@@ -75,18 +66,12 @@ class PaymentRequestData extends OrderOperationData
         return $this->salesChannelContext;
     }
 
-    /**
-     * @return null
-     */
-    public function getRatepayTransactionId()
+    public function getRatepayTransactionId(): string
     {
         return $this->ratepayTransactionId;
     }
 
-    /**
-     * @param null $ratepayTransactionId
-     */
-    public function setRatepayTransactionId($ratepayTransactionId): void
+    public function setRatepayTransactionId(string $ratepayTransactionId): void
     {
         $this->ratepayTransactionId = $ratepayTransactionId;
     }

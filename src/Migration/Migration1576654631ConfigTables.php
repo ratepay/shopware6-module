@@ -23,7 +23,7 @@ class Migration1576654631ConfigTables extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->executeQuery('
+        $connection->executeStatement('
             CREATE TABLE `ratepay_profile_config` (
               `id` binary(16) NOT NULL,
               `profile_id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -43,7 +43,7 @@ class Migration1576654631ConfigTables extends MigrationStep
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         ');
 
-        $connection->executeQuery('
+        $connection->executeStatement('
             CREATE TABLE `ratepay_profile_config_method` (
               `id` binary(16) NOT NULL,
               `profile_id` binary(16) NOT NULL,
@@ -61,7 +61,7 @@ class Migration1576654631ConfigTables extends MigrationStep
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         ');
 
-        $connection->executeQuery('
+        $connection->executeStatement('
             CREATE TABLE `ratepay_profile_config_method_installment` (
                 `id` binary(16) NOT NULL,
                 `month_allowed` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,

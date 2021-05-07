@@ -32,8 +32,6 @@ class InvoiceFactory extends AbstractFactory
             return $documentEntity->getDocumentType()->getTechnicalName() === 'invoice';
         });
 
-        $invoiceObject = null;
-
         if ($invoice = $documents->first()) {
             $dateObject = $invoice->getCreatedAt();
             $currentDate = $dateObject->format('Y-m-d');

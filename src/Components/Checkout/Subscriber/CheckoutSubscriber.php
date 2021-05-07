@@ -17,10 +17,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var ExtensionService
-     */
-    protected $extensionService;
+    protected ExtensionService $extensionService;
 
     public function __construct(ExtensionService $extensionService)
     {

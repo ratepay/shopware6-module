@@ -21,15 +21,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentSuccessfulSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var StateMachineRegistry
-     */
-    private $stateMachineRegistry;
+    private StateMachineRegistry $stateMachineRegistry;
 
-    /**
-     * @var ConfigService
-     */
-    private $configService;
+    private ConfigService $configService;
 
     public function __construct(StateMachineRegistry $stateMachineRegistry, ConfigService $configService)
     {

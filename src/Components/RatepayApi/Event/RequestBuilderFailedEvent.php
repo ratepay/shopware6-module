@@ -15,15 +15,9 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class RequestBuilderFailedEvent extends Event
 {
-    /**
-     * @var Exception
-     */
-    protected $exception;
+    protected Exception $exception;
 
-    /**
-     * @var AbstractRequestData
-     */
-    private $requestData;
+    private AbstractRequestData $requestData;
 
     public function __construct(Exception $exception, AbstractRequestData $requestData)
     {

@@ -18,10 +18,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class PaymentFailedEvent extends AbstractPaymentEvent
 {
-    /**
-     * @var Exception
-     */
-    private $exception;
+    private ?Exception $exception;
 
     public function __construct(
         OrderEntity $order,
@@ -35,7 +32,7 @@ class PaymentFailedEvent extends AbstractPaymentEvent
         $this->exception = $exception;
     }
 
-    public function getException(): Exception
+    public function getException(): ?Exception
     {
         return $this->exception;
     }

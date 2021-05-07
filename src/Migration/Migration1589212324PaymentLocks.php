@@ -23,7 +23,7 @@ class Migration1589212324PaymentLocks extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->executeQuery('
+        $connection->executeStatement('
         CREATE TABLE `ratepay_payment_lock` (
             `id` binary(16) NOT NULL,
             `customer_id` binary(16) NOT NULL,

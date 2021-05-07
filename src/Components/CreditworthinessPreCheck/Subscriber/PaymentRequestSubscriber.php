@@ -19,10 +19,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentRequestSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var TransactionIdService
-     */
-    private $transactionIdService;
+    private TransactionIdService $transactionIdService;
 
     public function __construct(TransactionIdService $transactionIdService)
     {

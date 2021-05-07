@@ -26,52 +26,40 @@ class ProfileConfigMethodInstallmentEntity extends Entity
 
     public const FIELD_RATE_MIN = 'rateMin';
 
-    /**
-     * @var string
-     */
-    protected $allowedMonths;
+    protected array $allowedMonths = [];
 
-    /**
-     * @var bool
-     */
-    protected $isBankTransferAllowed;
+    protected ?bool $isBankTransferAllowed = null;
 
-    /**
-     * @var bool
-     */
-    protected $isDebitAllowed;
+    protected ?bool $isDebitAllowed = null;
 
-    /**
-     * @var int
-     */
-    protected $rateMin;
+    protected int $rateMin;
 
-    public function getAllowedMonths(): string
+    public function getAllowedMonths(): array
     {
         return $this->allowedMonths;
     }
 
-    public function setAllowedMonths(string $allowedMonths): void
+    public function setAllowedMonths(array $allowedMonths): void
     {
         $this->allowedMonths = $allowedMonths;
     }
 
-    public function isBankTransferAllowed(): bool
+    public function getIsBankTransferAllowed(): ?bool
     {
         return $this->isBankTransferAllowed;
     }
 
-    public function setIsBankTransferAllowed(bool $isBankTransferAllowed): void
+    public function setIsBankTransferAllowed(?bool $isBankTransferAllowed): void
     {
         $this->isBankTransferAllowed = $isBankTransferAllowed;
     }
 
-    public function isDebitAllowed(): bool
+    public function getIsDebitAllowed(): ?bool
     {
         return $this->isDebitAllowed;
     }
 
-    public function setIsDebitAllowed(bool $isDebitAllowed): void
+    public function setIsDebitAllowed(?bool $isDebitAllowed): void
     {
         $this->isDebitAllowed = $isDebitAllowed;
     }

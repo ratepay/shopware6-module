@@ -20,20 +20,11 @@ use Shopware\Core\System\User\UserEntity;
 
 class HistoryLogger
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $logRepository;
+    protected EntityRepositoryInterface $logRepository;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $userRepository;
+    protected EntityRepositoryInterface $userRepository;
 
-    /**
-     * @var Logger
-     */
-    protected $logger;
+    protected Logger $logger;
 
     public function __construct(
         EntityRepositoryInterface $logRepository,

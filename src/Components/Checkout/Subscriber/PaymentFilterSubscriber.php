@@ -18,10 +18,7 @@ class PaymentFilterSubscriber implements EventSubscriberInterface
 {
     public const PAYMENT_FILTER_PRIORITY = 600;
 
-    /**
-     * @var CartService
-     */
-    private $cartService;
+    private CartService $cartService;
 
     public function __construct(CartService $cartService)
     {

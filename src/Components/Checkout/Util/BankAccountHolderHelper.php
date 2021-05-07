@@ -17,13 +17,15 @@ class BankAccountHolderHelper
     /**
      * @param $baseData OrderEntity|SalesChannelContext
      */
-    public static function getAvailableNames($baseData)
+    public static function getAvailableNames($baseData): array
     {
         if ($baseData instanceof SalesChannelContext) {
             $address = $baseData->getCustomer()->getDefaultBillingAddress();
         } elseif ($baseData instanceof OrderEntity) {
             $address = $baseData->getAddresses()->get($baseData->getBillingAddressId());
-        } else {
+        }
+
+        if (!isset($address)) {
             throw new \InvalidArgumentException('`$baseData` must be one of ' . OrderEntity::class . ' or ' . SalesChannelContext::class);
         }
 

@@ -21,10 +21,7 @@ class PaymentFailedSubscriber implements EventSubscriberInterface
 {
     public const ERROR_CODES = [703, 720, 721];
 
-    /**
-     * @var LockService
-     */
-    private $lockService;
+    private LockService $lockService;
 
     public function __construct(LockService $lockService)
     {
@@ -38,7 +35,7 @@ class PaymentFailedSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function lockPaymentMethod(RequestDoneEvent $event)
+    public function lockPaymentMethod(RequestDoneEvent $event): void
     {
         $requestData = $event->getRequestData();
         $response = $event->getRequestBuilder()->getResponse();

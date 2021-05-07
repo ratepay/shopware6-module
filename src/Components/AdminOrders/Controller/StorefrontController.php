@@ -20,6 +20,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -30,25 +31,13 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class StorefrontController extends AbstractController
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $tokenRepository;
+    private EntityRepositoryInterface $tokenRepository;
 
-    /**
-     * @var SessionInterface
-     */
-    private $session;
+    private SessionInterface $session;
 
-    /**
-     * @var string
-     */
-    private $sessionKey;
+    private string $sessionKey;
 
-    /**
-     * @var Translator
-     */
-    private $translator;
+    private Translator $translator;
 
     public function __construct(
         EntityRepositoryInterface $tokenRepository,
@@ -102,7 +91,7 @@ class StorefrontController extends AbstractController
     /**
      * @Route(path="/logout/", name="ratepay.frontend.admin-logout")
      */
-    public function logout()
+    public function logout(): RedirectResponse
     {
         $this->session->set($this->sessionKey, false);
         $this->addFlash('success', $this->translator->trans('ratepay.storefront.admin-order.session-destroyed'));

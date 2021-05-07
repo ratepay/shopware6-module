@@ -14,12 +14,9 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class DfpService
 {
-    const SESSION_VAR_NAME = 'ratepay_dfp_token';
+    private const SESSION_VAR_NAME = 'ratepay_dfp_token';
 
-    /**
-     * @var SessionInterface
-     */
-    private $sessionInterface;
+    private SessionInterface $sessionInterface;
 
     public function __construct(SessionInterface $sessionInterface)
     {

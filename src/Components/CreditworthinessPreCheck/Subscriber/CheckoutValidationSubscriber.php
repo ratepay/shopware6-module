@@ -34,23 +34,13 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
 {
     public const CODE_METHOD_NOT_AVAILABLE = 'RP_METHOD_NOT_AVAILABLE';
 
-    /** @var RequestStack */
-    private $requestStack;
+    private RequestStack $requestStack;
 
-    /**
-     * @var PaymentQueryService
-     */
-    private $paymentQueryService;
+    private PaymentQueryService $paymentQueryService;
 
-    /**
-     * @var CartService
-     */
-    private $cartService;
+    private CartService $cartService;
 
-    /**
-     * @var DataValidator
-     */
-    private $dataValidator;
+    private DataValidator $dataValidator;
 
     public function __construct(
         RequestStack $requestStack,
@@ -80,7 +70,6 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
         }
 
         $context = $this->getContextFromRequest($request);
-        /** @var AbstractPaymentHandler $paymentHandlerIdentifier */
         $paymentHandlerIdentifier = $context->getPaymentMethod()->getHandlerIdentifier();
 
         if (strpos($paymentHandlerIdentifier, 'RpayPayments') !== false) {

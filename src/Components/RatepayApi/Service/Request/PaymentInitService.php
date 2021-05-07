@@ -26,7 +26,7 @@ class PaymentInitService extends AbstractRequest
 
     public const EVENT_BUILD_CONTENT = self::class . parent::EVENT_BUILD_CONTENT;
 
-    protected $_operation = self::CALL_PAYMENT_INIT;
+    protected string $_operation = self::CALL_PAYMENT_INIT;
 
     protected function supportsRequestData(AbstractRequestData $requestData): bool
     {

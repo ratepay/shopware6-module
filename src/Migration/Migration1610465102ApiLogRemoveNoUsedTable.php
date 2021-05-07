@@ -23,7 +23,7 @@ class Migration1610465102ApiLogRemoveNoUsedTable extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->executeQuery('ALTER TABLE `ratepay_api_log` DROP `updated_at`');
+        $connection->executeStatement('ALTER TABLE `ratepay_api_log` DROP `updated_at`');
     }
 
     public function updateDestructive(Connection $connection): void

@@ -35,45 +35,21 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentChangeSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $productRepository;
+    private EntityRepositoryInterface $productRepository;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $orderRepository;
+    private EntityRepositoryInterface $orderRepository;
 
-    /**
-     * @var Logger
-     */
-    private $logger;
+    private Logger $logger;
 
-    /**
-     * @var HistoryLogger
-     */
-    private $historyLogger;
+    private HistoryLogger $historyLogger;
 
-    /**
-     * @var RecalculationService
-     */
-    private $recalculationService;
+    private RecalculationService $recalculationService;
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
+    private EventDispatcherInterface $eventDispatcher;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $ratepayPositionRepository;
+    private EntityRepositoryInterface $ratepayPositionRepository;
 
-    /**
-     * @var ExtensionService
-     */
-    private $extensionService;
+    private ExtensionService $extensionService;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
@@ -238,7 +214,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
             $this->productRepository->update($data, $context);
         } catch (Exception $e) {
             // todo trigger event
-            $this->logger->addError('Error during the updating of the stock', [
+            $this->logger->error('Error during the updating of the stock', [
                 'message' => $e->getMessage(),
                 'orderId' => $requestData->getOrder()->getId(),
                 'orderNumber' => $requestData->getOrder()->getOrderNumber(),

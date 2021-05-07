@@ -39,74 +39,64 @@ class ProfileConfigMethodEntity extends Entity
 
     public const FIELD_INSTALLMENT_CONFIG = 'installmentConfig';
 
-    /**
-     * @var PaymentMethodEntity
-     */
-    protected $paymentMethod;
+    protected ?PaymentMethodEntity $paymentMethod = null;
 
-    /**
-     * @var string
-     */
-    protected $paymentMethodId;
+    protected string $paymentMethodId;
 
-    /**
-     * @var ProfileConfigEntity
-     */
-    protected $profile;
+    protected ?ProfileConfigEntity $profile = null;
 
-    /**
-     * @var string
-     */
-    protected $profileId;
+    protected string $profileId;
 
-    /**
-     * @var int
-     */
-    protected $limitMin;
+    protected ?int $limitMin = null;
 
-    /**
-     * @var int
-     */
-    protected $limitMax;
+    protected ?int $limitMax = null;
 
-    /**
-     * @var int
-     */
-    protected $limitMaxB2b;
+    protected ?int $limitMaxB2b = null;
 
-    /**
-     * @var bool
-     */
-    protected $allowDifferentAddresses;
+    protected bool $allowDifferentAddresses;
 
-    /**
-     * @var bool
-     */
-    protected $allowB2b;
+    protected ?bool $allowB2b = null;
 
-    /**
-     * @var ProfileConfigMethodInstallmentEntity
-     */
-    protected $installmentConfig;
+    protected ?ProfileConfigMethodInstallmentEntity $installmentConfig = null;
 
-    public function getPaymentMethod(): string
+    public function getPaymentMethod(): ?PaymentMethodEntity
     {
         return $this->paymentMethod;
     }
 
-    public function setPaymentMethod(string $paymentMethod): void
+    public function setPaymentMethod(?PaymentMethodEntity $paymentMethod): void
     {
         $this->paymentMethod = $paymentMethod;
     }
 
-    public function isAllowB2b(): bool
+    public function getPaymentMethodId(): string
     {
-        return $this->allowB2b;
+        return $this->paymentMethodId;
     }
 
-    public function setAllowB2b(bool $allowB2b): void
+    public function setPaymentMethodId(string $paymentMethodId): void
     {
-        $this->allowB2b = $allowB2b;
+        $this->paymentMethodId = $paymentMethodId;
+    }
+
+    public function getProfile(): ProfileConfigEntity
+    {
+        return $this->profile;
+    }
+
+    public function setProfile(ProfileConfigEntity $profile): void
+    {
+        $this->profile = $profile;
+    }
+
+    public function getProfileId(): string
+    {
+        return $this->profileId;
+    }
+
+    public function setProfileId(string $profileId): void
+    {
+        $this->profileId = $profileId;
     }
 
     public function getLimitMin(): ?int
@@ -149,34 +139,14 @@ class ProfileConfigMethodEntity extends Entity
         $this->allowDifferentAddresses = $allowDifferentAddresses;
     }
 
-    public function getProfile(): ProfileConfigEntity
+    public function getAllowB2b(): ?bool
     {
-        return $this->profile;
+        return $this->allowB2b;
     }
 
-    public function setProfile(ProfileConfigEntity $profile): void
+    public function setAllowB2b(?bool $allowB2b): void
     {
-        $this->profile = $profile;
-    }
-
-    public function getProfileId(): string
-    {
-        return $this->profileId;
-    }
-
-    public function setProfileId(string $profileId): void
-    {
-        $this->profileId = $profileId;
-    }
-
-    public function getPaymentMethodId(): string
-    {
-        return $this->paymentMethodId;
-    }
-
-    public function setPaymentMethodId(string $paymentMethodId): void
-    {
-        $this->paymentMethodId = $paymentMethodId;
+        $this->allowB2b = $allowB2b;
     }
 
     public function getInstallmentConfig(): ?ProfileConfigMethodInstallmentEntity

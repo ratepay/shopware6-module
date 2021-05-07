@@ -28,20 +28,11 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class TransactionIdService
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $transactionIdRepository;
+    private EntityRepositoryInterface $transactionIdRepository;
 
-    /**
-     * @var PaymentInitService
-     */
-    private $paymentInitService;
+    private PaymentInitService $paymentInitService;
 
-    /**
-     * @var ProfileConfigService
-     */
-    private $profileConfigService;
+    private ProfileConfigService $profileConfigService;
 
     public function __construct(
         EntityRepositoryInterface $transactionIdRepository,
@@ -56,7 +47,7 @@ class TransactionIdService
     /**
      * @throws TransactionIdFetchFailedException
      */
-    public function getTransactionId(SalesChannelContext $salesChannelContext, string $prefix): string
+    public function getTransactionId(SalesChannelContext $salesChannelContext, string $prefix = ''): string
     {
         $profileConfig = $this->profileConfigService->getProfileConfigBySalesChannel($salesChannelContext);
         if ($profileConfig === null) {

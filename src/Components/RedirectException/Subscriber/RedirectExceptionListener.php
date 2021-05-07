@@ -26,15 +26,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class RedirectExceptionListener implements EventSubscriberInterface
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private ContainerInterface $container;
 
-    /**
-     * @var OrderTransactionStateHandler
-     */
-    private $orderTransactionStateHandler;
+    private OrderTransactionStateHandler $orderTransactionStateHandler;
 
     public function __construct(
         ContainerInterface $container,

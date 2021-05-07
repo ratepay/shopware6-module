@@ -25,15 +25,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentFailedSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $ratepayApiLogRepository;
+    private EntityRepositoryInterface $ratepayApiLogRepository;
 
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private ContainerInterface $container;
 
     public function __construct(
         EntityRepositoryInterface $ratepayApiLogRepository,

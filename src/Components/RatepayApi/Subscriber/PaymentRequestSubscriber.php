@@ -19,15 +19,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentRequestSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var ExtensionService
-     */
-    private $extensionService;
+    private ExtensionService $extensionService;
 
-    /**
-     * @var TransactionIdService
-     */
-    private $transactionIdService;
+    private TransactionIdService $transactionIdService;
 
     public function __construct(
         TransactionIdService $transactionIdService,
@@ -45,7 +39,7 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onFailure(ResponseEvent $requestEvent)
+    public function onFailure(ResponseEvent $requestEvent): void
     {
         /** @var PaymentRequestData $requestData */
         $requestData = $requestEvent->getRequestData();
@@ -65,7 +59,7 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
         );
     }
 
-    public function onSuccess(ResponseEvent $requestEvent)
+    public function onSuccess(ResponseEvent $requestEvent): void
     {
         /** @var PaymentRequestData $requestData */
         $requestData = $requestEvent->getRequestData();

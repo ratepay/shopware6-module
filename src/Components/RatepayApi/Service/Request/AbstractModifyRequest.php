@@ -27,37 +27,19 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 abstract class AbstractModifyRequest extends AbstractRequest
 {
-    protected $_operation = self::CALL_CHANGE;
+    protected string $_operation = self::CALL_CHANGE;
 
-    /**
-     * @var array
-     */
-    protected $items;
+    protected array $items;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $productRepository;
+    protected EntityRepositoryInterface $productRepository;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $orderRepository;
+    protected EntityRepositoryInterface $orderRepository;
 
-    /**
-     * @var ShoppingBasketFactory
-     */
-    private $shoppingBasketFactory;
+    private ShoppingBasketFactory $shoppingBasketFactory;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $profileConfigRepository;
+    private EntityRepositoryInterface $profileConfigRepository;
 
-    /**
-     * @var ExternalFactory
-     */
-    private $externalFactory;
+    private ExternalFactory $externalFactory;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,

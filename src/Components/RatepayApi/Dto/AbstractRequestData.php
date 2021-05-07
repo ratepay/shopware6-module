@@ -14,15 +14,9 @@ use Shopware\Core\Framework\Context;
 
 abstract class AbstractRequestData
 {
-    /**
-     * @var Context
-     */
-    protected $context;
+    protected Context $context;
 
-    /**
-     * @var ProfileConfigEntity|null
-     */
-    protected $profileConfig;
+    protected ?ProfileConfigEntity $profileConfig = null;
 
     public function __construct(Context $context)
     {

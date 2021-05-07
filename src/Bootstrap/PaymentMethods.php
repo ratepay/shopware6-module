@@ -54,10 +54,7 @@ class PaymentMethods extends AbstractBootstrap
         ],
     ];
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $paymentRepository;
+    private EntityRepositoryInterface $paymentRepository;
 
     public function injectServices(): void
     {

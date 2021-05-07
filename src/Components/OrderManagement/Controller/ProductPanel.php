@@ -34,29 +34,20 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/api/v{version}/ratepay/order-management")
+ * @Route("/api/ratepay/order-management")
  */
 class ProductPanel extends AbstractController
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $orderRepository;
+    private EntityRepositoryInterface $orderRepository;
 
-    /**
-     * @var PaymentCreditService
-     */
-    private $creditService;
+    private PaymentCreditService $creditService;
 
     /**
      * @var AbstractModifyRequest[]
      */
-    private $requestServicesByOperation;
+    private array $requestServicesByOperation;
 
-    /**
-     * @var OrderConverter
-     */
-    private $orderConverter;
+    private OrderConverter $orderConverter;
 
     public function __construct(
         OrderConverter $orderConverter,
@@ -78,13 +69,10 @@ class ProductPanel extends AbstractController
     }
 
     /**
-     * @param string $orderId
      * @RouteScope(scopes={"administration"})
      * @Route("/load/{orderId}", name="ratepay.order_management.product_panel.load", methods={"GET"})
-     *
-     * @return JsonResponse
      */
-    public function load($orderId, Context $context)
+    public function load(string $orderId, Context $context): JsonResponse
     {
         $criteria = new Criteria([$orderId]);
         $criteria->addAssociation('lineItems');
@@ -127,27 +115,24 @@ class ProductPanel extends AbstractController
                 'success' => true,
                 'data' => $items,
             ], 200);
-        } else {
-            return $this->json([
-                'success' => false,
-                'message' => 'Order not found',
-            ], 400);
         }
+
+        return $this->json([
+            'success' => false,
+            'message' => 'Order not found',
+        ], 400);
     }
 
     /**
-     * @param string $orderId
      * @RouteScope(scopes={"administration"})
      * @Route("/deliver/{orderId}", name="ratepay.order_management.product_panel.deliver", methods={"POST"})
-     *
-     * @return JsonResponse
      */
-    public function deliver($orderId, Request $request, Context $context)
+    public function deliver(string $orderId, Request $request, Context $context): JsonResponse
     {
         return $this->processModify($request, $context, OrderOperationData::OPERATION_DELIVER, $orderId);
     }
 
-    protected function processModify(Request $request, Context $context, string $operation, $orderId)
+    protected function processModify(Request $request, Context $context, string $operation, $orderId): JsonResponse
     {
         $order = $this->fetchOrder($context, $orderId);
 
@@ -176,46 +161,37 @@ class ProductPanel extends AbstractController
                 'success' => $response->getResponse()->isSuccessful(),
                 'message' => $response->getResponse()->getReasonMessage(),
             ], 200);
-        } else {
-            return $this->json([
-                'success' => false,
-                'message' => 'Order not found',
-            ], 400);
         }
+
+        return $this->json([
+            'success' => false,
+            'message' => 'Order not found',
+        ], 400);
     }
 
     /**
-     * @param string $orderId
      * @RouteScope(scopes={"administration"})
      * @Route("/cancel/{orderId}", name="ratepay.order_management.product_panel.cancel", methods={"POST"})
-     *
-     * @return JsonResponse
      */
-    public function cancel($orderId, Request $request, Context $context)
+    public function cancel(string $orderId, Request $request, Context $context): JsonResponse
     {
         return $this->processModify($request, $context, OrderOperationData::OPERATION_CANCEL, $orderId);
     }
 
     /**
-     * @param string $orderId
      * @RouteScope(scopes={"administration"})
      * @Route("/return/{orderId}", name="ratepay.order_management.product_panel.return", methods={"POST"})
-     *
-     * @return JsonResponse
      */
-    public function return($orderId, Request $request, Context $context)
+    public function return(string $orderId, Request $request, Context $context): JsonResponse
     {
         return $this->processModify($request, $context, OrderOperationData::OPERATION_RETURN, $orderId);
     }
 
     /**
-     * @param string $orderId
      * @RouteScope(scopes={"administration"})
      * @Route("/addItem/{orderId}", name="ratepay.order_management.product_panel.add_item", methods={"POST"})
-     *
-     * @return JsonResponse
      */
-    public function addItem($orderId, Request $request, Context $context)
+    public function addItem(string $orderId, Request $request, Context $context): JsonResponse
     {
         $name = $request->request->get('name');
         $grossAmount = $request->request->get('grossAmount');
@@ -239,12 +215,7 @@ class ProductPanel extends AbstractController
         ], 200);
     }
 
-    /**
-     * @param string $orderId
-     *
-     * @return OrderEntity|null
-     */
-    protected function fetchOrder(Context $context, $orderId)
+    protected function fetchOrder(Context $context, string $orderId): ?OrderEntity
     {
         return $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($orderId), $context)->first();
     }

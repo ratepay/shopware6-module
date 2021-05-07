@@ -14,10 +14,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class InitEvent extends Event
 {
-    /**
-     * @var AbstractRequestData
-     */
-    private $requestData;
+    private AbstractRequestData $requestData;
 
     public function __construct(AbstractRequestData $requestData)
     {

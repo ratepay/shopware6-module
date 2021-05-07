@@ -23,7 +23,7 @@ class Migration1589212322HistoryLog extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->executeQuery('
+        $connection->executeStatement('
             CREATE TABLE `ratepay_order_history` (
                 `id` binary(16) NOT NULL,
                 `order_id` binary(16) NOT NULL,

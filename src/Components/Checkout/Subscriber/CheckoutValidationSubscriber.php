@@ -24,16 +24,11 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class CheckoutValidationSubscriber implements EventSubscriberInterface
 {
-    /** @var RequestStack */
-    private $requestStack;
+    private RequestStack $requestStack;
 
-    /** @var ContainerInterface */
-    private $container;
+    private ContainerInterface $container;
 
-    /**
-     * @var PaymentHandlerRegistry
-     */
-    private $paymentHandlerRegistry;
+    private PaymentHandlerRegistry $paymentHandlerRegistry;
 
     public function __construct(
         RequestStack $requestStack,

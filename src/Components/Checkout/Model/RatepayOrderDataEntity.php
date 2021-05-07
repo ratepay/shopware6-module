@@ -37,50 +37,23 @@ class RatepayOrderDataEntity extends Entity
 
     public const FIELD_SUCCESSFUL = 'successful';
 
-    /**
-     * @var string
-     */
-    protected $orderId;
+    protected string $orderId;
 
-    /**
-     * @var string
-     */
-    protected $orderVersionId;
+    protected string $orderVersionId;
 
-    /**
-     * @var OrderEntity
-     */
-    protected $order;
+    protected ?OrderEntity $order = null;
 
-    /**
-     * @var string
-     */
-    protected $profileId;
+    protected string $profileId;
 
-    /**
-     * @var string
-     */
-    protected $transactionId;
+    protected string $transactionId;
 
-    /**
-     * @var string|null
-     */
-    protected $descriptor;
+    protected ?string $descriptor = null;
 
-    /**
-     * @var string|null
-     */
-    protected $shippingPositionId;
+    protected ?string $shippingPositionId = null;
 
-    /**
-     * @var RatepayPositionEntity|null
-     */
-    protected $shippingPosition;
+    protected ?RatepayPositionEntity $shippingPosition = null;
 
-    /**
-     * @var bool
-     */
-    protected $successful;
+    protected bool $successful = false;
 
     public function getOrderId(): string
     {
@@ -102,12 +75,12 @@ class RatepayOrderDataEntity extends Entity
         $this->orderVersionId = $orderVersionId;
     }
 
-    public function getOrder(): OrderEntity
+    public function getOrder(): ?OrderEntity
     {
         return $this->order;
     }
 
-    public function setOrder(OrderEntity $order): void
+    public function setOrder(?OrderEntity $order): void
     {
         $this->order = $order;
     }

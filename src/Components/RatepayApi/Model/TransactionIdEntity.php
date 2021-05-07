@@ -31,17 +31,13 @@ class TransactionIdEntity extends Entity
 
     public const FIELD_CREATED_AT = 'created_at';
 
-    /** @var string|null */
-    protected $identifier;
+    protected ?string $identifier = null;
 
-    /** @var string|null */
-    protected $transactionId;
+    protected ?string $transactionId = null;
 
-    /** @var string|null */
-    protected $profileId;
+    protected ?string $profileId = null;
 
-    /** @var ProfileConfigEntity|null */
-    protected $profile;
+    protected ?ProfileConfigEntity $profile = null;
 
     public function getIdentifier(): ?string
     {

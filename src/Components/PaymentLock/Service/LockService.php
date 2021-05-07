@@ -22,15 +22,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
 
 class LockService
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $paymentLockRepository;
+    private EntityRepositoryInterface $paymentLockRepository;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $paymentMethodRepository;
+    private EntityRepositoryInterface $paymentMethodRepository;
 
     public function __construct(
         EntityRepositoryInterface $paymentMethodRepository,

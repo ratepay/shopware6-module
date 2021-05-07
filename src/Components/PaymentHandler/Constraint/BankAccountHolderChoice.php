@@ -38,7 +38,7 @@ class BankAccountHolderChoice extends Choice
         ]);
     }
 
-    public function validatedBy()
+    public function validatedBy(): string
     {
         return ChoiceValidator::class;
     }

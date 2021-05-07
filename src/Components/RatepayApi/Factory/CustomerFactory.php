@@ -32,20 +32,11 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class CustomerFactory extends AbstractFactory
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $salutationRepository;
+    private EntityRepositoryInterface $salutationRepository;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $languageRepository;
+    private EntityRepositoryInterface $languageRepository;
 
-    /**
-     * @var ConfigService
-     */
-    private $configService;
+    private ConfigService $configService;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
@@ -225,7 +216,6 @@ class CustomerFactory extends AbstractFactory
             $languageId = $requestData->getSalesChannelContext()->getSalesChannel()->getLanguageId();
         }
 
-        /** @noinspection NullPointerExceptionInspection */
         /** @noinspection PhpUndefinedVariableInspection */
 
         /** @var LanguageEntity $result */

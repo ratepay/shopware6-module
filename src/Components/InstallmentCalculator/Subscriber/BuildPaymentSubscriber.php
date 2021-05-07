@@ -28,17 +28,14 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class BuildPaymentSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var InstallmentService
-     */
-    private $installmentService;
+    private InstallmentService $installmentService;
 
     public function __construct(InstallmentService $installmentService)
     {
         $this->installmentService = $installmentService;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             PaymentFactory::class => 'buildPayment',
@@ -46,7 +43,7 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function buildPayment(BuildEvent $event)
+    public function buildPayment(BuildEvent $event): void
     {
         /** @var PaymentRequestData $requestData */
         $requestData = $event->getRequestData();
@@ -107,7 +104,7 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
 
         /** @var ShoppingBasket $basket */
         $basket = $event->getBuildData();
-        if ($requestData instanceof AddCreditData &&
+        if ($paymentMethod && $requestData instanceof AddCreditData &&
             MethodHelper::isInstallmentMethod($paymentMethod->getHandlerIdentifier())
         ) {
             $items = $basket->getItems()->admittedFields['Item']['value'];

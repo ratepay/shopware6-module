@@ -17,11 +17,6 @@ use SimpleXMLElement;
 
 class ResponseConverter
 {
-    /**
-     * returns a ratepay response model from the response xml.
-     *
-     * @param string $operation this is the name of the request php-model
-     */
     public static function getResponseObjectByXml(string $operation, string $xml): AbstractResponse
     {
         $response = new ValidateGatewayResponse($operation, new SimpleXMLElement($xml));

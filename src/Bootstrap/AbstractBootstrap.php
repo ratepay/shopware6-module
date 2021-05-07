@@ -20,25 +20,13 @@ abstract class AbstractBootstrap implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
 
-    /**
-     * @var InstallContext
-     */
-    protected $installContext;
+    protected InstallContext $installContext;
 
-    /**
-     * @var Context
-     */
-    protected $defaultContext;
+    protected Context $defaultContext;
 
-    /**
-     * @var Logger
-     */
-    protected $logger;
+    protected Logger $logger;
 
-    /**
-     * @var PluginEntity
-     */
-    protected $plugin;
+    protected PluginEntity $plugin;
 
     final public function __construct()
     {

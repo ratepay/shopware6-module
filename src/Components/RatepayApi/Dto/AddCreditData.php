@@ -37,10 +37,8 @@ class AddCreditData extends OrderOperationData
             ->setPriceDefinition(new QuantityPriceDefinition(
                 $grossAmount,
                 new TaxRuleCollection([new TaxRule($taxRate, 100)]),
-                $order->getCurrency()->getDecimalPrecision(),
-                1,
-                true)
-            );
+                1
+            ));
         $lineItem->addExtension(OrderConverter::ORIGINAL_ID, new IdStruct($lineItem->getId()));
 
         parent::__construct($context, $order, self::OPERATION_ADD, [$lineItem], false);

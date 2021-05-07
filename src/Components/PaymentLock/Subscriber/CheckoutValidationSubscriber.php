@@ -24,15 +24,9 @@ use Symfony\Component\Validator\ConstraintViolationList;
 
 class CheckoutValidationSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var LockService
-     */
-    private $lockService;
+    private LockService $lockService;
 
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
+    private RequestStack $requestStack;
 
     public function __construct(RequestStack $requestStack, LockService $lockService)
     {
@@ -57,7 +51,6 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
 
         $salesChannelContext = $this->getContextFromRequest($request);
         $paymentMethod = $salesChannelContext->getPaymentMethod();
-        /** @var AbstractPaymentHandler $paymentHandlerIdentifier */
         $paymentHandlerIdentifier = $paymentMethod->getHandlerIdentifier();
 
         if (strpos($paymentHandlerIdentifier, 'RpayPayments') !== false && $salesChannelContext->getCustomer()) {

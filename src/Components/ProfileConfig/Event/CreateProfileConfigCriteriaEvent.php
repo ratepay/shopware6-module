@@ -14,45 +14,21 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 
 class CreateProfileConfigCriteriaEvent
 {
-    /**
-     * @var Criteria
-     */
-    private $criteria;
+    private Criteria $criteria;
 
-    /**
-     * @var string
-     */
-    private $paymentMethodId;
+    private string $paymentMethodId;
 
-    /**
-     * @var string
-     */
-    private $billingCountryIso;
+    private string $billingCountryIso;
 
-    /**
-     * @var string
-     */
-    private $shippingCountryIso;
+    private string $shippingCountryIso;
 
-    /**
-     * @var string
-     */
-    private $salesChannelId;
+    private string $salesChannelId;
 
-    /**
-     * @var string
-     */
-    private $currencyIso;
+    private string $currencyIso;
 
-    /**
-     * @var bool
-     */
-    private $differentAddresses;
+    private bool $differentAddresses;
 
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
     public function __construct(
         Criteria $criteria,

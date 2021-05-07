@@ -24,7 +24,7 @@ class PaymentCreditService extends AbstractModifyRequest
 
     public const EVENT_INIT_REQUEST = self::class . parent::EVENT_INIT_REQUEST;
 
-    protected $_subType = 'credit';
+    protected ?string $_subType = 'credit';
 
     protected function supportsRequestData(AbstractRequestData $requestData): bool
     {

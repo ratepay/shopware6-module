@@ -19,20 +19,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class UserDataSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $addressRepository;
+    private EntityRepositoryInterface $addressRepository;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $customerRepository;
+    private EntityRepositoryInterface $customerRepository;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $orderAddressRepository;
+    private EntityRepositoryInterface $orderAddressRepository;
 
     public function __construct(
         EntityRepositoryInterface $customerRepository,
@@ -44,14 +35,14 @@ class UserDataSubscriber implements EventSubscriberInterface
         $this->addressRepository = $addressRepository;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             BeforePaymentEvent::class => 'saveUserData',
         ];
     }
 
-    public function saveUserData(BeforePaymentEvent $event)
+    public function saveUserData(BeforePaymentEvent $event): void
     {
         $paymentRequestData = $event->getPaymentRequestData();
         $order = $paymentRequestData->getOrder();

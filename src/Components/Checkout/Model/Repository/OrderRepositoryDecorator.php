@@ -20,18 +20,13 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\CloneBehavior;
 
 class OrderRepositoryDecorator implements EntityRepositoryInterface
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $innerRepo;
+    private EntityRepositoryInterface $innerRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $ratepayOrderDataRepository;
+    private EntityRepositoryInterface $ratepayOrderDataRepository;
 
     public function __construct(
         EntityRepositoryInterface $innerRepo,
@@ -71,7 +66,7 @@ class OrderRepositoryDecorator implements EntityRepositoryInterface
         return $this->innerRepo->searchIds($criteria, $context);
     }
 
-    public function clone(string $id, Context $context, ?string $newId = null): EntityWrittenContainerEvent
+    public function clone(string $id, Context $context, ?string $newId = null, ?CloneBehavior $behavior = null): EntityWrittenContainerEvent
     {
         return $this->innerRepo->clone($id, $context, $newId);
     }

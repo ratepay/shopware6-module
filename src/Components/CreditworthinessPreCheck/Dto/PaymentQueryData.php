@@ -17,22 +17,18 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class PaymentQueryData extends AbstractRequestData
 {
-    /** @var RequestDataBag */
-    private $requestDataBag;
+    private RequestDataBag $requestDataBag;
 
-    /** @var SalesChannelContext */
-    private $salesChannelContext;
-
-    /** @var LineItem[] */
-    private $items;
-
-    /** @var string|null */
-    private $transactionId;
+    private SalesChannelContext $salesChannelContext;
 
     /**
-     * @var Cart
+     * @var LineItem[]
      */
-    private $cart;
+    private array $items = [];
+
+    private ?string $transactionId;
+
+    private Cart $cart;
 
     public function __construct(
         SalesChannelContext $salesChannelContext,

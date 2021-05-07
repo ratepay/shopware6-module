@@ -18,14 +18,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/api/v{version}/ratepay/profile-configuration")
+ * @Route("/api/ratepay/profile-configuration")
  */
 class ProfileConfigController extends AbstractController
 {
-    /**
-     * @var ProfileConfigService
-     */
-    private $profileConfigService;
+    private ProfileConfigService $profileConfigService;
 
     public function __construct(ProfileConfigService $profileConfigService)
     {
@@ -35,10 +32,8 @@ class ProfileConfigController extends AbstractController
     /**
      * @RouteScope(scopes={"administration"})
      * @Route("/reload-config/", name="ratepay.profile.config.reload", methods={"POST"})
-     *
-     * @return JsonResponse
      */
-    public function reloadProfileConfiguration(Request $request)
+    public function reloadProfileConfiguration(Request $request): JsonResponse
     {
         if ($id = $request->request->get('id')) {
             try {

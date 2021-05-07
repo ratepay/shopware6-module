@@ -27,24 +27,15 @@ use Symfony\Component\Routing\RouterInterface;
 
 /**
  * @RouteScope(scopes={"administration"})
- * @Route("/api/v{version}/ratepay/admin-order")
+ * @Route("/api/ratepay/admin-order")
  */
 class TokenController extends AbstractController
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $tokenRepository;
+    private EntityRepositoryInterface $tokenRepository;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $salesChannelDomainRepository;
+    private EntityRepositoryInterface $salesChannelDomainRepository;
 
-    /**
-     * @var RouterInterface
-     */
-    private $router;
+    private RouterInterface $router;
 
     public function __construct(
         EntityRepositoryInterface $tokenRepository,

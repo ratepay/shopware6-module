@@ -29,30 +29,15 @@ class RatepayOrderLineItemDataEntity extends Entity
 
     public const FIELD_POSITION = 'position';
 
-    /**
-     * @var string
-     */
-    protected $orderLineItemId;
+    protected string $orderLineItemId;
 
-    /**
-     * @var string
-     */
-    protected $orderLineItemVersionId;
+    protected string $orderLineItemVersionId;
 
-    /**
-     * @var OrderLineItemEntity
-     */
-    protected $orderLineItem;
+    protected ?OrderLineItemEntity $orderLineItem = null;
 
-    /**
-     * @var string
-     */
-    protected $positionId;
+    protected string $positionId;
 
-    /**
-     * @var RatepayPositionEntity
-     */
-    protected $position;
+    protected ?RatepayPositionEntity $position = null;
 
     public function getOrderLineItemId(): string
     {
@@ -74,12 +59,12 @@ class RatepayOrderLineItemDataEntity extends Entity
         $this->orderLineItemVersionId = $orderLineItemVersionId;
     }
 
-    public function getOrderLineItem(): OrderLineItemEntity
+    public function getOrderLineItem(): ?OrderLineItemEntity
     {
         return $this->orderLineItem;
     }
 
-    public function setOrderLineItem(OrderLineItemEntity $orderLineItem): void
+    public function setOrderLineItem(?OrderLineItemEntity $orderLineItem): void
     {
         $this->orderLineItem = $orderLineItem;
     }
@@ -94,12 +79,12 @@ class RatepayOrderLineItemDataEntity extends Entity
         $this->positionId = $positionId;
     }
 
-    public function getPosition(): RatepayPositionEntity
+    public function getPosition(): ?RatepayPositionEntity
     {
         return $this->position;
     }
 
-    public function setPosition(RatepayPositionEntity $position): void
+    public function setPosition(?RatepayPositionEntity $position): void
     {
         $this->position = $position;
     }

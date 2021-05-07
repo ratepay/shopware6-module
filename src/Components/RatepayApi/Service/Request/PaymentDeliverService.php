@@ -31,12 +31,9 @@ class PaymentDeliverService extends AbstractModifyRequest
 
     public const EVENT_INIT_REQUEST = self::class . parent::EVENT_INIT_REQUEST;
 
-    protected $_operation = self::CALL_DELIVER;
+    protected string $_operation = self::CALL_DELIVER;
 
-    /**
-     * @var InvoiceFactory
-     */
-    private $invoiceFactory;
+    private InvoiceFactory $invoiceFactory;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,

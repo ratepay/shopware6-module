@@ -30,40 +30,19 @@ class HistoryLogEntity extends Entity
 
     public const FIELD_QTY = 'quantity';
 
-    /**
-     * @var string
-     */
-    protected $orderId;
+    protected string $orderId;
 
-    /**
-     * @var OrderEntity
-     */
-    protected $order;
+    protected ?OrderEntity $order = null;
 
-    /**
-     * @var string
-     */
-    protected $event;
+    protected string $event;
 
-    /**
-     * @var string
-     */
-    protected $user;
+    protected string $user;
 
-    /**
-     * @var string
-     */
-    protected $productName;
+    protected string $productName;
 
-    /**
-     * @var string
-     */
-    protected $productNumber;
+    protected string $productNumber;
 
-    /**
-     * @var string
-     */
-    protected $quantity;
+    protected int $quantity;
 
     public function getOrderId(): string
     {
@@ -75,12 +54,12 @@ class HistoryLogEntity extends Entity
         $this->orderId = $orderId;
     }
 
-    public function getOrder(): OrderEntity
+    public function getOrder(): ?OrderEntity
     {
         return $this->order;
     }
 
-    public function setOrder(OrderEntity $order): void
+    public function setOrder(?OrderEntity $order): void
     {
         $this->order = $order;
     }

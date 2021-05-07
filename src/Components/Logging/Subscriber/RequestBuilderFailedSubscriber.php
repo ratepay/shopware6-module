@@ -15,10 +15,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class RequestBuilderFailedSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var Logger
-     */
-    protected $logger;
+    protected Logger $logger;
 
     public function __construct(Logger $fileLogger)
     {

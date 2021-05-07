@@ -11,24 +11,12 @@ namespace Ratepay\RpayPayments\Components\RedirectException\Exception;
 
 class ForwardException extends \Exception
 {
-    /**
-     * @var string
-     */
-    private $route;
+    private string $route;
 
-    /**
-     * @var array
-     */
-    private $routeParams;
+    private array $routeParams;
 
-    /**
-     * @var array
-     */
-    private $queryParams;
+    private array $queryParams;
 
-    /**
-     * ForwardException constructor.
-     */
     public function __construct(string $route, array $routeParams = [], array $query = [], \Exception $exception = null)
     {
         parent::__construct(null, null, $exception);

@@ -23,8 +23,7 @@ use Symfony\Component\Validator\ConstraintViolationList;
 
 class CheckoutValidationSubscriber implements EventSubscriberInterface
 {
-    /** @var RequestStack */
-    private $requestStack;
+    private RequestStack $requestStack;
 
     public function __construct(RequestStack $requestStack)
     {
@@ -47,7 +46,6 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
         }
 
         $context = $this->getContextFromRequest($request);
-        /** @var AbstractPaymentHandler $paymentHandlerIdentifier */
         $paymentHandlerIdentifier = $context->getPaymentMethod()->getHandlerIdentifier();
 
         if (strpos($paymentHandlerIdentifier, 'RpayPayments') !== false) {

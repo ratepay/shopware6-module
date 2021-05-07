@@ -23,7 +23,7 @@ class Migration1589212322EntityExtensions extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->executeQuery("
+        $connection->executeStatement("
             CREATE TABLE `ratepay_position` (
               `id` binary(16) NOT NULL,
               `delivered` int(11) NOT NULL DEFAULT '0',
@@ -35,7 +35,7 @@ class Migration1589212322EntityExtensions extends MigrationStep
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
         ");
 
-        $connection->executeQuery('
+        $connection->executeStatement('
             CREATE TABLE `ratepay_order_data` (
               `id` binary(16) NOT NULL,
               `order_id` binary(16) NOT NULL,
@@ -53,7 +53,7 @@ class Migration1589212322EntityExtensions extends MigrationStep
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
         ');
 
-        $connection->executeQuery('
+        $connection->executeStatement('
             CREATE TABLE `ratepay_order_line_item_data` (
               `id` binary(16) NOT NULL,
               `order_line_item_id` binary(16) NOT NULL,

@@ -32,25 +32,13 @@ class ExtensionService
 {
     public const PAYMENT_PAGE_EXTENSION_NAME = 'ratepay';
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $orderExtensionRepository;
+    private EntityRepositoryInterface $orderExtensionRepository;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $lineItemExtensionRepository;
+    private EntityRepositoryInterface $lineItemExtensionRepository;
 
-    /**
-     * @var InstallmentService
-     */
-    private $installmentService;
+    private InstallmentService $installmentService;
 
-    /**
-     * @var TransactionIdService
-     */
-    private $transactionIdService;
+    private TransactionIdService $transactionIdService;
 
     public function __construct(
         EntityRepositoryInterface $orderExtensionRepository,
@@ -84,7 +72,10 @@ class ExtensionService
             $event->getPrimaryKeys(RatepayOrderLineItemDataDefinition::ENTITY_NAME)
         ), $context);
 
-        return $affected->getEntities();
+        /** @var RatepayOrderLineItemDataCollection $collection */
+        $collection = $affected->getEntities();
+
+        return $collection;
     }
 
     public function createOrderExtensionEntity(
@@ -140,7 +131,8 @@ class ExtensionService
             $customerBirthday = $customer->getBirthday();
             $customerBillingAddress = $customer->getActiveBillingAddress();
             if ($customerBillingAddress) {
-                $customerVatId = $customerBillingAddress->getVatId();
+                $vatIds = $customer->getVatIds();
+                $customerVatId = $vatIds[0] ?? null;
                 $customerPhoneNumber = $customerBillingAddress->getPhoneNumber();
                 $customerCompany = $customerBillingAddress->getCompany();
                 $accountHolders = BankAccountHolderHelper::getAvailableNames($salesChannelContext);

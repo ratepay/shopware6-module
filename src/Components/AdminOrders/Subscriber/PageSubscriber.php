@@ -15,15 +15,9 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class PageSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var SessionInterface
-     */
-    private $session;
+    private SessionInterface $session;
 
-    /**
-     * @var string
-     */
-    private $sessionKey;
+    private string $sessionKey;
 
     public function __construct(SessionInterface $session, string $sessionKey)
     {

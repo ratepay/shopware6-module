@@ -30,6 +30,7 @@
             <argument type="service" id="Ratepay\RpayPayments\Components\Checkout\Service\PaymentFilterService"/>
             <argument type="service" id="request_stack"/>
             <argument type="service" id="order.repository"/>
+            <argument type="service" id="payment_method.repository"/>
         </service>
 
     </services>

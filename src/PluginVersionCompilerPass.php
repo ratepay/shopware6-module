@@ -16,10 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class PluginVersionCompilerPass implements CompilerPassInterface
 {
-    /**
-     * @var string
-     */
-    private $pluginDir;
+    private string $pluginDir;
 
     public function __construct(string $pluginDir)
     {
@@ -29,7 +26,7 @@ class PluginVersionCompilerPass implements CompilerPassInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         $container->setParameter('ratepay.shopware_payment.plugin_version', $this->getPluginVersion());
     }

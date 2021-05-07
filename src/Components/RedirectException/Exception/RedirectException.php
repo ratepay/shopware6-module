@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class RedirectException extends \Exception
 {
-    private $redirectResponse;
+    private RedirectResponse $redirectResponse;
 
     public function __construct(
         RedirectResponse $redirectResponse,

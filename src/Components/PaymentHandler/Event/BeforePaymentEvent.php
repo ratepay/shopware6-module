@@ -18,15 +18,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class BeforePaymentEvent extends Event implements ShopwareEvent
 {
-    /**
-     * @var PaymentRequestData
-     */
-    private $paymentRequestData;
-
-    /**
-     * @var Context
-     */
-    private $context;
+    private PaymentRequestData $paymentRequestData;
 
     public function __construct(PaymentRequestData $paymentRequestData)
     {

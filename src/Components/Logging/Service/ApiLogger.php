@@ -19,20 +19,11 @@ use SimpleXMLElement;
 
 class ApiLogger
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $logRepository;
+    protected EntityRepositoryInterface $logRepository;
 
-    /**
-     * @var Logger
-     */
-    protected $logger;
+    protected Logger $logger;
 
-    /**
-     * @var string
-     */
-    private $pluginVersion;
+    private string $pluginVersion;
 
     public function __construct(
         EntityRepositoryInterface $logRepository,

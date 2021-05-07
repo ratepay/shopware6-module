@@ -44,229 +44,147 @@ class ProfileConfigEntity extends Entity
 
     public const FIELD_PAYMENT_METHOD_CONFIGS = 'paymentMethodConfigs';
 
-    /**
-     * @var string
-     */
-    protected $profileId;
+    protected string $profileId;
 
-    /**
-     * @var string
-     */
-    protected $securityCode;
+    protected string $securityCode;
 
-    /**
-     * @var SalesChannelEntity
-     */
-    protected $salesChannel;
+    protected ?SalesChannelEntity $salesChannel = null;
 
-    /**
-     * @var int
-     */
-    protected $salesChannelId;
+    protected string $salesChannelId;
 
-    /**
-     * @var string[]
-     */
-    protected $countryCodeBilling;
+    protected array $countryCodeBilling = [];
 
-    /**
-     * @var string[]
-     */
-    protected $countryCodeDelivery;
+    protected array $countryCodeDelivery = [];
 
-    /**
-     * @var string[]
-     */
-    protected $currency;
+    protected array $currency = [];
 
-    /**
-     * @var bool
-     */
-    protected $sandbox;
+    protected bool $sandbox;
 
-    /**
-     * @var bool
-     */
-    protected $onlyAdminOrders;
+    protected bool $onlyAdminOrders;
 
-    /**
-     * @var bool
-     */
-    protected $status;
+    protected ?bool $status = null;
 
-    /**
-     * @var string
-     */
-    protected $statusMessage;
+    protected ?string $statusMessage = null;
 
-    /**
-     * @var ProfileConfigMethodCollection
-     */
-    protected $paymentMethodConfigs;
+    protected ?ProfileConfigMethodCollection $paymentMethodConfigs = null;
 
-    /**
-     * @return string[]
-     */
-    public function getCountryCodeBilling(): ?array
+    public function getProfileId(): string
     {
-        return $this->countryCodeBilling;
+        return $this->profileId;
     }
 
-    /**
-     * @param string[] $countryCodeBilling
-     */
-    public function setCountryCodeBilling(array $countryCodeBilling = null): void
+    public function setProfileId(string $profileId): void
     {
-        $this->countryCodeBilling = $countryCodeBilling;
+        $this->profileId = $profileId;
     }
 
-    /**
-     * @return SalesChannelEntity
-     */
+    public function getSecurityCode(): string
+    {
+        return $this->securityCode;
+    }
+
+    public function setSecurityCode(string $securityCode): void
+    {
+        $this->securityCode = $securityCode;
+    }
+
     public function getSalesChannel(): ?SalesChannelEntity
     {
         return $this->salesChannel;
     }
 
-    /**
-     * @param SalesChannelEntity $salesChannel
-     */
-    public function setSalesChannel(SalesChannelEntity $salesChannel = null): void
+    public function setSalesChannel(?SalesChannelEntity $salesChannel): void
     {
         $this->salesChannel = $salesChannel;
     }
 
-    /**
-     * @return string
-     */
-    public function getProfileId(): ?string
+    public function getSalesChannelId(): string
     {
-        return $this->profileId;
+        return $this->salesChannelId;
     }
 
-    /**
-     * @param string $profileId
-     */
-    public function setProfileId(string $profileId = null): void
+    public function setSalesChannelId(string $salesChannelId): void
     {
-        $this->profileId = $profileId;
+        $this->salesChannelId = $salesChannelId;
     }
 
-    /**
-     * @return string
-     */
-    public function getSecurityCode(): ?string
+    public function getCountryCodeBilling(): array
     {
-        return $this->securityCode;
+        return $this->countryCodeBilling;
     }
 
-    /**
-     * @param string $securityCode
-     */
-    public function setSecurityCode(string $securityCode = null): void
+    public function setCountryCodeBilling(array $countryCodeBilling): void
     {
-        $this->securityCode = $securityCode;
+        $this->countryCodeBilling = $countryCodeBilling;
     }
 
-    /**
-     * @return string[]
-     */
-    public function getCountryCodeDelivery(): ?array
+    public function getCountryCodeDelivery(): array
     {
         return $this->countryCodeDelivery;
     }
 
-    /**
-     * @param string[] $countryCodeDelivery
-     */
-    public function setCountryCodeDelivery(array $countryCodeDelivery = null): void
+    public function setCountryCodeDelivery(array $countryCodeDelivery): void
     {
         $this->countryCodeDelivery = $countryCodeDelivery;
     }
 
-    /**
-     * @return string[]
-     */
-    public function getCurrency(): ?array
+    public function getCurrency(): array
     {
         return $this->currency;
     }
 
-    /**
-     * @param string[] $currency
-     */
-    public function setCurrency(array $currency = null): void
+    public function setCurrency(array $currency): void
     {
         $this->currency = $currency;
     }
 
-    /**
-     * @return bool
-     */
-    public function isSandbox(): ?bool
+    public function isSandbox(): bool
     {
         return $this->sandbox;
     }
 
-    /**
-     * @return bool
-     */
-    public function isOnlyAdminOrders(): ?bool
-    {
-        return $this->onlyAdminOrders;
-    }
-
-    /**
-     * @param bool $sandbox
-     */
-    public function setSandbox(bool $sandbox = null): void
+    public function setSandbox(bool $sandbox): void
     {
         $this->sandbox = $sandbox;
     }
 
-    /**
-     * @return bool
-     */
+    public function isOnlyAdminOrders(): bool
+    {
+        return $this->onlyAdminOrders;
+    }
+
+    public function setOnlyAdminOrders(bool $onlyAdminOrders): void
+    {
+        $this->onlyAdminOrders = $onlyAdminOrders;
+    }
+
     public function getStatus(): ?bool
     {
         return $this->status;
     }
 
-    public function setStatus(bool $status): void
+    public function setStatus(?bool $status): void
     {
         $this->status = $status;
     }
 
-    /**
-     * @return string
-     */
     public function getStatusMessage(): ?string
     {
         return $this->statusMessage;
     }
 
-    public function setStatusMessage(string $statusMessage): void
+    public function setStatusMessage(?string $statusMessage): void
     {
         $this->statusMessage = $statusMessage;
     }
 
-    public function getSalesChannelId(): int
-    {
-        return $this->salesChannelId;
-    }
-
-    public function setSalesChannelId(int $salesChannelId): void
-    {
-        $this->salesChannelId = $salesChannelId;
-    }
-
-    public function setPaymentMethodConfigs(ProfileConfigMethodCollection $paymentMethodConfigs): void
-    {
-        $this->paymentMethodConfigs = $paymentMethodConfigs;
-    }
-
-    public function getPaymentMethodConfigs(): ProfileConfigMethodCollection
+    public function getPaymentMethodConfigs(): ?ProfileConfigMethodCollection
     {
         return $this->paymentMethodConfigs;
+    }
+
+    public function setPaymentMethodConfigs(?ProfileConfigMethodCollection $paymentMethodConfigs): void
+    {
+        $this->paymentMethodConfigs = $paymentMethodConfigs;
     }
 }

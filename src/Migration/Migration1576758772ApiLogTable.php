@@ -23,7 +23,7 @@ class Migration1576758772ApiLogTable extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->executeQuery('
+        $connection->executeStatement('
             CREATE TABLE `ratepay_api_log` (
                 `id` binary(16) NOT NULL,
                 `version` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,

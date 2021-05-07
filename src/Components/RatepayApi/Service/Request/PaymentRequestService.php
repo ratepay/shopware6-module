@@ -40,37 +40,19 @@ class PaymentRequestService extends AbstractRequest
 
     public const EVENT_INIT_REQUEST = self::class . parent::EVENT_INIT_REQUEST;
 
-    protected $_operation = self::CALL_PAYMENT_REQUEST;
+    protected string $_operation = self::CALL_PAYMENT_REQUEST;
 
-    /**
-     * @var ShoppingBasketFactory
-     */
-    private $shoppingBasketFactory;
+    private ShoppingBasketFactory $shoppingBasketFactory;
 
-    /**
-     * @var CustomerFactory
-     */
-    private $customerFactory;
+    private CustomerFactory $customerFactory;
 
-    /**
-     * @var PaymentFactory
-     */
-    private $paymentFactory;
+    private PaymentFactory $paymentFactory;
 
-    /**
-     * @var ProfileConfigService
-     */
-    private $profileConfigService;
+    private ProfileConfigService $profileConfigService;
 
-    /**
-     * @var TransactionIdService
-     */
-    private $transactionIdService;
+    private TransactionIdService $transactionIdService;
 
-    /**
-     * @var ExternalFactory
-     */
-    private $externalFactory;
+    private ExternalFactory $externalFactory;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,

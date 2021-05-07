@@ -132,7 +132,7 @@ class TransitionSubscriber implements EventSubscriberInterface
                 ]);
             }
         } catch (Exception $e) {
-            $this->logger->addCritical('Exception during bidirectionality. (Exception: ' . $e->getMessage() . ')', [
+            $this->logger->critical('Exception during bidirectionality. (Exception: ' . $e->getMessage() . ')', [
                 'order' => $order->getId(),
                 'transactionId' => $ratepayData->getTransactionId(),
                 'orderNumber' => $order->getOrderNumber(),

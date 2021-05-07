@@ -41,25 +41,13 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
 {
     public const ERROR_SNIPPET_VIOLATION_PREFIX = 'VIOLATION::';
 
-    /**
-     * @var PaymentRequestService
-     */
-    private $paymentRequestService;
+    private PaymentRequestService $paymentRequestService;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $orderRepository;
+    private EntityRepositoryInterface $orderRepository;
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
+    private EventDispatcherInterface $eventDispatcher;
 
-    /**
-     * @var ProfileConfigService
-     */
-    private $profileConfigService;
+    private ProfileConfigService $profileConfigService;
 
     public function __construct(
         EntityRepositoryInterface $orderRepository,
@@ -142,10 +130,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
         }
     }
 
-    /**
-     * @return OrderEntity|null
-     */
-    protected function getOrderWithAssociations(OrderEntity $order, Context $context): OrderEntity
+    protected function getOrderWithAssociations(OrderEntity $order, Context $context): ?OrderEntity
     {
         return $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($order->getId()), $context)->first();
     }

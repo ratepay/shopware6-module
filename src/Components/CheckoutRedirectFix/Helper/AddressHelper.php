@@ -13,7 +13,7 @@ use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEnt
 
 class AddressHelper
 {
-    public static function createMd5Hash(CustomerAddressEntity $entity)
+    public static function createMd5Hash(CustomerAddressEntity $entity): string
     {
         return md5(implode('', [
             $entity->getFirstName(),
