@@ -5,7 +5,6 @@
 |------|----------
 |Author | Interlutions GmbH
 |Shop Version | `6.3.0.2` - `6.3.5.x`
-|Version | `1.1.1`
 |Link | http://www.ratepay.com
 |Mail | integration@ratepay.com
 |Full Documentation | https://ratepay.gitbook.io/shopware6/
@@ -34,6 +33,7 @@
 
 ### Version 1.1.1 - Released on 2021-05-20
 * RATESWSX-175 - fix collecting discounts
+* RATESWSX-185 - fix foreign keys
 
 ### Version 1.1.0 - Released on 2021-02-15
 * RATESWSX-149 - change translation of "date of birth"

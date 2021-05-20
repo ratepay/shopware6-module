@@ -44,12 +44,12 @@ class Migration1589212322EntityExtensions extends MigrationStep
               `shipping_position_id` binary(16) NULL,
               `transaction_id` varchar(255) COLLATE utf8mb4_bin NOT NULL,
               `descriptor` varchar(255) COLLATE utf8mb4_bin NULL,
-              `successful` TINYINT NOT NULL, 
+              `successful` TINYINT NOT NULL,
               `created_at` DATETIME NOT NULL,
               `updated_at` DATETIME NULL,
               PRIMARY KEY (`id`),
-              FOREIGN KEY (`order_id`,`order_version_id`) REFERENCES `order` (`id`, `version_id`) ON UPDATE CASCADE,
-              FOREIGN KEY (`shipping_position_id`) REFERENCES `ratepay_position` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+              CONSTRAINT fk_ratepay_order_data__order FOREIGN KEY (`order_id`,`order_version_id`) REFERENCES `order` (`id`, `version_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+              CONSTRAINT fk_ratepay_order_data__position FOREIGN KEY (`shipping_position_id`) REFERENCES `ratepay_position` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
         ');
 
@@ -62,8 +62,8 @@ class Migration1589212322EntityExtensions extends MigrationStep
               `created_at` DATETIME NOT NULL,
               `updated_at` DATETIME NULL,
               PRIMARY KEY (`id`),
-              FOREIGN KEY (`order_line_item_id`,`order_line_item_version_id`) REFERENCES `order_line_item` (`id`, `version_id`) ON UPDATE CASCADE,
-              FOREIGN KEY (`position_id`) REFERENCES `ratepay_position` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+              CONSTRAINT fk_ratepay_order_line_item_data__line_item FOREIGN KEY (`order_line_item_id`,`order_line_item_version_id`) REFERENCES `order_line_item` (`id`, `version_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+              CONSTRAINT fk_ratepay_order_line_item_data__position FOREIGN KEY (`position_id`) REFERENCES `ratepay_position` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
         ');
     }
