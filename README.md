@@ -5,7 +5,7 @@
 |------|----------
 |Author | Interlutions GmbH
 |Shop Version | `6.3.0.2` - `6.3.5.x`
-|Version | `1.1.0`
+|Version | `1.1.1`
 |Link | http://www.ratepay.com
 |Mail | integration@ratepay.com
 |Full Documentation | https://ratepay.gitbook.io/shopware6/
@@ -14,23 +14,26 @@
 ## Installation via Shopware Store
 1. Buy the plugin for free within the Shopware Store
 2. Visit your Shopware Administration
-3. Click Settings > System > Plugins -> Licenses and download the Ratepay Module 
+3. Click Settings > System > Plugins -> Licenses and download the Ratepay Module
 4. Click Settings > System > Plugins the Ratepay Payment Extension is now listed in My Plugins
-5. Choose Installation and after this activate the module 
+5. Choose Installation and after this activate the module
 
-## Installation via ZIP-File 
+## Installation via ZIP-File
 1. Download the latest release from our Github page
 2. Visit your Shopware Administration
 3. Click Settings > System > Plugins
 4. Click Upload Plugin and chose the previously downloaded ZIP file
-5. Choose Installation and after this activate the Ratepay module 
+5. Choose Installation and after this activate the Ratepay module
 
 ## Installation via composer
 1. execute the following command in your main shopware directory: `composer require ratepay/shopware6-module`
 2. Click Settings > System > Plugins the Ratepay Payment Extension is now listed in My Plugins
-3. Choose Installation and after this activate the module 
+3. Choose Installation and after this activate the module
 
 ## Changelog
+
+### Version 1.1.1 - Released on 2021-05-20
+* RATESWSX-175 - fix collecting discounts
 
 ### Version 1.1.0 - Released on 2021-02-15
 * RATESWSX-149 - change translation of "date of birth"
