@@ -17,8 +17,11 @@ use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Exception\EmptyBasketException;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
+use Shopware\Core\Checkout\Cart\Price\Struct\AbsolutePriceDefinition;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
+use Shopware\Core\Checkout\Cart\Price\Struct\PercentagePriceDefinition;
 use Shopware\Core\Checkout\Cart\Price\Struct\PriceDefinitionInterface;
+use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 
 /**
@@ -57,18 +60,25 @@ class ShoppingBasketFactory extends AbstractFactory
             if ($qty instanceof LineItem) {
                 /** @var LineItem $item */
                 $item = $qty;
+                unset($qty);
+
                 /** @var PriceDefinitionInterface $priceDefinition */
                 $priceDefinition = $item->getPriceDefinition();
                 if (method_exists($priceDefinition, 'getTaxRules')) {
                     $taxRule = $priceDefinition->getTaxRules()->first();
                     $price = $priceDefinition->getPrice();
                 }
+                if ($priceDefinition instanceof QuantityPriceDefinition) {
+                    $qty = $priceDefinition->getQuantity();
+                } else /*if($priceDefinition instanceof PercentagePriceDefinition || $priceDefinition instanceof AbsolutePriceDefinition)*/ {
+                    $qty = 1;
+                }
 
                 $basket->getItems()->addItem(
                     (new ShoppingBasket\Items\Item())
                         ->setArticleNumber($item->getId())
                         ->setDescription($item->getLabel())
-                        ->setQuantity($priceDefinition->getQuantity())
+                        ->setQuantity($qty)
                         ->setUnitPriceGross($item->getPrice() ? $item->getPrice()->getUnitPrice() : (isset($price) ? $price : 0))
                         ->setTaxRate(isset($taxRule) ? $taxRule->getTaxRate() : 0)
                 );

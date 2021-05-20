@@ -31,6 +31,9 @@
 
 ## Changelog
 
+### Version 1.2.1 - Released on 2021-05-20
+* RATESWSX-175 - fix collecting discounts
+
 ### Version 1.2.0 - Released on 2021-04-22
 * RATESWSX-84 - adds functionality "admin orders"
 * RATESWSX-115 - apply Shopware fix + increase Shopware min. compatibility
