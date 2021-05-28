@@ -76,8 +76,11 @@ class TokenController extends AbstractController
         $routerContext = $this->router->getContext();
         $routerContext
             ->setScheme($urlInfo['scheme'])
-            ->setHost($urlInfo['host'])
-            ->setBaseUrl($urlInfo['path'] ?? null);
+            ->setHost($urlInfo['host']);
+
+        if (isset($urlInfo['path']) && $urlInfo['path']) {
+            $routerContext->setBaseUrl($urlInfo['path']);
+        }
 
         $storefrontUrl = $this->router->generate('ratepay.frontend.admin-login', [
             'token' => $token,
