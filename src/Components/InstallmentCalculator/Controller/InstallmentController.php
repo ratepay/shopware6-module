@@ -33,7 +33,7 @@ class InstallmentController extends StorefrontController
     }
 
     /**
-     * @LoginRequired()
+     * @LoginRequired(allowGuest=true)
      * @Route(path="/calculate/", methods={"GET"}, name="ratepay.storefront.installment.calculate", defaults={"XmlHttpRequest"=true})
      */
     public function calculateInstallment(Request $request, SalesChannelContext $context): Response
