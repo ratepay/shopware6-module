@@ -50,8 +50,8 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
 
         if (strpos($paymentHandlerIdentifier, 'RpayPayments') !== false) {
             $ratepayData = $request->get('ratepay');
-            $billingMd5 = $ratepayData['validation']['billing_address_md5'];
-            $shippingMd5 = $ratepayData['validation']['shipping_address_md5'];
+            $billingMd5 = $ratepayData['validation']['billing_address_md5'] ?? null;
+            $shippingMd5 = $ratepayData['validation']['shipping_address_md5'] ?? null;
 
             if ($billingMd5 !== AddressHelper::createMd5Hash($context->getCustomer()->getActiveBillingAddress()) ||
                 $shippingMd5 !== AddressHelper::createMd5Hash($context->getCustomer()->getActiveShippingAddress())
