@@ -37,10 +37,10 @@
     },
     "require": {
         "php": "^7.4 || ^8.0",
-        "ratepay/php-library": "^1.4",
-        "shopware/core": "^6.4.0.0",
-        "shopware/administration": "^6.4.0.0",
-        "shopware/storefront": "^6.4.0.0",
+        "ratepay/php-library": "^1.5",
+        "shopware/core": "^6.4.0",
+        "shopware/administration": "^6.4.0",
+        "shopware/storefront": "^6.4.0",
         "ext-simplexml": "*",
         "ext-json": "*"
     }
