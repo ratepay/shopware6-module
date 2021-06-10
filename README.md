@@ -31,6 +31,10 @@
 
 ## Changelog
 
+### Version 2.0.0 - WIP
+* RATESWSX-173 - compatibility Shopware ^6.4 and PHP 8.0
+* RATESWSX-178 - adds a few more columns to profile management
+
 ### Version 1.2.1 - Released on 2021-05-20
 * RATESWSX-175 - fix collecting discounts
 

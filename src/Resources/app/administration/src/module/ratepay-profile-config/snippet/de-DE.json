@@ -8,7 +8,6 @@
                     "security_code": "Sicherheitsschlüssel",
                     "sales_channel" : "Sales Channel",
                     "sandbox": "Testmodus",
-                    "backend": "Für Adminbestellungen",
                     "status": "Status",
                     "active": "Aktiv",
                     "inactive": "Inaktiv",

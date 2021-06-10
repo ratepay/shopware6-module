@@ -38,9 +38,14 @@
                     <span v-if="item.status === true">&nbsp;&nbsp;{{ $t('ratepay.profileConfig.global.labels.active') }}</span>
                 </template>
 
-                <template slot="column-backend" slot-scope="{ item }">
-                    <span v-if="item.backend">{{ $t('global.default.yes') }}</span>
-                    <span v-if="!item.backend">{{ $t('global.default.no') }}</span>
+                <template slot="column-onlyAdminOrders" slot-scope="{ item }">
+                    <span v-if="item.onlyAdminOrders">{{ $t('global.default.yes') }}</span>
+                    <span v-if="!item.onlyAdminOrders">{{ $t('global.default.no') }}</span>
+                </template>
+
+                <template slot="column-sandbox" slot-scope="{ item }">
+                    <span v-if="item.sandbox">{{ $t('global.default.yes') }}</span>
+                    <span v-if="!item.sandbox">{{ $t('global.default.no') }}</span>
                 </template>
 
                 <template slot="column-salesChannel" slot-scope="{ item }">
