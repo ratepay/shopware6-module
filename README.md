@@ -4,7 +4,7 @@
 |Module | Ratepay Payment Plugin for Shopware 6
 |------|----------
 |Author | Interlutions GmbH
-|Shop Version | `6.3.5.0` - `6.3.x.x`
+|Shop Version | `6.4.x.x`
 |Link | http://www.ratepay.com
 |Mail | integration@ratepay.com
 |Full Documentation | https://ratepay.gitbook.io/shopware6/
@@ -31,7 +31,7 @@
 
 ## Changelog
 
-### Version 2.0.0 - WIP
+### Version 2.0.0 - Released on 2021-06-10
 * RATESWSX-173 - compatibility Shopware ^6.4 and PHP 8.0
 * RATESWSX-178 - adds a few more columns to profile management
 
