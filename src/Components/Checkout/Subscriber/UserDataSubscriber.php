@@ -14,6 +14,7 @@ namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
 use DateTime;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\BeforePaymentEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -29,7 +30,8 @@ class UserDataSubscriber implements EventSubscriberInterface
         EntityRepositoryInterface $customerRepository,
         EntityRepositoryInterface $orderAddressRepository,
         EntityRepositoryInterface $addressRepository
-    ) {
+    )
+    {
         $this->customerRepository = $customerRepository;
         $this->orderAddressRepository = $orderAddressRepository;
         $this->addressRepository = $addressRepository;
@@ -46,78 +48,80 @@ class UserDataSubscriber implements EventSubscriberInterface
     {
         $paymentRequestData = $event->getPaymentRequestData();
         $order = $paymentRequestData->getOrder();
+
         $customer = $order->getOrderCustomer()->getCustomer();
+        $defaultBillingAddress = $customer ? $this->addressRepository->search(new Criteria([$customer->getDefaultBillingAddressId()]), $paymentRequestData->getContext())->first() : null;
         $orderBillingAddress = $order->getAddresses()->get($order->getBillingAddressId());
         $dataBag = $paymentRequestData->getRequestDataBag();
 
+        if ($customer === null || $orderBillingAddress === null) {
+            // should never occurs.
+            throw new \RuntimeException('user data can not be saved. Unknown error.');
+        }
+
+        /** @var RequestDataBag $ratepayData */
         $ratepayData = $dataBag->get('ratepay');
         if (!$ratepayData) {
             return;
         }
 
-        if ($customer) {
-            $customerUpdates = [];
+        $customerUpdates = $defaultBillingAddressUpdates = $orderBillingAddressUpdates = [];
 
-            /** @var RequestDataBag $ratepayData */
-            if ($ratepayData->has('birthday')) {
-                /** @var RequestDataBag $birthday */
-                $birthday = $ratepayData->get('birthday');
+        // collect updates
+        if ($ratepayData->has('birthday')) {
+            /** @var RequestDataBag $birthday */
+            $birthday = $ratepayData->get('birthday');
 
-                $date = (new DateTime())->setDate(
-                    $birthday->getInt('year'),
-                    $birthday->getInt('month'),
-                    $birthday->getInt('day')
-                );
+            $date = (new DateTime())->setDate(
+                $birthday->getInt('year'),
+                $birthday->getInt('month'),
+                $birthday->getInt('day')
+            );
 
-                $customer->setBirthday($date);
-                $customerUpdates['birthday'] = $date;
-            }
-
-            if (count($customerUpdates) > 0) {
-                $this->customerRepository->upsert([array_merge(
-                    [
-                        'id' => $customer->getId(),
-                        'versionId' => $customer->getVersionId(),
-                    ],
-                    $customerUpdates
-                )], $event->getContext());
-            }
+            $customer->setBirthday($date);
+            $customerUpdates['birthday'] = $date;
         }
 
-        $defaultBillingAddressId = $customer->getDefaultBillingAddressId();
-        if ($orderBillingAddress || $defaultBillingAddressId) {
-            $billingAddressUpdates = [];
+        if ($ratepayData->has('phone') && !empty($phone = $ratepayData->get('phone'))) {
+            $defaultBillingAddressUpdates['phoneNumber'] = $phone;
+            $orderBillingAddress->setPhoneNumber($phone);
+            $orderBillingAddressUpdates['phoneNumber'] = $phone;
+        }
 
-            if ($ratepayData->has('phone') && !empty($phone = $ratepayData->get('phone'))) {
-                $orderBillingAddress->setPhoneNumber($phone);
-                $billingAddressUpdates['phoneNumber'] = $phone;
-            }
+        if ($ratepayData->has('vatId') && !empty($vatId = $ratepayData->get('vatId'))) {
+            $orderBillingAddress->setVatId($vatId);
+            $orderBillingAddressUpdates['vatId'] = $vatId;
+            $customerUpdates['vatIds'] = [$vatId];
+        }
 
-            if ($ratepayData->has('vatId') && !empty($vatId = $ratepayData->get('vatId'))) {
-                $orderBillingAddress->setVatId($vatId);
-                $billingAddressUpdates['vatId'] = $vatId;
-            }
+        // update collected data
+        if (count($customerUpdates)) {
+            $this->customerRepository->upsert([array_merge(
+                [
+                    'id' => $customer->getId(),
+                    'versionId' => $customer->getVersionId(),
+                ],
+                $customerUpdates
+            )], $event->getContext());
+        }
 
-            if (count($billingAddressUpdates) > 0) {
-                if ($orderBillingAddress) {
-                    $this->orderAddressRepository->upsert([array_merge(
-                        [
-                            'id' => $orderBillingAddress->getId(),
-                            'versionId' => $orderBillingAddress->getVersionId(),
-                        ],
-                        $billingAddressUpdates
-                    )], $event->getContext());
-                }
+        if ($defaultBillingAddress && count($defaultBillingAddressUpdates)) {
+            $this->addressRepository->upsert([array_merge(
+                [
+                    'id' => $defaultBillingAddress->getId(),
+                ],
+                $defaultBillingAddressUpdates
+            )], $event->getContext());
+        }
 
-                if ($defaultBillingAddressId) {
-                    $this->addressRepository->upsert([array_merge(
-                        [
-                            'id' => $defaultBillingAddressId,
-                        ],
-                        $billingAddressUpdates
-                    )], $event->getContext());
-                }
-            }
+        if (count($orderBillingAddressUpdates)) {
+            $this->orderAddressRepository->upsert([array_merge(
+                [
+                    'id' => $orderBillingAddress->getId(),
+                    'versionId' => $orderBillingAddress->getVersionId(),
+                ],
+                $orderBillingAddressUpdates
+            )], $event->getContext());
         }
     }
 }
