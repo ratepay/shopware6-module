@@ -30,6 +30,8 @@
 3. Choose Installation and after this activate the module
 
 ## Changelog
+### Version 2.0.1 - Released on 2021-06-15
+* RATESWSX-181 - fix fatal error during b2b orders
 
 ### Version 2.0.0 - Released on 2021-06-10
 * RATESWSX-173 - compatibility Shopware ^6.4 and PHP 8.0
