@@ -139,7 +139,7 @@ class ProfileConfigMethodEntity extends Entity
         $this->allowDifferentAddresses = $allowDifferentAddresses;
     }
 
-    public function getAllowB2b(): ?bool
+    public function isAllowB2b(): ?bool
     {
         return $this->allowB2b;
     }
