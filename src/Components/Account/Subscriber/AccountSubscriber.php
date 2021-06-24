@@ -61,7 +61,8 @@ class AccountSubscriber implements EventSubscriberInterface
         DataValidator $dataValidator,
         EventDispatcherInterface $eventDispatcher,
         OrderTransactionStateHandler $orderTransactionStateHandler
-    ) {
+    )
+    {
         $this->extensionService = $extensionService;
         $this->dataValidator = $dataValidator;
         $this->paymentMethodRepository = $paymentMethodRepository;
@@ -99,7 +100,9 @@ class AccountSubscriber implements EventSubscriberInterface
                     $event->getSalesChannelContext(),
                     $page->getOrder()
                 );
-                $event->getPage()->addExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME, $extension);
+                if ($extension) {
+                    $event->getPage()->addExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME, $extension);
+                }
             }
         }
     }

@@ -17,6 +17,15 @@
     <input type="hidden" name="ratepay[validation][shipping_address_md5]" value="{{ page.extensions.ratepay.validation.shipping_address_md5 }}" form="confirmOrderForm"/>
 {% endif %}
 
+{% block ratepay_checkout_sandbox_info %}
+    {% if (page.extensions.ratepay.isSandbox) %}
+        {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+            type: "warning",
+            content: "ratepay.storefront.checkout.hints.sandboxInfo"|trans
+        } %}
+    {% endif %}
+{% endblock %}
+
 {% block ratepay_checkout_fields %}
     {% if (page.extensions.ratepay.company) %}
         {#% if page.extensions.ratepay.vatId is null %#}
