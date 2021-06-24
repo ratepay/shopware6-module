@@ -17,6 +17,7 @@ use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntit
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayPositionEntity;
 use Ratepay\RpayPayments\Components\Checkout\Util\BankAccountHolderHelper;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
+use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigService;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService;
 use Ratepay\RpayPayments\Util\MethodHelper;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -40,16 +41,20 @@ class ExtensionService
 
     private TransactionIdService $transactionIdService;
 
+    private ProfileConfigService $profileConfigService;
+
     public function __construct(
         EntityRepositoryInterface $orderExtensionRepository,
         EntityRepositoryInterface $lineItemExtensionRepository,
         InstallmentService $installmentService,
-        TransactionIdService $transactionIdService
+        TransactionIdService $transactionIdService,
+        ProfileConfigService $profileConfigService
     ) {
         $this->orderExtensionRepository = $orderExtensionRepository;
         $this->lineItemExtensionRepository = $lineItemExtensionRepository;
         $this->installmentService = $installmentService;
         $this->transactionIdService = $transactionIdService;
+        $this->profileConfigService = $profileConfigService;
     }
 
     public function createLineItemExtensionEntities(
@@ -123,8 +128,15 @@ class ExtensionService
     public function buildPaymentDataExtension(
         SalesChannelContext $salesChannelContext,
         ?OrderEntity $order = null
-    ): ArrayStruct {
+    ): ?ArrayStruct {
         $paymentMethod = $salesChannelContext->getPaymentMethod();
+
+        $profileConfig = $this->profileConfigService->getProfileConfigBySalesChannel($salesChannelContext, $paymentMethod->getId());
+        if ($profileConfig === null) {
+            // should never occur
+            return null;
+        }
+
         $customer = $salesChannelContext->getCustomer();
 
         if ($customer) {
@@ -145,6 +157,7 @@ class ExtensionService
         );
 
         $extension = new ArrayStruct();
+        $extension->offsetSet('isSandbox', $profileConfig->isSandbox());
         $extension->offsetSet('transactionId', $transactionId);
         $extension->offsetSet('birthday', $customerBirthday ?? null);
         $extension->offsetSet('vatId', $customerVatId ?? null);
