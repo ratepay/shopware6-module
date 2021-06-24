@@ -12,7 +12,6 @@ namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 use InvalidArgumentException;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\BuildEvent;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 abstract class AbstractFactory

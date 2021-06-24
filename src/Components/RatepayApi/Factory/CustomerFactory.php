@@ -142,7 +142,7 @@ class CustomerFactory extends AbstractFactory
             $customer->setCompanyName($billingAddress->getCompany());
             if ($billingAddress instanceof CustomerAddressEntity) {
                 $customer->setVatId($customerEntity->getVatIds()[0] ?? null);
-            } else if ($billingAddress instanceof OrderAddressEntity) {
+            } elseif ($billingAddress instanceof OrderAddressEntity) {
                 $customer->setVatId($billingAddress->getVatId());
             }
         }

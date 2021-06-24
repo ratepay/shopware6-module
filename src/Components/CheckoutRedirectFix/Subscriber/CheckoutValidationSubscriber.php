@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\CheckoutRedirectFix\Subscriber;
 
 use Ratepay\RpayPayments\Components\CheckoutRedirectFix\Helper\AddressHelper;
-use Ratepay\RpayPayments\Components\PaymentHandler\AbstractPaymentHandler;
 use Shopware\Core\Framework\Validation\BuildValidationEvent;
 use Shopware\Core\Framework\Validation\Exception\ConstraintViolationException;
 use Shopware\Core\PlatformRequest;

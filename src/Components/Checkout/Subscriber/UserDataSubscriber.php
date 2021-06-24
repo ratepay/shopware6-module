@@ -30,8 +30,7 @@ class UserDataSubscriber implements EventSubscriberInterface
         EntityRepositoryInterface $customerRepository,
         EntityRepositoryInterface $orderAddressRepository,
         EntityRepositoryInterface $addressRepository
-    )
-    {
+    ) {
         $this->customerRepository = $customerRepository;
         $this->orderAddressRepository = $orderAddressRepository;
         $this->addressRepository = $addressRepository;

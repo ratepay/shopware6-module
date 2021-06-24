@@ -33,6 +33,5 @@ class Migration1623157652FixWrongDataTypes extends MigrationStep
 
     public function updateDestructive(Connection $connection): void
     {
-
     }
 }
