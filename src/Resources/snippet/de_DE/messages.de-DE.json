@@ -34,6 +34,7 @@
                     "bic": "BIC"
                 },
                 "hints": {
+                    "sandboxInfo": "Der Test-Modus für die ausgewählte Zahlungsart ist aktiv. Bitte nutzen Sie diese Zahlungsart nicht für die Bestellung und informieren Sie den Händler über diese Nachricht.",
                     "birthdayHint": "Sie müssen mindestens 18 Jahre alt sein, um per %method% bezahlen zu können.",
                     "legalText": "Mit Klicken auf \"Zahlungspflichtig bestellen\" erklären Sie sich mit den <a href=\"//www.ratepay.com/legal-payment-terms\" title=\"Zahlungsbedingungen\" target=\"_blank\">Zahlungsbedingungen unseres Zahlungspartners</a> sowie mit der Durchführung einer <a href=\"//www.ratepay.com/legal-payment-dataprivacy\" title=\"Datenschutzerklärung\" target=\"_blank\">Risikoprüfung durch unseren Zahlungspartner</a> einverstanden.",
                     "sepaLegalText": "Ratepay GmbH, Franklinstraße 28-29, D-10587 Berlin<br>Gläubiger-ID: DE39RPY00000568463<br>Mandatsreferenz: WIRD SEPARAT MITGETEILT",

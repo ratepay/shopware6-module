@@ -34,6 +34,7 @@
                     "bic": "BIC"
                 },
                 "hints": {
+                    "sandboxInfo": "The test-mode for the selected payment is active. Please do not use the payment method for your order and notify the shop owner about this message.",
                     "birthdayHint": "You must be at least 18 years old to pay using %method%.",
                     "legalText": "With clicking on \"Submit order\" you agree to the <a href=\"//www.ratepay.com/legal-payment-terms\" title=\"Legal Payment Terms\" target=\"_blank\">terms of payment of our payment partner</a> as well as to the performance of a <a href=\"//www.ratepay.com/legal-payment-dataprivacy\" title=\"Legal Payment Dataprivacy\" target=\"_blank\">risk check by our payment partner</a>.",
                     "sepaLegalText": "Ratepay GmbH, Franklinstraße 28-29, D-10587 Berlin, Germany<br>Creditor ID: DE39RPY00000568463<br>Mandate Reference: WILL BE COMMUNICATED SEPARATELY",
