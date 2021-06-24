@@ -99,29 +99,32 @@ Component.register('ratepay-api-log-list', {
     },
 
     created() {
-        this.searchTerm = this.$route.query.term !== undefined ?  this.$route.query.term.trim() : "";
-        this.initalLogId = this.$route.query.logId !== undefined ?  this.$route.query.logId.trim() : null;
+        this.searchTerm = this.$route.query.term !== undefined ? this.$route.query.term.trim() : "";
+        this.initalLogId = this.$route.query.logId !== undefined ? this.$route.query.logId.trim() : null;
         this.repository = this.repositoryFactory.create('ratepay_api_log');
         hljs.registerLanguage('xml', hljsXml);
-        hljs.configure({useBR: true});
+        hljs.configure({useBR: false});
         this.loadData();
     },
 
     watch: {
         $route() {
-            this.searchTerm = this.$route.query.term !== undefined ?  this.$route.query.term.trim() : "";
-            this.initalLogId = this.$route.query.logId !== undefined ?  this.$route.query.logId.trim() : null;
+            this.searchTerm = this.$route.query.term !== undefined ? this.$route.query.term.trim() : "";
+            this.initalLogId = this.$route.query.logId !== undefined ? this.$route.query.logId.trim() : null;
             this.loadData();
         }
     },
 
     methods: {
         formatXml(str) {
-            return hljs.highlight('xml', xmlFormatter(str)).value
+            return hljs.highlight('xml', xmlFormatter(str, {"collapseContent": true})).value
+                // remove CDATA line break
+                .replaceAll(/\r\n\s*&lt;!\[CDATA\[/gi, '&lt;![CDATA[')
+                .replaceAll(/]]&gt;\r\n\s*/gi, ']]&gt;');
         },
         loadData() {
             let criteria = new Criteria();
-            if(this.searchTerm.length > 0) {
+            if (this.searchTerm.length > 0) {
                 criteria.addFilter(Criteria.contains('additionalData', this.searchTerm))
             }
             criteria.addSorting(Criteria.sort('createdAt', 'DESC'));
@@ -129,7 +132,7 @@ Component.register('ratepay-api-log-list', {
                 .search(criteria, Shopware.Context.api)
                 .then((result) => {
                     this.entities = result;
-                    if(this.initalLogId && this.entities.has(this.initalLogId)) {
+                    if (this.initalLogId && this.entities.has(this.initalLogId)) {
                         this.modalItem = result.get(this.initalLogId);
                     }
                 });

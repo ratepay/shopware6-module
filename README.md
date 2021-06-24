@@ -30,6 +30,10 @@
 3. Choose Installation and after this activate the module
 
 ## Changelog
+
+### Version 2.0.2 - WIP
+* RATESWSX-145 - api log: improve output of XML
+
 ### Version 2.0.1 - Released on 2021-06-15
 * RATESWSX-181 - fix fatal error during b2b orders
 
