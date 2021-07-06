@@ -19,6 +19,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Aggreg
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\CloneBehavior;
 
@@ -40,6 +41,9 @@ class OrderRepositoryDecorator implements EntityRepositoryInterface
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsAnyFilter(RatepayOrderDataEntity::FIELD_ORDER_ID, array_column($ids, 'id')));
+        // we do not create version entries in the order-data table. So we can check if a *new*-version has been
+        // created and only the new version should be delete. If it is so, the version can be deleted, without an error.
+        $criteria->addFilter(new EqualsFilter(RatepayOrderDataEntity::FIELD_ORDER_VERSION_ID, $context->getVersionId()));
         $ratepayOrders = $this->ratepayOrderDataRepository->searchIds($criteria, $context);
 
         if (count($ratepayOrders->getIds()) > 0) {

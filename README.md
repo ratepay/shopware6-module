@@ -34,6 +34,7 @@
 ### Version 2.0.2 - WIP
 * RATESWSX-145 - api log: improve output of XML
 * RATESWSX-182 - checkout: add info for testmode
+* RATESWSX-184 - order: fix error when a new version of an order got deleted
 
 ### Version 2.0.1 - Released on 2021-06-15
 * RATESWSX-181 - fix fatal error during b2b orders
