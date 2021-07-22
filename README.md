@@ -31,6 +31,9 @@
 
 ## Changelog
 
+### Version 2.0.3 - Released on 2021-07-22
+* RATESWSX-187 - Set default tracking-provider for confirmation deliver
+
 ### Version 2.0.2 - Released on 2021-07-22
 * RATESWSX-145 - api log: improve output of XML
 * RATESWSX-182 - checkout: add info for testmode
