@@ -26,9 +26,8 @@ class InstallmentController extends StorefrontController
 {
     private InstallmentService $installmentService;
 
-    public function __construct(
-        InstallmentService $installmentService
-    ) {
+    public function __construct(InstallmentService $installmentService)
+    {
         $this->installmentService = $installmentService;
     }
 
@@ -39,7 +38,8 @@ class InstallmentController extends StorefrontController
     public function calculateInstallment(Request $request, SalesChannelContext $context): Response
     {
         $type = $request->query->get('type');
-        $value = $request->query->get('value');
+        $value = (int) $request->query->get('value');
+        $value = $value ? : 1; // RATESWSX-186: fix that no "0" values can be provided
 
         $installmentTranslations = $this->installmentService->getTranslations($context);
         $installmentPlan = $this->installmentService->getInstallmentPlanData($context, $type, $value);
