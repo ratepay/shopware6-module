@@ -31,7 +31,7 @@
 
 ## Changelog
 
-### Version 2.0.2 - WIP
+### Version 2.0.2 - Released on 2021-07-22
 * RATESWSX-145 - api log: improve output of XML
 * RATESWSX-182 - checkout: add info for testmode
 * RATESWSX-184 - order: fix error when a new version of an order got deleted
