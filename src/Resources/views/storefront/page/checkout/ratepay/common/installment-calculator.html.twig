@@ -12,7 +12,11 @@
     window.rpBankTransferFirstday = {{ installment.calculator.rp_debitPayType.rp_paymentType_bankTransfer_firstday }};
     window.rpDirectDebitAllowed = {{ installment.calculator.rp_debitPayType.rp_paymentType_directDebit ? 'true'  : 'false' }};
     window.rpDirectDebitFirstday = {{ installment.calculator.rp_debitPayType.rp_paymentType_bankTransfer_firstday }};
-    window.rpInstallmentCalculateUrl = '{{ url('ratepay.storefront.installment.calculate') }}';
+    {%  if activeRoute == 'frontend.account.edit-order.page' %}
+        window.rpInstallmentCalculateUrl = '{{ url('ratepay.storefront.installment.calculate') }}/{{ page.order.id }}';
+    {% else %}
+        window.rpInstallmentCalculateUrl = '{{ url('ratepay.storefront.installment.calculate') }}';
+    {% endif %}
 </script>
 
 <div class="installment-calculator" data-ratepay-installment="true">

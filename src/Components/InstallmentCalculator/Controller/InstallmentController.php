@@ -10,6 +10,8 @@
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Controller;
 
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Routing\Annotation\LoginRequired;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -25,24 +27,38 @@ use Symfony\Component\Routing\Annotation\Route;
 class InstallmentController extends StorefrontController
 {
     private InstallmentService $installmentService;
+    /**
+     * @var \Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
+     */
+    private EntityRepositoryInterface $orderRepository;
 
-    public function __construct(InstallmentService $installmentService)
+    public function __construct(InstallmentService $installmentService, EntityRepositoryInterface $orderRepository)
     {
         $this->installmentService = $installmentService;
+        $this->orderRepository = $orderRepository;
     }
 
     /**
      * @LoginRequired(allowGuest=true)
-     * @Route(path="/calculate/", methods={"GET"}, name="ratepay.storefront.installment.calculate", defaults={"XmlHttpRequest"=true})
+     * @Route(path="/calculate/{orderId}", methods={"GET"}, name="ratepay.storefront.installment.calculate", defaults={"XmlHttpRequest"=true})
      */
-    public function calculateInstallment(Request $request, SalesChannelContext $context): Response
+    public function calculateInstallment(Request $request, SalesChannelContext $context, $orderId = null): Response
     {
         $type = $request->query->get('type');
-        $value = (int) $request->query->get('value');
-        $value = $value ? : 1; // RATESWSX-186: fix that no "0" values can be provided
+        $value = (int)$request->query->get('value');
+        $value = $value ?: 1; // RATESWSX-186: fix that no "0" values can be provided
+
+        if ($orderId) {
+            /** @var \Shopware\Core\Checkout\Order\OrderEntity $order */
+            $order = $this->orderRepository->search(new Criteria([$orderId]), $context->getContext())->first();
+            if ($order === null) {
+                throw $this->createNotFoundException();
+            }
+            $totalAmount = $order->getAmountTotal();
+        }
 
         $installmentTranslations = $this->installmentService->getTranslations($context);
-        $installmentPlan = $this->installmentService->getInstallmentPlanData($context, $type, $value);
+        $installmentPlan = $this->installmentService->getInstallmentPlanData($context, $type, $value, $totalAmount ?? null);
 
         return $this->renderStorefront('@Storefront/storefront/installment-calculator/installment-plan.html.twig', [
             'installment' => [
