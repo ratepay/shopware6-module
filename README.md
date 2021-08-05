@@ -31,6 +31,9 @@
 
 ## Changelog
 
+### Version 2.1 - WIP
+* RATESWSX-191 - PaymentQuery: add missing vat-id
+
 ### Version 2.0.3 - Released on 2021-07-22
 * RATESWSX-187 - Set default tracking-provider for confirmation deliver
 

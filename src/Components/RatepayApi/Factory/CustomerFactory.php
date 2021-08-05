@@ -140,10 +140,18 @@ class CustomerFactory extends AbstractFactory
 
         if ($billingAddress->getCompany()) {
             $customer->setCompanyName($billingAddress->getCompany());
-            if ($billingAddress instanceof CustomerAddressEntity) {
-                $customer->setVatId($customerEntity->getVatIds()[0] ?? null);
+
+            $vatId = null;
+            if ($requestDataBag->has('vatId') && !empty($requestDataBag->get('vatId'))) {
+                $vatId = $requestDataBag->get('vatId');
+            } else if ($billingAddress instanceof CustomerAddressEntity) {
+                $vatId = $customerEntity->getVatIds()[0] ?? null;
             } elseif ($billingAddress instanceof OrderAddressEntity) {
-                $customer->setVatId($billingAddress->getVatId());
+                $vatId = $billingAddress->getVatId();
+            }
+
+            if (!empty(trim($vatId))) {
+                $customer->setVatId(trim($vatId));
             }
         }
 
