@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
-  ~ Copyright (c) 2020 Ratepay GmbH
+  ~ Copyright (c) Ratepay GmbH
   ~
   ~ For the full copyright and license information, please view the LICENSE
   ~ file that was distributed with this source code.
@@ -12,9 +12,12 @@
 
     <services>
 
+        <defaults autowire="true"/>
+
         <service id="Ratepay\RpayPayments\Components\Account\Controller\AccountOrderControllerDecorator"
-                 decorates="Shopware\Storefront\Controller\AccountOrderController"
-                 parent="Shopware\Storefront\Controller\AccountOrderController">
+                 decorates="Shopware\Storefront\Controller\AccountOrderController">
+            <argument key="$innerService" type="service" id=".inner"/>
+            <argument key="$orderRepository" type="service" id="order.repository"/>
         </service>
 
     </services>
