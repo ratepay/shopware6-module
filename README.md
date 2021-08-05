@@ -31,7 +31,8 @@
 
 ## Changelog
 
-### Version 2.1 - WIP
+### Version 2.1.0 - WIP
+* RATESWSX-190 - fix error on instalment calculator after canceled payment
 * RATESWSX-191 - PaymentQuery: add missing vat-id
 
 ### Version 2.0.3 - Released on 2021-07-22
