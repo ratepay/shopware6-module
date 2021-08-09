@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 /*
  * Copyright (c) Ratepay GmbH
@@ -13,58 +11,111 @@ namespace Ratepay\RpayPayments\Components\Account\Controller;
 
 use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
-use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Ratepay\RpayPayments\Util\MethodHelper;
-use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
-use Shopware\Core\Framework\Validation\Exception\ConstraintViolationException;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\AccountOrderController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * @RouteScope(scopes={"storefront"})
  */
-class AccountOrderControllerDecorator extends AccountOrderController
+class AccountOrderControllerDecorator
 {
+
     /**
-     * @Route("/account/order/update/{orderId}", name="frontend.account.edit-order.update-order", methods={"POST"})
+     * @var \Shopware\Storefront\Controller\AccountOrderController
      */
+    private AccountOrderController $innerService;
+
+    /**
+     * @var \Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
+     */
+    private EntityRepositoryInterface $orderRepository;
+
+    /**
+     * @var \Symfony\Component\Routing\RouterInterface
+     */
+    private RouterInterface $router;
+
+    /**
+     * @var \Symfony\Component\HttpFoundation\Session\SessionInterface
+     */
+    private SessionInterface $session;
+
+
+    public function __construct(
+        AccountOrderController $innerService,
+        EntityRepositoryInterface $orderRepository,
+        RouterInterface $router,
+        SessionInterface $session
+    )
+    {
+        $this->innerService = $innerService;
+        $this->orderRepository = $orderRepository;
+        $this->router = $router;
+        $this->session = $session;
+    }
+
     public function updateOrder(string $orderId, Request $request, SalesChannelContext $context): Response
     {
-        $order = $this->fetchOrder($context->getContext(), $orderId);
+        $orderCriteria = (new Criteria([$orderId]))
+            ->addAssociation('transactions.paymentMethod');
+        $order = $this->orderRepository->search($orderCriteria, $context->getContext())->first();
         /** @var RatepayOrderDataEntity $ratepayData */
         $ratepayData = $order ? $order->getExtension(OrderExtension::EXTENSION_NAME) : null;
-        if ($order && $ratepayData && MethodHelper::isRatepayOrder($order) && $ratepayData->isSuccessful()) {
+        if ($ratepayData && MethodHelper::isRatepayOrder($order) && $ratepayData->isSuccessful()) {
             // You can't change the payment if it is a ratepay order
-            return $this->redirectToRoute('frontend.account.edit-order.page', ['orderId' => $orderId]);
+            return new RedirectResponse($this->router->generate('frontend.account.edit-order.page', ['orderId' => $orderId]));
         }
 
-        return parent::updateOrder($orderId, $request, $context);
+        $this->addRatepayValidationErrors($request);
+        return $this->innerService->updateOrder($orderId, $request, $context);
     }
 
-    protected function fetchOrder(Context $context, string $orderId): ?OrderEntity
+    public function editOrder(string $orderId, Request $request, SalesChannelContext $context): Response
     {
-        $orderRepository = $this->container->get('order.repository');
-
-        return $orderRepository->search(CriteriaHelper::getCriteriaForOrder($orderId), $context)->first();
+        $this->addRatepayValidationErrors($request);
+        return $this->innerService->editOrder($orderId, $request, $context);
     }
 
-    protected function renderStorefront(string $view, array $parameters = []): Response
+    protected function addRatepayValidationErrors(Request $request)
     {
-        $request = $this->get('request_stack')->getCurrentRequest();
-        $formValidation = $request ? $request->attributes->get('formViolations') : null;
-        if ($formValidation instanceof ConstraintViolationException) {
-            $parameters['formViolations'] = $formValidation;
-        }
-
         foreach ($request->get('ratepay-errors', []) as $error) {
-            $this->addFlash('danger', $error);
+            $this->session->getFlashBag()->add('danger', $error);
         }
+    }
 
-        return parent::renderStorefront($view, $parameters);
+    /* unchanged methods */
+
+    public function orderChangePayment(string $orderId, Request $request, SalesChannelContext $context): Response
+    {
+        return $this->innerService->orderChangePayment($orderId, $request, $context);
+    }
+
+    public function orderOverview(Request $request, SalesChannelContext $context): Response
+    {
+        return $this->innerService->orderOverview($request, $context);
+    }
+
+    public function ajaxOrderDetail(Request $request, SalesChannelContext $context): Response
+    {
+        return $this->innerService->ajaxOrderDetail($request, $context);
+    }
+
+    public function cancelOrder(Request $request, SalesChannelContext $context): Response
+    {
+        return $this->innerService->cancelOrder($request, $context);
+    }
+
+    public function orderSingleOverview(Request $request, SalesChannelContext $context): Response
+    {
+        return $this->innerService->orderSingleOverview($request, $context);
     }
 }
