@@ -31,7 +31,10 @@
 
 ## Changelog
 
-### Version 2.1.0 - WIP
+### Version 2.1.1 - Released on 2021-08-11
+The last release got not tagged correctly in GitHub. So we are forced to create a empty release with the correct tag.
+
+### Version 2.1.0 - Released on 2021-08-05
 * RATESWSX-190 - correct decorating AccountOrderController
 * RATESWSX-191 - PaymentQuery: add missing vat-id
 * RATESWSX-193 - fix error on instalment calculator after canceled payment
