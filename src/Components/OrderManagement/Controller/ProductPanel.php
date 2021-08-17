@@ -101,8 +101,8 @@ class ProductPanel extends AbstractController
             /** @var $orderExtension RatepayOrderDataEntity */
             if (($orderExtension = $order->getExtension(OrderExtension::EXTENSION_NAME)) &&
                 $orderExtension->getShippingPosition()) {
-                $items['shipping'] = [
-                    'id' => 'shipping',
+                $items[OrderOperationData::ITEM_ID_SHIPPING] = [
+                    'id' => OrderOperationData::ITEM_ID_SHIPPING,
                     'name' => 'shipping',
                     'ordered' => 1,
                     'unitPrice' => $order->getShippingTotal(),

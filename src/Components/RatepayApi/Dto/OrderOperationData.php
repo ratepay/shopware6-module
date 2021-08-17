@@ -16,11 +16,12 @@ use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntit
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayPositionEntity;
 use Ratepay\RpayPayments\Components\OrderManagement\Util\LineItemUtil;
 use RuntimeException;
+use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 
-class OrderOperationData extends AbstractRequestData
+class OrderOperationData extends AbstractRequestData implements OperationDataWithBasket
 {
     public const OPERATION_REQUEST = 'request';
 
@@ -31,6 +32,8 @@ class OrderOperationData extends AbstractRequestData
     public const OPERATION_RETURN = 'return';
 
     public const OPERATION_ADD = 'add';
+
+    public const ITEM_ID_SHIPPING = 'shipping';
 
     protected OrderEntity $order;
 
@@ -76,7 +79,7 @@ class OrderOperationData extends AbstractRequestData
         ) {
             $quantity = $this->getMaxQuantityForOperation($shippingPosition, 1);
             if ($quantity > 0) {
-                $items['shipping'] = $quantity;
+                $items[self::ITEM_ID_SHIPPING] = $quantity;
             }
         }
 
@@ -116,5 +119,29 @@ class OrderOperationData extends AbstractRequestData
     public function isUpdateStock(): bool
     {
         return $this->updateStock;
+    }
+
+    public function getCurrencyCode(): string
+    {
+        return $this->order->getCurrency()->getIsoCode();
+    }
+
+    public function getShippingCosts(): ?CalculatedPrice
+    {
+        return $this->order->getShippingCosts();
+    }
+
+    public function isSendDiscountAsCartItem(): bool
+    {
+        /** @var RatepayOrderDataEntity|null $orderExtension */
+        $orderExtension = $this->order->getExtension(OrderExtension::EXTENSION_NAME);
+        return $orderExtension && $orderExtension->isSendDiscountAsCartItem();
+    }
+
+    public function isSendShippingCostsAsCartItem(): bool
+    {
+        /** @var RatepayOrderDataEntity|null $orderExtension */
+        $orderExtension = $this->order->getExtension(OrderExtension::EXTENSION_NAME);
+        return $orderExtension && $orderExtension->isSendShippingCostsAsCartItem();
     }
 }

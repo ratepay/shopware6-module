@@ -89,7 +89,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         $positionUpdates = [];
         /* @var OrderLineItemEntity $item */
         foreach ($requestData->getItems() as $id => $qty) {
-            if ($id === 'shipping') {
+            if ($id === OrderOperationData::ITEM_ID_SHIPPING) {
                 /** @var RatepayOrderDataEntity $ratepayData */
                 $ratepayData = $requestData->getOrder()->getExtension(OrderExtension::EXTENSION_NAME);
                 $position = $ratepayData->getShippingPosition();
@@ -192,7 +192,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
     protected function updateProductStocks(Context $context, OrderOperationData $requestData): void
     {
         $items = $requestData->getItems();
-        unset($items['shipping']); // "shipping" is not a valid uuid - maybe an error will throw (in the future)
+        unset($items[OrderOperationData::ITEM_ID_SHIPPING]); // "shipping" is not a valid uuid - maybe an error will throw (in the future)
 
         $lineItems = $requestData->getOrder()->getLineItems()->getList(array_keys($items));
         $data = [];

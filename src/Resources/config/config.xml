@@ -31,7 +31,7 @@
     </card>
     <!-- waiting for this: https://issues.shopware.com/issues/NEXT-7670 -->
     <card>
-        <title>Transctionstatus after order completion</title>
+        <title>Transactionstatus after order completion</title>
         <title lang="de-DE">Transkationsstatus nach Bestellabsschluss</title>
         <input-field type="single-select">
             <name>paymentStatusPrepayment</name>
@@ -181,6 +181,20 @@
             <defaultValue>disabled</defaultValue>
             <label>Submit additional address line</label>
             <label lang="de-DE">Übertrage Adresszusatz</label>
+        </input-field>
+
+        <input-field type="bool">
+            <name>sendDiscountsAsCartItem</name>
+            <value>0</value>
+            <label>Send discounts as cart items</label>
+            <label lang="de-DE">Übertrage Rabatte als Warenkorbpositionen</label>
+        </input-field>
+
+        <input-field type="bool">
+            <name>sendShippingCostsAsCartItem</name>
+            <value>0</value>
+            <label>Send shipping costs as cart items</label>
+            <label lang="de-DE">Übertrage Versandkosten als Warenkorbpositionen</label>
         </input-field>
     </card>
 

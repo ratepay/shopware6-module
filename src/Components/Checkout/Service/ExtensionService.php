@@ -19,6 +19,7 @@ use Ratepay\RpayPayments\Components\Checkout\Model\RatepayPositionEntity;
 use Ratepay\RpayPayments\Components\Checkout\Util\BankAccountHolderHelper;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigService;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService;
 use Ratepay\RpayPayments\Util\MethodHelper;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -90,20 +91,24 @@ class ExtensionService
     }
 
     public function createOrderExtensionEntity(
-        OrderEntity $order,
-        string $transactionId = null,
-        string $descriptor = null,
-        string $profileId = null,
-        bool $successful,
-        Context $context
+        PaymentRequestData $requestData,
+        ?string $transactionId,
+        ?string $descriptor,
+        bool $successful
     ): RatepayOrderDataEntity {
+
+        $order = $requestData->getOrder();
+        $context = $requestData->getContext();
+
         $orderExtensionData = [
             RatepayOrderDataEntity::FIELD_ORDER_ID => $order->getId(),
             RatepayOrderDataEntity::FIELD_ORDER_VERSION_ID => $order->getVersionId(),
-            RatepayOrderDataEntity::FIELD_PROFILE_ID => $profileId,
+            RatepayOrderDataEntity::FIELD_PROFILE_ID => $requestData->getProfileConfig()->getProfileId(),
             RatepayOrderDataEntity::FIELD_TRANSACTION_ID => $transactionId,
             RatepayOrderDataEntity::FIELD_DESCRIPTOR => $descriptor,
             RatepayOrderDataEntity::FIELD_SUCCESSFUL => $successful,
+            RatepayOrderDataEntity::FIELD_SEND_DISCOUNT_AS_CART_ITEM => $requestData->isSendDiscountAsCartItem(),
+            RatepayOrderDataEntity::FIELD_SEND_SHIPPING_COSTS_AS_CART_ITEM => $requestData->isSendShippingCostsAsCartItem(),
         ];
 
         if ($successful && $order->getShippingCosts()->getTotalPrice() > 0) {

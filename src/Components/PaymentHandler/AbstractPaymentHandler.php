@@ -17,6 +17,7 @@ use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\IsOfLegalAge;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\BeforePaymentEvent;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
+use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigService;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
@@ -49,16 +50,20 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
 
     private ProfileConfigService $profileConfigService;
 
+    private ConfigService $configService;
+
     public function __construct(
         EntityRepositoryInterface $orderRepository,
         PaymentRequestService $paymentRequestService,
         ProfileConfigService $profileConfigService,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        ConfigService $configService
     ) {
         $this->orderRepository = $orderRepository;
         $this->paymentRequestService = $paymentRequestService;
         $this->eventDispatcher = $eventDispatcher;
         $this->profileConfigService = $profileConfigService;
+        $this->configService = $configService;
     }
 
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
@@ -78,7 +83,9 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
                 $order,
                 $transaction->getOrderTransaction(),
                 $dataBag,
-                $ratepayData->get('transactionId')
+                $ratepayData->get('transactionId'),
+                $this->configService->isSendDiscountsAsCartItem(),
+                $this->configService->isSendShippingCostsAsCartItem()
             );
 
             if($ratepayData->has('profile_uuid')) {

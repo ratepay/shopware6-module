@@ -97,4 +97,18 @@ class ConfigService
                 return null;
         }
     }
+
+    public function isSendDiscountsAsCartItem(): bool
+    {
+        $config = $this->getPluginConfiguration();
+
+        return (bool)($config['sendDiscountsAsCartItem'] ?? false);
+    }
+
+    public function isSendShippingCostsAsCartItem(): bool
+    {
+        $config = $this->getPluginConfiguration();
+
+        return (bool)($config['sendShippingCostsAsCartItem'] ?? false);
+    }
 }

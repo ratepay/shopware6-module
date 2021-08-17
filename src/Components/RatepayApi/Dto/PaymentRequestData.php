@@ -23,18 +23,27 @@ class PaymentRequestData extends OrderOperationData
 
     private string $ratepayTransactionId;
 
+    private bool $sendDiscountAsCartItem;
+
+    private bool $sendShippingCostsAsCartItem;
+
     public function __construct(
         SalesChannelContext $salesChannelContext,
         OrderEntity $order,
         OrderTransactionEntity $transaction,
         RequestDataBag $requestDataBag,
-        string $ratepayTransactionId
-    ) {
+        string $ratepayTransactionId,
+        bool $sendDiscountAsCartItem = false,
+        bool $sendShippingCostsAsCartItem = false
+    )
+    {
         parent::__construct($salesChannelContext->getContext(), $order, self::OPERATION_REQUEST, null, false);
         $this->transaction = $transaction;
         $this->requestDataBag = $requestDataBag;
         $this->salesChannelContext = $salesChannelContext;
         $this->ratepayTransactionId = $ratepayTransactionId;
+        $this->sendDiscountAsCartItem = $sendDiscountAsCartItem;
+        $this->sendShippingCostsAsCartItem = $sendShippingCostsAsCartItem;
     }
 
     public function getItems(): array
@@ -48,7 +57,7 @@ class PaymentRequestData extends OrderOperationData
             $items[$item->getId()] = $item->getQuantity();
         }
         if ($this->getOrder()->getShippingTotal() > 0) {
-            $items['shipping'] = 1;
+            $items[self::ITEM_ID_SHIPPING] = 1;
         }
 
         return $items;
@@ -72,5 +81,15 @@ class PaymentRequestData extends OrderOperationData
     public function setRatepayTransactionId(string $ratepayTransactionId): void
     {
         $this->ratepayTransactionId = $ratepayTransactionId;
+    }
+
+    public function isSendDiscountAsCartItem(): bool
+    {
+        return $this->sendDiscountAsCartItem;
+    }
+
+    public function isSendShippingCostsAsCartItem(): bool
+    {
+        return $this->sendShippingCostsAsCartItem;
     }
 }

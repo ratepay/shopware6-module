@@ -37,6 +37,10 @@ class RatepayOrderDataEntity extends Entity
 
     public const FIELD_SUCCESSFUL = 'successful';
 
+    public const FIELD_SEND_DISCOUNT_AS_CART_ITEM = 'sendDiscountAsCartItem';
+
+    public const FIELD_SEND_SHIPPING_COSTS_AS_CART_ITEM = 'sendShippingCostsAsCartItem';
+
     protected string $orderId;
 
     protected string $orderVersionId;
@@ -54,6 +58,10 @@ class RatepayOrderDataEntity extends Entity
     protected ?RatepayPositionEntity $shippingPosition = null;
 
     protected bool $successful = false;
+
+    protected bool $sendDiscountAsCartItem = false;
+
+    protected bool $sendShippingCostsAsCartItem = false;
 
     public function getOrderId(): string
     {
@@ -133,5 +141,15 @@ class RatepayOrderDataEntity extends Entity
     public function isSuccessful(): bool
     {
         return $this->successful;
+    }
+
+    public function isSendDiscountAsCartItem(): bool
+    {
+        return $this->sendDiscountAsCartItem;
+    }
+
+    public function isSendShippingCostsAsCartItem(): bool
+    {
+        return $this->sendShippingCostsAsCartItem;
     }
 }

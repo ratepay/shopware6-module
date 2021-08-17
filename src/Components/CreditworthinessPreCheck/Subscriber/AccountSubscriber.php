@@ -16,6 +16,7 @@ use Ratepay\RpayPayments\Components\Account\Event\PaymentUpdateRequestBagValidat
 use Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Dto\PaymentQueryData;
 use Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Service\Request\PaymentQueryService;
 use Ratepay\RpayPayments\Components\PaymentHandler\AbstractPaymentHandler;
+use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Components\RedirectException\Exception\ForwardException;
 use Ratepay\RpayPayments\Exception\RatepayException;
 use Shopware\Core\Checkout\Cart\Order\OrderConverter;
@@ -31,14 +32,19 @@ class AccountSubscriber implements EventSubscriberInterface
 
     private TranslatorInterface $translator;
 
+    private ConfigService $configService;
+
     public function __construct(
         TranslatorInterface $translator,
         PaymentQueryService $paymentQueryService,
-        OrderConverter $orderConverter
-    ) {
+        OrderConverter $orderConverter,
+        ConfigService $configService
+    )
+    {
         $this->translator = $translator;
         $this->paymentQueryService = $paymentQueryService;
         $this->orderConverter = $orderConverter;
+        $this->configService = $configService;
     }
 
     public static function getSubscribedEvents(): array
@@ -58,7 +64,9 @@ class AccountSubscriber implements EventSubscriberInterface
                 $event->getSalesChannelContext(),
                 $this->orderConverter->convertToCart($event->getOrderEntity(), $event->getContext()),
                 $event->getRequestDataBag(),
-                $event->getRequestDataBag()->get('ratepay')->get('transactionId')
+                $event->getRequestDataBag()->get('ratepay')->get('transactionId'),
+                $this->configService->isSendDiscountsAsCartItem(),
+                $this->configService->isSendShippingCostsAsCartItem()
             ));
 
             $response = isset($paymentQuery) ? $paymentQuery->getResponse() : null;

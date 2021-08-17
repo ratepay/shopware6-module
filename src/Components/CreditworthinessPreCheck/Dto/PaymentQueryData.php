@@ -10,12 +10,15 @@
 namespace Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Dto;
 
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\OperationDataWithBasket;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
+use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class PaymentQueryData extends AbstractRequestData
+class PaymentQueryData extends AbstractRequestData implements OperationDataWithBasket
 {
     private RequestDataBag $requestDataBag;
 
@@ -30,17 +33,26 @@ class PaymentQueryData extends AbstractRequestData
 
     private Cart $cart;
 
+    private bool $sendDiscountAsCartItem;
+
+    private bool $sendShippingCostsAsCartItem;
+
     public function __construct(
         SalesChannelContext $salesChannelContext,
         Cart $cart,
         RequestDataBag $requestDataBag,
-        string $transactionId
-    ) {
+        string $transactionId,
+        bool $sendDiscountAsCartItem = false,
+        bool $sendShippingCostsAsCartItem = false
+    )
+    {
         parent::__construct($salesChannelContext->getContext());
         $this->requestDataBag = $requestDataBag;
         $this->salesChannelContext = $salesChannelContext;
         $this->cart = $cart;
         $this->transactionId = $transactionId;
+        $this->sendDiscountAsCartItem = $sendDiscountAsCartItem;
+        $this->sendShippingCostsAsCartItem = $sendShippingCostsAsCartItem;
     }
 
     public function getItems(): array
@@ -55,7 +67,7 @@ class PaymentQueryData extends AbstractRequestData
         }
 
         if ($this->cart->getShippingCosts()->getTotalPrice() > 0) {
-            $items['shipping'] = 1;
+            $items[OrderOperationData::ITEM_ID_SHIPPING] = 1;
         }
 
         return $items;
@@ -79,5 +91,25 @@ class PaymentQueryData extends AbstractRequestData
     public function getTransactionId(): ?string
     {
         return $this->transactionId;
+    }
+
+    public function getCurrencyCode(): string
+    {
+        return $this->salesChannelContext->getCurrency()->getIsoCode();
+    }
+
+    public function getShippingCosts(): ?CalculatedPrice
+    {
+        return $this->cart->getShippingCosts();
+    }
+
+    public function isSendDiscountAsCartItem(): bool
+    {
+        return $this->sendDiscountAsCartItem;
+    }
+
+    public function isSendShippingCostsAsCartItem(): bool
+    {
+        return $this->sendShippingCostsAsCartItem;
     }
 }

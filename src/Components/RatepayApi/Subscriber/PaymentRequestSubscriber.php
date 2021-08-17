@@ -11,6 +11,7 @@ namespace Ratepay\RpayPayments\Components\RatepayApi\Subscriber;
 
 use RatePAY\Model\Response\PaymentRequest;
 use Ratepay\RpayPayments\Components\Checkout\Service\ExtensionService;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\ResponseEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
@@ -50,12 +51,10 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
         $responseModel = $requestEvent->getRequestBuilder()->getResponse();
 
         $this->extensionService->createOrderExtensionEntity(
-            $requestData->getOrder(),
+            $requestData,
             $responseModel->getTransactionId(),
             $responseModel->getDescriptor(),
-            $requestData->getProfileConfig()->getProfileId(),
-            false,
-            $requestData->getContext()
+            false
         );
     }
 
@@ -73,7 +72,7 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
 
         $lineItems = [];
         foreach ($requestData->getItems() as $id => $item) {
-            if ($id !== 'shipping') {
+            if ($id !== OrderOperationData::ITEM_ID_SHIPPING) {
                 // shipping will written into the order-extension
                 $lineItems[] = $orderItems->get($id);
             }
@@ -81,12 +80,10 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
         $this->extensionService->createLineItemExtensionEntities($lineItems, $requestData->getContext());
 
         $this->extensionService->createOrderExtensionEntity(
-            $requestData->getOrder(),
+            $requestData,
             $responseModel->getTransactionId(),
             $responseModel->getDescriptor(),
-            $requestData->getProfileConfig()->getProfileId(),
-            true,
-            $requestData->getContext()
+            true
         );
     }
 }

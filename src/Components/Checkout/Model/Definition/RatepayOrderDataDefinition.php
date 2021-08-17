@@ -83,6 +83,16 @@ class RatepayOrderDataDefinition extends EntityDefinition
                 RatepayOrderDataEntity::FIELD_SUCCESSFUL
             )),
 
+            (new BoolField(
+                'send_discount_as_cart_item',
+                RatepayOrderDataEntity::FIELD_SEND_DISCOUNT_AS_CART_ITEM
+            )),
+
+            (new BoolField(
+                'send_shipping_costs_as_cart_item',
+                RatepayOrderDataEntity::FIELD_SEND_SHIPPING_COSTS_AS_CART_ITEM
+            )),
+
             new OneToOneAssociationField(
                 RatepayOrderDataEntity::FIELD_ORDER,
                 'order_id',

@@ -15,6 +15,7 @@ use RatePAY\Model\Response\PaymentQuery;
 use Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Dto\PaymentQueryData;
 use Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Service\Request\PaymentQueryService;
 use Ratepay\RpayPayments\Components\PaymentHandler\AbstractPaymentHandler;
+use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Exception\RatepayException;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Framework\Validation\BuildValidationEvent;
@@ -41,17 +42,23 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
     private CartService $cartService;
 
     private DataValidator $dataValidator;
+    /**
+     * @var \Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService
+     */
+    private ConfigService $configService;
 
     public function __construct(
         RequestStack $requestStack,
         DataValidator $dataValidator,
         CartService $cartService,
-        PaymentQueryService $paymentQueryService
+        PaymentQueryService $paymentQueryService,
+        ConfigService $configService
     ) {
         $this->requestStack = $requestStack;
         $this->paymentQueryService = $paymentQueryService;
         $this->cartService = $cartService;
         $this->dataValidator = $dataValidator;
+        $this->configService = $configService;
     }
 
     public static function getSubscribedEvents(): array
@@ -85,7 +92,9 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
                     $context,
                     $this->cartService->getCart($context->getToken(), $context),
                     new RequestDataBag($request->request->all()),
-                    $request->request->get('ratepay')['transactionId']
+                    $request->request->get('ratepay')['transactionId'],
+                    $this->configService->isSendDiscountsAsCartItem(),
+                    $this->configService->isSendShippingCostsAsCartItem()
                 ));
             } catch (RatepayException $e) {
                 $this->throwException(

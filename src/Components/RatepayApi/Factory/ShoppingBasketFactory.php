@@ -13,13 +13,12 @@ use InvalidArgumentException;
 use RatePAY\Model\Request\SubModel\Content\ShoppingBasket;
 use Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Dto\PaymentQueryData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\OperationDataWithBasket;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Exception\EmptyBasketException;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
-use Shopware\Core\Checkout\Cart\Price\Struct\AbsolutePriceDefinition;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
-use Shopware\Core\Checkout\Cart\Price\Struct\PercentagePriceDefinition;
 use Shopware\Core\Checkout\Cart\Price\Struct\PriceDefinitionInterface;
 use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
@@ -29,23 +28,18 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
  */
 class ShoppingBasketFactory extends AbstractFactory
 {
+
     protected function isSupported(AbstractRequestData $requestData): bool
     {
-        return $requestData instanceof OrderOperationData || $requestData instanceof PaymentQueryData;
+        return $requestData instanceof OperationDataWithBasket;
     }
 
     protected function _getData(AbstractRequestData $requestData): ?object
     {
-        if ($requestData instanceof OrderOperationData) {
-            $order = $requestData->getOrder();
-            $shippingCosts = $order->getShippingCosts();
-            $currency = $order->getCurrency()->getIsoCode();
-        } elseif ($requestData instanceof PaymentQueryData) {
-            $shippingCosts = $requestData->getCart()->getShippingCosts();
-            $currency = $requestData->getSalesChannelContext()->getCurrency()->getIsoCode();
-        } else {
-            return null;
-        }
+        /** @var OperationDataWithBasket $requestData */
+
+        $shippingCosts = $requestData->getShippingCosts();
+        $currency = $requestData->getCurrencyCode();
 
         $basket = new ShoppingBasket();
         $basket->setItems(new ShoppingBasket\Items());
@@ -58,46 +52,16 @@ class ShoppingBasketFactory extends AbstractFactory
 
         foreach ($items as $id => $qty) {
             if ($qty instanceof LineItem) {
-                /** @var LineItem $item */
-                $item = $qty;
-                unset($qty);
-
-                /** @var PriceDefinitionInterface $priceDefinition */
-                $priceDefinition = $item->getPriceDefinition();
-                if (method_exists($priceDefinition, 'getTaxRules')) {
-                    $taxRule = $priceDefinition->getTaxRules()->first();
-                    $price = $priceDefinition->getPrice();
-                }
-                if ($priceDefinition instanceof QuantityPriceDefinition) {
-                    $qty = $priceDefinition->getQuantity();
-                } else /*if($priceDefinition instanceof PercentagePriceDefinition || $priceDefinition instanceof AbsolutePriceDefinition)*/ {
-                    $qty = 1;
-                }
-
-                $basket->getItems()->addItem(
-                    (new ShoppingBasket\Items\Item())
-                        ->setArticleNumber($item->getId())
-                        ->setDescription($item->getLabel())
-                        ->setQuantity($qty)
-                        ->setUnitPriceGross($item->getPrice() ? $item->getPrice()->getUnitPrice() : (isset($price) ? $price : 0))
-                        ->setTaxRate(isset($taxRule) ? $taxRule->getTaxRate() : 0)
-                );
-            } elseif ($id === 'shipping') {
-                if ($shippingCosts->getTotalPrice()) {
-                    $basket->setShipping(
-                        (new ShoppingBasket\Shipping())
-                            ->setDescription('shipping')
-                            ->setUnitPriceGross($shippingCosts->getTotalPrice())
-                            ->setTaxRate($this->getTaxRate($shippingCosts))
-                    );
-                }
+                $this->addOrderLineItemToBasketByBasketLineItem($requestData, $basket, $qty);
+            } elseif ($id === OrderOperationData::ITEM_ID_SHIPPING && $shippingCosts) {
+                $this->addShippingCosts($requestData, $basket, $shippingCosts);
             } elseif ($requestData instanceof OrderOperationData) {
                 $order = $requestData->getOrder();
                 $item = $order->getLineItems()->get($id);
                 if (!$item) {
                     throw new InvalidArgumentException($id . ' does not belongs to the order ' . $order->getId());
                 }
-                $this->addOrderLineItemToBasket($basket, $item, $qty);
+                $this->addOrderLineItemToBasketByOrderItem($requestData, $basket, $item, $qty);
             }
         }
 
@@ -111,9 +75,34 @@ class ShoppingBasketFactory extends AbstractFactory
         return $tax ? $tax->getTaxRate() : 0;
     }
 
-    protected function addOrderLineItemToBasket(ShoppingBasket $basket, OrderLineItemEntity $item, $qty): void
+    protected function addShippingCosts(OperationDataWithBasket $requestData, ShoppingBasket $basket, CalculatedPrice $shippingCosts): void
     {
-        if ($item->getTotalPrice() > 0 || $item->getType() === LineItem::CUSTOM_LINE_ITEM_TYPE) {
+        if ($shippingCosts->getTotalPrice() <= 0) {
+            return;
+        }
+
+        if ($requestData->isSendShippingCostsAsCartItem()) {
+            $basket->getItems()->addItem(
+                (new ShoppingBasket\Items\Item())
+                    ->setArticleNumber(OrderOperationData::ITEM_ID_SHIPPING)
+                    ->setDescription(OrderOperationData::ITEM_ID_SHIPPING) // TODO is it an idea to change it to method name?
+                    ->setQuantity(1)
+                    ->setUnitPriceGross($shippingCosts->getTotalPrice())
+                    ->setTaxRate($this->getTaxRate($shippingCosts))
+            );
+        } else {
+            $basket->setShipping(
+                (new ShoppingBasket\Shipping())
+                    ->setDescription('shipping')
+                    ->setUnitPriceGross($shippingCosts->getTotalPrice())
+                    ->setTaxRate($this->getTaxRate($shippingCosts))
+            );
+        }
+    }
+
+    protected function addOrderLineItemToBasketByOrderItem(OperationDataWithBasket $requestData, ShoppingBasket $basket, OrderLineItemEntity $item, $qty): void
+    {
+        if ($this->shouldSubmitItemAsCartItem($requestData, $item, $item->getTotalPrice())) {
             $basket->getItems()->addItem(
                 (new ShoppingBasket\Items\Item())
                     ->setArticleNumber($item->getType() === LineItem::PRODUCT_LINE_ITEM_TYPE ? $item->getPayload()['productNumber'] : $item->getIdentifier())
@@ -130,5 +119,55 @@ class ShoppingBasketFactory extends AbstractFactory
             $discount->setTaxRate($this->getTaxRate($item->getPrice()));
             $basket->setDiscount($discount);
         }
+    }
+
+    protected function addOrderLineItemToBasketByBasketLineItem(OperationDataWithBasket $requestData, ShoppingBasket $basket, LineItem $item): void
+    {
+        /** @var PriceDefinitionInterface $priceDefinition */
+        $priceDefinition = $item->getPriceDefinition();
+        if (method_exists($priceDefinition, 'getTaxRules')) {
+            $taxRule = $priceDefinition->getTaxRules()->first();
+            $price = $priceDefinition->getPrice();
+        }
+        if ($priceDefinition instanceof QuantityPriceDefinition) {
+            $qty = $priceDefinition->getQuantity();
+        } else /*if($priceDefinition instanceof PercentagePriceDefinition || $priceDefinition instanceof AbsolutePriceDefinition)*/ {
+            $qty = 1;
+        }
+
+        $unitPrice = $item->getPrice() ? $item->getPrice()->getUnitPrice() : ($price ?? 0);
+
+        if ($this->shouldSubmitItemAsCartItem($requestData, $item, $unitPrice)) {
+            $basket->getItems()->addItem(
+                (new ShoppingBasket\Items\Item())
+                    ->setArticleNumber($item->getId())
+                    ->setDescription($item->getLabel())
+                    ->setQuantity($qty)
+                    ->setUnitPriceGross($unitPrice)
+                    ->setTaxRate(isset($taxRule) ? $taxRule->getTaxRate() : 0)
+            );
+        } else {
+            $discount = $basket->getDiscount() ?: new ShoppingBasket\Discount();
+            $discount->setDescription('discount');
+            $discount->setDescriptionAddition(($discount->getDescriptionAddition() ? $discount->getDescriptionAddition() . ', ' : null) . $item->getLabel());
+            $discount->setUnitPriceGross($discount->getUnitPriceGross() + $unitPrice);
+            $discount->setTaxRate($this->getTaxRate($item->getPrice()));
+            $basket->setDiscount($discount);
+        }
+    }
+
+    /**
+     * @param OperationDataWithBasket $requestData
+     * @param LineItem|OrderLineItemEntity $item
+     * @param float $price
+     * @return bool
+     */
+    protected function shouldSubmitItemAsCartItem(OperationDataWithBasket $requestData, $item, float $price): bool
+    {
+        if ($price > 0 || !in_array($item->getType(), [LineItem::CREDIT_LINE_ITEM_TYPE, LineItem::PROMOTION_LINE_ITEM_TYPE], true)) {
+            return true;
+        }
+
+        return $requestData->isSendDiscountAsCartItem();
     }
 }
