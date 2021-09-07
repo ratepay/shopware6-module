@@ -33,6 +33,7 @@
 
 ### Version 2.1.2 - WIP
 * RATESWSX-195 - migrations: remove dangerous destructive migration + fix NULL to NOT NULL
+* RATESWSX-196 - add missing order filter to transition subscriber
 
 ### Version 2.1.1 - Released on 2021-08-11
 The last release got not tagged correctly in GitHub. So we are forced to create a empty release with the correct tag.

@@ -19,6 +19,7 @@ use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentCancelServ
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentDeliverService;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentReturnService;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
+use Ratepay\RpayPayments\Util\MethodHelper;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -50,7 +51,8 @@ class TransitionSubscriber implements EventSubscriberInterface
         PaymentCancelService $paymentCancelService,
         PaymentReturnService $paymentReturnService,
         Logger $logger
-    ) {
+    )
+    {
         $this->orderDeliveryRepository = $orderDeliveryRepository;
         $this->orderRepository = $orderRepository;
         $this->configService = $configService;
@@ -78,8 +80,20 @@ class TransitionSubscriber implements EventSubscriberInterface
         /** @var OrderEntity $order */
         $order = $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($orderDelivery->getOrderId()), $event->getContext())->first();
 
+        if (!MethodHelper::isRatepayOrder($order)) {
+            return;
+        }
+
         /** @var RatepayOrderDataEntity $ratepayData */
         $ratepayData = $order->getExtension(OrderExtension::EXTENSION_NAME);
+
+        if ($ratepayData === null) {
+            $this->logger->warning('Error during bidirectionality: No Ratepay Data was found for Order-ID ' . $order->getId(), [
+                'order' => $order->getId(),
+                'transactionId' => $ratepayData->getTransactionId(),
+                'orderNumber' => $order->getOrderNumber(),
+            ]);
+        }
 
         switch ($event->getToPlace()->getTechnicalName()) {
             case $this->configService->getBidirectionalityFullDelivery():
