@@ -31,6 +31,9 @@
 
 ## Changelog
 
+### Version 2.1.3 - Released on 2021-09-08
+* RATESWSX-196 - adds missing return statement
+
 ### Version 2.1.2 - Released on 2021-09-08
 * RATESWSX-195 - migrations: remove dangerous destructive migration + fix NULL to NOT NULL
 * RATESWSX-196 - add missing order filter to transition subscriber

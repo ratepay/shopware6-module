@@ -88,11 +88,11 @@ class TransitionSubscriber implements EventSubscriberInterface
         $ratepayData = $order->getExtension(OrderExtension::EXTENSION_NAME);
 
         if ($ratepayData === null) {
-            $this->logger->warning('Error during bidirectionality: No Ratepay Data was found for Order-ID ' . $order->getId(), [
+            $this->logger->warning('Error during bidirectionality: No Ratepay Data was found.', [
                 'order' => $order->getId(),
-                'transactionId' => $ratepayData->getTransactionId(),
                 'orderNumber' => $order->getOrderNumber(),
             ]);
+            return;
         }
 
         switch ($event->getToPlace()->getTechnicalName()) {
