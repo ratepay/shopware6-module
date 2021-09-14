@@ -95,6 +95,7 @@ export default class Installment extends Plugin {
             this._typeHolder.value = type;
             this._valueHolder.value = value;
             this._registerInstallmentPlanEvents();
+            window.PluginManager.initializePlugins();
         };
 
         xhr = client.get(url, this._executeCallback.bind(this, cb));

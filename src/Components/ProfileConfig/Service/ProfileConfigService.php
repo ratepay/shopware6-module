@@ -49,7 +49,8 @@ class ProfileConfigService
         EntityRepositoryInterface $methodConfigInstallmentRepository,
         ProfileRequestService $profileRequestService,
         ProfileConfigResponseConverter $profileConfigResponseConverter
-    ) {
+    )
+    {
         $this->repository = $repository;
         $this->methodConfigRepository = $methodConfigRepository;
         $this->methodConfigInstallmentRepository = $methodConfigInstallmentRepository;
@@ -107,10 +108,18 @@ class ProfileConfigService
         }
     }
 
+    /**
+     * @param \Shopware\Core\System\SalesChannel\SalesChannelContext $salesChannelContext
+     * @param string|null $paymentMethodId
+     * @param bool $single
+     * @return array<ProfileConfigEntity>|ProfileConfigEntity|null
+     */
     public function getProfileConfigBySalesChannel(
         SalesChannelContext $salesChannelContext,
-        string $paymentMethodId = null
-    ): ?ProfileConfigEntity {
+        string $paymentMethodId = null,
+        bool $single = true
+    )
+    {
         if (($customer = $salesChannelContext->getCustomer()) === null ||
             ($billingAddress = $customer->getActiveBillingAddress()) === null ||
             ($shippingAddress = $customer->getActiveShippingAddress()) === null
@@ -129,7 +138,7 @@ class ProfileConfigService
             $shippingCountry = $billingCountry;
         }
 
-        return $this->getProfileConfigDefaultParams(
+        $resultList = $this->findProfileConfigsByDefaultParams(
             $paymentMethodId,
             $billingCountry,
             $shippingCountry,
@@ -138,9 +147,44 @@ class ProfileConfigService
             $billingAddress->getId() !== $shippingAddress->getId(),
             $salesChannelContext->getContext()
         );
+
+        return $single ? $resultList->first() : $resultList->getElements();
     }
 
-    public function getProfileConfigDefaultParams(
+    /**
+     * @param \Shopware\Core\Checkout\Order\OrderEntity $order
+     * @param string $paymentMethodId
+     * @param \Shopware\Core\Framework\Context $context
+     * @param bool $single
+     * @return array<ProfileConfigEntity>|ProfileConfigEntity|null
+     */
+    public function getProfileConfigByOrderEntity(OrderEntity $order, string $paymentMethodId, Context $context, bool $single = true)
+    {
+        $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
+        $shippingAddress = $order->getAddresses()->get($order->getDeliveries()->first()->getShippingOrderAddressId());
+
+        $billingCountry = $billingAddress->getCountry()->getIso();
+
+        if ($shippingAddress) {
+            $shippingCountry = $shippingAddress->getCountry()->getIso();
+        } else {
+            $shippingCountry = $billingCountry;
+        }
+
+        $resultList = $this->findProfileConfigsByDefaultParams(
+            $paymentMethodId,
+            $billingCountry,
+            $shippingCountry,
+            $order->getSalesChannelId(),
+            $order->getCurrency()->getIsoCode(),
+            $billingAddress->getId() !== $shippingAddress->getId(),
+            $context
+        );
+
+        return $single ? $resultList->first() : $resultList->getElements();
+    }
+
+    public function findProfileConfigsByDefaultParams(
         string $paymentMethodId,
         string $billingCountryIso,
         string $shippingCountryIso,
@@ -148,9 +192,8 @@ class ProfileConfigService
         string $currencyIso,
         bool $differentAddresses,
         Context $context
-    ) {
-        // TODO: Move this function to a repository
-
+    )
+    {
         $criteria = new Criteria();
         $criteria->addAssociation(ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS);
 
@@ -194,30 +237,11 @@ class ProfileConfigService
             $context
         ));
 
-        return $this->repository->search($criteria, $context)->first();
+        return $this->repository->search($criteria, $context);
     }
 
-    public function getProfileConfigByOrderEntity(OrderEntity $order, string $paymentMethodId, Context $context): ?ProfileConfigEntity
+    public function getProfileConfigById(?string $profileConfigId, Context $context): ProfileConfigEntity
     {
-        $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
-        $shippingAddress = $order->getAddresses()->get($order->getDeliveries()->first()->getShippingOrderAddressId());
-
-        $billingCountry = $billingAddress->getCountry()->getIso();
-
-        if ($shippingAddress) {
-            $shippingCountry = $shippingAddress->getCountry()->getIso();
-        } else {
-            $shippingCountry = $billingCountry;
-        }
-
-        return $this->getProfileConfigDefaultParams(
-            $paymentMethodId,
-            $billingCountry,
-            $shippingCountry,
-            $order->getSalesChannelId(),
-            $order->getCurrency()->getIsoCode(),
-            $billingAddress->getId() !== $shippingAddress->getId(),
-            $context
-        );
+        return $this->repository->search(new Criteria([$profileConfigId]), $context)->first();
     }
 }

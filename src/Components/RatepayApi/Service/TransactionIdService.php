@@ -28,6 +28,10 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class TransactionIdService
 {
+
+    public const PREFIX_CART = 'cart-';
+    public const PREFIX_ORDER = 'order-';
+
     private EntityRepositoryInterface $transactionIdRepository;
 
     private PaymentInitService $paymentInitService;
@@ -38,7 +42,8 @@ class TransactionIdService
         EntityRepositoryInterface $transactionIdRepository,
         ProfileConfigService $profileConfigService,
         PaymentInitService $paymentInitService
-    ) {
+    )
+    {
         $this->transactionIdRepository = $transactionIdRepository;
         $this->paymentInitService = $paymentInitService;
         $this->profileConfigService = $profileConfigService;
@@ -47,9 +52,14 @@ class TransactionIdService
     /**
      * @throws TransactionIdFetchFailedException
      */
-    public function getTransactionId(SalesChannelContext $salesChannelContext, string $prefix = ''): string
+    public function getTransactionId(SalesChannelContext $salesChannelContext, string $prefix = '', string $profileConfigId = null): string
     {
-        $profileConfig = $this->profileConfigService->getProfileConfigBySalesChannel($salesChannelContext);
+        if ($profileConfigId) {
+            $profileConfig = $this->profileConfigService->getProfileConfigById($profileConfigId, $salesChannelContext->getContext());
+        } else {
+            $profileConfig = $this->profileConfigService->getProfileConfigBySalesChannel($salesChannelContext);
+        }
+
         if ($profileConfig === null) {
             throw new ProfileNotFoundException();
         }

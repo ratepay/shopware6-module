@@ -9,6 +9,7 @@
 
 namespace Ratepay\RpayPayments\Components\Checkout\Service;
 
+use Ratepay\RpayPayments\Components\Checkout\Event\PaymentDataExtensionBuilt;
 use Ratepay\RpayPayments\Components\Checkout\Model\Collection\RatepayOrderLineItemDataCollection;
 use Ratepay\RpayPayments\Components\Checkout\Model\Definition\RatepayOrderDataDefinition;
 use Ratepay\RpayPayments\Components\Checkout\Model\Definition\RatepayOrderLineItemDataDefinition;
@@ -28,6 +29,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ExtensionService
 {
@@ -43,18 +45,22 @@ class ExtensionService
 
     private ProfileConfigService $profileConfigService;
 
+    private EventDispatcherInterface $eventDispatcher;
+
     public function __construct(
         EntityRepositoryInterface $orderExtensionRepository,
         EntityRepositoryInterface $lineItemExtensionRepository,
         InstallmentService $installmentService,
         TransactionIdService $transactionIdService,
-        ProfileConfigService $profileConfigService
+        ProfileConfigService $profileConfigService,
+        EventDispatcherInterface $eventDispatcher
     ) {
         $this->orderExtensionRepository = $orderExtensionRepository;
         $this->lineItemExtensionRepository = $lineItemExtensionRepository;
         $this->installmentService = $installmentService;
         $this->transactionIdService = $transactionIdService;
         $this->profileConfigService = $profileConfigService;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function createLineItemExtensionEntities(
@@ -151,14 +157,9 @@ class ExtensionService
             }
         }
 
-        $transactionId = $this->transactionIdService->getTransactionId(
-            $salesChannelContext,
-            $order ? 'order-' . $order->getId() . '-' : 'cart-'
-        );
 
         $extension = new ArrayStruct();
         $extension->offsetSet('isSandbox', $profileConfig->isSandbox());
-        $extension->offsetSet('transactionId', $transactionId);
         $extension->offsetSet('birthday', $customerBirthday ?? null);
         $extension->offsetSet('vatId', $customerVatId ?? null);
         $extension->offsetSet('phoneNumber', $customerPhoneNumber ?? null);
@@ -169,23 +170,20 @@ class ExtensionService
             strtolower(constant($paymentMethod->getHandlerIdentifier() . '::RATEPAY_METHOD'))
         );
 
-        if (MethodHelper::isInstallmentMethod($paymentMethod->getHandlerIdentifier())) {
-            $installmentCalculator = $this->installmentService->getInstallmentCalculatorData($salesChannelContext);
-
-            $installmentPlan = $this->installmentService->getInstallmentPlanData(
+        if (!MethodHelper::isInstallmentMethod($paymentMethod->getHandlerIdentifier())) {
+            // only set transaction ID for payment methods which are not a installment.
+            // for installment we generate a new transaction ID when the runtime has been selected.
+            // this transaction ID will be send to the storefront separately.
+            $transactionId = $this->transactionIdService->getTransactionId(
                 $salesChannelContext,
-                $installmentCalculator['defaults']['type'],
-                $installmentCalculator['defaults']['value'],
-                $order ? $order->getAmountTotal() : null
+                $order ? TransactionIdService::PREFIX_ORDER . $order->getId() . '-' : TransactionIdService::PREFIX_CART
             );
-
-            $extension->offsetSet('installment', [
-                'translations' => $this->installmentService->getTranslations($salesChannelContext),
-                'calculator' => $installmentCalculator,
-                'plan' => $installmentPlan,
-            ]);
+            $extension->offsetSet('transactionId', $transactionId);
         }
 
-        return $extension;
+        /** @var PaymentDataExtensionBuilt $event */
+        $event = $this->eventDispatcher->dispatch(new PaymentDataExtensionBuilt($extension, $salesChannelContext, $order));
+
+        return $event->getExtension();
     }
 }

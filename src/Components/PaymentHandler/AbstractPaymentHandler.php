@@ -72,31 +72,20 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
             throw new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'unknown error during payment');
         }
         try {
-            $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
-            $shippingAddress = $order->getDeliveries()->getShippingAddress()->first();
-
-            $profileConfig = $this->profileConfigService->getProfileConfigDefaultParams(
-                $transaction->getOrderTransaction()->getPaymentMethod()->getId(),
-                $billingAddress->getCountry()->getIso(),
-                $shippingAddress->getCountry()->getIso(),
-                $order->getSalesChannelId(),
-                $order->getCurrency()->getIsoCode(),
-                $billingAddress->getId() !== $shippingAddress->getId(),
-                $salesChannelContext->getContext()
-            );
-
-            if ($profileConfig === null) {
-                throw new ProfileNotFoundException();
-            }
 
             $paymentRequestData = new PaymentRequestData(
                 $salesChannelContext,
                 $order,
                 $transaction->getOrderTransaction(),
-                $profileConfig,
                 $dataBag,
                 $ratepayData->get('transactionId')
             );
+
+            if($ratepayData->has('profile_uuid')) {
+                $paymentRequestData->setProfileConfig(
+                    $this->profileConfigService->getProfileConfigById($ratepayData->get('profile_uuid'), $salesChannelContext->getContext())
+                );
+            }
 
             $this->eventDispatcher->dispatch(new BeforePaymentEvent($paymentRequestData));
 

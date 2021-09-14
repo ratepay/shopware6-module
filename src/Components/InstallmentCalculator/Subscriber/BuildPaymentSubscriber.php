@@ -14,6 +14,7 @@ use InvalidArgumentException;
 use RatePAY\Model\Request\SubModel\Content\Payment;
 use RatePAY\Model\Request\SubModel\Content\ShoppingBasket;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Exception\DebitNotAllowedOnInstallment;
+use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentCalculatorContext;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Util\PlanHasher;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AddCreditData;
@@ -54,12 +55,17 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
 
             /** @var RequestDataBag $requestedInstallment */
             $requestedInstallment = $requestData->getRequestDataBag()->get('ratepay')->get('installment');
-            $plan = $this->installmentService->getInstallmentPlanData(
+
+            $calcContext = new InstallmentCalculatorContext(
                 $requestData->getSalesChannelContext(),
                 $requestedInstallment->get('type'),
-                $requestedInstallment->get('value'),
-                $paymentObject->getAmount()
+                $requestedInstallment->get('value')
             );
+            $calcContext->setTotalAmount($paymentObject->getAmount());
+            $calcContext->setOrder($requestData->getOrder());
+            $calcContext->setPaymentMethod($requestData->getTransaction()->getPaymentMethod());
+
+            $plan = $this->installmentService->getInstallmentPlanData($calcContext);
 
             if (PlanHasher::isPlanEqualWithHash($requestedInstallment->get('hash'), $plan)) {
                 throw new Exception('the hash value of the calculated plan does not match the given hash');

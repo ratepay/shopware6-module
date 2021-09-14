@@ -112,12 +112,7 @@ abstract class AbstractRequest
 
     protected function getProfileConfig(AbstractRequestData $requestData): ProfileConfigEntity
     {
-        $profileConfig = $requestData->getProfileConfig();
-        if ($profileConfig === null) {
-            throw new ProfileNotFoundException();
-        }
-
-        return $profileConfig;
+        return $requestData->getProfileConfig();
     }
 
     private function _getRequestHead(AbstractRequestData $requestData): Head
@@ -132,7 +127,12 @@ abstract class AbstractRequest
 
     private function _initRequest(AbstractRequestData $requestData): void
     {
+        // set profile config to $requestData object in case it differs to the given object (or it was null)
         $requestData->setProfileConfig($this->getProfileConfig($requestData));
+
+        if ($requestData->getProfileConfig() === null) {
+            throw new ProfileNotFoundException();
+        }
 
         $this->initRequest($requestData);
         /* @var BuildEvent $event */

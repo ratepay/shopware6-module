@@ -11,7 +11,7 @@
     {{ parent() }}
     <div class="form-row">
         <div class="form-group col-sm-12">
-            {{ installment.translations.wcd_sepa_notice_block|raw }}
+            {{ ratepay.installment.translations.wcd_sepa_notice_block|raw }}
         </div>
     </div>
 {% endblock %}
@@ -21,15 +21,15 @@
         <div class="form-group col-sm-12">
             <table class="rp-sepa-table small">
                 <tr>
-                    <td colspan="2">{{ installment.translations.rp_address|raw }}</td>
+                    <td colspan="2">{{ ratepay.installment.translations.rp_address|raw }}</td>
                 </tr>
                 <tr>
-                    <td>{{ installment.translations.rp_creditor|raw }}</td>
-                    <td>{{ installment.translations.rp_creditor_id|raw }}</td>
+                    <td>{{ ratepay.installment.translations.rp_creditor|raw }}</td>
+                    <td>{{ ratepay.installment.translations.rp_creditor_id|raw }}</td>
                 </tr>
                 <tr>
-                    <td>{{ installment.translations.rp_mandate|raw }}</td>
-                    <td>{{ installment.translations.rp_mandate_ref|raw }}</td>
+                    <td>{{ ratepay.installment.translations.rp_mandate|raw }}</td>
+                    <td>{{ ratepay.installment.translations.rp_mandate_ref|raw }}</td>
                 </tr>
             </table>
         </div>

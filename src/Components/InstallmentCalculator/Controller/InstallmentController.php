@@ -9,7 +9,10 @@
 
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Controller;
 
+use Ratepay\RpayPayments\Components\Checkout\Util\BankAccountHolderHelper;
+use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentCalculatorContext;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
+use Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Routing\Annotation\LoginRequired;
@@ -27,12 +30,13 @@ use Symfony\Component\Routing\Annotation\Route;
 class InstallmentController extends StorefrontController
 {
     private InstallmentService $installmentService;
-    /**
-     * @var \Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
-     */
+
     private EntityRepositoryInterface $orderRepository;
 
-    public function __construct(InstallmentService $installmentService, EntityRepositoryInterface $orderRepository)
+    public function __construct(
+        InstallmentService $installmentService,
+        EntityRepositoryInterface $orderRepository
+    )
     {
         $this->installmentService = $installmentService;
         $this->orderRepository = $orderRepository;
@@ -42,7 +46,7 @@ class InstallmentController extends StorefrontController
      * @LoginRequired(allowGuest=true)
      * @Route(path="/calculate/{orderId}", methods={"GET"}, name="ratepay.storefront.installment.calculate", defaults={"XmlHttpRequest"=true})
      */
-    public function calculateInstallment(Request $request, SalesChannelContext $context, $orderId = null): Response
+    public function calculateInstallment(Request $request, SalesChannelContext $salesChannelContext, $orderId = null): Response
     {
         $type = $request->query->get('type');
         $value = (int)$request->query->get('value');
@@ -50,21 +54,22 @@ class InstallmentController extends StorefrontController
 
         if ($orderId) {
             /** @var \Shopware\Core\Checkout\Order\OrderEntity $order */
-            $order = $this->orderRepository->search(new Criteria([$orderId]), $context->getContext())->first();
+            $order = $this->orderRepository->search(new Criteria([$orderId]), $salesChannelContext->getContext())->first();
             if ($order === null) {
                 throw $this->createNotFoundException();
             }
-            $totalAmount = $order->getAmountTotal();
         }
 
-        $installmentTranslations = $this->installmentService->getTranslations($context);
-        $installmentPlan = $this->installmentService->getInstallmentPlanData($context, $type, $value, $totalAmount ?? null);
+        $calcContext = (new InstallmentCalculatorContext($salesChannelContext, $type, $value))
+            ->setOrder($order ?? null);
+
+        $vars = $this->installmentService->getInstallmentPlanTwigVars($calcContext);
 
         return $this->renderStorefront('@Storefront/storefront/installment-calculator/installment-plan.html.twig', [
-            'installment' => [
-                'translations' => $installmentTranslations,
-                'plan' => $installmentPlan,
-            ],
+            'ratepay' => [
+                'installment' => $vars,
+                'accountHolders' => BankAccountHolderHelper::getAvailableNames($salesChannelContext)
+            ]
         ]);
     }
 }

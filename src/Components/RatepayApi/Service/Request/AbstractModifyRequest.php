@@ -62,17 +62,9 @@ abstract class AbstractModifyRequest extends AbstractRequest
         $extension = $requestData->getOrder()->getExtension(OrderExtension::EXTENSION_NAME);
 
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter(
-            ProfileConfigEntity::FIELD_PROFILE_ID,
-            $extension->getProfileId()
-        ));
+        $criteria->addFilter(new EqualsFilter(ProfileConfigEntity::FIELD_PROFILE_ID, $extension->getProfileId()));
 
-        $profileConfig = $this->profileConfigRepository->search($criteria, $requestData->getContext())->first();
-        if ($profileConfig === null) {
-            throw new ProfileNotFoundException();
-        }
-
-        return $profileConfig;
+        return $this->profileConfigRepository->search($criteria, $requestData->getContext())->first();
     }
 
     protected function getRequestHead(AbstractRequestData $requestData): Head

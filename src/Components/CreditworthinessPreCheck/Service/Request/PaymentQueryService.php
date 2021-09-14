@@ -51,7 +51,8 @@ class PaymentQueryService extends AbstractRequest
         ShoppingBasketFactory $shoppingBasketFactory,
         CustomerFactory $customerFactory,
         ProfileConfigService $profileConfigService
-    ) {
+    )
+    {
         parent::__construct($eventDispatcher, $headFactory);
         $this->shoppingBasketFactory = $shoppingBasketFactory;
         $this->customerFactory = $customerFactory;
@@ -78,6 +79,16 @@ class PaymentQueryService extends AbstractRequest
     protected function getProfileConfig(AbstractRequestData $requestData): ProfileConfigEntity
     {
         /* @var $requestData PaymentQueryData */
+
+        /** @var \Shopware\Core\Framework\Validation\DataBag\RequestDataBag $ratepayData */
+        $ratepayData = $requestData->getRequestDataBag()->get('ratepay');
+        if ($ratepayData->has('profile_uuid')) {
+            return $this->profileConfigService->getProfileConfigById(
+                $ratepayData->get('profile_uuid'),
+                $requestData->getSalesChannelContext()->getContext()
+            );
+        }
+
         return $this->profileConfigService->getProfileConfigBySalesChannel($requestData->getSalesChannelContext());
     }
 

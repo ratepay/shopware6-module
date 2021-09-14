@@ -27,7 +27,6 @@ class PaymentRequestData extends OrderOperationData
         SalesChannelContext $salesChannelContext,
         OrderEntity $order,
         OrderTransactionEntity $transaction,
-        ProfileConfigEntity $profileConfig,
         RequestDataBag $requestDataBag,
         string $ratepayTransactionId
     ) {
@@ -35,7 +34,6 @@ class PaymentRequestData extends OrderOperationData
         $this->transaction = $transaction;
         $this->requestDataBag = $requestDataBag;
         $this->salesChannelContext = $salesChannelContext;
-        $this->profileConfig = $profileConfig;
         $this->ratepayTransactionId = $ratepayTransactionId;
     }
 

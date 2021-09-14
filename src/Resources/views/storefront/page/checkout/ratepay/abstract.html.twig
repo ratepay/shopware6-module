@@ -5,13 +5,10 @@
   ~ file that was distributed with this source code.
 #}
 
-<input type="hidden"
-       value="{{ page.extensions.ratepay.transactionId }}"
-       name="ratepay[transactionId]"
-       form="confirmOrderForm"
-       readonly
-       required="required"
->
+{% if page.extensions.ratepay.transactionId %}
+    {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/common/transaction-id.html.twig' with {'transactionId': page.extensions.ratepay.transactionId} %}
+{% endif %}
+
 {% if page.extensions.ratepay.validation %}
     <input type="hidden" name="ratepay[validation][billing_address_md5]" value="{{ page.extensions.ratepay.validation.billing_address_md5 }}" form="confirmOrderForm"/>
     <input type="hidden" name="ratepay[validation][shipping_address_md5]" value="{{ page.extensions.ratepay.validation.shipping_address_md5 }}" form="confirmOrderForm"/>

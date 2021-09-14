@@ -5,73 +5,79 @@
   ~ file that was distributed with this source code.
 #}
 
-<div class="rp-installment-plan-container">
-    <input type="hidden" name="ratepay[installment][hash]" id="rp-calculation-hash" value="{{ installment.plan.hash }}" form="confirmOrderForm" />
+{#
+    Expect installments, with all payment methods, the transaction ID has been already provided to the frontend.
+    We need the set the transaction ID after the runtime has been selected.
+#}
+{% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/common/transaction-id.html.twig' with {'transactionId': ratepay.installment.transactionId } %}
+<input type="hidden" name="ratepay[profile_uuid]" value="{{ ratepay.installment.plan.profileUuid }}" form="confirmOrderForm" />
+<input type="hidden" name="ratepay[installment][hash]" id="rp-calculation-hash" value="{{ ratepay.installment.plan.hash }}" form="confirmOrderForm" />
 
+<div class="rp-installment-plan-container">
     <table class="table table-striped">
         <tr>
             <td class="text-center text-uppercase headline" colspan="2">
-                {{ installment.translations.rp_personal_calculation|raw }}
+                {{ ratepay.installment.translations.rp_personal_calculation|raw }}
             </td>
         </tr>
 
         <tr>
             <td colspan="2" class="small text-right">
                 <span class="rp-link d-block" id="rp-show-installment-plan-details">
-                    {{ installment.translations.rp_showInstallmentPlanDetails|raw }} <i class="icon-arrow-head-down"></i>
+                    {{ ratepay.installment.translations.rp_showInstallmentPlanDetails|raw }} <i class="icon-arrow-head-down"></i>
                 </span>
                 <span class="rp-link d-none" id="rp-hide-installment-plan-details">
-                    {{ installment.translations.rp_hideInstallmentPlanDetails|raw }} <i class="icon-arrow-head-uo"></i>
+                    {{ ratepay.installment.translations.rp_hideInstallmentPlanDetails|raw }} <i class="icon-arrow-head-uo"></i>
                 </span>
             </td>
         </tr>
 
         <tr class="rp-installment-plan-details d-none">
             <td class="rp-installment-plan-title">
-                {{ installment.translations.rp_cash_payment_price|raw }}
-                <p class="rp-installment-plan-description small">{{ installment.translations.rp_mouseover_cash_payment_price|raw }}</p>
+                {{ ratepay.installment.translations.rp_cash_payment_price|raw }}
+                <p class="rp-installment-plan-description small">{{ ratepay.installment.translations.rp_mouseover_cash_payment_price|raw }}</p>
             </td>
             <td class="text-right">
-                {{ installment.plan.amount }} &euro;
+                {{ ratepay.installment.plan.amount }} &euro;
             </td>
         </tr>
 
         <tr class="rp-installment-plan-details d-none">
             <td class="rp-installment-plan-title">
-                {{ installment.translations.rp_service_charge|raw }}
-                <p class="rp-installment-plan-description small">{{ installment.translations.rp_mouseover_service_charge|raw }}</p>
+                {{ ratepay.installment.translations.rp_service_charge|raw }}
+                <p class="rp-installment-plan-description small">{{ ratepay.installment.translations.rp_mouseover_service_charge|raw }}</p>
             </td>
             <td class="text-right">
-                {{ installment.plan.serviceCharge }} &euro;
+                {{ ratepay.installment.plan.serviceCharge }} &euro;
             </td>
         </tr>
 
         <tr class="rp-installment-plan-details d-none">
             <td class="rp-installment-plan-title">
-                {{ installment.translations.rp_effective_rate|raw }}
-                <p class="rp-installment-plan-description small">{{ installment.translations.rp_mouseover_effective_rate|raw }}</p>
+                {{ ratepay.installment.translations.rp_effective_rate|raw }}
+                <p class="rp-installment-plan-description small">{{ ratepay.installment.translations.rp_mouseover_effective_rate|raw }}</p>
             </td>
             <td class="text-right">
-                {{ installment.plan.annualPercentageRate }} %
+                {{ ratepay.installment.plan.annualPercentageRate }} %
             </td>
         </tr>
 
         <tr class="rp-installment-plan-details d-none">
             <td class="rp-installment-plan-title">
-                {{ installment.translations.rp_debit_rate|raw }}
-                <p class="rp-installment-plan-description small">{{ installment.translations.rp_mouseover_debit_rate|raw }}</p>
+                {{ ratepay.installment.translations.rp_debit_rate|raw }}
+                <p class="rp-installment-plan-description small">{{ ratepay.installment.translations.rp_mouseover_debit_rate|raw }}</p>
             </td>
             <td class="text-right">
-                {{ installment.plan.monthlyDebitInterest }} %
+                {{ ratepay.installment.plan.monthlyDebitInterest }} %
             </td>
         </tr>
         <tr class="rp-installment-plan-details d-none">
             <td class="rp-installment-plan-title">
-                {{ installment.translations.rp_interest_amount|raw }}
-                <p class="rp-installment-plan-description small">{{ installment.translations.rp_mouseover_interest_amount|raw }}</p>
+                {{ ratepay.installment.translations.rp_interest_amount|raw }}
+                <p class="rp-installment-plan-description small">{{ ratepay.installment.translations.rp_mouseover_interest_amount|raw }}</p>
             </td>
             <td class="text-right">
-                {{ installment.plan.interestAmount }} &euro;
+                {{ ratepay.installment.plan.interestAmount }} &euro;
             </td>
         </tr>
 
@@ -81,43 +87,72 @@
 
         <tr>
             <td class="rp-installment-plan-title">
-                {{ installment.plan.numberOfRatesFull|raw }} {{ installment.translations.rp_monthly_installment_pl|raw }} {{ installment.translations.rp_each|raw }}
-                <p class="rp-installment-plan-description small">{{ installment.translations.rp_mouseover_duration_month|raw }}</p>
+                {{ ratepay.installment.plan.numberOfRatesFull|raw }} {{ ratepay.installment.translations.rp_monthly_installment_pl|raw }} {{ ratepay.installment.translations.rp_each|raw }}
+                <p class="rp-installment-plan-description small">{{ ratepay.installment.translations.rp_mouseover_duration_month|raw }}</p>
             </td>
             <td class="text-right">
-                {{ installment.plan.rate }} &euro;
+                {{ ratepay.installment.plan.rate }} &euro;
             </td>
         </tr>
 
         <tr>
             <td class="rp-installment-plan-title">
-                1.&nbsp;-&nbsp;{{ installment.plan.numberOfRatesFull - 1 }}. {{ installment.translations.rp_monthly_installment_sg|raw }} {{ installment.translations.rp_each|raw }}
-                <p class="rp-installment-plan-description small">{{ installment.translations.rp_mouseover_duration_month|raw }}</p>
+                1.&nbsp;-&nbsp;{{ ratepay.installment.plan.numberOfRatesFull - 1 }}. {{ ratepay.installment.translations.rp_monthly_installment_sg|raw }} {{ ratepay.installment.translations.rp_each|raw }}
+                <p class="rp-installment-plan-description small">{{ ratepay.installment.translations.rp_mouseover_duration_month|raw }}</p>
             </td>
             <td class="text-right">
-                {{ installment.plan.rate }} &euro;
+                {{ ratepay.installment.plan.rate }} &euro;
             </td>
         </tr>
 
         <tr>
             <td class="rp-installment-plan-title">
-                {{ installment.plan.numberOfRatesFull }}. {{ installment.translations.rp_monthly_installment_sg|raw }}
-                <p class="rp-installment-plan-description small">{{ installment.translations.rp_mouseover_last_rate|raw }}</p>
+                {{ ratepay.installment.plan.numberOfRatesFull }}. {{ ratepay.installment.translations.rp_monthly_installment_sg|raw }}
+                <p class="rp-installment-plan-description small">{{ ratepay.installment.translations.rp_mouseover_last_rate|raw }}</p>
             </td>
             <td class="text-right">
-                {{ installment.plan.lastRate }} &euro;
+                {{ ratepay.installment.plan.lastRate }} &euro;
             </td>
         </tr>
 
         <tr>
             <td class="rp-installment-plan-title">
-                {{ installment.translations.rp_total_amount|raw }}
-                <p class="rp-installment-plan-description small">{{ installment.translations.rp_mouseover_total_amount|raw }}</p>
+                {{ ratepay.installment.translations.rp_total_amount|raw }}
+                <p class="rp-installment-plan-description small">{{ ratepay.installment.translations.rp_mouseover_total_amount|raw }}</p>
             </td>
             <td class="text-right">
-                {{ installment.plan.totalAmount }} &euro;
+                {{ ratepay.installment.plan.totalAmount }} &euro;
             </td>
         </tr>
-
     </table>
 </div>
+
+<div id="rp-installment-payment-switch" data-ratepay-installment-payment-switch="true">
+    <input type="hidden" name="ratepay[installment][paymentType]" id="rp-calculation-payment-type" value="{{ ratepay.installment.plan.payment.default }}" form="confirmOrderForm" />
+
+    {% if ratepay.installment.plan.payment.directDebitAllowed %}
+        {# only show sepa form if the payment method is available #}
+        <div class="row d-block" id="rp-sepa-form">
+            <div class="col-md-12">
+                <hr>
+                {% sw_include '@RpayPayments/storefront/installment-calculator/bank-account.html.twig' %}
+            </div>
+        </div>
+    {% endif %}
+
+    {# only show the switch if also bank transfer is available #}
+    {% if ratepay.installment.plan.payment.bankTransferAllowed and ratepay.installment.plan.payment.directDebitAllowed %}
+        <div class="row">
+            <div class="col-md-12">
+                <hr>
+                <div class="rp-payment-type-switch d-block" id="rp-switch-payment-type-bank-transfer">
+                    <a href="javascript:" class="rp-link">{{ ratepay.installment.translations.rp_switch_payment_type_bank_transfer|raw }}</a>
+                </div>
+                <div class="rp-payment-type-switch d-none" id="rp-switch-payment-type-direct-debit">
+                    <a href="javascript:" class="rp-link">{{ ratepay.installment.translations.rp_switch_payment_type_direct_debit|raw }}</a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+

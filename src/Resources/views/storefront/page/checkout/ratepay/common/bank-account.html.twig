@@ -31,12 +31,12 @@
                 <label class="form-label" for="rp-iban-account-holder">
                     <strong>{{ "ratepay.storefront.checkout.fields.accountHolder"|trans|sw_sanitize }}</strong>
                 </label>
-                {% if page.extensions.ratepay.accountHolders|length == 1 %}
+                {% if ratepay.accountHolders|length == 1 %}
                     <input type="text"
                            class="form-control{% if formViolations.getViolations('/ratepay/bankData/accountHolder') is not empty %} is-invalid{% endif %}"
                            id="rp-iban-account-holder"
                            placeholder="{{ "ratepay.storefront.checkout.fields.accountHolder"|trans|sw_sanitize }}"
-                           value="{{ page.extensions.ratepay.accountHolders[0] }}"
+                           value="{{ ratepay.accountHolders[0] }}"
                            name="ratepay[bankData][accountHolder]"
                            form="confirmOrderForm"
                            readonly
@@ -49,7 +49,7 @@
                            form="confirmOrderForm"
                            required="required"
                     >
-                        {% for name in page.extensions.ratepay.accountHolders %}
+                        {% for name in ratepay.accountHolders %}
                             <option value="{{ name }}">{{ name }}</option>
                         {% endfor %}
                     </select>
