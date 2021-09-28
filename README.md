@@ -31,6 +31,9 @@
 
 ## Changelog
 
+### Version 2.1.4 - WIP
+* RATESWSX-198 - fix datatypes of installment min-rate
+
 ### Version 2.1.3 - Released on 2021-09-08
 * RATESWSX-196 - adds missing return statement
 

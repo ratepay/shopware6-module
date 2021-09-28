@@ -32,7 +32,7 @@ class ProfileConfigMethodInstallmentEntity extends Entity
 
     protected ?bool $isDebitAllowed = null;
 
-    protected int $rateMin;
+    protected float $rateMin;
 
     public function getAllowedMonths(): array
     {
@@ -64,12 +64,12 @@ class ProfileConfigMethodInstallmentEntity extends Entity
         $this->isDebitAllowed = $isDebitAllowed;
     }
 
-    public function getRateMin(): int
+    public function getRateMin(): float
     {
         return $this->rateMin;
     }
 
-    public function setRateMin(int $rateMin): void
+    public function setRateMin(float $rateMin): void
     {
         $this->rateMin = $rateMin;
     }
