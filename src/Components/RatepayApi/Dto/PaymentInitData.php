@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Dto;
+namespace Ratepay\RpayPayments\Components\RatepayApi\Dto;
 
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;

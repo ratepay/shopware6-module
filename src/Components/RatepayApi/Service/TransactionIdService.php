@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\RatepayApi\Service;
 
 use RatePAY\Model\Response\PaymentInit;
-use Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Dto\PaymentInitData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentInitData;
 use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigService;
 use Ratepay\RpayPayments\Components\RatepayApi\Exception\TransactionIdFetchFailedException;

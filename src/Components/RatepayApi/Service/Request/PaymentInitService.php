@@ -10,7 +10,7 @@
 namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 
 use RatePAY\RequestBuilder;
-use Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Dto\PaymentInitData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentInitData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 
 /**
