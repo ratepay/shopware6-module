@@ -33,7 +33,9 @@ Component.register('ratepay-api-log-list', {
             entities: null,
             modalItem: null,
             searchTerm: null,
-            initialLogId: null
+            initialLogId: null,
+            isLoading: false,
+            isLoaded: false,
         };
     },
 
@@ -122,7 +124,9 @@ Component.register('ratepay-api-log-list', {
                 .replaceAll(/\r\n\s*&lt;!\[CDATA\[/gi, '&lt;![CDATA[')
                 .replaceAll(/]]&gt;\r\n\s*/gi, ']]&gt;');
         },
+
         loadData() {
+            this.isLoading = true;
             let criteria = new Criteria();
             if (this.searchTerm.length > 0) {
                 criteria.addFilter(Criteria.contains('additionalData', this.searchTerm))
@@ -135,6 +139,10 @@ Component.register('ratepay-api-log-list', {
                     if (this.initalLogId && this.entities.has(this.initalLogId)) {
                         this.modalItem = result.get(this.initalLogId);
                     }
+                })
+                .finally(() => {
+                    this.isLoading = false;
+                    this.isLoaded = false;
                 });
         },
         onSearch(searchTerm) {

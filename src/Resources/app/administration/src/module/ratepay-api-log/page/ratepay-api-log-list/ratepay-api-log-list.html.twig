@@ -21,6 +21,18 @@
         <h2>{{ $t('ratepay.apiLog.componentTitle') }}</h2>
     </template>
 
+    {% block ratepayapilog_list_smart_bar_actions %}
+        <template slot="smart-bar-actions">
+            <sw-button-process variant="primary"
+                               @click="loadData"
+                               :isLoading="isLoading"
+                               :processSuccess="isLoaded"
+                               @process-finish="isLoaded = false">
+                {{ $t('ratepay.apiLog.page.list.reload') }}
+            </sw-button-process>
+        </template>
+    {% endblock %}
+
     <template slot="content">
         {% block ratepay_api_log_list_content %}
             <sw-entity-listing

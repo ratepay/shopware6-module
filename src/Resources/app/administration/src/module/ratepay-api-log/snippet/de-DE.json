@@ -13,6 +13,9 @@
             "page": {
                 "detail": {
                     "cancelButtonText": "Zurück"
+                },
+                "list": {
+                    "reload": "Aktualisieren"
                 }
             },
             "global": {
