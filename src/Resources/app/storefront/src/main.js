@@ -13,14 +13,14 @@ import RatepayInstallmentPaymentSwitch from './RatepayCheckout/InstallmentPaymen
 const PluginManager = window.PluginManager;
 let pluginList = PluginManager.getPluginList();
 
-if(typeof pluginList.RatepayInstallment === undefined) {
+if(typeof pluginList.RatepayInstallment === undefined || typeof pluginList.RatepayInstallment === 'undefined') {
     PluginManager.register('RatepayInstallment',
         RatepayInstallment,
         '[data-ratepay-installment="true"]'
     );
 }
 
-if(typeof pluginList.RatepayInstallmentPaymentSwitch === undefined) {
+if(typeof pluginList.RatepayInstallmentPaymentSwitch === undefined || typeof pluginList.RatepayInstallmentPaymentSwitch === 'undefined') {
     PluginManager.register(
         'RatepayInstallmentPaymentSwitch',
         RatepayInstallmentPaymentSwitch,
