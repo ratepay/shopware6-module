@@ -31,7 +31,7 @@
 
 ## Changelog
 
-### Version 2.1.4 - WIP
+### Version 2.1.4 - Released on 2021-10-14
 * RATESWSX-198 - fix datatypes of installment min-rate
 * RATESWSX-199 - api-log: add reload button
 
