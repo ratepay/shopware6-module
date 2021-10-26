@@ -64,19 +64,9 @@ class ProfileConfigMethodEntity extends Entity
         return $this->paymentMethod;
     }
 
-    public function setPaymentMethod(?PaymentMethodEntity $paymentMethod): void
-    {
-        $this->paymentMethod = $paymentMethod;
-    }
-
     public function getPaymentMethodId(): string
     {
         return $this->paymentMethodId;
-    }
-
-    public function setPaymentMethodId(string $paymentMethodId): void
-    {
-        $this->paymentMethodId = $paymentMethodId;
     }
 
     public function getProfile(): ProfileConfigEntity
@@ -84,19 +74,9 @@ class ProfileConfigMethodEntity extends Entity
         return $this->profile;
     }
 
-    public function setProfile(ProfileConfigEntity $profile): void
-    {
-        $this->profile = $profile;
-    }
-
     public function getProfileId(): string
     {
         return $this->profileId;
-    }
-
-    public function setProfileId(string $profileId): void
-    {
-        $this->profileId = $profileId;
     }
 
     public function getLimitMin(): ?float
@@ -104,19 +84,9 @@ class ProfileConfigMethodEntity extends Entity
         return $this->limitMin;
     }
 
-    public function setLimitMin(?float $limitMin): void
-    {
-        $this->limitMin = $limitMin;
-    }
-
     public function getLimitMax(): ?float
     {
         return $this->limitMax;
-    }
-
-    public function setLimitMax(?float $limitMax): void
-    {
-        $this->limitMax = $limitMax;
     }
 
     public function getLimitMaxB2b(): ?float
@@ -124,19 +94,9 @@ class ProfileConfigMethodEntity extends Entity
         return $this->limitMaxB2b;
     }
 
-    public function setLimitMaxB2b(?float $limitMaxB2b): void
-    {
-        $this->limitMaxB2b = $limitMaxB2b;
-    }
-
     public function isAllowDifferentAddresses(): bool
     {
         return $this->allowDifferentAddresses;
-    }
-
-    public function setAllowDifferentAddresses(bool $allowDifferentAddresses): void
-    {
-        $this->allowDifferentAddresses = $allowDifferentAddresses;
     }
 
     public function isAllowB2b(): ?bool
@@ -144,18 +104,8 @@ class ProfileConfigMethodEntity extends Entity
         return $this->allowB2b;
     }
 
-    public function setAllowB2b(?bool $allowB2b): void
-    {
-        $this->allowB2b = $allowB2b;
-    }
-
     public function getInstallmentConfig(): ?ProfileConfigMethodInstallmentEntity
     {
         return $this->installmentConfig;
-    }
-
-    public function setInstallmentConfig(?ProfileConfigMethodInstallmentEntity $installmentConfig): void
-    {
-        $this->installmentConfig = $installmentConfig;
     }
 }

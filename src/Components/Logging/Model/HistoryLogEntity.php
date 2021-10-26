@@ -49,19 +49,9 @@ class HistoryLogEntity extends Entity
         return $this->orderId;
     }
 
-    public function setOrderId(string $orderId): void
-    {
-        $this->orderId = $orderId;
-    }
-
     public function getOrder(): ?OrderEntity
     {
         return $this->order;
-    }
-
-    public function setOrder(?OrderEntity $order): void
-    {
-        $this->order = $order;
     }
 
     public function getEvent(): string
@@ -69,19 +59,9 @@ class HistoryLogEntity extends Entity
         return $this->event;
     }
 
-    public function setEvent(string $event): void
-    {
-        $this->event = $event;
-    }
-
     public function getUser(): string
     {
         return $this->user;
-    }
-
-    public function setUser(string $user): void
-    {
-        $this->user = $user;
     }
 
     public function getProductName(): string
@@ -89,28 +69,13 @@ class HistoryLogEntity extends Entity
         return $this->productName;
     }
 
-    public function setProductName(string $productName): void
-    {
-        $this->productName = $productName;
-    }
-
     public function getProductNumber(): string
     {
         return $this->productNumber;
     }
 
-    public function setProductNumber(string $productNumber): void
-    {
-        $this->productNumber = $productNumber;
-    }
-
     public function getQuantity(): int
     {
         return $this->quantity;
-    }
-
-    public function setQuantity(int $quantity): void
-    {
-        $this->quantity = $quantity;
     }
 }

@@ -53,29 +53,14 @@ class ApiRequestLogEntity extends Entity
         return $this->version;
     }
 
-    public function setVersion(string $version): void
-    {
-        $this->version = $version;
-    }
-
     public function getOperation(): string
     {
         return $this->operation;
     }
 
-    public function setOperation(string $operation): void
-    {
-        $this->operation = $operation;
-    }
-
     public function getSubOperation(): string
     {
         return $this->subOperation;
-    }
-
-    public function setSubOperation(string $subOperation): void
-    {
-        $this->subOperation = $subOperation;
     }
 
     public function getResult(): string
@@ -88,28 +73,13 @@ class ApiRequestLogEntity extends Entity
         return $this->request;
     }
 
-    public function setRequest(string $request): void
-    {
-        $this->request = $request;
-    }
-
     public function getResponse(): string
     {
         return $this->response;
     }
 
-    public function setResponse(string $response): void
-    {
-        $this->response = $response;
-    }
-
     public function getAdditionalData(): array
     {
         return $this->additionalData;
-    }
-
-    public function setAdditionalData(array $additionalData): void
-    {
-        $this->additionalData = $additionalData;
     }
 }

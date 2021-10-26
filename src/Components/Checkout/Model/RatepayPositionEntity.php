@@ -35,28 +35,13 @@ class RatepayPositionEntity extends Entity
         return $this->canceled;
     }
 
-    public function setCanceled(int $canceled): void
-    {
-        $this->canceled = $canceled;
-    }
-
     public function getReturned(): int
     {
         return $this->returned;
     }
 
-    public function setReturned(int $returned): void
-    {
-        $this->returned = $returned;
-    }
-
     public function getDelivered(): int
     {
         return $this->delivered;
-    }
-
-    public function setDelivered(int $delivered): void
-    {
-        $this->delivered = $delivered;
     }
 }

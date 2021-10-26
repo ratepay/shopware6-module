@@ -39,19 +39,9 @@ class ProfileConfigMethodInstallmentEntity extends Entity
         return $this->allowedMonths;
     }
 
-    public function setAllowedMonths(array $allowedMonths): void
-    {
-        $this->allowedMonths = $allowedMonths;
-    }
-
     public function getIsBankTransferAllowed(): ?bool
     {
         return $this->isBankTransferAllowed;
-    }
-
-    public function setIsBankTransferAllowed(?bool $isBankTransferAllowed): void
-    {
-        $this->isBankTransferAllowed = $isBankTransferAllowed;
     }
 
     public function getIsDebitAllowed(): ?bool
@@ -59,18 +49,8 @@ class ProfileConfigMethodInstallmentEntity extends Entity
         return $this->isDebitAllowed;
     }
 
-    public function setIsDebitAllowed(?bool $isDebitAllowed): void
-    {
-        $this->isDebitAllowed = $isDebitAllowed;
-    }
-
     public function getRateMin(): float
     {
         return $this->rateMin;
-    }
-
-    public function setRateMin(float $rateMin): void
-    {
-        $this->rateMin = $rateMin;
     }
 }

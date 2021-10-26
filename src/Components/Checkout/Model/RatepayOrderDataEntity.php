@@ -68,19 +68,9 @@ class RatepayOrderDataEntity extends Entity
         return $this->orderId;
     }
 
-    public function setOrderId(string $orderId): void
-    {
-        $this->orderId = $orderId;
-    }
-
     public function getOrderVersionId(): string
     {
         return $this->orderVersionId;
-    }
-
-    public function setOrderVersionId(string $orderVersionId): void
-    {
-        $this->orderVersionId = $orderVersionId;
     }
 
     public function getOrder(): ?OrderEntity
@@ -88,19 +78,9 @@ class RatepayOrderDataEntity extends Entity
         return $this->order;
     }
 
-    public function setOrder(?OrderEntity $order): void
-    {
-        $this->order = $order;
-    }
-
     public function getTransactionId(): string
     {
         return $this->transactionId;
-    }
-
-    public function setTransactionId(string $transactionId): void
-    {
-        $this->transactionId = $transactionId;
     }
 
     public function getDescriptor(): ?string
@@ -113,29 +93,14 @@ class RatepayOrderDataEntity extends Entity
         return $this->shippingPositionId;
     }
 
-    public function setShippingPositionId(?string $shippingPositionId): void
-    {
-        $this->shippingPositionId = $shippingPositionId;
-    }
-
     public function getShippingPosition(): ?RatepayPositionEntity
     {
         return $this->shippingPosition;
     }
 
-    public function setShippingPosition(?RatepayPositionEntity $shippingPosition): void
-    {
-        $this->shippingPosition = $shippingPosition;
-    }
-
     public function getProfileId(): string
     {
         return $this->profileId;
-    }
-
-    public function setProfileId(string $profileId): void
-    {
-        $this->profileId = $profileId;
     }
 
     public function isSuccessful(): bool

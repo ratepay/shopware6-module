@@ -44,19 +44,9 @@ class RatepayOrderLineItemDataEntity extends Entity
         return $this->orderLineItemId;
     }
 
-    public function setOrderLineItemId(string $orderLineItemId): void
-    {
-        $this->orderLineItemId = $orderLineItemId;
-    }
-
     public function getOrderLineItemVersionId(): string
     {
         return $this->orderLineItemVersionId;
-    }
-
-    public function setOrderLineItemVersionId(string $orderLineItemVersionId): void
-    {
-        $this->orderLineItemVersionId = $orderLineItemVersionId;
     }
 
     public function getOrderLineItem(): ?OrderLineItemEntity
@@ -64,28 +54,13 @@ class RatepayOrderLineItemDataEntity extends Entity
         return $this->orderLineItem;
     }
 
-    public function setOrderLineItem(?OrderLineItemEntity $orderLineItem): void
-    {
-        $this->orderLineItem = $orderLineItem;
-    }
-
     public function getPositionId(): string
     {
         return $this->positionId;
     }
 
-    public function setPositionId(string $positionId): void
-    {
-        $this->positionId = $positionId;
-    }
-
     public function getPosition(): ?RatepayPositionEntity
     {
         return $this->position;
-    }
-
-    public function setPosition(?RatepayPositionEntity $position): void
-    {
-        $this->position = $position;
     }
 }
