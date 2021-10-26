@@ -130,6 +130,10 @@
                                             <td>{{ config.installmentConfig.isDebitAllowed ? $t('global.default.yes') : $t('global.default.no') }}</td>
                                         </tr>
                                         <tr v-if="config.installmentConfig">
+                                            <th>{{ $t('ratepay.profileConfig.page.paymentConfig.table.label.installment.defaultPaymentType') }}</th>
+                                            <td>{{ config.installmentConfig.defaultPaymentType }}</td>
+                                        </tr>
+                                        <tr v-if="config.installmentConfig">
                                             <th>{{ $t('ratepay.profileConfig.page.paymentConfig.table.label.installment.rateMin') }}</th>
                                             <td>{{ config.installmentConfig.rateMin }}</td>
                                         </tr>

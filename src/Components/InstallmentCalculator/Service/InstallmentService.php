@@ -118,7 +118,7 @@ class InstallmentService
             $data['hash'] = PlanHasher::hashPlan($data);
             $data['profileUuid'] = $matchedBuilder->getProfileConfig()->getId();
             $data['payment'] = [
-                'default' => $paymentConfig->getInstallmentConfig()->getIsDebitAllowed() ? 'DIRECT-DEBIT' : 'BANK-TRANSFER',
+                'default' => $paymentConfig->getInstallmentConfig()->getDefaultPaymentType(),
                 'bankTransferAllowed' => $paymentConfig->getInstallmentConfig()->getIsBankTransferAllowed(),
                 'directDebitAllowed' => $paymentConfig->getInstallmentConfig()->getIsDebitAllowed(),
             ];

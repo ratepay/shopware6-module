@@ -110,6 +110,7 @@ class ProfileConfigResponseConverter
                         ProfileConfigMethodInstallmentEntity::FIELD_IS_BANKTRANSFER_ALLOWED => in_array(28, $paymentFirstDay, false),
                         ProfileConfigMethodInstallmentEntity::FIELD_IS_DEBIT_ALLOWED => in_array(2, $paymentFirstDay, false),
                         ProfileConfigMethodInstallmentEntity::FIELD_RATE_MIN => (float) $responseData['installmentConfig']['rate-min-normal'],
+                        ProfileConfigMethodInstallmentEntity::FIELD_DEFAULT_PAYMENT_TYPE => (int)$responseData['installmentConfig']['payment-firstday'] === 2 ? ProfileConfigMethodInstallmentEntity::PAYMENT_TYPE_DIRECT_DEBIT : ProfileConfigMethodInstallmentEntity::PAYMENT_TYPE_BANK_TRANSFER,
                     ];
                 }
             }

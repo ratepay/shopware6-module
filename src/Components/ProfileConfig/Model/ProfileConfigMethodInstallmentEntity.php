@@ -16,6 +16,10 @@ class ProfileConfigMethodInstallmentEntity extends Entity
 {
     use EntityIdTrait;
 
+    public const PAYMENT_TYPE_DIRECT_DEBIT = 'DIRECT-DEBIT';
+
+    public const PAYMENT_TYPE_BANK_TRANSFER = 'BANK-TRANSFER';
+
     public const FIELD_ID = 'id';
 
     public const FIELD_ALLOWED_MONTHS = 'allowedMonths';
@@ -26,6 +30,8 @@ class ProfileConfigMethodInstallmentEntity extends Entity
 
     public const FIELD_RATE_MIN = 'rateMin';
 
+    public const FIELD_DEFAULT_PAYMENT_TYPE = 'defaultPaymentType';
+
     protected array $allowedMonths = [];
 
     protected ?bool $isBankTransferAllowed = null;
@@ -33,6 +39,8 @@ class ProfileConfigMethodInstallmentEntity extends Entity
     protected ?bool $isDebitAllowed = null;
 
     protected float $rateMin;
+
+    protected string $defaultPaymentType;
 
     public function getAllowedMonths(): array
     {
@@ -72,5 +80,10 @@ class ProfileConfigMethodInstallmentEntity extends Entity
     public function setRateMin(float $rateMin): void
     {
         $this->rateMin = $rateMin;
+    }
+
+    public function getDefaultPaymentType(): string
+    {
+        return $this->defaultPaymentType;
     }
 }
