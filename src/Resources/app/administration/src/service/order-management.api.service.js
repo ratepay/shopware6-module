@@ -1,17 +1,18 @@
 /*
- * Copyright (c) 2020 Ratepay GmbH
+ * Copyright (c) Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-import ApiService from 'src/core/service/api.service';
+const ApiService = Shopware.Classes.ApiService;
 
 /**
  * @class
  * @property {AxiosInstance} httpClient
  */
 export default class OrderManagementApiService extends ApiService {
+
     /**
      * @constructor
      * @param {AxiosInstance} httpClient

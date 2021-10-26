@@ -34,6 +34,7 @@
 ### Version 3.0.0 - WIP
 * RATESWSX-129 - add support for multiple profile ids for installment payments
 * RATESWSX-176 - add functionality to send discounts and shipping costs as cart-item to ratepay gateway
+* RATESWSX-206 - admin: fix import of Shopware's apiService
 
 ### Version 2.1.4 - Released on 2021-10-14
 * RATESWSX-198 - fix datatypes of installment min-rate
