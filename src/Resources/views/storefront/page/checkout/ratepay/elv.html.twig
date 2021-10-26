@@ -9,5 +9,5 @@
 
 {% block ratepay_checkout_fields %}
     {{ parent() }}
-    {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/common/bank-account.html.twig' %}
+    {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/common/bank-account.html.twig' with { 'ratepay': page.extensions.ratepay } %}
 {% endblock %}
