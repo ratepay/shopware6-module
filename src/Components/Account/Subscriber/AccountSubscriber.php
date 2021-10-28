@@ -91,6 +91,7 @@ class AccountSubscriber implements EventSubscriberInterface
             // You can't change the payment if it is a ratepay order
             $page->setPaymentChangeable(false);
         } else {
+            $order = $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($order->getId()), $event->getContext())->first();
             // Payment change is allowed, prepare ratepay payment data if a ratepay payment method is selected
             $paymentMethod = $event->getSalesChannelContext()->getPaymentMethod();
             if (MethodHelper::isRatepayMethod($paymentMethod->getHandlerIdentifier()) &&
@@ -98,7 +99,7 @@ class AccountSubscriber implements EventSubscriberInterface
             ) {
                 $extension = $this->extensionService->buildPaymentDataExtension(
                     $event->getSalesChannelContext(),
-                    $page->getOrder()
+                    $order
                 );
                 if ($extension) {
                     $event->getPage()->addExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME, $extension);

@@ -13,15 +13,22 @@ use Ratepay\RpayPayments\Components\Checkout\Event\PaymentDataExtensionBuilt;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentCalculatorContext;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
 use Ratepay\RpayPayments\Util\MethodHelper;
+use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutSubscriber implements EventSubscriberInterface
 {
     private InstallmentService $installmentService;
 
-    public function __construct(InstallmentService $installmentService)
+    private CartService $cartService;
+
+    public function __construct(
+        InstallmentService $installmentService,
+        CartService $cartService
+    )
     {
         $this->installmentService = $installmentService;
+        $this->cartService = $cartService;
     }
 
     public static function getSubscribedEvents(): array
@@ -33,20 +40,23 @@ class CheckoutSubscriber implements EventSubscriberInterface
 
     public function buildCheckoutExtension(PaymentDataExtensionBuilt $event): void
     {
-
         $paymentMethod = $event->getSalesChannelContext()->getPaymentMethod();
         $salesChannelContext = $event->getSalesChannelContext();
         $order = $event->getOrderEntity();
         $extension = $event->getExtension();
 
         if (MethodHelper::isInstallmentMethod($paymentMethod->getHandlerIdentifier())) {
-            $installmentCalculator = $this->installmentService->getInstallmentCalculatorData($salesChannelContext);
+            $calcContext = (new InstallmentCalculatorContext($salesChannelContext, '', ''))
+                ->setOrder($order);
 
-            $calcContext = (new InstallmentCalculatorContext(
-                $salesChannelContext,
-                $installmentCalculator['defaults']['type'],
-                $installmentCalculator['defaults']['value'])
-            )->setOrder($order);
+            if (!$order) {
+                $calcContext->setTotalAmount($this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext)->getPrice()->getTotalPrice());
+            }
+
+            $installmentCalculator = $this->installmentService->getInstallmentCalculatorData($calcContext);
+
+            $calcContext->setCalculationType($installmentCalculator['defaults']['type']);
+            $calcContext->setCalculationValue($installmentCalculator['defaults']['value']);
 
             $vars = $this->installmentService->getInstallmentPlanTwigVars($calcContext);
             $vars['calculator'] = $installmentCalculator;

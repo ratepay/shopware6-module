@@ -13,6 +13,7 @@ use Ratepay\RpayPayments\Components\Checkout\Util\BankAccountHolderHelper;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentCalculatorContext;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService;
+use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Routing\Annotation\LoginRequired;
@@ -54,7 +55,7 @@ class InstallmentController extends StorefrontController
 
         if ($orderId) {
             /** @var \Shopware\Core\Checkout\Order\OrderEntity $order */
-            $order = $this->orderRepository->search(new Criteria([$orderId]), $salesChannelContext->getContext())->first();
+            $order = $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($orderId), $salesChannelContext->getContext())->first();
             if ($order === null) {
                 throw $this->createNotFoundException();
             }

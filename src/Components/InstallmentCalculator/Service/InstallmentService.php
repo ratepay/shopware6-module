@@ -170,14 +170,17 @@ class InstallmentService
         return $installmentBuilders;
     }
 
-    public function getInstallmentCalculatorData(SalesChannelContext $salesChannelContext): array
+    public function getInstallmentCalculatorData(InstallmentCalculatorContext $context): array
     {
-        $installmentBuilders = $this->getInstallmentBuilders(new InstallmentCalculatorContext($salesChannelContext, '', ''));
-        $cart = $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext);
+        $installmentBuilders = $this->getInstallmentBuilders($context);
+
+        if (count($installmentBuilders) === 0) {
+            throw new \Exception('No installment builder where found');
+        }
 
         $data = [];
         foreach ($installmentBuilders as $installmentBuilder) {
-            $json = $installmentBuilder->getInstallmentCalculatorAsJson($cart->getPrice()->getTotalPrice());
+            $json = $installmentBuilder->getInstallmentCalculatorAsJson($context->getTotalAmount());
             $configuratorData = json_decode($json, true);
 
             if (count($data) === 0) {
