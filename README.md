@@ -31,7 +31,7 @@
 
 ## Changelog
 
-### Version 3.0.0 - WIP
+### Version 3.0.0 - Released on 2021-10-28
 * RATESWSX-129 - add support for multiple profile ids for installment payments
 * RATESWSX-176 - add functionality to send discounts and shipping costs as cart-item to ratepay gateway
 * RATESWSX-205 - installment: add default payment selection
