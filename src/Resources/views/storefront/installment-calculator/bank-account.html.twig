@@ -19,19 +19,7 @@
 {% block ratepay_personal_data_bank_account_legal %}
     <div class="form-row">
         <div class="form-group col-sm-12">
-            <table class="rp-sepa-table small">
-                <tr>
-                    <td colspan="2">{{ ratepay.installment.translations.rp_address|raw }}</td>
-                </tr>
-                <tr>
-                    <td>{{ ratepay.installment.translations.rp_creditor|raw }}</td>
-                    <td>{{ ratepay.installment.translations.rp_creditor_id|raw }}</td>
-                </tr>
-                <tr>
-                    <td>{{ ratepay.installment.translations.rp_mandate|raw }}</td>
-                    <td>{{ ratepay.installment.translations.rp_mandate_ref|raw }}</td>
-                </tr>
-            </table>
+            {% sw_include '@RpayPayments/storefront/page/checkout/ratepay/common/sepa-legal.html.twig' %}
         </div>
     </div>
 {% endblock %}

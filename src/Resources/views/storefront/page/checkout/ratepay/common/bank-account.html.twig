@@ -20,7 +20,7 @@
     {% block ratepay_personal_data_bank_account_legal %}
         <div class="form-row">
             <div class="form-group col-sm-12">
-            <p>{{ "ratepay.storefront.checkout.hints.sepaLegalText"|trans|sw_sanitize }}</p>
+                {% sw_include '@RpayPayments/storefront/page/checkout/ratepay/common/sepa-legal.html.twig' %}
             </div>
         </div>
     {% endblock %}
