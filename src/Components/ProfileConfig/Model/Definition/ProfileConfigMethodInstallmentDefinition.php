@@ -19,6 +19,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\FloatField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IntField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ListField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 class ProfileConfigMethodInstallmentDefinition extends EntityDefinition
@@ -67,6 +68,11 @@ class ProfileConfigMethodInstallmentDefinition extends EntityDefinition
             (new FloatField(
                 'rate_min_normal',
                 ProfileConfigMethodInstallmentEntity::FIELD_RATE_MIN
+            ))->addFlags(new Required()),
+
+            (new StringField(
+                'default_payment_type',
+                ProfileConfigMethodInstallmentEntity::FIELD_DEFAULT_PAYMENT_TYPE
             ))->addFlags(new Required()),
         ]);
     }

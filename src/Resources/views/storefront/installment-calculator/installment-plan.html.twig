@@ -128,11 +128,29 @@
 </div>
 
 <div id="rp-installment-payment-switch" data-ratepay-installment-payment-switch="true">
-    <input type="hidden" name="ratepay[installment][paymentType]" id="rp-calculation-payment-type" value="{{ ratepay.installment.plan.payment.default }}" form="confirmOrderForm" />
+    {% set code_directDebit = constant('Ratepay\\RpayPayments\\Components\\ProfileConfig\\Model\\ProfileConfigMethodInstallmentEntity::PAYMENT_TYPE_DIRECT_DEBIT') %}
+    {% set code_bankTransfer = constant('Ratepay\\RpayPayments\\Components\\ProfileConfig\\Model\\ProfileConfigMethodInstallmentEntity::PAYMENT_TYPE_BANK_TRANSFER') %}
+
+    <input type="radio"
+           name="ratepay[installment][paymentType]"
+           class="rp__installment__paymentType"
+           id="rp__installment__paymentType_directDebit"
+           value="{{ code_directDebit }}"
+           form="confirmOrderForm"
+           {% if ratepay.installment.plan.payment.default == code_directDebit %}checked="checked"{% endif %}
+    />
+    <input type="radio"
+           name="ratepay[installment][paymentType]"
+           class="rp__installment__paymentType"
+           id="rp__installment__paymentType_bankTransfer"
+           value="{{ code_bankTransfer }}"
+           form="confirmOrderForm"
+           {% if ratepay.installment.plan.payment.default == code_bankTransfer %}checked="checked"{% endif %}
+    />
 
     {% if ratepay.installment.plan.payment.directDebitAllowed %}
         {# only show sepa form if the payment method is available #}
-        <div class="row d-block" id="rp-sepa-form">
+        <div class="row" id="rp-sepa-form">
             <div class="col-md-12">
                 <hr>
                 {% sw_include '@RpayPayments/storefront/installment-calculator/bank-account.html.twig' %}
@@ -145,11 +163,15 @@
         <div class="row">
             <div class="col-md-12">
                 <hr>
-                <div class="rp-payment-type-switch d-block" id="rp-switch-payment-type-bank-transfer">
-                    <a href="javascript:" class="rp-link">{{ ratepay.installment.translations.rp_switch_payment_type_bank_transfer|raw }}</a>
+                <div class="rp__installment__paymentType-switch" id="rp__installment__paymentType_bankTransfer-switch">
+                    <a href="javascript:" class="rp-link">
+                        <label for="rp__installment__paymentType_bankTransfer">{{ ratepay.installment.translations.rp_switch_payment_type_bank_transfer|raw }}</label>
+                    </a>
                 </div>
-                <div class="rp-payment-type-switch d-none" id="rp-switch-payment-type-direct-debit">
-                    <a href="javascript:" class="rp-link">{{ ratepay.installment.translations.rp_switch_payment_type_direct_debit|raw }}</a>
+                <div class="rp__installment__paymentType-switch" id="rp__installment__paymentType_directDebit-switch">
+                    <a href="javascript:" class="rp-link">
+                        <label for="rp__installment__paymentType_directDebit">{{ ratepay.installment.translations.rp_switch_payment_type_direct_debit|raw }}</label>
+                    </a>
                 </div>
             </div>
         </div>

@@ -65,7 +65,8 @@
                                 "allowedMonths": "Verfügbare Monate",
                                 "isBankTransferAllowed": "Erlaube Überweisung",
                                 "isDebitAllowed": "Erlaube Lastschrift",
-                                "rateMin": "min. monatliche Rate"
+                                "rateMin": "min. monatliche Rate",
+                                "defaultPaymentType": "Standard Zahltyp"
                             }
                         }
                     }

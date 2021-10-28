@@ -1,8 +1,36 @@
-// Copyright (c) 2020 Ratepay GmbH
+// Copyright (c) Ratepay GmbH
 //
 // For the full copyright and license information, please view the LICENSE
 // file that was distributed with this source code.
 
-//.rp-installment-plan-container {
-//
-//}
+#rp-sepa-form {
+    display: none;
+}
+
+#rp__installment__paymentType {
+    &_directDebit {
+        &:checked ~ #rp-sepa-form {
+            display: block;
+        }
+
+        &:checked ~ div &-switch {
+            display: none;
+        }
+    }
+
+    &_bankTransfer {
+        &:checked ~ div &-switch {
+            display: none;
+        }
+    }
+}
+
+.rp__installment__paymentType {
+    display: none;
+
+    &-switch {
+        a label {
+            cursor: pointer;
+        }
+    }
+}
