@@ -56,7 +56,9 @@
                     "label": {
                         "name": "Title",
                         "tax": "Tax Rate",
-                        "amount": "Amount (Gross)"
+                        "amount": "Amount",
+                        "amountNet": "Amount (Net)",
+                        "amountGross": "Amount (Gross)"
                     },
                     "placeholder": {
                         "tax": "Select a tax rate ..."
@@ -69,7 +71,8 @@
                     "label": {
                         "name": "Title",
                         "tax": "Tax Rate",
-                        "amount": "Amount (Gross)"
+                        "amountNet": "Amount (Net)",
+                        "amountGross": "Amount (Gross)"
                     },
                     "placeholder": {
                         "tax": "Select a tax rate ..."

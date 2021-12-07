@@ -348,17 +348,23 @@ Use this service to add a debit or a credit to the order.
 
 ```php
 /** @var \Shopware\Core\Framework\Context $context **/
-/** @var \Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentDeliverService $requestService **/
+/** @var \Ratepay\RpayPayments\Components\OrderManagement\Service\LineItemFactory $lineItemFactory **/
+/** @var \Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentCreditService $requestService **/
 
 // the order to process
 /** @var \Shopware\Core\Checkout\Order\OrderEntity $orderEntity **/
 
+$lineItem = $lineItemFactory->createLineItem(
+    $orderEntity,
+    'Name of the Credit/Debit on the invoice',  // Please note: use the correct translation. This will not get automatically translated
+    10.50, // amount of the item. Can be also negative for a credit.
+    $taxRuleIdOrTaxRate, // rule-id for tax calculation or the exact tax-rate (e.g. `19` for 19% tax)
+    $context
+)
 $requestData = new \Ratepay\RpayPayments\Components\RatepayApi\Dto\AddCreditData(
     $context,
     $orderEntity,
-    'Name of the Credit/Debit on the invoice',  // Please note: use the correct translation. This will not get automatically translated
-    10.50, // gross amount of the item. Can be also negative for a credit.
-    7.7 // tax rate for tax calculation
+    [$lineItem] // you can also dismiss this parameter and use `$requestData->addItem($lineItem)` to add more than on line-item
 );
 
 $requestBuilder = $requestService->doRequest($requestData);
@@ -370,3 +376,9 @@ if($response->isSuccessful()) {
     // do something if the request is successful
 }
 ```
+
+**Please note the following information for this request:**
+
+1. The amount has to be net or gross. Depending on the value of `$orderEntity->getTaxStatus()`.
+2. Please do not create a line-item by your own. Please use the factory to make sure the line-item is calculated
+   correctly

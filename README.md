@@ -32,6 +32,7 @@
 ## Changelog
 
 ### Version 3.1.0 - WIP
+* RATESWSX-211 - fix issue: net prices will not used anymore if the prices are only displayed in net.
 * RATESWSX-212 - change system version in head
 
 ### Version 3.0.0 - Released on 2021-10-28

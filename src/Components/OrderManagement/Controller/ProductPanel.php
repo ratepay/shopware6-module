@@ -13,6 +13,7 @@ use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
 use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderLineItemExtension;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
+use Ratepay\RpayPayments\Components\OrderManagement\Service\LineItemFactory;
 use Ratepay\RpayPayments\Components\OrderManagement\Util\LineItemUtil;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AddCreditData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
@@ -49,13 +50,16 @@ class ProductPanel extends AbstractController
 
     private OrderConverter $orderConverter;
 
+    private LineItemFactory $lineItemFactory;
+
     public function __construct(
         OrderConverter $orderConverter,
         EntityRepositoryInterface $orderRepository,
         PaymentDeliverService $paymentDeliverService,
         PaymentReturnService $paymentReturnService,
         PaymentCancelService $paymentCancelService,
-        PaymentCreditService $creditService
+        PaymentCreditService $creditService,
+        LineItemFactory $lineItemFactory
     ) {
         $this->orderConverter = $orderConverter;
         $this->orderRepository = $orderRepository;
@@ -66,6 +70,7 @@ class ProductPanel extends AbstractController
             OrderOperationData::OPERATION_CANCEL => $paymentCancelService,
             OrderOperationData::OPERATION_RETURN => $paymentReturnService,
         ];
+        $this->lineItemFactory = $lineItemFactory;
     }
 
     /**
@@ -199,10 +204,15 @@ class ProductPanel extends AbstractController
 
         $order = $this->fetchOrder($context, $orderId);
 
-        $salesChannelContext = $this->orderConverter->assembleSalesChannelContext($order, $context);
-        $taxRule = $salesChannelContext->getTaxRules()->get($taxRuleId)->getRules()->first();
-        $response = $this->creditService->doRequest(new AddCreditData($context, $order, $name, $grossAmount, $taxRule ? $taxRule->getTaxRate() : 0));
+        if (!$order) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Order was not found',
+            ], 200);
+        }
 
+        $lineItem = $this->lineItemFactory->createLineItem($order, $name, $grossAmount, $taxRuleId, $context);
+        $response = $this->creditService->doRequest(new AddCreditData($context, $order, [$lineItem]));
         if ($response->getResponse()->isSuccessful()) {
             return $this->json([
                 'success' => true,
