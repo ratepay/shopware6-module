@@ -48,7 +48,7 @@ class HeadFactory extends AbstractFactory
                             ->setSystem(
                                 (new Head\Meta\Systems\System())
                                     ->setName('Shopware')
-                                    ->setVersion($this->shopwareVersion . '/' . $this->pluginVersion)
+                                    ->setVersion($this->shopwareVersion . '_' . $this->pluginVersion)
                             )
                     )
             )
