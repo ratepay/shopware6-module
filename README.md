@@ -31,6 +31,9 @@
 
 ## Changelog
 
+### Version 3.1.1 - Released on 2021-12-15
+* RATESWSX-216 - fix issue that shipping tax has not been send
+
 ### Version 3.1.0 - Released on 2021-12-09
 * RATESWSX-211 - fix issue: submit gross price (instead of net price) if the prices are displayed in net.
 * RATESWSX-212 - change system version in head

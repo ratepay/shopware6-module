@@ -83,20 +83,22 @@ class ShoppingBasketFactory extends AbstractFactory
             return;
         }
 
+        $taxStatus = $this->getTaxStatus($requestData);
+
         if ($requestData->isSendShippingCostsAsCartItem()) {
             $basket->getItems()->addItem(
                 (new ShoppingBasket\Items\Item())
                     ->setArticleNumber(OrderOperationData::ITEM_ID_SHIPPING)
                     ->setDescription(OrderOperationData::ITEM_ID_SHIPPING) // TODO is it an idea to change it to method name?
                     ->setQuantity(1)
-                    ->setUnitPriceGross($shippingCosts->getTotalPrice())
+                    ->setUnitPriceGross($this->getLineItemUnitPrice($taxStatus, $shippingCosts, 1))
                     ->setTaxRate($this->getTaxRate($shippingCosts))
             );
         } else {
             $basket->setShipping(
                 (new ShoppingBasket\Shipping())
                     ->setDescription('shipping')
-                    ->setUnitPriceGross($shippingCosts->getTotalPrice())
+                    ->setUnitPriceGross($this->getLineItemUnitPrice($taxStatus, $shippingCosts, 1))
                     ->setTaxRate($this->getTaxRate($shippingCosts))
             );
         }
