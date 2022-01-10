@@ -12,7 +12,7 @@ namespace Ratepay\RpayPayments\Components\DeviceFingerprint\Subscriber;
 use RatePAY\Model\Request\SubModel\Head;
 use RatePAY\Model\Request\SubModel\Head\CustomerDevice;
 use Ratepay\RpayPayments\Components\Checkout\Service\ExtensionService;
-use Ratepay\RpayPayments\Components\DeviceFingerprint\DfpService;
+use Ratepay\RpayPayments\Components\DeviceFingerprint\DfpServiceInterface;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\AbstractPaymentEvent;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
@@ -28,14 +28,15 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class DeviceFingerprintSubscriber implements EventSubscriberInterface
 {
-    protected DfpService $dfpService;
+    protected DfpServiceInterface $dfpService;
 
     private ConfigService $configService;
 
     public function __construct(
-        DfpService $dfpService,
-        ConfigService $configService
-    ) {
+        DfpServiceInterface $dfpService,
+        ConfigService       $configService
+    )
+    {
         $this->dfpService = $dfpService;
         $this->configService = $configService;
     }
@@ -70,9 +71,9 @@ class DeviceFingerprintSubscriber implements EventSubscriberInterface
     {
         if ($event->getPage()->hasExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME)) {
             $snippetId = $this->configService->getDeviceFingerprintSnippetId();
-            if ($this->dfpService->isDfpIdAlreadyGenerated() === false) {
+            if ($this->dfpService->isDfpIdAlreadyGenerated() === false && ($id = $this->dfpService->getDfpId())) {
                 $dfpHelper = new DeviceFingerprint($snippetId);
-                $snippet = str_replace('\"', '"', $dfpHelper->getDeviceIdentSnippet($this->dfpService->getDfpId()));
+                $snippet = str_replace('\"', '"', $dfpHelper->getDeviceIdentSnippet($id));
 
                 /** @var ArrayStruct $extension */
                 $extension = $event->getPage()->getExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME);

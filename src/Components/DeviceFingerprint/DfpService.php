@@ -12,9 +12,8 @@ namespace Ratepay\RpayPayments\Components\DeviceFingerprint;
 use RatePAY\Service\DeviceFingerprint;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-class DfpService
+class DfpService implements DfpServiceInterface
 {
-    private const SESSION_VAR_NAME = 'ratepay_dfp_token';
 
     private SessionInterface $sessionInterface;
 
@@ -23,7 +22,7 @@ class DfpService
         $this->sessionInterface = $sessionInterface;
     }
 
-    public function getDfpId()
+    public function getDfpId(): ?string
     {
         $sessionValue = $this->sessionInterface->get(self::SESSION_VAR_NAME);
 
@@ -38,12 +37,12 @@ class DfpService
         return $token;
     }
 
-    public function isDfpIdAlreadyGenerated()
+    public function isDfpIdAlreadyGenerated(): bool
     {
         return $this->sessionInterface->get(self::SESSION_VAR_NAME) !== null;
     }
 
-    public function deleteToken()
+    public function deleteToken(): void
     {
         $this->sessionInterface->remove(self::SESSION_VAR_NAME);
     }

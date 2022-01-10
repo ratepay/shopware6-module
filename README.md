@@ -31,6 +31,9 @@
 
 ## Changelog
 
+### Version 3.2.0 - Released on 2022-01-10
+* RATESWSX-214 - dfp: disable for admin orders
+
 ### Version 3.1.1 - Released on 2021-12-15
 * RATESWSX-216 - fix issue that shipping tax has not been send
 

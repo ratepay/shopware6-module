@@ -7,4 +7,14 @@
         <parameter key="ratepay.admin.storefront-login.token">ratepay-admin-storefront-session</parameter>
     </parameters>
 
+    <services>
+        <defaults autowire="true" />
+
+        <service id="Ratepay\RpayPayments\Components\AdminOrders\Service\DfpService"
+                 decorates="Ratepay\RpayPayments\Components\DeviceFingerprint\DfpService">
+            <argument key="$decorated" type="service" id=".inner"/>
+            <argument key="$sessionKey">%ratepay.admin.storefront-login.token%</argument>
+        </service>
+    </services>
+
 </container>
