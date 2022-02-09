@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Ratepay GmbH
+ * Copyright (c) Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -19,6 +19,8 @@ Module.register('ratepay-profile-config', {
     name: 'profile-config',
     title: 'ratepay.profileConfig.componentTitle',
     icon: 'default-action-settings',
+    color: '#e4233e',
+    entity: 'ratepay_profile_config',
 
     snippets: {
         'de-DE': deDE,

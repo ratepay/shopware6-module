@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Ratepay GmbH
+ * Copyright (c) Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,7 +17,9 @@ Module.register('ratepay-api-log', {
     type: 'plugin',
     name: 'api-log',
     title: 'ratepay.apiLog.componentTitle',
-    icon: 'default-badge-warning',
+    icon: 'default-basic-stack-block',
+    color: '#e4233e',
+    entity: 'ratepay_api_log',
 
     snippets: {
         'de-DE': deDE,
