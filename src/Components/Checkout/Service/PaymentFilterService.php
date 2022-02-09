@@ -55,7 +55,7 @@ class PaymentFilterService
             }
 
             if ($profileConfig === null) {
-                // no profile config for this sales channel is found
+                // no profile config for this sales channel has been found
                 return false;
             }
 

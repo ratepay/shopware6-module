@@ -176,9 +176,9 @@ class ExtensionService
         );
 
         if (!MethodHelper::isInstallmentMethod($paymentMethod->getHandlerIdentifier())) {
-            // only set transaction ID for payment methods which are not a installment.
-            // for installment we generate a new transaction ID when the runtime has been selected.
-            // this transaction ID will be send to the storefront separately.
+            // only set transaction ID for payment methods which are not an installment.
+            // for installment, we generate a new transaction ID when the runtime has been selected.
+            // this transaction ID will be sent to the storefront separately.
             $transactionId = $this->transactionIdService->getTransactionId(
                 $salesChannelContext,
                 $order ? TransactionIdService::PREFIX_ORDER . $order->getId() . '-' : TransactionIdService::PREFIX_CART
