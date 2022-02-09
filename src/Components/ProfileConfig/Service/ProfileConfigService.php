@@ -16,13 +16,17 @@ use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntit
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\ProfileRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\ProfileRequestService;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
+use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\AndFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\OrFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -42,13 +46,16 @@ class ProfileConfigService
 
     private EventDispatcherInterface $eventDispatcher;
 
+    private CartService $cartService;
+
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         EntityRepositoryInterface $repository,
         EntityRepositoryInterface $methodConfigRepository,
         EntityRepositoryInterface $methodConfigInstallmentRepository,
         ProfileRequestService $profileRequestService,
-        ProfileConfigResponseConverter $profileConfigResponseConverter
+        ProfileConfigResponseConverter $profileConfigResponseConverter,
+        CartService $cartService
     )
     {
         $this->repository = $repository;
@@ -57,6 +64,7 @@ class ProfileConfigService
         $this->profileRequestService = $profileRequestService;
         $this->profileConfigResponseConverter = $profileConfigResponseConverter;
         $this->eventDispatcher = $eventDispatcher;
+        $this->cartService = $cartService;
 
         $this->context = Context::createDefaultContext();
     }
@@ -138,6 +146,7 @@ class ProfileConfigService
             $shippingCountry = $billingCountry;
         }
 
+        $cart = $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext);
         $resultList = $this->findProfileConfigsByDefaultParams(
             $paymentMethodId,
             $billingCountry,
@@ -145,6 +154,8 @@ class ProfileConfigService
             $salesChannelContext->getSalesChannel()->getId(),
             $salesChannelContext->getCurrency()->getIsoCode(),
             $billingAddress->getId() !== $shippingAddress->getId(),
+            !empty($billingAddress->getCompany()),
+            $cart->getPrice()->getTotalPrice(),
             $salesChannelContext->getContext()
         );
 
@@ -178,6 +189,8 @@ class ProfileConfigService
             $order->getSalesChannelId(),
             $order->getCurrency()->getIsoCode(),
             $billingAddress->getId() !== $shippingAddress->getId(),
+            !empty($billingAddress->getCompany()),
+            $order->getPrice()->getTotalPrice(),
             $context
         );
 
@@ -191,6 +204,8 @@ class ProfileConfigService
         string $salesChannelId,
         string $currencyIso,
         bool $differentAddresses,
+        bool $isB2B,
+        float $totalAmount,
         Context $context
     )
     {
@@ -203,7 +218,7 @@ class ProfileConfigService
             $paymentMethodId
         ));
 
-        // payment method
+        // different addresses
         if ($differentAddresses) {
             $criteria->addFilter(new EqualsFilter(
                 ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_ALLOW_DIFFERENT_ADDRESSES,
@@ -225,6 +240,42 @@ class ProfileConfigService
 
         // status
         $criteria->addFilter(new EqualsFilter(ProfileConfigEntity::FIELD_STATUS, true));
+
+        // b2b
+        if ($isB2B) {
+            $criteria->addFilter(new EqualsFilter(
+                ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_ALLOW_B2B,
+                true
+            ));
+        }
+
+        // total amount
+        $criteria->addFilter(new RangeFilter(
+            ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_LIMIT_MIN,
+            [RangeFilter::LTE => $totalAmount]
+        ));
+
+        $b2cRangeFilter = new RangeFilter(
+            ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_LIMIT_MAX,
+            [RangeFilter::GTE => $totalAmount]
+        );
+        if ($isB2B) {
+            $criteria->addFilter(new OrFilter([
+                new AndFilter([
+                    new EqualsFilter(
+                        ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_LIMIT_MAX_B2B,
+                        null
+                    ),
+                    $b2cRangeFilter
+                ]),
+                new RangeFilter(
+                    ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_LIMIT_MAX_B2B,
+                    [RangeFilter::GTE => $totalAmount]
+                )
+            ]));
+        } else {
+            $criteria->addFilter($b2cRangeFilter);
+        }
 
         $this->eventDispatcher->dispatch(new CreateProfileConfigCriteriaEvent(
             $criteria,

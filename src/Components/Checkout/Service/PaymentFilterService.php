@@ -28,7 +28,8 @@ class PaymentFilterService
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         ProfileConfigService $profileConfigService
-    ) {
+    )
+    {
         $this->eventDispatcher = $eventDispatcher;
         $this->profileConfigService = $profileConfigService;
     }
@@ -42,12 +43,22 @@ class PaymentFilterService
             }
 
             if ($order) {
+                // order has been already placed
                 $profileConfig = $this->profileConfigService->getProfileConfigByOrderEntity(
                     $order,
                     $paymentMethod->getId(),
                     $salesChannelContext->getContext()
                 );
             } else {
+                // order has not been placed
+                $customer = $salesChannelContext->getCustomer();
+                if ($customer === null ||
+                    $customer->getActiveBillingAddress() === null ||
+                    $customer->getActiveShippingAddress() === null
+                ) {
+                    return false;
+                }
+
                 $profileConfig = $this->profileConfigService->getProfileConfigBySalesChannel(
                     $salesChannelContext,
                     $paymentMethod->getId()

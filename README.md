@@ -36,6 +36,7 @@
 
 ### Version 3.3.0 - WIP
 * RATESWSX-221 - add missing icon and entity information on admin modules
+* RATESWSX-223 - fix issues with loading the (multiple) profiles during payment filter
 
 
 ### Version 3.2.0 - Released on 2022-01-10
