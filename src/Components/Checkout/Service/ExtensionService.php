@@ -55,7 +55,8 @@ class ExtensionService
         TransactionIdService $transactionIdService,
         ProfileConfigService $profileConfigService,
         EventDispatcherInterface $eventDispatcher
-    ) {
+    )
+    {
         $this->orderExtensionRepository = $orderExtensionRepository;
         $this->lineItemExtensionRepository = $lineItemExtensionRepository;
         $this->installmentService = $installmentService;
@@ -67,7 +68,8 @@ class ExtensionService
     public function createLineItemExtensionEntities(
         array $lineItems,
         Context $context
-    ): RatepayOrderLineItemDataCollection {
+    ): RatepayOrderLineItemDataCollection
+    {
         $data = [];
         foreach ($lineItems as $lineItem) {
             $data[] = [
@@ -95,7 +97,8 @@ class ExtensionService
         ?string $transactionId,
         ?string $descriptor,
         bool $successful
-    ): RatepayOrderDataEntity {
+    ): RatepayOrderDataEntity
+    {
 
         $order = $requestData->getOrder();
         $context = $requestData->getContext();
@@ -139,7 +142,8 @@ class ExtensionService
     public function buildPaymentDataExtension(
         SalesChannelContext $salesChannelContext,
         ?OrderEntity $order = null
-    ): ?ArrayStruct {
+    ): ?ArrayStruct
+    {
         $paymentMethod = $salesChannelContext->getPaymentMethod();
 
         $profileConfig = $this->profileConfigService->getProfileConfigBySalesChannel($salesChannelContext, $paymentMethod->getId());

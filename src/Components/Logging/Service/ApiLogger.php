@@ -11,6 +11,8 @@ namespace Ratepay\RpayPayments\Components\Logging\Service;
 
 use Exception;
 use Monolog\Logger;
+use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\Logging\Model\ApiRequestLogEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\RequestDoneEvent;
@@ -29,7 +31,8 @@ class ApiLogger
         EntityRepositoryInterface $logRepository,
         Logger $logger,
         string $pluginVersion
-    ) {
+    )
+    {
         $this->logRepository = $logRepository;
         $this->logger = $logger;
         $this->pluginVersion = $pluginVersion;
@@ -47,10 +50,11 @@ class ApiLogger
 
         $requestXmlElement = $requestBuilder->getRequestXmlElement();
         $responseXmlElement = $requestBuilder->getResponseXmlElement();
+
         if (isset($requestXmlElement->head->{'transaction-id'})) {
-            $additionalData['transactionId'] = (string) $requestXmlElement->head->{'transaction-id'};
+            $additionalData['transactionId'] = (string)$requestXmlElement->head->{'transaction-id'};
         } elseif (isset($responseXmlElement->head->{'transaction-id'})) {
-            $additionalData['transactionId'] = (string) $responseXmlElement->head->{'transaction-id'};
+            $additionalData['transactionId'] = (string)$responseXmlElement->head->{'transaction-id'};
         }
 
         if ($requestData instanceof OrderOperationData) {
@@ -64,14 +68,14 @@ class ApiLogger
 
         /** @var SimpleXMLElement $operationNode */
         $operationNode = $requestBuilder->getRequestXmlElement()->head->operation;
-        $operationSubtype = (string) $operationNode->attributes()->subtype;
-        $operation = (string) $operationNode;
+        $operationSubtype = (string)$operationNode->attributes()->subtype;
+        $operation = (string)$operationNode;
 
         $reasonNode = $requestBuilder->getResponseXmlElement()->head->processing->reason;
         $resultNode = $requestBuilder->getResponseXmlElement()->head->processing->result;
-        $result = (string) $reasonNode;
-        if (in_array(((int) $reasonNode->attributes()->code), [303, 700], true) && ((int) $resultNode->attributes()->code) !== 402) {
-            $result = (string) $resultNode;
+        $result = (string)$reasonNode;
+        if (in_array(((int)$reasonNode->attributes()->code), [303, 700], true) && ((int)$resultNode->attributes()->code) !== 402) {
+            $result = (string)$resultNode;
         }
 
         foreach (['securitycode', 'owner', 'iban'] as $key) {
