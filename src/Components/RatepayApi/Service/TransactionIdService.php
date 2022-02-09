@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\RatepayApi\Service;
 
 use RatePAY\Model\Response\PaymentInit;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentInitData;
 use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigService;
@@ -52,12 +53,24 @@ class TransactionIdService
     /**
      * @throws TransactionIdFetchFailedException
      */
-    public function getTransactionId(SalesChannelContext $salesChannelContext, string $prefix = '', string $profileConfigId = null): string
+    /**
+     * @param SalesChannelContext $salesChannelContext
+     * @param string $prefix
+     * @param ProfileConfigEntity|null|string $profileConfigId
+     * @return string
+     * @throws ProfileNotFoundException
+     * @throws TransactionIdFetchFailedException
+     */
+    public function getTransactionId(SalesChannelContext $salesChannelContext, string $prefix = '', $profileConfigId = null): string
     {
-        if ($profileConfigId) {
-            $profileConfig = $this->profileConfigService->getProfileConfigById($profileConfigId, $salesChannelContext->getContext());
+        if ($profileConfigId instanceof ProfileConfigEntity) {
+            $profileConfig = $profileConfigId;
         } else {
-            $profileConfig = $this->profileConfigService->getProfileConfigBySalesChannel($salesChannelContext);
+            if ($profileConfigId) {
+                $profileConfig = $this->profileConfigService->getProfileConfigById($profileConfigId, $salesChannelContext->getContext());
+            } else {
+                $profileConfig = $this->profileConfigService->getProfileConfigBySalesChannel($salesChannelContext);
+            }
         }
 
         if ($profileConfig === null) {

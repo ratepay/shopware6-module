@@ -146,7 +146,10 @@ class ExtensionService
     {
         $paymentMethod = $salesChannelContext->getPaymentMethod();
 
-        $profileConfig = $this->profileConfigService->getProfileConfigBySalesChannel($salesChannelContext, $paymentMethod->getId());
+        $profileConfig = $order ?
+            $this->profileConfigService->getProfileConfigByOrderEntity($order, $paymentMethod->getId(), $salesChannelContext->getContext(), true) :
+            $this->profileConfigService->getProfileConfigBySalesChannel($salesChannelContext, $paymentMethod->getId(), true);
+
         if ($profileConfig === null) {
             // should never occur
             return null;
@@ -185,7 +188,8 @@ class ExtensionService
             // this transaction ID will be sent to the storefront separately.
             $transactionId = $this->transactionIdService->getTransactionId(
                 $salesChannelContext,
-                $order ? TransactionIdService::PREFIX_ORDER . $order->getId() . '-' : TransactionIdService::PREFIX_CART
+                $order ? TransactionIdService::PREFIX_ORDER . $order->getId() . '-' : TransactionIdService::PREFIX_CART,
+                $profileConfig
             );
             $extension->offsetSet('transactionId', $transactionId);
         }
