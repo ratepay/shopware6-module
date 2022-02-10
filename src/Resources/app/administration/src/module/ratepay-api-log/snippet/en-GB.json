@@ -15,7 +15,8 @@
                     "cancelButtonText": "Back"
                 },
                 "list": {
-                    "reload": "Refresh"
+                    "reload": "Refresh",
+                    "openOrder": "Open order"
                 }
             },
             "global": {

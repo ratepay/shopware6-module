@@ -15,7 +15,8 @@
                     "cancelButtonText": "Zurück"
                 },
                 "list": {
-                    "reload": "Aktualisieren"
+                    "reload": "Aktualisieren",
+                    "openOrder": "Bestellung öffnen"
                 }
             },
             "global": {

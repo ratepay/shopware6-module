@@ -52,6 +52,13 @@
                     <sw-context-menu-item @click="modalItem = item">
                         {{ $t('ratepay.apiLog.modal.openTitle') }}
                     </sw-context-menu-item>
+
+                    <sw-context-menu-item
+                        v-if="item.additionalData.orderId"
+                        :router-link="{ name: 'sw.order.detail', params: { id: item.additionalData.orderId } }"
+                    >
+                        {{ $t('ratepay.apiLog.page.list.openOrder') }}
+                    </sw-context-menu-item>
                 </template>
             </sw-entity-listing>
 

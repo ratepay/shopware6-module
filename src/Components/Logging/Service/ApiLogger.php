@@ -64,6 +64,7 @@ class ApiLogger
         if ($requestData instanceof OrderOperationData) {
             $order = $requestData->getOrder();
             $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
+            $additionalData['orderId'] = $order->getId();
             $additionalData['orderNumber'] = $order->getOrderNumber();
             $additionalData['firstName'] = $billingAddress->getFirstName();
             $additionalData['lastName'] = $billingAddress->getLastName();
