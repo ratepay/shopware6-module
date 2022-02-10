@@ -80,5 +80,18 @@
             </sw-modal>
         {% endblock %}
     </template>
+
+    <template #sidebar>
+        <sw-sidebar>
+            <sw-sidebar-filter-panel
+                entity="ratepay_api_log"
+                :store-key="storeKey"
+                :filters="listFilters"
+                :defaults="defaultFilters"
+                :active-filter-number="activeFilterNumber"
+                @criteria-changed="updateCriteria"
+            />
+        </sw-sidebar>
+    </template>
 </sw-page>
 {% endblock %}

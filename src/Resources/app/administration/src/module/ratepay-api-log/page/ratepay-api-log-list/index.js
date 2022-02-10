@@ -24,7 +24,8 @@ Component.register('ratepay-api-log-list', {
     template,
 
     inject: [
-        'repositoryFactory'
+        'repositoryFactory',
+        'filterFactory'
     ],
 
     mixins: [
@@ -33,6 +34,7 @@ Component.register('ratepay-api-log-list', {
 
     data() {
         return {
+            entityName: 'ratepay_api_log',
             repository: null,
             entities: null,
             modalItem: null,
@@ -41,6 +43,13 @@ Component.register('ratepay-api-log-list', {
             isLoading: false,
             isLoaded: false,
             searchConfigEntity: 'ratepay_api_log',
+
+            storeKey: 'grid.filter.ratepay_api_log',
+            activeFilterNumber: 0,
+            filterCriteria: [],
+            defaultFilters: [
+                'createdAt-filter',
+            ],
         };
     },
 
@@ -95,14 +104,50 @@ Component.register('ratepay-api-log-list', {
                 label: this.$t('ratepay.apiLog.global.labels.lastName'),
                 allowResize: true,
                 visible: false,
+            }, {
+                property: 'additionalData.descriptor',
+                dataIndex: 'descriptor',
+                label: this.$t('ratepay.apiLog.global.labels.descriptor'),
+                allowResize: true,
+                visible: false,
             }];
-        }
+        },
+
+        defaultCriteria() {
+            const defaultCriteria = new Criteria();
+
+            if (this.searchTerm.length > 0) {
+                defaultCriteria.setTerm(this.searchTerm)
+            }
+
+            defaultCriteria.addSorting(Criteria.sort('createdAt', 'DESC'));
+
+            this.filterCriteria.forEach(filter => {
+                defaultCriteria.addFilter(filter);
+            });
+
+            return defaultCriteria;
+        },
+
+        listFilters() {
+            return this.filterFactory.create(this.entityName, {
+                'createdAt-filter': {
+                    property: 'createdAt',
+                    type: 'date-filter',
+                    label: this.$t('ratepay.apiLog.global.labels.createdAt'),
+                    dateType: 'datetime-local',
+                    fromFieldLabel: null,
+                    toFieldLabel: null,
+                    showTimeframe: false,
+                },
+            });
+        },
     },
 
     created() {
         this.searchTerm = this.$route.query.term !== undefined ? this.$route.query.term.trim() : "";
         this.initalLogId = this.$route.query.logId !== undefined ? this.$route.query.logId.trim() : null;
-        this.repository = this.repositoryFactory.create('ratepay_api_log');
+        this.repository = this.repositoryFactory.create(this.entityName);
         hljs.registerLanguage('xml', hljsXml);
         hljs.configure({useBR: false});
         this.loadData();
@@ -126,16 +171,14 @@ Component.register('ratepay-api-log-list', {
 
         async loadData() {
             this.isLoading = true;
-            let criteria = new Criteria();
-            criteria.addSorting(Criteria.sort('createdAt', 'DESC'));
+            let criteria = await Shopware.Service('filterService').mergeWithStoredFilters(
+                this.storeKey,
+                this.defaultCriteria
+            );
 
-            if (this.searchTerm.length > 0) {
-                criteria.setTerm(this.searchTerm)
-            }
+            criteria = await this.addQueryScores(this.searchTerm, criteria);
 
-            const newCriteria = await this.addQueryScores(this.searchTerm, criteria);
-
-            this.repository.search(newCriteria, Shopware.Context.api)
+            this.repository.search(criteria, Shopware.Context.api)
                 .then((result) => {
                     this.entities = result;
                     if (this.initalLogId && this.entities.has(this.initalLogId)) {
@@ -146,11 +189,19 @@ Component.register('ratepay-api-log-list', {
                     this.isLoading = false;
                     this.isLoaded = false;
                 });
+
+            this.activeFilterNumber = criteria.filters.length;
         },
+
         onSearch(searchTerm) {
             this.initalLogId = null;
             this.searchTerm = searchTerm.trim();
             this.loadData();
-        }
+        },
+
+        updateCriteria(criteria) {
+            this.page = 1;
+            this.filterCriteria = criteria;
+        },
     }
 });

@@ -32,7 +32,8 @@
                     "request": "Anfrage",
                     "response": "Antwort",
                     "viewLog": "Anfrage / Antwort",
-                    "orderNumber": "Bestellnummer"
+                    "orderNumber": "Bestellnummer",
+                    "descriptor": "Verwendungszweck"
                 }
             },
             "modal": {

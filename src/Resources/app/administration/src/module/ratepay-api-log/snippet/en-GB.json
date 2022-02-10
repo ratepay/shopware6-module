@@ -32,7 +32,8 @@
                     "request": "Request",
                     "response": "Response",
                     "viewLog": "Request / Response",
-                    "orderNumber": "Order number"
+                    "orderNumber": "Order number",
+                    "descriptor": "Descriptor"
                 }
             },
             "modal": {
