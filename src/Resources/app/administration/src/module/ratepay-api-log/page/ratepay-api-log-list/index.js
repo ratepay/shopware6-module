@@ -52,51 +52,50 @@ Component.register('ratepay-api-log-list', {
 
     computed: {
         columns() {
-            return [
-                {
-                    property: 'createdAt',
-                    dataIndex: 'createdAt',
-                    label: this.$t('ratepay.apiLog.global.labels.createdAt'),
-                    allowResize: true
-                }, {
-                    property: 'operation',
-                    dataIndex: 'operation',
-                    label: this.$t('ratepay.apiLog.global.labels.operation'),
-                    allowResize: true
-                }, {
-                    property: 'subOperation',
-                    dataIndex: 'subOperation',
-                    label: this.$t('ratepay.apiLog.global.labels.subOperation'),
-                    allowResize: true
-                }, {
-                    property: 'result',
-                    dataIndex: 'result',
-                    label: this.$t('ratepay.apiLog.global.labels.result'),
-                    allowResize: true
-                }, {
-                    property: 'additionalData.transactionId',
-                    dataIndex: 'transactionId',
-                    label: this.$t('ratepay.apiLog.global.labels.transactionId'),
-                    allowResize: true
-                }, {
-                    property: 'additionalData.orderNumber',
-                    dataIndex: 'orderNumber',
-                    label: this.$t('ratepay.apiLog.global.labels.orderNumber'),
-                    allowResize: true,
-                    visible: false
-                }, {
-                    property: 'additionalData.firstName',
-                    dataIndex: 'firstName',
-                    label: this.$t('ratepay.apiLog.global.labels.firstName'),
-                    allowResize: true,
-                    visible: false,
-                }, {
-                    property: 'additionalData.lastName',
-                    dataIndex: 'lastName',
-                    label: this.$t('ratepay.apiLog.global.labels.lastName'),
-                    allowResize: true,
-                    visible: false,
-                }];
+            return [{
+                property: 'createdAt',
+                dataIndex: 'createdAt',
+                label: this.$t('ratepay.apiLog.global.labels.createdAt'),
+                allowResize: true
+            }, {
+                property: 'operation',
+                dataIndex: 'operation',
+                label: this.$t('ratepay.apiLog.global.labels.operation'),
+                allowResize: true
+            }, {
+                property: 'subOperation',
+                dataIndex: 'subOperation',
+                label: this.$t('ratepay.apiLog.global.labels.subOperation'),
+                allowResize: true
+            }, {
+                property: 'result',
+                dataIndex: 'result',
+                label: this.$t('ratepay.apiLog.global.labels.result'),
+                allowResize: true
+            }, {
+                property: 'additionalData.transactionId',
+                dataIndex: 'transactionId',
+                label: this.$t('ratepay.apiLog.global.labels.transactionId'),
+                allowResize: true
+            }, {
+                property: 'additionalData.orderNumber',
+                dataIndex: 'orderNumber',
+                label: this.$t('ratepay.apiLog.global.labels.orderNumber'),
+                allowResize: true,
+                visible: false
+            }, {
+                property: 'additionalData.firstName',
+                dataIndex: 'firstName',
+                label: this.$t('ratepay.apiLog.global.labels.firstName'),
+                allowResize: true,
+                visible: false,
+            }, {
+                property: 'additionalData.lastName',
+                dataIndex: 'lastName',
+                label: this.$t('ratepay.apiLog.global.labels.lastName'),
+                allowResize: true,
+                visible: false,
+            }];
         }
     },
 
