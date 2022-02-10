@@ -39,6 +39,7 @@
 * RATESWSX-223 - fix issues with loading the (multiple) profiles during payment filter
 * RATESWSX-224 - fix loading of profile config during changing the payment method (update order)
 * RATESWSX-225 - fix issues with the api-log search + make more fields searchable
+* RATESWSX-225 - api log: search and filter improvements
 
 
 ### Version 3.2.0 - Released on 2022-01-10
