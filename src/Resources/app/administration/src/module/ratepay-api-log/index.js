@@ -7,6 +7,7 @@
 
 import './page/ratepay-api-log-list';
 import './component/shopware/sw-search-bar-item';
+import defaultSearchConfiguration from './default-search-configuration';
 
 import deDE from './snippet/de-DE.json';
 import enGB from "./snippet/en-GB.json";
@@ -42,6 +43,7 @@ Module.register('ratepay-api-log', {
             group: 'plugins',
             icon: 'default-badge-warning',
         }
-    ]
+    ],
 
+    defaultSearchConfiguration
 });

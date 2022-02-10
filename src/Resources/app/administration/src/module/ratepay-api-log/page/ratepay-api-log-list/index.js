@@ -17,7 +17,7 @@ import hljs from 'highlight.js/lib/core';
 import hljsXml from 'highlight.js/lib/languages/xml';
 import 'highlight.js/styles/github.css';
 
-const {Component} = Shopware;
+const {Component, Mixin} = Shopware;
 const {Criteria} = Shopware.Data;
 
 Component.register('ratepay-api-log-list', {
@@ -25,6 +25,10 @@ Component.register('ratepay-api-log-list', {
 
     inject: [
         'repositoryFactory'
+    ],
+
+    mixins: [
+        Mixin.getByName('listing'),
     ],
 
     data() {
@@ -36,6 +40,7 @@ Component.register('ratepay-api-log-list', {
             initialLogId: null,
             isLoading: false,
             isLoaded: false,
+            searchConfigEntity: 'ratepay_api_log',
         };
     },
 
@@ -125,15 +130,18 @@ Component.register('ratepay-api-log-list', {
                 .replaceAll(/]]&gt;\r\n\s*/gi, ']]&gt;');
         },
 
-        loadData() {
+        async loadData() {
             this.isLoading = true;
             let criteria = new Criteria();
-            if (this.searchTerm.length > 0) {
-                criteria.addFilter(Criteria.contains('additionalData', this.searchTerm))
-            }
             criteria.addSorting(Criteria.sort('createdAt', 'DESC'));
-            this.repository
-                .search(criteria, Shopware.Context.api)
+
+            if (this.searchTerm.length > 0) {
+                criteria.setTerm(this.searchTerm)
+            }
+
+            const newCriteria = await this.addQueryScores(this.searchTerm, criteria);
+
+            this.repository.search(newCriteria, Shopware.Context.api)
                 .then((result) => {
                     this.entities = result;
                     if (this.initalLogId && this.entities.has(this.initalLogId)) {

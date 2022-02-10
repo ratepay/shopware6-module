@@ -57,6 +57,10 @@ class ApiLogger
             $additionalData['transactionId'] = (string)$responseXmlElement->head->{'transaction-id'};
         }
 
+        if (isset($responseXmlElement->content->payment->descriptor)) {
+            $additionalData['descriptor'] = (string)$responseXmlElement->content->payment->descriptor;
+        }
+
         if ($requestData instanceof OrderOperationData) {
             $order = $requestData->getOrder();
             $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
@@ -64,6 +68,11 @@ class ApiLogger
             $additionalData['firstName'] = $billingAddress->getFirstName();
             $additionalData['lastName'] = $billingAddress->getLastName();
             $additionalData['mail'] = $order->getOrderCustomer()->getEmail();
+
+            $ratepayData = $order->getExtension(OrderExtension::EXTENSION_NAME);
+            if ($ratepayData instanceof RatepayOrderDataEntity) {
+                $additionalData['descriptor'] = $additionalData['descriptor'] ?? $ratepayData->getDescriptor();
+            }
         }
 
         /** @var SimpleXMLElement $operationNode */
