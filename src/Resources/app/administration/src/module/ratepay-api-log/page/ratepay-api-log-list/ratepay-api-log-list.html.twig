@@ -48,29 +48,29 @@
                     {{ item.createdAt| date({hour: '2-digit', minute: '2-digit'}) }}
                 </template>
 
-                <template slot="column-response" slot-scope="{ item }">
-                    <sw-button @click="modalItem = item">
+                <template #actions="{ item }">
+                    <sw-context-menu-item @click="modalItem = item">
                         {{ $t('ratepay.apiLog.modal.openTitle') }}
-                    </sw-button>
-                    <sw-modal :title="$t('ratepay.apiLog.global.labels.viewLog')" v-if="modalItem && modalItem.id === item.id" class="ratepay-xml-log-modal" @modal-close="modalItem = null">
-                        <div class="flex-container">
-                            <div>
-                                <span class="heading">{{ $t('ratepay.apiLog.modal.request.heading') }}</span>
-                                <pre class="content" v-html="formatXml(modalItem.request)"></pre>
-                            </div>
-                            <div>
-                                <span class="heading">{{ $t('ratepay.apiLog.modal.response.heading') }}</span>
-                                <pre class="content" v-html="formatXml(modalItem.response)"></pre>
-                            </div>
-                        </div>
-                    </sw-modal>
-                </template>
-
-                <template #delete-action="{ }">
-                    {# remove delete link TODO is there a better solution? #}
-                    <span style="display: none;"></span>
+                    </sw-context-menu-item>
                 </template>
             </sw-entity-listing>
+
+            <sw-modal
+                :title="$t('ratepay.apiLog.global.labels.viewLog')"
+                v-if="modalItem"
+                class="ratepay-xml-log-modal"
+                @modal-close="modalItem = null">
+                <div class="flex-container">
+                    <div>
+                        <span class="heading">{{ $t('ratepay.apiLog.modal.request.heading') }}</span>
+                        <pre class="content" v-html="formatXml(modalItem.request)"></pre>
+                    </div>
+                    <div>
+                        <span class="heading">{{ $t('ratepay.apiLog.modal.response.heading') }}</span>
+                        <pre class="content" v-html="formatXml(modalItem.response)"></pre>
+                    </div>
+                </div>
+            </sw-modal>
         {% endblock %}
     </template>
 </sw-page>

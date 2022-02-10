@@ -96,11 +96,6 @@ Component.register('ratepay-api-log-list', {
                     label: this.$t('ratepay.apiLog.global.labels.lastName'),
                     allowResize: true,
                     visible: false,
-                }, {
-                    property: 'response',
-                    dataIndex: 'response',
-                    label: this.$t('ratepay.apiLog.global.labels.viewLog'),
-                    allowResize: true
                 }];
         }
     },
