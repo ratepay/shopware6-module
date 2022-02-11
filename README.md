@@ -1,14 +1,14 @@
 # Ratepay GmbH - Shopware6 Payment Module
 ============================================
 
-|Module | Ratepay Payment Plugin for Shopware 6
-|------|----------
-|Author | Interlutions GmbH
-|Shop Version | `6.4.x.x`
-|Link | http://www.ratepay.com
-|Mail | integration@ratepay.com
-|Full Documentation | https://ratepay.gitbook.io/shopware6/
-|Legal Disclaimer|https://ratepay.gitbook.io/docs/#legal-disclaimer
+| Module             | Ratepay Payment Plugin for Shopware 6             |
+|--------------------|---------------------------------------------------|
+| Author             | Interlutions GmbH                                 |
+| Shop Version       | `6.4.x.x`                                         |
+| Link               | http://www.ratepay.com                            |
+| Mail               | integration@ratepay.com                           |
+| Full Documentation | https://ratepay.gitbook.io/shopware6/             |
+| Legal Disclaimer   | https://ratepay.gitbook.io/docs/#legal-disclaimer |
 
 ## Installation via Shopware Store
 
@@ -34,13 +34,13 @@
 
 ## Changelog
 
-### Version 3.3.0 - WIP
+### Version 3.3.0 - Released on 2022-02-11
+
 * RATESWSX-221 - add missing icon and entity information on admin modules
 * RATESWSX-223 - fix issues with loading the (multiple) profiles during payment filter
 * RATESWSX-224 - fix loading of profile config during changing the payment method (update order)
 * RATESWSX-225 - fix issues with the api-log search + make more fields searchable
 * RATESWSX-225 - api log: search and filter improvements
-
 
 ### Version 3.2.0 - Released on 2022-01-10
 
