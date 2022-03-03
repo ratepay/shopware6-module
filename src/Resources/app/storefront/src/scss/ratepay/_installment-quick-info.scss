@@ -1,0 +1,33 @@
+// Copyright (c) Ratepay GmbH
+//
+// For the full copyright and license information, please view the LICENSE
+// file that was distributed with this source code.
+
+$ratepay-indicator-size: 10px;
+
+.ratepay--installment-plan--quick-info {
+    display: flex;
+    align-items: center;
+    grid-gap: 5px;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+
+    &::before {
+        content: '';
+        height: $ratepay-indicator-size;
+        width: $ratepay-indicator-size;
+        line-height: $ratepay-indicator-size;
+        background: $sw-color-brand-primary;
+        display: inline-block;
+        border-radius: 50%;
+        margin-right: 5px;
+    }
+
+    .label {
+        font-weight: bold;
+
+        &::after {
+            content: ':';
+        }
+    }
+}

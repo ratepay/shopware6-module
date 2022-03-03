@@ -36,7 +36,12 @@ class PaymentFilterSubscriber implements EventSubscriberInterface
         if ($event->getOrderEntity()) {
             $customerId = $event->getOrderEntity()->getOrderCustomer()->getCustomerId();
         } else {
-            $customerId = $event->getSalesChannelContext()->getCustomer()->getId();
+            $customer = $event->getSalesChannelContext()->getCustomer();
+            if (!$customer) {
+                // customer is not logged in, or customer session has not been started yet.
+                return;
+            }
+            $customerId = $customer->getId();
         }
 
         $isLocked = $this->lockService->isPaymentLocked(

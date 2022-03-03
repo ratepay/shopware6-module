@@ -36,6 +36,7 @@
 
 ### Version 4.1.0 - WIP
 
+* RATESWSX-201 - added: display min rate for installment on product page
 * RATESWSX-222 - add config help text
 
 ### Version 4.0.1 - Released on 2022-04-28

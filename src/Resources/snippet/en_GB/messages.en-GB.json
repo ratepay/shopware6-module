@@ -51,6 +51,16 @@
                 "installment": {
                     "intro": "In the following you can decide how you would like to organise the payment by instalment. Simply specify the number of instalments and therefore <b> the runtime</b> of the instalment or simply specify the preferred <b>number of monthly instalments</b>."
                 }
+            },
+            "product-page": {
+                "installment": {
+                    "method": "Installment",
+                    "text": "from %rate% in %months% payments"
+                },
+                "infoZeroPercentInstallment": {
+                    "method": "0% Financing",
+                    "text": "from %rate% in %months% payments"
+                }
             }
         }
     }

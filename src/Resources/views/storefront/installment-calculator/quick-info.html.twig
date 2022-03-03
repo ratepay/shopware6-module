@@ -1,0 +1,19 @@
+<div class="ratepay--installment-plan--quick-info">
+    {% if quickInfo.isZeroPercent %}
+        <span class="label">{{ "ratepay.storefront.product-page.zeroPercentInstallment.method"|trans }}</span>
+        <span class="text">
+            {{ "ratepay.storefront.product-page.zeroPercentInstallment.text"|trans({
+                "%rate%": quickInfo.monthlyRate|currency,
+                "%months%": quickInfo.monthCount
+            })|sw_sanitize }}
+        </span>
+    {% else %}
+        <span class="label">{{ "ratepay.storefront.product-page.installment.method"|trans }}</span>
+        <span class="text">
+            {{ "ratepay.storefront.product-page.installment.text"|trans({
+                "%rate%": quickInfo.monthlyRate|currency,
+                "%months%": quickInfo.monthCount
+            })|sw_sanitize }}
+        </span>
+    {% endif %}
+</div>

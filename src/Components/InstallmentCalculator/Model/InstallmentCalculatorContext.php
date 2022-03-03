@@ -37,6 +37,7 @@ class InstallmentCalculatorContext
     private ?string $paymentMethodId = null;
 
     private ?ProfileConfigSearch $profileConfigSearch = null;
+    private ?CountryEntity $billingCoutnry = null;
 
     public function __construct(
         SalesChannelContext $salesChannelContext,
@@ -143,6 +144,10 @@ class InstallmentCalculatorContext
 
     public function getBillingCountry(): CountryEntity
     {
+        if ($this->billingCoutnry) {
+            return $this->billingCoutnry;
+        }
+
         if ($this->order) {
             return $this->order->getAddresses()->get($this->order->getBillingAddressId())->getCountry();
         }
@@ -170,6 +175,13 @@ class InstallmentCalculatorContext
     public function setProfileConfigSearch(?ProfileConfigSearch $profileConfigSearch): self
     {
         $this->profileConfigSearch = $profileConfigSearch;
+
+        return $this;
+    }
+
+    public function setBillingCountry(CountryEntity $billingCountry): self
+    {
+        $this->billingCoutnry = $billingCountry;
 
         return $this;
     }

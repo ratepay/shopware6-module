@@ -1,0 +1,18 @@
+{#
+~ Copyright (c) Ratepay GmbH
+~
+~ For the full copyright and license information, please view the LICENSE
+~ file that was distributed with this source code.
+#}
+
+{% sw_extends '@Storefront/storefront/page/product-detail/buy-widget-form.html.twig' %}
+
+{% block page_product_detail_buy_form_inner %}
+    {% if page.extensions.ratepayInstallment %}
+        {% block page_product_detail_buy_form_installment_details %}
+            {% sw_include '@RatepayPaments/storefront/installment-calculator/quick-info.html.twig' with {quickInfo: page.extensions.ratepayInstallment} %}
+        {% endblock %}
+    {% endif %}
+
+    {{ parent() }}
+{% endblock %}

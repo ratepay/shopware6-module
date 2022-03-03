@@ -114,7 +114,38 @@
             <label lang="de-DE">Ratenzahlung (0% Finanzierung)</label>
         </input-field>
     </card>
-    
+
+    <card>
+        <title>Product page: Instalment plan</title>
+        <title lang="de-DE">Produktseite: Ratenplan</title>
+        <input-field type="bool">
+            <name>productInstallmentCalculatorEnabled</name>
+            <label>Enable</label>
+            <label lang="de-DE">Aktivieren</label>
+            <value>0</value>
+        </input-field>
+
+        <component name="sw-entity-single-select">
+            <name>productInstallmentCalculatorBillingCountry</name>
+            <label>Billing country</label>
+            <label lang="de-DE">Rechnungsland</label>
+            <entity>country</entity>
+        </component>
+
+        <component name="sw-entity-single-select">
+            <name>productInstallmentCalculatorShippingCountry</name>
+            <label>Shipping country</label>
+            <entity>country</entity>
+        </component>
+
+        <component name="sw-entity-single-select">
+            <name>productInstallmentCalculatorPaymentMethod</name>
+            <label>Payment method (needs to be instalment or zero-percent financing)</label>
+            <label>Zahlart (muss Ratenzahlung oder 0% Finanzierung sein)</label>
+            <entity>payment_method</entity>
+        </component>
+    </card>
+
     <card>
         <title>Bidirectionality</title>
         <title lang="de-DE">Bidirektionalität</title>

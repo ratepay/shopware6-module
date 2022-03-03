@@ -137,6 +137,14 @@
                                             <th>{{ $t('ratepay.profileConfig.page.paymentConfig.table.label.installment.rateMin') }}</th>
                                             <td>{{ config.installmentConfig.rateMin }}</td>
                                         </tr>
+                                        <tr v-if="config.installmentConfig">
+                                            <th>{{ $t('ratepay.profileConfig.page.paymentConfig.table.label.installment.defaultInterestRate') }}</th>
+                                            <td>{{ config.installmentConfig.defaultInterestRate }}</td>
+                                        </tr>
+                                        <tr v-if="config.installmentConfig">
+                                            <th>{{ $t('ratepay.profileConfig.page.paymentConfig.table.label.installment.serviceCharge') }}</th>
+                                            <td>{{ config.installmentConfig.serviceCharge }}</td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </template>
