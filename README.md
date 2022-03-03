@@ -34,6 +34,10 @@
 
 ## Changelog
 
+### Version 3.3.1 - WIP
+
+* RATESWSX-228 - administration: fix display of quantity in order-items panel
+
 ### Version 3.3.0 - Released on 2022-02-11
 
 * RATESWSX-221 - add missing icon and entity information on admin modules
