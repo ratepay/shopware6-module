@@ -62,6 +62,7 @@ class InstallmentController extends StorefrontController
         }
 
         $calcContext = (new InstallmentCalculatorContext($salesChannelContext, $type, $value))
+            ->setPaymentMethodId($salesChannelContext->getPaymentMethod()->getId())
             ->setOrder($order ?? null);
 
         $vars = $this->installmentService->getInstallmentPlanTwigVars($calcContext);

@@ -9,6 +9,7 @@
 
 namespace Ratepay\RpayPayments\Components\ProfileConfig\Service;
 
+use Ratepay\RpayPayments\Components\ProfileConfig\Dto\ProfileConfigSearch;
 use Ratepay\RpayPayments\Components\ProfileConfig\Event\CreateProfileConfigCriteriaEvent;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\Collection\ProfileConfigCollection;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
@@ -27,12 +28,15 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\OrFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
+use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ProfileConfigService
 {
     protected Context $context;
+
+    private EntityRepositoryInterface $countryRepository;
 
     private EntityRepositoryInterface $repository;
 
@@ -50,6 +54,7 @@ class ProfileConfigService
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
+        EntityRepositoryInterface $countryRepository,
         EntityRepositoryInterface $repository,
         EntityRepositoryInterface $methodConfigRepository,
         EntityRepositoryInterface $methodConfigInstallmentRepository,
@@ -58,6 +63,7 @@ class ProfileConfigService
         CartService $cartService
     )
     {
+        $this->countryRepository = $countryRepository;
         $this->repository = $repository;
         $this->methodConfigRepository = $methodConfigRepository;
         $this->methodConfigInstallmentRepository = $methodConfigInstallmentRepository;
@@ -197,6 +203,53 @@ class ProfileConfigService
         return $single ? $resultList->first() : $resultList->getElements();
     }
 
+    /**
+     * @param ProfileConfigSearch $profileConfigSearch
+     * @return array<ProfileConfigEntity>
+     */
+    public function searchProfileConfig(ProfileConfigSearch $profileConfigSearch)
+    {
+        if ($profileConfigSearch->getBillingCountryId()) {
+            $profileConfigSearch->setBillingCountryCode(
+                $this->getCountryCode($profileConfigSearch->getBillingCountryId())
+            );
+        }
+
+        if ($profileConfigSearch->getShippingCountryId()) {
+            $profileConfigSearch->setShippingCountryCode(
+                $this->getCountryCode($profileConfigSearch->getShippingCountryId())
+            );
+        }
+
+        $resultList = $this->findProfileConfigsByDefaultParams(
+            $profileConfigSearch->getPaymentMethodId(),
+            $profileConfigSearch->getBillingCountryCode(),
+            $profileConfigSearch->getShippingCountryCode(),
+            $profileConfigSearch->getSalesChannelContext()->getSalesChannelId(),
+            $profileConfigSearch->getCurrency(),
+            $profileConfigSearch->isNeedsAllowDifferentAddress(),
+            $profileConfigSearch->isB2b(),
+            $profileConfigSearch->getTotalAmount(),
+            Context::createDefaultContext()
+        );
+
+        return $resultList->getElements();
+    }
+
+    private function getCountryCode(string $uuid): string
+    {
+        /** @var CountryEntity $country */
+        $country = $this->countryRepository->search(new Criteria([$uuid]), Context::createDefaultContext())->first();
+        if ($country) {
+            return $country->getIso();
+        }
+
+        throw new \RuntimeException('Country ' . $uuid . ' does not exist');
+    }
+
+    /**
+     * @deprecated please use `searchProfileConfig`
+     */
     public function findProfileConfigsByDefaultParams(
         string $paymentMethodId,
         string $billingCountryIso,

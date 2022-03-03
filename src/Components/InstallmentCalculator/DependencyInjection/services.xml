@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
-  ~ Copyright (c) 2020 Ratepay GmbH
+  ~ Copyright (c) Ratepay GmbH
   ~
   ~ For the full copyright and license information, please view the LICENSE
   ~ file that was distributed with this source code.
@@ -12,8 +12,9 @@
 
     <services>
 
-        <service id="Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService" autowire="true" >
-            <argument key="$languageRepository" id="language.repository" type="service" />
+        <service id="Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService" autowire="true">
+            <argument key="$languageRepository" id="language.repository" type="service"/>
+            <argument key="$logger" id="ratepay.logger" type="service"/>
         </service>
 
     </services>

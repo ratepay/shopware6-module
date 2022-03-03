@@ -18,6 +18,7 @@ use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodInstallmentEntity;
 use Ratepay\RpayPayments\RpayPayments;
+use Ratepay\RpayPayments\Util\PaymentFirstday;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -107,10 +108,13 @@ class ProfileConfigResponseConverter
                     $installmentConfigs[] = [
                         ProfileConfigMethodInstallmentEntity::FIELD_ID => $id,
                         ProfileConfigMethodInstallmentEntity::FIELD_ALLOWED_MONTHS => array_map('intval', explode(',', $responseData['installmentConfig']['month-allowed'])),
-                        ProfileConfigMethodInstallmentEntity::FIELD_IS_BANKTRANSFER_ALLOWED => in_array(28, $paymentFirstDay, false),
-                        ProfileConfigMethodInstallmentEntity::FIELD_IS_DEBIT_ALLOWED => in_array(2, $paymentFirstDay, false),
+                        ProfileConfigMethodInstallmentEntity::FIELD_IS_BANKTRANSFER_ALLOWED => in_array(PaymentFirstday::BANK_TRANSFER, $paymentFirstDay, false),
+                        ProfileConfigMethodInstallmentEntity::FIELD_IS_DEBIT_ALLOWED => in_array(PaymentFirstday::DIRECT_DEBIT, $paymentFirstDay, false),
                         ProfileConfigMethodInstallmentEntity::FIELD_RATE_MIN => (float) $responseData['installmentConfig']['rate-min-normal'],
                         ProfileConfigMethodInstallmentEntity::FIELD_DEFAULT_PAYMENT_TYPE => (int)$responseData['installmentConfig']['payment-firstday'] === 2 ? ProfileConfigMethodInstallmentEntity::PAYMENT_TYPE_DIRECT_DEBIT : ProfileConfigMethodInstallmentEntity::PAYMENT_TYPE_BANK_TRANSFER,
+                        ProfileConfigMethodInstallmentEntity::FIELD_DEFAULT_INTEREST_RATE => (float) $responseData['installmentConfig']['interestrate-default'],
+                        ProfileConfigMethodInstallmentEntity::FIELD_SERVICE_CHARGE => (float) $responseData['installmentConfig']['service-charge'],
+
                     ];
                 }
             }
