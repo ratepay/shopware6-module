@@ -74,6 +74,16 @@ class ProfileConfigMethodInstallmentDefinition extends EntityDefinition
                 'default_payment_type',
                 ProfileConfigMethodInstallmentEntity::FIELD_DEFAULT_PAYMENT_TYPE
             ))->addFlags(new Required()),
+
+            (new FloatField(
+                'default_interest_rate',
+                ProfileConfigMethodInstallmentEntity::FIELD_DEFAULT_INTEREST_RATE
+            ))->addFlags(new Required()),
+
+            (new FloatField(
+                'service_charge',
+                ProfileConfigMethodInstallmentEntity::FIELD_SERVICE_CHARGE
+            ))->addFlags(new Required()),
         ]);
     }
 }

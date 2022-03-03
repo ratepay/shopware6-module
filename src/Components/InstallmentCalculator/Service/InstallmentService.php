@@ -9,13 +9,23 @@
 
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Service;
 
+use Monolog\Logger;
+use phpDocumentor\Reflection\Types\Context;
+use RatePAY\Exception\RequestException;
+use RatePAY\ModelBuilder;
 use Ratepay\RpayPayments\Components\Checkout\Event\RatepayPaymentFilterEvent;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentBuilder;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentCalculatorContext;
+use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\OfflineInstallmentCalculatorResult;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Util\PlanHasher;
+use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodInstallmentEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigService;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService;
+use Ratepay\RpayPayments\Util\PaymentFirstday;
 use RatePAY\Service\LanguageService;
+use RatePAY\Service\OfflineInstallmentCalculation;
 use RuntimeException;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -35,11 +45,21 @@ class InstallmentService
 
     private EventDispatcherInterface $eventDispatcher;
 
+    private EntityRepositoryInterface $paymentMethodRepository;
+
+    private Logger $logger;
+
     private array $_translationCache = [];
 
-    public const CALCULATION_TYPE_TIME = 'time';
+    /**
+     * @deprecated
+     */
+    public const CALCULATION_TYPE_TIME = InstallmentCalculatorContext::CALCULATION_TYPE_TIME;
 
-    public const CALCULATION_TYPE_RATE = 'rate';
+    /**
+     * @deprecated
+     */
+    public const CALCULATION_TYPE_RATE = InstallmentCalculatorContext::CALCULATION_TYPE_RATE;
 
 
     public function __construct(
@@ -47,7 +67,9 @@ class InstallmentService
         EntityRepositoryInterface $languageRepository,
         ProfileConfigService $profileConfigService,
         TransactionIdService $transactionIdService,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        EntityRepositoryInterface $paymentMethodRepository,
+        Logger $logger
     )
     {
         $this->cartService = $cartService;
@@ -55,104 +77,96 @@ class InstallmentService
         $this->profileConfigService = $profileConfigService;
         $this->transactionIdService = $transactionIdService;
         $this->eventDispatcher = $eventDispatcher;
+        $this->paymentMethodRepository = $paymentMethodRepository;
+        $this->logger = $logger;
     }
 
-    public function getInstallmentPlanData(InstallmentCalculatorContext $calcContext): array
+    public function getInstallmentPlanData(InstallmentCalculatorContext $context): array
     {
-        $salesChannelContext = $calcContext->getSalesChannelContext();
-
-        $installmentBuilders = $this->getInstallmentBuilders($calcContext);
-
-        if ($calcContext->getTotalAmount() === null) {
+        if ($context->getTotalAmount() === null) {
+            $salesChannelContext = $context->getSalesChannelContext();
             $cart = $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext);
-            $cartTotalAmount = $cart->getPrice()->getTotalPrice();
-        } else {
-            $cartTotalAmount = $calcContext->getTotalAmount();
-        }
-        if (!count($installmentBuilders)) {
-            throw new \RuntimeException('InstallmentBuilder can not be created.');
+            $context->setTotalAmount($cart->getPrice()->getTotalPrice());
         }
 
-        $matchedBuilder = null;
-        $amountJsons = $amountBuilders = [];
+        $result = $this->calculateInstallmentOffline($context);
 
-        foreach ($installmentBuilders as $installmentBuilder) {
-            if ($calcContext->getCalculationType() === self::CALCULATION_TYPE_TIME) {
-                $matchedBuilder = $installmentBuilder;
-                break; // the first should be fine.
-            }
+        if ($matchedBuilder = $result->getBuilder()) {
+            /** @var ProfileConfigMethodEntity $paymentConfig */
+            $paymentConfig = $matchedBuilder->getProfileConfig()->getPaymentMethodConfigs()->filterByMethod($context->getPaymentMethodId())->first();
 
-            if ($calcContext->getCalculationType() === self::CALCULATION_TYPE_RATE) {
-                // collect all rates for all available plans
-                $_planJson = $installmentBuilder->getInstallmentPlanAsJson($cartTotalAmount, $calcContext->getCalculationType(), $calcContext->getCalculationValue());
-                $planArray = json_decode($_planJson, true);
-                $amountBuilders[$planArray['rate']] = $installmentBuilder;
-                $amountJsons[$planArray['rate']] = $_planJson;
-            }
-        }
+            try {
+                $panJson = $matchedBuilder->getInstallmentPlanAsJson(
+                    $context->getTotalAmount(),
+                    $context->getCalculationType(),
+                    $context->getCalculationValue()
+                );
+                $matchedPlan = json_decode($panJson, true);
 
-        if ($calcContext->getCalculationType() === self::CALCULATION_TYPE_RATE) {
-            // find the best matching for the given monthly rate and the available rates from the calculated plans
-            $closestAmount = null;
-            $availableMonthlyRates = array_keys($amountBuilders);
-            sort($availableMonthlyRates);
-            foreach ($availableMonthlyRates as $availableMonthlyRate) {
-                if ($closestAmount === null || abs($calcContext->getCalculationValue() - $closestAmount) > abs($availableMonthlyRate - $calcContext->getCalculationValue())) {
-                    $closestAmount = $availableMonthlyRate;
-                } else if ($availableMonthlyRate > $calcContext->getCalculationValue()) {
-                    // if it is not a match, and the calculated rate is already higher than the given value,
-                    // we can cancel the loop, cause every higher values will not match, too.
-                    break;
+                if (is_array($matchedPlan)) {
+                    $matchedPlan['hash'] = PlanHasher::hashPlan($matchedPlan);
+                    $matchedPlan['profileUuid'] = $matchedBuilder->getProfileConfig()->getId();
+                    $matchedPlan['payment'] = [
+                        'default' => $paymentConfig->getInstallmentConfig()->getDefaultPaymentType(),
+                        'bankTransferAllowed' => $paymentConfig->getInstallmentConfig()->getIsBankTransferAllowed(),
+                        'directDebitAllowed' => $paymentConfig->getInstallmentConfig()->getIsDebitAllowed(),
+                    ];
+
+                    return $matchedPlan;
                 }
+            } catch (RequestException $e) {
+                $this->logger->error('Error during fetching installment plan: ' . $e->getMessage(), [
+                    'total_amount' => $context->getTotalAmount(),
+                    'calculation_type' => $context->getCalculationType(),
+                    'calculation_value' => $context->getCalculationValue(),
+                    'profile_id' => $matchedBuilder->getProfileConfig()->getProfileId()
+                ]);
+
+                throw $e;
             }
-            $matchedBuilder = $amountBuilders[$closestAmount];
-            $planJson = $amountJsons[$closestAmount];
         }
 
-        if ($matchedBuilder) {
-            /** @var \Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity $paymentConfig */
-            $paymentConfig = $matchedBuilder->getProfileConfig()->getPaymentMethodConfigs()->filterByMethod($salesChannelContext->getPaymentMethod()->getId())->first();
-
-            $json = $planJson ?? $matchedBuilder->getInstallmentPlanAsJson($cartTotalAmount, $calcContext->getCalculationType(), $calcContext->getCalculationValue());
-            $data = json_decode($json, true);
-            $data['hash'] = PlanHasher::hashPlan($data);
-            $data['profileUuid'] = $matchedBuilder->getProfileConfig()->getId();
-            $data['payment'] = [
-                'default' => $paymentConfig->getInstallmentConfig()->getDefaultPaymentType(),
-                'bankTransferAllowed' => $paymentConfig->getInstallmentConfig()->getIsBankTransferAllowed(),
-                'directDebitAllowed' => $paymentConfig->getInstallmentConfig()->getIsDebitAllowed(),
-            ];
-            return $data;
-        }
-
-        throw new \RuntimeException('We were not able to calculate the installment rate.');
+        throw new RuntimeException('We were not able to calculate the installment rate.');
     }
 
     /**
-     * @param \Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentCalculatorContext $context
-     * @return array<\Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentBuilder>
+     * @param InstallmentCalculatorContext $context
+     * @return array<InstallmentBuilder>
      */
     protected function getInstallmentBuilders(InstallmentCalculatorContext $context): array
     {
-        $salesChannelContext = $context->getSalesChannelContext();
+        if(!$context->getPaymentMethodId()) {
+            throw new RuntimeException('please set payment method');
+        }
 
-        if ($context->getOrder()) {
-            $profileConfigs = $this->profileConfigService->getProfileConfigByOrderEntity($context->getOrder(), $context->getPaymentMethod()->getId(), $context->getSalesChannelContext()->getContext(), false);
+        $salesChannelContext = $context->getSalesChannelContext();
+        $shopwareContext = $context->getSalesChannelContext()->getContext();
+
+        if ($context->getProfileConfigSearch()) {
+            $profileConfigs = $this->profileConfigService->searchProfileConfig($context->getProfileConfigSearch());
+        } else if ($context->getOrder()) {
+            $profileConfigs = $this->profileConfigService->getProfileConfigByOrderEntity($context->getOrder(), $context->getPaymentMethodId(), $shopwareContext, false);
         } else {
-            $profileConfigs = $this->profileConfigService->getProfileConfigBySalesChannel($salesChannelContext, $context->getPaymentMethod()->getId(), false);
+            $profileConfigs = $this->profileConfigService->getProfileConfigBySalesChannel($salesChannelContext, $context->getPaymentMethodId(), false);
         }
 
         if ($profileConfigs === null) {
-            throw new RuntimeException('no profile id found');
+            throw new ProfileNotFoundException();
+        }
+
+        // load payment method for RatepayPaymentFilterEvent
+        $paymentMethod = $this->paymentMethodRepository->search(new Criteria([$context->getPaymentMethodId()]), $shopwareContext)->first();
+        if (!$paymentMethod) {
+            throw new RuntimeException('Payment method ' . $context->getPaymentMethodId() . ' does not exist');
         }
 
         $installmentBuilders = [];
         foreach ($profileConfigs as $profileConfig) {
-            /** @var \Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity $paymentMethodConfig */
-            $paymentMethodConfig = $profileConfig->getPaymentMethodConfigs()->filterByMethod($salesChannelContext->getPaymentMethod()->getId())->first();
+            /** @var ProfileConfigMethodEntity $paymentMethodConfig */
+            $paymentMethodConfig = $profileConfig->getPaymentMethodConfigs()->filterByMethod($context->getPaymentMethodId())->first();
 
             // we need to filter the profile configs here again (also during payment method selection), cause the installment methods can have more than one profile config
-            $filterEvent = new RatepayPaymentFilterEvent($context->getPaymentMethod(), $profileConfig, $paymentMethodConfig, $salesChannelContext, $context->getOrder());
+            $filterEvent = new RatepayPaymentFilterEvent($paymentMethod, $profileConfig, $paymentMethodConfig, $salesChannelContext, $context->getOrder());
             /** @var RatepayPaymentFilterEvent $filterEvent */
             $filterEvent = $this->eventDispatcher->dispatch($filterEvent);
             if ($filterEvent->isAvailable() === false) {
@@ -164,7 +178,7 @@ class InstallmentService
                 continue;
             }
 
-            $installmentBuilders[] = new InstallmentBuilder($profileConfig, $context->getLanguageId(), $context->getBillingCountry()->getIso());
+            $installmentBuilders[] = new InstallmentBuilder($profileConfig, $paymentMethodConfig, $context->getLanguageId(), $context->getBillingCountry()->getIso());
         }
 
         return $installmentBuilders;
@@ -196,6 +210,93 @@ class InstallmentService
         $data['defaults']['value'] = $data['rp_allowedMonths'][0];
 
         return $data;
+    }
+
+    public function calculateInstallmentOffline(InstallmentCalculatorContext $context): ?OfflineInstallmentCalculatorResult
+    {
+        $installmentBuilders = $this->getInstallmentBuilders($context);
+
+        if (!count($installmentBuilders)) {
+            throw new \Exception('No installment builder where found');
+        }
+
+        /**
+         * @var array{0: InstallmentBuilder, 0: int} $amountBuilders
+         */
+        $amountBuilders = [];
+
+        foreach ($installmentBuilders as $installmentBuilder) {
+            $installmentConfig = $installmentBuilder->getMethodConfig()->getInstallmentConfig();
+
+            if ($context->getCalculationType() === InstallmentCalculatorContext::CALCULATION_TYPE_TIME) {
+                $rate = $this->calculateMonthlyRate($context->getTotalAmount(), $installmentConfig, $context->getCalculationValue());
+                if ($rate >= $installmentConfig->getRateMin()) {
+                    $amountBuilders[$rate] = [$installmentBuilder, $context->getCalculationValue()];
+                    break; // an explicit month was requested and there is a result. It is not required to compare it with other profiles
+                }
+            }
+
+            if ($context->getCalculationType() === InstallmentCalculatorContext::CALCULATION_TYPE_RATE) {
+                // collect all rates for all available plans
+                foreach ($installmentConfig->getAllowedMonths() as $month) {
+                    $rate = $this->calculateMonthlyRate($context->getTotalAmount(), $installmentConfig, $month);
+                    if ($rate >= $installmentConfig->getRateMin()) {
+                        $amountBuilders[(string)$rate] = [$installmentBuilder, $month];
+                        // we will NOT break the parent foreach, cause there might be a better result (of a builder) which is nearer to the requested value than the current.
+                    }
+                }
+            }
+        }
+
+        $count = count($amountBuilders);
+        if ($count === 0) {
+            return null;
+        } else if ($count > 1) {
+            // find the best matching for the given monthly rate and the available rates from the calculated plans
+            $monthlyRate = null;
+            $availableMonthlyRates = array_keys($amountBuilders);
+            sort($availableMonthlyRates);
+            if ($context->isUseCheapestRate()) {
+                $monthlyRate = $availableMonthlyRates[0];
+            } else {
+                foreach ($availableMonthlyRates as $availableMonthlyRate) {
+                    if ($monthlyRate === null || abs($context->getCalculationValue() - (float)$monthlyRate) > abs($availableMonthlyRate - $context->getCalculationValue())) {
+                        $monthlyRate = $availableMonthlyRate;
+                    } else if ($availableMonthlyRate > $context->getCalculationValue()) {
+                        // if it is not a match, and the calculated rate is already higher than the given value,
+                        // we can cancel the loop, cause every higher values will not match, either.
+                        break;
+                    }
+                }
+            }
+        } else {
+            $monthlyRate = array_key_first($amountBuilders);
+        }
+
+        return new OfflineInstallmentCalculatorResult(
+            $context,
+            $amountBuilders[$monthlyRate][0],
+            $amountBuilders[$monthlyRate][1],
+            (float)$monthlyRate
+        );
+    }
+
+    private function calculateMonthlyRate($totalAmount, ProfileConfigMethodInstallmentEntity $config, $month)
+    {
+        $mbContent = new ModelBuilder('Content');
+        $mbContent->setArray([
+            'InstallmentCalculation' => [
+                'Amount' => $totalAmount,
+                'PaymentFirstday' => PaymentFirstday::getFirstdayForType($config->getDefaultPaymentType()),
+                'InterestRate' => $config->getDefaultInterestRate(),
+                'ServiceCharge' => $config->getServiceCharge(),
+                'CalculationTime' => [
+                    'Month' => $month
+                ]
+            ]
+        ]);
+
+        return (new OfflineInstallmentCalculation())->callOfflineCalculation($mbContent)->subtype('calculation-by-time');
     }
 
     public function getTranslations(SalesChannelContext $salesChannelContext): array

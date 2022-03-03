@@ -32,6 +32,10 @@ class ProfileConfigMethodInstallmentEntity extends Entity
 
     public const FIELD_DEFAULT_PAYMENT_TYPE = 'defaultPaymentType';
 
+    public const FIELD_DEFAULT_INTEREST_RATE = 'defaultInterestRate';
+
+    public const FIELD_SERVICE_CHARGE = 'serviceCharge';
+
     protected array $allowedMonths = [];
 
     protected ?bool $isBankTransferAllowed = null;
@@ -41,6 +45,10 @@ class ProfileConfigMethodInstallmentEntity extends Entity
     protected float $rateMin;
 
     protected string $defaultPaymentType;
+
+    protected float $defaultInterestRate;
+
+    protected float $serviceCharge;
 
     public function getAllowedMonths(): array
     {
@@ -65,5 +73,15 @@ class ProfileConfigMethodInstallmentEntity extends Entity
     public function getDefaultPaymentType(): string
     {
         return $this->defaultPaymentType;
+    }
+
+    public function getDefaultInterestRate(): float
+    {
+        return $this->defaultInterestRate;
+    }
+
+    public function getServiceCharge(): float
+    {
+        return $this->serviceCharge;
     }
 }

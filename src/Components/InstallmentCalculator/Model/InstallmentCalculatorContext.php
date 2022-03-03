@@ -4,6 +4,7 @@
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Model;
 
 
+use Ratepay\RpayPayments\Components\ProfileConfig\Dto\ProfileConfigSearch;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\System\Country\CountryEntity;
@@ -11,6 +12,10 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class InstallmentCalculatorContext
 {
+
+    public const CALCULATION_TYPE_TIME = 'time';
+
+    public const CALCULATION_TYPE_RATE = 'rate';
 
     private SalesChannelContext $salesChannelContext;
 
@@ -20,8 +25,18 @@ class InstallmentCalculatorContext
 
     private ?float $totalAmount = null;
 
+    private bool $isUseCheapestRate = false;
+
     private ?OrderEntity $order = null;
+
+    /**
+     * @deprecated
+     */
     private ?PaymentMethodEntity $paymentMethod = null;
+
+    private ?string $paymentMethodId = null;
+
+    private ?ProfileConfigSearch $profileConfigSearch = null;
 
     public function __construct(
         SalesChannelContext $salesChannelContext,
@@ -89,17 +104,39 @@ class InstallmentCalculatorContext
         return $this;
     }
 
+    public function getPaymentMethodId(): ?string
+    {
+        return $this->paymentMethodId;
+    }
+
+    public function setPaymentMethodId(?string $paymentMethodId): self
+    {
+        $this->paymentMethodId = $paymentMethodId;
+
+        return $this;
+    }
+
+    /**
+     * @return PaymentMethodEntity|null
+     * @deprecated please use getPaymentMethodId
+     */
     public function getPaymentMethod(): ?PaymentMethodEntity
     {
         return $this->paymentMethod ?? $this->salesChannelContext->getPaymentMethod();
     }
 
-    public function setPaymentMethod(?PaymentMethodEntity $paymentMethod): void
+    /**
+     * @deprecated please use setPaymentMethodId
+     */
+    public function setPaymentMethod(?PaymentMethodEntity $paymentMethod): self
     {
         $this->paymentMethod = $paymentMethod;
+        $this->paymentMethodId = $paymentMethod->getId();
+
+        return $this;
     }
 
-    public function getLanguageId()
+    public function getLanguageId(): string
     {
         return $this->order ? $this->order->getLanguageId() : $this->salesChannelContext->getContext()->getLanguageId();
     }
@@ -111,6 +148,30 @@ class InstallmentCalculatorContext
         }
 
         return $this->salesChannelContext->getCustomer()->getActiveBillingAddress()->getCountry();
+    }
+
+    public function isUseCheapestRate(): bool
+    {
+        return $this->isUseCheapestRate;
+    }
+
+    public function setIsUseCheapestRate(bool $isUseCheapestRate): self
+    {
+        $this->isUseCheapestRate = $isUseCheapestRate;
+
+        return $this;
+    }
+
+    public function getProfileConfigSearch(): ?ProfileConfigSearch
+    {
+        return $this->profileConfigSearch;
+    }
+
+    public function setProfileConfigSearch(?ProfileConfigSearch $profileConfigSearch): self
+    {
+        $this->profileConfigSearch = $profileConfigSearch;
+
+        return $this;
     }
 
 }

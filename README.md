@@ -34,6 +34,9 @@
 
 ## Changelog
 
+### Version 4.0.0 - WIP
+* RATESWSX-201 - implement instalment calculator in checkout
+
 ### Version 3.3.1 - WIP
 
 * RATESWSX-228 - administration: fix display of quantity in order-items panel

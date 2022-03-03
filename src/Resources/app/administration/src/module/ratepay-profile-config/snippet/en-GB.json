@@ -67,7 +67,9 @@
                                 "isBankTransferAllowed": "is bank transfer allowed",
                                 "isDebitAllowed": "is debit allowed",
                                 "rateMin": "min. monthly rate",
-                                "defaultPaymentType": "default payment type"
+                                "defaultPaymentType": "default payment type",
+                                "defaultInterestRate": "default interest rate",
+                                "serviceCharge": "service charge"
                             }
                         }
                     }

@@ -37,7 +37,7 @@
     },
     "require": {
         "php": "^7.4 || ^8.0",
-        "ratepay/php-library": "^1.5",
+        "ratepay/php-library": "^1.7",
         "shopware/core": "^6.4.0",
         "shopware/administration": "^6.4.0",
         "shopware/storefront": "^6.4.0",

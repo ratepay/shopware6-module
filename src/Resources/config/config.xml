@@ -114,7 +114,7 @@
             <label lang="de-DE">Ratenzahlung (0% Finanzierung)</label>
         </input-field>
     </card>
-
+    
     <card>
         <title>Bidirectionality</title>
         <title lang="de-DE">Bidirektionalität</title>

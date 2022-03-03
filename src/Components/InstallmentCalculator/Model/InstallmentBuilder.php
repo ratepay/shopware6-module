@@ -5,18 +5,24 @@ namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Model;
 
 
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
 
 class InstallmentBuilder extends \RatePAY\Frontend\InstallmentBuilder
 {
 
-    /**
-     * @var \Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity
-     */
     private ProfileConfigEntity $profileConfig;
 
-    public function __construct(ProfileConfigEntity $profileConfig, $language = 'DE', $country = 'DE')
+    private ProfileConfigMethodEntity $methodConfig;
+
+    public function __construct(
+        ProfileConfigEntity $profileConfig,
+        ProfileConfigMethodEntity $methodConfig,
+        $language = 'DE',
+        $country = 'DE'
+    )
     {
         $this->profileConfig = $profileConfig;
+        $this->methodConfig = $methodConfig;
 
         parent::__construct(
             $profileConfig->isSandbox(),
@@ -39,11 +45,13 @@ class InstallmentBuilder extends \RatePAY\Frontend\InstallmentBuilder
         parent::setProfileId($profileId);
     }
 
-    /**
-     * @return \Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity
-     */
     public function getProfileConfig(): ProfileConfigEntity
     {
         return $this->profileConfig;
+    }
+
+    public function getMethodConfig(): ProfileConfigMethodEntity
+    {
+        return $this->methodConfig;
     }
 }

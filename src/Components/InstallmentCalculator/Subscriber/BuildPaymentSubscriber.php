@@ -24,6 +24,7 @@ use Ratepay\RpayPayments\Components\RatepayApi\Event\BuildEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\PaymentFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
 use Ratepay\RpayPayments\Util\MethodHelper;
+use Ratepay\RpayPayments\Util\PaymentFirstday;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -74,10 +75,10 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
             $paymentType = $requestedInstallment->get('paymentType');
             switch ($paymentType) {
                 case 'DIRECT-DEBIT':
-                    $paymentFirstDay = 2;
+                    $paymentFirstDay = PaymentFirstday::DIRECT_DEBIT;
                     break;
                 case 'BANK-TRANSFER':
-                    $paymentFirstDay = 28;
+                    $paymentFirstDay = PaymentFirstday::BANK_TRANSFER;
                     break;
                 default:
                     throw new InvalidArgumentException('invalid paymentType');

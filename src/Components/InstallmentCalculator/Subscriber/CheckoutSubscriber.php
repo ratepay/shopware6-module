@@ -47,6 +47,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
 
         if (MethodHelper::isInstallmentMethod($paymentMethod->getHandlerIdentifier())) {
             $calcContext = (new InstallmentCalculatorContext($salesChannelContext, '', ''))
+                ->setPaymentMethodId($paymentMethod->getId())
                 ->setOrder($order);
 
             if (!$order) {
