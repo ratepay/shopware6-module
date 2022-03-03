@@ -4,13 +4,26 @@
 // file that was distributed with this source code.
 
 .ratepay-article-panel {
-    .sw-data-grid {
+    .sw-data-grid.is--compact {
         border-top: 1px solid #D1D9E0;
 
-        &__cell--quantity {
+        .sw-data-grid__cell--quantity {
+            .sw-data-grid__cell-content {
+                padding: 0;
+
+                &, div, select {
+                    height: 100%;
+                }
+            }
+
+            .sw-block-field__block {
+                border: 0;
+            }
+
             select {
-                padding: 5px;
-                text-align: center;
+                text-align: right;
+                padding-right: 30px;
+                background: transparent;
             }
         }
     }
