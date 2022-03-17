@@ -159,6 +159,6 @@ class RpayPayments extends Plugin
                 }
             }
         }
-        $containerBuilder->addCompilerPass(new PluginVersionCompilerPass(__DIR__ . '/../composer.json'));
+        $containerBuilder->addCompilerPass(new PluginVersionCompilerPass(__DIR__ . '/../'));
     }
 }
