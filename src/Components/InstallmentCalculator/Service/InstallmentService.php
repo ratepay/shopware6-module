@@ -21,7 +21,9 @@ use Ratepay\RpayPayments\Components\InstallmentCalculator\Util\PlanHasher;
 use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodInstallmentEntity;
-use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigService;
+use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileByOrderEntity;
+use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileSearchService;
+use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileBySalesChannelContext;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService;
 use Ratepay\RpayPayments\Util\PaymentFirstday;
 use RatePAY\Service\LanguageService;
@@ -35,8 +37,6 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class InstallmentService
 {
-    protected ProfileConfigService $profileConfigService;
-
     private CartService $cartService;
 
     private EntityRepositoryInterface $languageRepository;
@@ -48,6 +48,12 @@ class InstallmentService
     private EntityRepositoryInterface $paymentMethodRepository;
 
     private Logger $logger;
+
+    private ProfileSearchService $profileSearchService;
+
+    private ProfileByOrderEntity $profileByOrderEntity;
+
+    private ProfileBySalesChannelContext $profileBySalesChannelContext;
 
     private array $_translationCache = [];
 
@@ -65,7 +71,9 @@ class InstallmentService
     public function __construct(
         CartService $cartService,
         EntityRepositoryInterface $languageRepository,
-        ProfileConfigService $profileConfigService,
+        ProfileSearchService $profileSearchService,
+        ProfileByOrderEntity $profileByOrderEntity,
+        ProfileBySalesChannelContext $profileBySalesChannelContext,
         TransactionIdService $transactionIdService,
         EventDispatcherInterface $eventDispatcher,
         EntityRepositoryInterface $paymentMethodRepository,
@@ -74,11 +82,13 @@ class InstallmentService
     {
         $this->cartService = $cartService;
         $this->languageRepository = $languageRepository;
-        $this->profileConfigService = $profileConfigService;
         $this->transactionIdService = $transactionIdService;
         $this->eventDispatcher = $eventDispatcher;
         $this->paymentMethodRepository = $paymentMethodRepository;
         $this->logger = $logger;
+        $this->profileByOrderEntity = $profileByOrderEntity;
+        $this->profileBySalesChannelContext = $profileBySalesChannelContext;
+        $this->profileSearchService = $profileSearchService;
     }
 
     public function getInstallmentPlanData(InstallmentCalculatorContext $context): array
@@ -135,7 +145,7 @@ class InstallmentService
      */
     protected function getInstallmentBuilders(InstallmentCalculatorContext $context): array
     {
-        if(!$context->getPaymentMethodId()) {
+        if (!$context->getPaymentMethodId()) {
             throw new RuntimeException('please set payment method');
         }
 
@@ -143,14 +153,16 @@ class InstallmentService
         $shopwareContext = $context->getSalesChannelContext()->getContext();
 
         if ($context->getProfileConfigSearch()) {
-            $profileConfigs = $this->profileConfigService->searchProfileConfig($context->getProfileConfigSearch());
-        } else if ($context->getOrder()) {
-            $profileConfigs = $this->profileConfigService->getProfileConfigByOrderEntity($context->getOrder(), $context->getPaymentMethodId(), $shopwareContext, false);
+            $profileConfigs = $this->profileSearchService->search($context->getProfileConfigSearch());
         } else {
-            $profileConfigs = $this->profileConfigService->getProfileConfigBySalesChannel($salesChannelContext, $context->getPaymentMethodId(), false);
+            $searchService = $context->getOrder() ? $this->profileByOrderEntity : $this->profileBySalesChannelContext;
+            $profileConfigs = $searchService->search(
+                $searchService->createSearchObject($context->getOrder() ?? $salesChannelContext)
+                    ->setPaymentMethodId($context->getPaymentMethodId())
+            );
         }
 
-        if ($profileConfigs === null) {
+        if ($profileConfigs->count() === 0) {
             throw new ProfileNotFoundException();
         }
 
@@ -161,7 +173,7 @@ class InstallmentService
         }
 
         $installmentBuilders = [];
-        foreach ($profileConfigs as $profileConfig) {
+        foreach ($profileConfigs->getElements() as $profileConfig) {
             /** @var ProfileConfigMethodEntity $paymentMethodConfig */
             $paymentMethodConfig = $profileConfig->getPaymentMethodConfigs()->filterByMethod($context->getPaymentMethodId())->first();
 

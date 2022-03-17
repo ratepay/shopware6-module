@@ -54,7 +54,7 @@ abstract class AbstractModifyRequest extends AbstractRequest
         $this->externalFactory = $externalFactory;
     }
 
-    protected function getProfileConfig(AbstractRequestData $requestData): ProfileConfigEntity
+    protected function getProfileConfig(AbstractRequestData $requestData): ?ProfileConfigEntity
     {
         /** @var OrderOperationData $requestData */
 

@@ -35,7 +35,9 @@
 ## Changelog
 
 ### Version 4.0.0 - WIP
+
 * RATESWSX-201 - implement instalment calculator in checkout
+* RATESWSX-233 - improve class dependencies to improve the performance of class loading
 
 ### Version 3.3.1 - WIP
 

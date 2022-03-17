@@ -9,12 +9,12 @@
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 
-use Enqueue\Util\UUID;
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
 use RatePAY\RequestBuilder;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
-use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigService;
+use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileByOrderEntity;
+use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileSearchService;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\CustomerFactory;
@@ -22,7 +22,6 @@ use Ratepay\RpayPayments\Components\RatepayApi\Factory\ExternalFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\PaymentFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
-use Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -48,37 +47,36 @@ class PaymentRequestService extends AbstractRequest
 
     private PaymentFactory $paymentFactory;
 
-    private ProfileConfigService $profileConfigService;
-
-    private TransactionIdService $transactionIdService;
 
     private ExternalFactory $externalFactory;
+    private ProfileSearchService $profileConfigSearch;
+    private ProfileByOrderEntity $profileConfigOrderSearch;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         HeadFactory $headFactory,
-        TransactionIdService $transactionIdService,
-        ProfileConfigService $profileConfigService,
+        ProfileSearchService $profileConfigSearch,
+        ProfileByOrderEntity $profileConfigOrderSearch,
         ShoppingBasketFactory $shoppingBasketFactory,
         CustomerFactory $customerFactory,
         PaymentFactory $paymentFactory,
         ExternalFactory $externalFactory
-    ) {
+    )
+    {
         parent::__construct($eventDispatcher, $headFactory);
         $this->shoppingBasketFactory = $shoppingBasketFactory;
         $this->customerFactory = $customerFactory;
         $this->paymentFactory = $paymentFactory;
-        $this->profileConfigService = $profileConfigService;
-        $this->transactionIdService = $transactionIdService;
         $this->externalFactory = $externalFactory;
+        $this->profileConfigSearch = $profileConfigSearch;
+        $this->profileConfigOrderSearch = $profileConfigOrderSearch;
     }
 
     protected function initRequest(AbstractRequestData $requestData): void
     {
         /* @var PaymentRequestData $requestData */
         if ($requestData->getRatepayTransactionId() === null) {
-            $transactionId = $this->transactionIdService->getTransactionId($requestData->getSalesChannelContext(), UUID::generate());
-            $requestData->setRatepayTransactionId($transactionId);
+            throw new \Exception('no transaction id given'); // TODO add exception
         }
     }
 
@@ -111,11 +109,10 @@ class PaymentRequestService extends AbstractRequest
         }
 
         /* @var $requestData PaymentRequestData */
-        return $this->profileConfigService->getProfileConfigByOrderEntity(
-            $requestData->getOrder(),
-            $requestData->getTransaction()->getPaymentMethodId(),
-            $requestData->getContext()
-        );
+        $search = $this->profileConfigOrderSearch->createSearchObject($requestData->getOrder());
+        $search->setPaymentMethodId($requestData->getTransaction()->getPaymentMethodId());
+
+        return $this->profileConfigSearch->search($search)->first();
     }
 
     protected function supportsRequestData(AbstractRequestData $requestData): bool
