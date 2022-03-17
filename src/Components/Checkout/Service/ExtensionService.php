@@ -17,8 +17,8 @@ use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayPositionEntity;
 use Ratepay\RpayPayments\Components\Checkout\Util\BankAccountHolderHelper;
-use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
-use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigService;
+use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileByOrderEntity;
+use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileBySalesChannelContext;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService;
 use Ratepay\RpayPayments\Util\MethodHelper;
@@ -40,29 +40,29 @@ class ExtensionService
 
     private EntityRepositoryInterface $lineItemExtensionRepository;
 
-    private InstallmentService $installmentService;
-
     private TransactionIdService $transactionIdService;
 
-    private ProfileConfigService $profileConfigService;
-
     private EventDispatcherInterface $eventDispatcher;
+
+    private ProfileBySalesChannelContext $profileBySalesChannelContext;
+
+    private ProfileByOrderEntity $profileByOrderEntity;
 
     public function __construct(
         EntityRepositoryInterface $orderExtensionRepository,
         EntityRepositoryInterface $lineItemExtensionRepository,
-        InstallmentService $installmentService,
         TransactionIdService $transactionIdService,
-        ProfileConfigService $profileConfigService,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        ProfileBySalesChannelContext $profileBySalesChannelContext,
+        ProfileByOrderEntity $profileByOrderEntity
     )
     {
         $this->orderExtensionRepository = $orderExtensionRepository;
         $this->lineItemExtensionRepository = $lineItemExtensionRepository;
-        $this->installmentService = $installmentService;
         $this->transactionIdService = $transactionIdService;
-        $this->profileConfigService = $profileConfigService;
         $this->eventDispatcher = $eventDispatcher;
+        $this->profileBySalesChannelContext = $profileBySalesChannelContext;
+        $this->profileByOrderEntity = $profileByOrderEntity;
     }
 
     public function createLineItemExtensionEntities(
@@ -146,9 +146,10 @@ class ExtensionService
     {
         $paymentMethod = $salesChannelContext->getPaymentMethod();
 
-        $profileConfig = $order ?
-            $this->profileConfigService->getProfileConfigByOrderEntity($order, $paymentMethod->getId(), $salesChannelContext->getContext(), true) :
-            $this->profileConfigService->getProfileConfigBySalesChannel($salesChannelContext, $paymentMethod->getId(), true);
+        $searchService = $order ? $this->profileByOrderEntity : $this->profileBySalesChannelContext;
+        $profileConfig = $searchService->search(
+            $searchService->createSearchObject($order ?? $salesChannelContext)->setPaymentMethodId($paymentMethod->getId())
+        )->first();
 
         if ($profileConfig === null) {
             // should never occur

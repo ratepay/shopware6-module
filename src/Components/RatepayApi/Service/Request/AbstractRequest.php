@@ -110,7 +110,7 @@ abstract class AbstractRequest
         return $requestBuilder;
     }
 
-    protected function getProfileConfig(AbstractRequestData $requestData): ProfileConfigEntity
+    protected function getProfileConfig(AbstractRequestData $requestData): ?ProfileConfigEntity
     {
         return $requestData->getProfileConfig();
     }

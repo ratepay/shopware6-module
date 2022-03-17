@@ -19,7 +19,6 @@ use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
 use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
-use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigService;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
 use Ratepay\RpayPayments\Components\RedirectException\Exception\ForwardException;
@@ -31,6 +30,7 @@ use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -48,22 +48,23 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
 
     private EventDispatcherInterface $eventDispatcher;
 
-    private ProfileConfigService $profileConfigService;
-
     private ConfigService $configService;
+
+    private EntityRepositoryInterface $profileRepository;
 
     public function __construct(
         EntityRepositoryInterface $orderRepository,
+        EntityRepositoryInterface $profileRepository,
         PaymentRequestService $paymentRequestService,
-        ProfileConfigService $profileConfigService,
         EventDispatcherInterface $eventDispatcher,
         ConfigService $configService
-    ) {
+    )
+    {
         $this->orderRepository = $orderRepository;
         $this->paymentRequestService = $paymentRequestService;
         $this->eventDispatcher = $eventDispatcher;
-        $this->profileConfigService = $profileConfigService;
         $this->configService = $configService;
+        $this->profileRepository = $profileRepository;
     }
 
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
@@ -88,10 +89,12 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
                 $this->configService->isSendShippingCostsAsCartItem()
             );
 
-            if($ratepayData->has('profile_uuid')) {
-                $paymentRequestData->setProfileConfig(
-                    $this->profileConfigService->getProfileConfigById($ratepayData->get('profile_uuid'), $salesChannelContext->getContext())
-                );
+            if ($ratepayData->has('profile_uuid')) {
+                $profile = $this->profileRepository->search(new Criteria([$ratepayData->get('profile_uuid')]), Context::createDefaultContext())->first();
+                if (!$profile) {
+                    throw new ProfileNotFoundException();
+                }
+                $paymentRequestData->setProfileConfig($profile);
             }
 
             $this->eventDispatcher->dispatch(new BeforePaymentEvent($paymentRequestData));
@@ -109,7 +112,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
                     $response
                 ));
             } else {
-                // will be catched a few lines later.
+                // will be caught a few lines later.
                 throw new RatepayException($response->getCustomerMessage() ?: $response->getReasonMessage());
             }
         } catch (RatepayException $e) {

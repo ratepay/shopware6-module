@@ -10,7 +10,7 @@
 namespace Ratepay\RpayPayments\Components\ProfileConfig\Controller;
 
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
-use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigService;
+use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigManagement;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,11 +22,11 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ProfileConfigController extends AbstractController
 {
-    private ProfileConfigService $profileConfigService;
+    private ProfileConfigManagement $profileManagement;
 
-    public function __construct(ProfileConfigService $profileConfigService)
+    public function __construct(ProfileConfigManagement $profileManagement)
     {
-        $this->profileConfigService = $profileConfigService;
+        $this->profileManagement = $profileManagement;
     }
 
     /**
@@ -37,7 +37,7 @@ class ProfileConfigController extends AbstractController
     {
         if ($id = $request->request->get('id')) {
             try {
-                $configs = $this->profileConfigService->refreshProfileConfigs([$id]);
+                $configs = $this->profileManagement->refreshProfileConfigs([$id]);
                 $response = [
                     'error' => [],
                     'success' => [],

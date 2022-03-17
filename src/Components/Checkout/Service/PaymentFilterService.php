@@ -11,7 +11,8 @@ namespace Ratepay\RpayPayments\Components\Checkout\Service;
 
 use Ratepay\RpayPayments\Components\Checkout\Event\RatepayPaymentFilterEvent;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\Collection\ProfileConfigMethodCollection;
-use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigService;
+use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileByOrderEntity;
+use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileBySalesChannelContext;
 use Ratepay\RpayPayments\Util\MethodHelper;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
@@ -23,15 +24,19 @@ class PaymentFilterService
 {
     private EventDispatcherInterface $eventDispatcher;
 
-    private ProfileConfigService $profileConfigService;
+    private ProfileByOrderEntity $profileByOrderEntity;
+
+    private ProfileBySalesChannelContext $profileBySalesChannelContext;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
-        ProfileConfigService $profileConfigService
+        ProfileByOrderEntity $profileByOrderEntity,
+        ProfileBySalesChannelContext $profileBySalesChannelContext
     )
     {
         $this->eventDispatcher = $eventDispatcher;
-        $this->profileConfigService = $profileConfigService;
+        $this->profileByOrderEntity = $profileByOrderEntity;
+        $this->profileBySalesChannelContext = $profileBySalesChannelContext;
     }
 
     public function filterPaymentMethods(PaymentMethodCollection $paymentMethodCollection, SalesChannelContext $salesChannelContext, OrderEntity $order = null): PaymentMethodCollection
@@ -42,15 +47,7 @@ class PaymentFilterService
                 return true;
             }
 
-            if ($order) {
-                // order has been already placed
-                $profileConfig = $this->profileConfigService->getProfileConfigByOrderEntity(
-                    $order,
-                    $paymentMethod->getId(),
-                    $salesChannelContext->getContext()
-                );
-            } else {
-                // order has not been placed
+            if (!$order) {
                 $customer = $salesChannelContext->getCustomer();
                 if ($customer === null ||
                     $customer->getActiveBillingAddress() === null ||
@@ -58,12 +55,12 @@ class PaymentFilterService
                 ) {
                     return false;
                 }
-
-                $profileConfig = $this->profileConfigService->getProfileConfigBySalesChannel(
-                    $salesChannelContext,
-                    $paymentMethod->getId()
-                );
             }
+
+            $searchService = $order ? $this->profileByOrderEntity : $this->profileBySalesChannelContext;
+            $profileConfig = $searchService->search(
+                $searchService->createSearchObject($order ?? $salesChannelContext)->setPaymentMethodId($paymentMethod->getId())
+            )->first();
 
             if ($profileConfig === null) {
                 // no profile config for this sales channel has been found

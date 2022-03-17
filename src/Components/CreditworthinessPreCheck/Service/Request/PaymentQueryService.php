@@ -14,7 +14,8 @@ use RatePAY\Model\Request\SubModel\Head;
 use RatePAY\RequestBuilder;
 use Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Dto\PaymentQueryData;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
-use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigService;
+use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileSearchService;
+use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileBySalesChannelContext;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\CustomerFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory;
@@ -39,24 +40,26 @@ class PaymentQueryService extends AbstractRequest
 
     protected ?string $_subType = 'full';
 
-    private ProfileConfigService $profileConfigService;
-
     private ShoppingBasketFactory $shoppingBasketFactory;
 
     private CustomerFactory $customerFactory;
+    private ProfileBySalesChannelContext $salesChannelSearch;
+    private ProfileSearchService $profileSearchService;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         HeadFactory $headFactory,
         ShoppingBasketFactory $shoppingBasketFactory,
         CustomerFactory $customerFactory,
-        ProfileConfigService $profileConfigService
+        ProfileBySalesChannelContext $salesChannelSearch,
+        ProfileSearchService $profileSearchService
     )
     {
         parent::__construct($eventDispatcher, $headFactory);
         $this->shoppingBasketFactory = $shoppingBasketFactory;
         $this->customerFactory = $customerFactory;
-        $this->profileConfigService = $profileConfigService;
+        $this->salesChannelSearch = $salesChannelSearch;
+        $this->profileSearchService = $profileSearchService;
     }
 
     protected function getRequestHead(AbstractRequestData $requestData): Head
@@ -76,20 +79,21 @@ class PaymentQueryService extends AbstractRequest
             ->setCustomer($this->customerFactory->getData($requestData));
     }
 
-    protected function getProfileConfig(AbstractRequestData $requestData): ProfileConfigEntity
+    protected function getProfileConfig(AbstractRequestData $requestData): ?ProfileConfigEntity
     {
         /* @var $requestData PaymentQueryData */
 
         /** @var \Shopware\Core\Framework\Validation\DataBag\RequestDataBag $ratepayData */
         $ratepayData = $requestData->getRequestDataBag()->get('ratepay');
+
         if ($ratepayData->has('profile_uuid')) {
-            return $this->profileConfigService->getProfileConfigById(
-                $ratepayData->get('profile_uuid'),
-                $requestData->getSalesChannelContext()->getContext()
-            );
+            return $this->profileSearchService->getProfileConfigById($ratepayData->get('profile_uuid'));
         }
 
-        return $this->profileConfigService->getProfileConfigBySalesChannel($requestData->getSalesChannelContext());
+        return $this->salesChannelSearch->search(
+            $this->salesChannelSearch->createSearchObject($requestData->getSalesChannelContext())
+                ->setTotalAmount($requestData->getCart()->getPrice()->getTotalPrice())
+        )->first();
     }
 
     protected function supportsRequestData(AbstractRequestData $requestData): bool

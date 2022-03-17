@@ -15,7 +15,6 @@ use RatePAY\Model\Response\PaymentInit;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentInitData;
 use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
-use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigService;
 use Ratepay\RpayPayments\Components\RatepayApi\Exception\TransactionIdFetchFailedException;
 use Ratepay\RpayPayments\Components\RatepayApi\Model\TransactionIdEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentInitService;
@@ -37,26 +36,28 @@ class TransactionIdService
 
     private PaymentInitService $paymentInitService;
 
-    private ProfileConfigService $profileConfigService;
+    private EntityRepositoryInterface $profileRepository;
 
     public function __construct(
         EntityRepositoryInterface $transactionIdRepository,
-        ProfileConfigService $profileConfigService,
+        EntityRepositoryInterface $profileRepository,
         PaymentInitService $paymentInitService
     )
     {
         $this->transactionIdRepository = $transactionIdRepository;
         $this->paymentInitService = $paymentInitService;
-        $this->profileConfigService = $profileConfigService;
+        $this->profileRepository = $profileRepository;
+    }
+
+    public function getStoredTransactionId(SalesChannelContext $salesChannelContext, string $prefix = ''): ?TransactionIdEntity
+    {
+        return $this->searchTransaction($this->getIdentifier($salesChannelContext, $prefix));
     }
 
     /**
-     * @throws TransactionIdFetchFailedException
-     */
-    /**
      * @param SalesChannelContext $salesChannelContext
      * @param string $prefix
-     * @param ProfileConfigEntity|null|string $profileConfigId
+     * @param ProfileConfigEntity|null|string $profileConfigId if string: uuid of the profile
      * @return string
      * @throws ProfileNotFoundException
      * @throws TransactionIdFetchFailedException
@@ -66,24 +67,15 @@ class TransactionIdService
         if ($profileConfigId instanceof ProfileConfigEntity) {
             $profileConfig = $profileConfigId;
         } else {
-            if ($profileConfigId) {
-                $profileConfig = $this->profileConfigService->getProfileConfigById($profileConfigId, $salesChannelContext->getContext());
-            } else {
-                $profileConfig = $this->profileConfigService->getProfileConfigBySalesChannel($salesChannelContext);
-            }
+            $profileConfig = $this->profileRepository->search(new Criteria([$profileConfigId]), Context::createDefaultContext())->first();
         }
 
         if ($profileConfig === null) {
             throw new ProfileNotFoundException();
         }
 
-        $identifier = $prefix . $salesChannelContext->getToken();
-
-        $criteria = (new Criteria())
-            ->addFilter(new EqualsFilter(TransactionIdEntity::FIELD_IDENTIFIER, $identifier))
-            ->addFilter(new EqualsFilter(TransactionIdEntity::FIELD_PROFILE_ID, $profileConfig->getId()))
-            ->setLimit(1);
-        $transactionIdEntity = $this->transactionIdRepository->search($criteria, $salesChannelContext->getContext())->first();
+        $identifier = $this->getIdentifier($salesChannelContext, $prefix);
+        $transactionIdEntity = $this->searchTransaction($identifier, $profileConfig);
 
         $transactionId = null;
         try {
@@ -112,6 +104,24 @@ class TransactionIdService
             return $transactionId;
         }
         throw new TransactionIdFetchFailedException();
+    }
+
+    private function searchTransaction(string $identifier, ProfileConfigEntity $profileConfigEntity = null)
+    {
+        $criteria = (new Criteria())
+            ->addFilter(new EqualsFilter(TransactionIdEntity::FIELD_IDENTIFIER, $identifier))
+            ->setLimit(1);
+
+        if ($profileConfigEntity) {
+            $criteria->addFilter(new EqualsFilter(TransactionIdEntity::FIELD_PROFILE_ID, $profileConfigEntity->getId()));
+        }
+
+        return $this->transactionIdRepository->search($criteria, Context::createDefaultContext())->first();
+    }
+
+    private function getIdentifier(SalesChannelContext $salesChannelContext, string $prefix = '')
+    {
+        return $prefix . $salesChannelContext->getToken();
     }
 
     public function deleteTransactionId(string $transactionId, Context $context): void

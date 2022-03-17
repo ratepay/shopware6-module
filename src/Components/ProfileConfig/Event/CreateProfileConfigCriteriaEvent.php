@@ -28,6 +28,10 @@ class CreateProfileConfigCriteriaEvent
 
     private bool $differentAddresses;
 
+    private bool $isB2b;
+
+    private float $totalAmount;
+
     private Context $context;
 
     public function __construct(
@@ -38,6 +42,8 @@ class CreateProfileConfigCriteriaEvent
         string $salesChannelId,
         string $currencyIso,
         bool $differentAddresses,
+        bool $isB2b,
+        float $totalAmount,
         Context $context
     ) {
         $this->criteria = $criteria;
@@ -48,6 +54,8 @@ class CreateProfileConfigCriteriaEvent
         $this->currencyIso = $currencyIso;
         $this->differentAddresses = $differentAddresses;
         $this->context = $context;
+        $this->isB2b = $isB2b;
+        $this->totalAmount = $totalAmount;
     }
 
     public function getCriteria(): Criteria
@@ -83,6 +91,16 @@ class CreateProfileConfigCriteriaEvent
     public function isDifferentAddresses(): bool
     {
         return $this->differentAddresses;
+    }
+
+    public function isB2b(): bool
+    {
+        return $this->isB2b;
+    }
+
+    public function getTotalAmount(): float
+    {
+        return $this->totalAmount;
     }
 
     public function getContext(): Context

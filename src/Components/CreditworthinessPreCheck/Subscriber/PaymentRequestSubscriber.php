@@ -11,10 +11,12 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Subscriber;
 
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\InitEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\RequestDoneEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService;
+use Ratepay\RpayPayments\Exception\RatepayException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentRequestSubscriber implements EventSubscriberInterface
@@ -36,9 +38,19 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
 
     public function addTransactionId(InitEvent $event): void
     {
+        /** @var PaymentRequestData $requestData */
         $requestData = $event->getRequestData();
-        $ratepayTransactionId = $this->transactionIdService->getTransactionId($requestData->getSalesChannelContext());
-        $requestData->setRatepayTransactionId($ratepayTransactionId);
+
+        $ratepayTransactionId = $this->transactionIdService->getStoredTransactionId(
+            $requestData->getSalesChannelContext(),
+            $requestData->getOrder() ? TransactionIdService::PREFIX_ORDER . $requestData->getOrder()->getId() : TransactionIdService::PREFIX_CART
+        );
+
+        if (!$ratepayTransactionId) {
+            throw new RatepayException('Stored transaction id was not found');
+        }
+
+        $requestData->setRatepayTransactionId($ratepayTransactionId->getTransactionId());
     }
 
     public function deleteTransactionId(RequestDoneEvent $doneEvent): void

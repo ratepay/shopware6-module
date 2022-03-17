@@ -9,10 +9,6 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 class ProfileConfigSearch
 {
 
-    private string $billingCountryId;
-
-    private string $shippingCountryId;
-
     private string $billingCountryCode;
 
     private string $shippingCountryCode;
@@ -21,7 +17,7 @@ class ProfileConfigSearch
 
     private bool $isAdminOrder;
 
-    private SalesChannelContext $salesChannelContext;
+    private string $salesChannelId;
 
     private string $currency;
 
@@ -31,31 +27,7 @@ class ProfileConfigSearch
 
     private float $totalAmount;
 
-    public function getBillingCountryId(): string
-    {
-        return $this->billingCountryId;
-    }
-
-    public function setBillingCountryId(string $billingCountryId): self
-    {
-        $this->billingCountryId = $billingCountryId;
-
-        return $this;
-    }
-
-    public function getShippingCountryId(): string
-    {
-        return $this->shippingCountryId;
-    }
-
-    public function setShippingCountryId(string $shippingCountryId): self
-    {
-        $this->shippingCountryId = $shippingCountryId;
-
-        return $this;
-    }
-
-    public function getBillingCountryCode(): string
+    public function getBillingCountryCode(): ?string
     {
         return $this->billingCountryCode;
     }
@@ -67,7 +39,7 @@ class ProfileConfigSearch
         return $this;
     }
 
-    public function getShippingCountryCode(): string
+    public function getShippingCountryCode(): ?string
     {
         return $this->shippingCountryCode;
     }
@@ -103,14 +75,14 @@ class ProfileConfigSearch
         return $this;
     }
 
-    public function getSalesChannelContext(): SalesChannelContext
+    public function getSalesChannelId(): string
     {
-        return $this->salesChannelContext;
+        return $this->salesChannelId;
     }
 
-    public function setSalesChannelContext(SalesChannelContext $salesChannelContext): self
+    public function setSalesChannelId(string $salesChannelId): self
     {
-        $this->salesChannelContext = $salesChannelContext;
+        $this->salesChannelId = $salesChannelId;
 
         return $this;
     }

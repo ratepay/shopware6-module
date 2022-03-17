@@ -13,6 +13,7 @@
 
         <defaults>
             <bind key="$orderRepository" type="service" id="order.repository" />
+            <bind key="$profileRepository" type="service" id="ratepay_profile_config.repository" />
             <tag name="shopware.payment.method.sync"/>
         </defaults>
 

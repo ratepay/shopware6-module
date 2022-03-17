@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <!--
-  ~ Copyright (c) 2020 Ratepay GmbH
+  ~ Copyright (c) Ratepay GmbH
   ~
   ~ For the full copyright and license information, please view the LICENSE
   ~ file that was distributed with this source code.
@@ -12,14 +12,24 @@
 
     <services>
 
-        <service id="Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigService" autowire="true">
-            <argument key="$countryRepository" id="country.repository" type="service"/>
+        <defaults autowire="true"/>
+
+        <service id="Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigManagement">
             <argument key="$repository" id="ratepay_profile_config.repository" type="service"/>
             <argument key="$methodConfigRepository" id="ratepay_profile_config_method.repository" type="service"/>
             <argument key="$methodConfigInstallmentRepository" id="ratepay_profile_config_method_installment.repository" type="service"/>
         </service>
 
-        <service id="Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigResponseConverter" autowire="true">
+        <service id="Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileSearchService">
+            <argument key="$countryRepository" id="country.repository" type="service"/>
+            <argument key="$repository" id="ratepay_profile_config.repository" type="service"/>
+        </service>
+
+        <service id="Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileByOrderEntity" />
+        <service id="Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileBySalesChannelContext" />
+
+
+        <service id="Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigResponseConverter">
             <argument key="$paymentRepository" id="payment_method.repository" type="service"/>
         </service>
 
