@@ -51,18 +51,20 @@ class ProfileSearchService implements ProfileSearchInterface
         $criteria = new Criteria();
         $criteria->addAssociation(ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS);
 
+        $paymentMethodConfigFilters = [];
+
         // payment method
-        $criteria->addFilter(new EqualsFilter(
+        $paymentMethodConfigFilters[] = new EqualsFilter(
             ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_PAYMENT_METHOD_ID,
             $profileConfigSearch->getPaymentMethodId()
-        ));
+        );
 
         // different addresses
         if ($profileConfigSearch->isNeedsAllowDifferentAddress()) {
-            $criteria->addFilter(new EqualsFilter(
+            $paymentMethodConfigFilters[] = new EqualsFilter(
                 ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_ALLOW_DIFFERENT_ADDRESSES,
                 true
-            ));
+            );
         }
 
         // billing country
@@ -82,24 +84,24 @@ class ProfileSearchService implements ProfileSearchInterface
 
         // b2b
         if ($profileConfigSearch->isB2b()) {
-            $criteria->addFilter(new EqualsFilter(
+            $paymentMethodConfigFilters[] = new EqualsFilter(
                 ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_ALLOW_B2B,
                 true
-            ));
+            );
         }
 
         // total amount
-        $criteria->addFilter(new RangeFilter(
+        $paymentMethodConfigFilters[] = new RangeFilter(
             ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_LIMIT_MIN,
             [RangeFilter::LTE => $profileConfigSearch->getTotalAmount()]
-        ));
+        );
 
         $b2cRangeFilter = new RangeFilter(
             ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_LIMIT_MAX,
             [RangeFilter::GTE => $profileConfigSearch->getTotalAmount()]
         );
         if ($profileConfigSearch->isB2b()) {
-            $criteria->addFilter(new OrFilter([
+            $paymentMethodConfigFilters[] = new OrFilter([
                 new AndFilter([
                     new EqualsFilter(
                         ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_LIMIT_MAX_B2B,
@@ -111,10 +113,12 @@ class ProfileSearchService implements ProfileSearchInterface
                     ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_LIMIT_MAX_B2B,
                     [RangeFilter::GTE => $profileConfigSearch->getTotalAmount()]
                 )
-            ]));
+            ]);
         } else {
-            $criteria->addFilter($b2cRangeFilter);
+            $paymentMethodConfigFilters[] = $b2cRangeFilter;
         }
+
+        $criteria->addFilter(new AndFilter($paymentMethodConfigFilters));
 
         $this->eventDispatcher->dispatch(new CreateProfileConfigCriteriaEvent(
             $criteria,
