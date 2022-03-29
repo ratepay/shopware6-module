@@ -4,8 +4,6 @@
 namespace Ratepay\RpayPayments\Components\ProfileConfig\Dto;
 
 
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
-
 class ProfileConfigSearch
 {
 
