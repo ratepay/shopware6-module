@@ -34,14 +34,12 @@
 
 ## Changelog
 
-### Version 4.0.0 - WIP
+### Version 4.0.0 - Released on 2022-03-31
 
-* RATESWSX-201 - implement instalment calculator in checkout
-* RATESWSX-233 - improve class dependencies to improve the performance of class loading
-
-### Version 3.3.1 - WIP
-
+* Compatibility with Shopware 6.4.9.x
+* RATESWSX-201 - implement offline instalment calculator in checkout (rate calculation)
 * RATESWSX-228 - administration: fix display of quantity in order-items panel
+* RATESWSX-233 - improve class dependencies to improve the performance of class loading
 
 ### Version 3.3.0 - Released on 2022-02-11
 
@@ -57,7 +55,7 @@
 
 ### Version 3.1.1 - Released on 2021-12-15
 
-* RATESWSX-216 - fix issue that shipping tax has not been send
+* RATESWSX-216 - fix issue that shipping tax has not been sent
 
 ### Version 3.1.0 - Released on 2021-12-09
 
