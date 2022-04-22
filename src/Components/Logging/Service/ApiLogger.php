@@ -81,16 +81,14 @@ class ApiLogger
         $operationSubtype = (string)$operationNode->attributes()->subtype;
         $operation = (string)$operationNode;
 
-        $reasonNode = $requestBuilder->getResponseXmlElement()->head->processing->reason;
-        $resultNode = $requestBuilder->getResponseXmlElement()->head->processing->result;
-        $result = (string)$reasonNode;
-        if (in_array(((int)$reasonNode->attributes()->code), [303, 700], true) && ((int)$resultNode->attributes()->code) !== 402) {
-            $result = (string)$resultNode;
-        }
-
+        // remove sensitive data
         foreach (['securitycode', 'owner', 'iban'] as $key) {
             $requestXml = preg_replace("/<$key>(.*)<\/$key>/", "<$key>xxxxxxxx</$key>", $requestXml);
         }
+
+        $reasonNode = $requestBuilder->getResponseXmlElement()->head->processing->reason;
+        $statusNode = $requestBuilder->getResponseXmlElement()->head->processing->status;
+        $resultNode = $requestBuilder->getResponseXmlElement()->head->processing->result;
 
         try {
             $this->logRepository->create(
@@ -99,7 +97,14 @@ class ApiLogger
                         ApiRequestLogEntity::FIELD_VERSION => $this->pluginVersion,
                         ApiRequestLogEntity::FIELD_OPERATION => $operation,
                         ApiRequestLogEntity::FIELD_SUB_OPERATION => $operationSubtype,
-                        ApiRequestLogEntity::FIELD_RESULT => $result,
+
+                        ApiRequestLogEntity::FIELD_RESULT_CODE => (string)$resultNode->attributes()->code,
+                        ApiRequestLogEntity::FIELD_RESULT_TEXT => (string)$resultNode,
+                        ApiRequestLogEntity::FIELD_STATUS_CODE => (string)$statusNode->attributes()->code,
+                        ApiRequestLogEntity::FIELD_STATUS_TEXT => (string)$statusNode,
+                        ApiRequestLogEntity::FIELD_REASON_CODE => (string)$reasonNode->attributes()->code,
+                        ApiRequestLogEntity::FIELD_REASON_TEXT => (string)$reasonNode,
+
                         ApiRequestLogEntity::FIELD_REQUEST => $requestXml,
                         ApiRequestLogEntity::FIELD_RESPONSE => $responseXml,
                         ApiRequestLogEntity::FIELD_ADDITIONAL_DATA => $additionalData,

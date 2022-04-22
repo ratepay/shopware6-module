@@ -24,7 +24,17 @@ class ApiRequestLogEntity extends Entity
 
     public const FIELD_SUB_OPERATION = 'subOperation';
 
-    public const FIELD_RESULT = 'result';
+    public const FIELD_RESULT_CODE = 'resultCode';
+
+    public const FIELD_RESULT_TEXT = 'resultText';
+
+    public const FIELD_STATUS_CODE = 'statusCode';
+
+    public const FIELD_STATUS_TEXT = 'statusText';
+
+    public const FIELD_REASON_CODE = 'reasonCode';
+
+    public const FIELD_REASON_TEXT = 'reasonText';
 
     public const FIELD_REQUEST = 'request';
 
@@ -40,13 +50,23 @@ class ApiRequestLogEntity extends Entity
 
     protected string $subOperation;
 
-    protected string $result;
-
     protected array $additionalData;
 
     protected string $request;
 
     protected string $response;
+
+    protected string $resultCode;
+
+    protected string $resultText;
+
+    protected string $statusCode;
+
+    protected string $statusText;
+
+    protected string $reasonCode;
+
+    protected string $reasonText;
 
     public function getVersion(): string
     {
@@ -63,9 +83,12 @@ class ApiRequestLogEntity extends Entity
         return $this->subOperation;
     }
 
+    /**
+     * @deprecated please use `getResultText`
+     */
     public function getResult(): string
     {
-        return $this->result;
+        return $this->getResultText();
     }
 
     public function getRequest(): string
@@ -81,5 +104,35 @@ class ApiRequestLogEntity extends Entity
     public function getAdditionalData(): array
     {
         return $this->additionalData;
+    }
+
+    public function getResultCode(): string
+    {
+        return $this->resultCode;
+    }
+
+    public function getResultText(): string
+    {
+        return $this->resultText;
+    }
+
+    public function getStatusCode(): string
+    {
+        return $this->statusCode;
+    }
+
+    public function getStatusText(): string
+    {
+        return $this->statusText;
+    }
+
+    public function getReasonCode(): string
+    {
+        return $this->reasonCode;
+    }
+
+    public function getReasonText(): string
+    {
+        return $this->reasonText;
     }
 }

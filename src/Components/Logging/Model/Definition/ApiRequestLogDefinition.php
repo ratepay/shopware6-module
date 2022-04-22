@@ -55,7 +55,14 @@ class ApiRequestLogDefinition extends EntityDefinition
             (new StringField('version', ApiRequestLogEntity::FIELD_VERSION))->addFlags(new Required()),
             (new StringField('operation', ApiRequestLogEntity::FIELD_OPERATION))->addFlags(new Required()),
             (new StringField('sub_operation', ApiRequestLogEntity::FIELD_SUB_OPERATION)),
-            (new StringField('result', ApiRequestLogEntity::FIELD_RESULT)),
+
+            (new StringField('result_code', ApiRequestLogEntity::FIELD_RESULT_CODE)),
+            (new StringField('result_text', ApiRequestLogEntity::FIELD_RESULT_TEXT)),
+            (new StringField('status_code', ApiRequestLogEntity::FIELD_STATUS_CODE)),
+            (new StringField('status_text', ApiRequestLogEntity::FIELD_STATUS_TEXT)),
+            (new StringField('reason_code', ApiRequestLogEntity::FIELD_REASON_CODE)),
+            (new StringField('reason_text', ApiRequestLogEntity::FIELD_REASON_TEXT)),
+
             (new LongTextField('request', ApiRequestLogEntity::FIELD_REQUEST))->addFlags(new Required(), new AllowHtml()),
             (new LongTextField('response', ApiRequestLogEntity::FIELD_RESPONSE))->addFlags(new Required(), new AllowHtml()),
             (new JsonField('additional_data', ApiRequestLogEntity::FIELD_ADDITIONAL_DATA)),

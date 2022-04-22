@@ -5,6 +5,7 @@
  * file that was distributed with this source code.
  */
 
+import './service/ratepay-log-distinct-values-service';
 import './page/ratepay-api-log-list';
 import './component/shopware/sw-search-bar-item';
 import defaultSearchConfiguration from './default-search-configuration';

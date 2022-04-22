@@ -25,7 +25,8 @@ Component.register('ratepay-api-log-list', {
 
     inject: [
         'repositoryFactory',
-        'filterFactory'
+        'filterFactory',
+        'RatepayLogDistinctValuesService'
     ],
 
     mixins: [
@@ -49,7 +50,37 @@ Component.register('ratepay-api-log-list', {
             filterCriteria: [],
             defaultFilters: [
                 'createdAt-filter',
+                'subOperation-filter',
+                'operation-filter',
+                'resultCode-filter',
+                'resultText-filter',
+                'reasonCode-filter',
+                'reasonText-filter',
+                'statusCode-filter',
+                'statusText-filter'
             ],
+
+            automaticFilter: [
+                'operation',
+                'subOperation',
+                'resultCode',
+                'resultText',
+                'reasonCode',
+                'reasonText',
+                'statusCode',
+                'statusText'
+            ],
+
+            filterOptions: {
+                operation: null,
+                subOperation: null,
+                resultCode: null,
+                resultText: null,
+                reasonCode: null,
+                reasonText: null,
+                statusCode: null,
+                statusText: null,
+            },
         };
     },
 
@@ -77,10 +108,41 @@ Component.register('ratepay-api-log-list', {
                 label: this.$t('ratepay.apiLog.global.labels.subOperation'),
                 allowResize: true
             }, {
-                property: 'result',
-                dataIndex: 'result',
-                label: this.$t('ratepay.apiLog.global.labels.result'),
-                allowResize: true
+                property: 'resultCode',
+                dataIndex: 'resultCode',
+                label: this.$t('ratepay.apiLog.global.labels.resultCode'),
+                allowResize: true,
+                visible: false
+            }, {
+                property: 'resultText',
+                dataIndex: 'resultText',
+                label: this.$t('ratepay.apiLog.global.labels.resultText'),
+                allowResize: true,
+                visible: false
+            }, {
+                property: 'statusCode',
+                dataIndex: 'statusCode',
+                label: this.$t('ratepay.apiLog.global.labels.statusCode'),
+                allowResize: true,
+                visible: false
+            }, {
+                property: 'statusText',
+                dataIndex: 'statusText',
+                label: this.$t('ratepay.apiLog.global.labels.statusText'),
+                allowResize: true,
+                visible: false
+            }, {
+                property: 'reasonCode',
+                dataIndex: 'reasonCode',
+                label: this.$t('ratepay.apiLog.global.labels.reasonCode'),
+                allowResize: true,
+                visible: false
+            }, {
+                property: 'reasonText',
+                dataIndex: 'reasonText',
+                label: this.$t('ratepay.apiLog.global.labels.reasonText'),
+                allowResize: true,
+                visible: false
             }, {
                 property: 'additionalData.transactionId',
                 dataIndex: 'transactionId',
@@ -130,7 +192,7 @@ Component.register('ratepay-api-log-list', {
         },
 
         listFilters() {
-            return this.filterFactory.create(this.entityName, {
+            let filter = {
                 'createdAt-filter': {
                     property: 'createdAt',
                     type: 'date-filter',
@@ -139,8 +201,19 @@ Component.register('ratepay-api-log-list', {
                     fromFieldLabel: null,
                     toFieldLabel: null,
                     showTimeframe: false,
-                },
+                }
+            };
+
+            this.automaticFilter.forEach((item) => {
+                filter[item + '-filter'] = {
+                    property: item,
+                    type: 'multi-select-filter',
+                    label: this.$t('ratepay.apiLog.global.labels.' + item),
+                    options: this.filterOptions[item]
+                }
             });
+
+            return this.filterFactory.create(this.entityName, filter);
         },
     },
 
@@ -151,6 +224,14 @@ Component.register('ratepay-api-log-list', {
         hljs.registerLanguage('xml', hljsXml);
         hljs.configure({useBR: false});
         this.loadData();
+
+        this.RatepayLogDistinctValuesService.getDistinctValues(this.automaticFilter.join('|')).then((response) => {
+            response.results.forEach((field) => {
+                this.filterOptions[field.name] = field.options.map((item) => {
+                    return {label: item, value: item}
+                });
+            })
+        });
     },
 
     watch: {

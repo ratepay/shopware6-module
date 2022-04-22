@@ -24,7 +24,6 @@
                     "id": "Id",
                     "operation": "Operation",
                     "subOperation": "Suboperation",
-                    "result": "Ergebnis",
                     "transactionId": "Transaktions ID",
                     "firstName": "Vorname",
                     "lastName": "Nachname",
@@ -33,7 +32,13 @@
                     "response": "Antwort",
                     "viewLog": "Anfrage / Antwort",
                     "orderNumber": "Bestellnummer",
-                    "descriptor": "Verwendungszweck"
+                    "descriptor": "Verwendungszweck",
+                    "resultCode": "Result Code",
+                    "resultText": "Result Text",
+                    "statusCode": "Status Code",
+                    "statusText": "Status Text",
+                    "reasonCode": "Reason Code",
+                    "reasonText": "Reason Text"
                 }
             },
             "modal": {

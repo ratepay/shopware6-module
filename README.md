@@ -38,6 +38,7 @@
 
 * RATESWSX-201 - added: display min rate for installment on product page
 * RATESWSX-222 - add config help text
+* RATESWSX-229 - improvement: add more filters to api log
 
 ### Version 4.0.1 - Released on 2022-04-28
 
