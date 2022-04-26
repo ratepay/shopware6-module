@@ -34,6 +34,10 @@
 
 ## Changelog
 
+### Version 4.1.0 - WIP
+
+* RATESWSX-222 - add config help text
+
 ### Version 4.0.1 - Released on 2022-04-28
 
 * RATESWSX-242 - fix risk-management address compare (previously only the country has been compared)
