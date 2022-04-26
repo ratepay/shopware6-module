@@ -7,19 +7,20 @@
 
 {% block ratepay_birthday_selects %}
 
-    <div class="form-row">
-        <div class="form-group col-sm-12">
+    <div class="form-row row">
+        <div class="col-12">
             <label class="form-label">
                 <strong>{{ "ratepay.storefront.checkout.label.birthday"|trans|sw_sanitize }} *</strong>
             </label>
         </div>
     </div>
-    <div class="form-row">
+
+    <div class="form-row row g-3">
 
         {% block page_account_profile_personal_fields_birthday_select_day %}
-           <div class="form-group col-4 col-md-4">
+           <div class="col-4">
                 <select name="ratepay[birthday][day]"
-                    class="custom-select{% if formViolations.getViolations('/ratepay/birthday') is not empty %} is-invalid{% endif %}"
+                    class="custom-select form-select{% if formViolations.getViolations('/ratepay/birthday') is not empty %} is-invalid{% endif %}"
                     required="required"
                     form="confirmOrderForm"
                 >
@@ -32,9 +33,9 @@
         {% endblock %}
 
         {% block page_account_profile_personal_fields_birthday_select_month %}
-            <div class="form-group col-4 col-md-4">
+            <div class="col-4">
                 <select name="ratepay[birthday][month]"
-                    class="custom-select{% if formViolations.getViolations('/ratepay/birthday') is not empty %} is-invalid{% endif %}"
+                    class="custom-select form-select{% if formViolations.getViolations('/ratepay/birthday') is not empty %} is-invalid{% endif %}"
                     required="required"
                     form="confirmOrderForm"
                 >
@@ -47,11 +48,11 @@
         {% endblock %}
 
         {% block page_account_profile_personal_fields_birthday_select_year %}
-            <div class="form-group col-4 col-md-4">
+            <div class="col-4">
                 {% set currentYear = "now"|date('Y') %}
                 {% set startYear = currentYear - 120 %}
                 <select name="ratepay[birthday][year]"
-                    class="custom-select{% if formViolations.getViolations('/ratepay/birthday') is not empty %} is-invalid{% endif %}"
+                    class="custom-select form-select{% if formViolations.getViolations('/ratepay/birthday') is not empty %} is-invalid{% endif %}"
                     required="required"
                     form="confirmOrderForm"
                 >
@@ -62,11 +63,15 @@
                 </select>
             </div>
         {% endblock %}
+    </div>
 
-    </div>
-    <div class="form-row">
-        <div class="form-group col-sm-12">
-            {{ "ratepay.storefront.checkout.hints.birthdayHint"|trans({ '%method%' : context.paymentMethod.translated.name })|sw_sanitize }}
+    {% block page_account_profile_personal_fields_birthday_help_text %}
+        <div class="form-row row">
+            <div class="form-group col-12">
+                <small class="form-text text-muted">
+                    {{ "ratepay.storefront.checkout.hints.birthdayHint"|trans({ '%method%' : context.paymentMethod.translated.name })|sw_sanitize }}
+                </small>
+            </div>
         </div>
-    </div>
+    {% endblock %}
 {% endblock %}

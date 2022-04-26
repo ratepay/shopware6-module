@@ -38,10 +38,10 @@ export default class InstallmentPaymentSwitch extends Plugin {
         if (this._sepaForm) {
             this._sepaForm.querySelector('#rp-iban-account-holder').removeAttribute('required');
             this._sepaForm.querySelector('#rp-iban-account-number').removeAttribute('required');
-            this._sepaForm.querySelector('#sepaconfirmation').removeAttribute('required');
+            this._sepaForm.querySelector('#rp-sepa-confirmation').removeAttribute('required');
             this._sepaForm.querySelector('#rp-iban-account-holder').setAttribute('disabled', 'disabled');
             this._sepaForm.querySelector('#rp-iban-account-number').setAttribute('disabled', 'disabled');
-            this._sepaForm.querySelector('#sepaconfirmation').setAttribute('disabled', 'disabled');
+            this._sepaForm.querySelector('#rp-sepa-confirmation').setAttribute('disabled', 'disabled');
         }
     }
 
@@ -49,10 +49,10 @@ export default class InstallmentPaymentSwitch extends Plugin {
         if (this._sepaForm) {
             this._sepaForm.querySelector('#rp-iban-account-holder').removeAttribute('disabled');
             this._sepaForm.querySelector('#rp-iban-account-number').removeAttribute('disabled');
-            this._sepaForm.querySelector('#sepaconfirmation').removeAttribute('disabled');
+            this._sepaForm.querySelector('#rp-sepa-confirmation').removeAttribute('disabled');
             this._sepaForm.querySelector('#rp-iban-account-holder').setAttribute('required', 'required');
             this._sepaForm.querySelector('#rp-iban-account-number').setAttribute('required', 'required');
-            this._sepaForm.querySelector('#sepaconfirmation').setAttribute('required', 'required');
+            this._sepaForm.querySelector('#rp-sepa-confirmation').setAttribute('required', 'required');
         }
     }
 }

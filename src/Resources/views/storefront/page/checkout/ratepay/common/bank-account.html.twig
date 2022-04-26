@@ -75,15 +75,15 @@
     {% block ratepay_personal_data_bank_account_sepa_confirm %}
         <div class="form-row">
             <div class="form-group col-sm-12">
-                <div class="custom-control custom-checkbox">
+                <div class="form-check">
                     <input type="checkbox"
-                           class="checkout-confirm-sepaconfirmation-checkbox custom-control-input{% if formViolations.getViolations('/ratepay/bankData/sepaConfirmation') is not empty %} is-invalid{% endif %}"
+                           class="form-check-input {% if formViolations.getViolations('/ratepay/bankData/sepaConfirmation') is not empty %} is-invalid{% endif %}"
                            required="required"
-                           id="sepaconfirmation"
+                           id="rp-sepa-confirmation"
                            form="confirmOrderForm"
                            name="ratepay[bankData][sepaConfirmation]"
                     >
-                    <label for="sepaconfirmation" class="checkout-confirm-sepaconfirmation-label custom-control-label">
+                    <label for="rp-sepa-confirmation" class="form-check-label">
                         {% block ratepay_personal_data_bank_account_sepa_confirm_text %}
                             <p>{{ "ratepay.storefront.checkout.hints.sepaAuthorize"|trans|sw_sanitize }}</p>
                             <p>{{ "ratepay.storefront.checkout.hints.sepaAuthorizeNote"|trans|sw_sanitize }}</p>

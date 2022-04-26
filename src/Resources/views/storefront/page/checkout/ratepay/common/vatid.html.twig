@@ -7,14 +7,14 @@
 
 {% block ratepay_personal_data_vatid %}
 
-    <div class="form-row">
+    <div class="form-row row">
         <div class="form-group col-sm-12">
             <label class="form-label">
                 <strong>{{ "address.companyVatLabel"|trans|sw_sanitize }}</strong>
             </label>
         </div>
     </div>
-    <div class="form-row">
+    <div class="form-row row">
         <div class="form-group col-sm-4">
             <input type="text"
                class="form-control{% if formViolations.getViolations('/ratepay/vatId') is not empty %} is-invalid{% endif %}"

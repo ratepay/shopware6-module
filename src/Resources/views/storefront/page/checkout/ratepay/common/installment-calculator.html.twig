@@ -47,7 +47,7 @@
 
                         <div class="panel-body">
                             <div class="form-group">
-                                <select id="rp-btn-runtime" class="custom-select">
+                                <select id="rp-btn-runtime" class="custom-select form-select">
                                     {% for month in ratepay.installment.calculator.rp_allowedMonths %}
                                         <option value="{{ month }}" {% if loop.first %}selected="selected"{% endif %}>
                                             {{ month }} {{ ratepay.installment.translations.rp_monthly_installment_pl }}
