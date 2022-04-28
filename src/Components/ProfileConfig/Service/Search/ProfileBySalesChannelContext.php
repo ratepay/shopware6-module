@@ -4,6 +4,7 @@ namespace Ratepay\RpayPayments\Components\ProfileConfig\Service\Search;
 
 use Ratepay\RpayPayments\Components\ProfileConfig\Dto\ProfileConfigSearch;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
+use Ratepay\RpayPayments\Components\ProfileConfig\Util\AddressUtil;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -36,23 +37,15 @@ class ProfileBySalesChannelContext implements ProfileSearchInterface
             return null;
         }
 
-        $billingCountryCode = $billingAddress->getCountry()->getIso();
-
-        if ($shippingAddress) {
-            $shippingCountryCode = $shippingAddress->getCountry()->getIso();
-        } else {
-            $shippingCountryCode = $billingCountryCode;
-        }
-
         $cart = $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext);
 
         return (new ProfileConfigSearch())
             ->setPaymentMethodId($salesChannelContext->getPaymentMethod()->getId())
-            ->setBillingCountryCode($billingCountryCode)
-            ->setShippingCountryCode($shippingCountryCode)
+            ->setBillingCountryCode($billingAddress->getCountry()->getIso())
+            ->setShippingCountryCode($shippingAddress->getCountry()->getIso())
             ->setSalesChannelId($salesChannelContext->getSalesChannelId())
             ->setCurrency($salesChannelContext->getCurrency()->getIsoCode())
-            ->setNeedsAllowDifferentAddress($billingCountryCode !== $shippingCountryCode)
+            ->setNeedsAllowDifferentAddress(!AddressUtil::areCustomerAddressObjectsIdentical($billingAddress, $shippingAddress))
             ->setIsB2b(!empty($billingAddress->getCompany()))
             ->setTotalAmount($cart->getPrice()->getTotalPrice());
     }

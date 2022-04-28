@@ -34,6 +34,10 @@
 
 ## Changelog
 
+### Version 4.0.1 - Released on 2022-04-28
+
+* RATESWSX-242 - fix risk-management address compare (previously only the country has been compared)
+
 ### Version 4.0.0 - Released on 2022-03-31
 
 * Compatibility with Shopware 6.4.9.x
