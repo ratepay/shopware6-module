@@ -12,11 +12,16 @@ namespace Ratepay\RpayPayments\Tests\Components\RatepayApi\Factory;
 use DateTime;
 use PHPUnit\Framework\TestCase;
 use RatePAY\Model\Request\SubModel\Content\Customer;
+use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\CustomerFactory;
+use Ratepay\RpayPayments\Tests\Mock\Model\CountryMock;
+use Ratepay\RpayPayments\Tests\Mock\Model\LanguageMock;
 use Ratepay\RpayPayments\Tests\Mock\Model\OrderAddressMock;
 use Ratepay\RpayPayments\Tests\Mock\RatepayApi\Factory\Mock;
+use Ratepay\RpayPayments\Tests\Mock\Repository\LanguageRepositoryMock;
+use Ratepay\RpayPayments\Tests\Mock\Repository\SalutationRepositoryMock;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderCustomer\OrderCustomerEntity;
@@ -45,11 +50,15 @@ class CustomerFactoryTest extends TestCase
             true,
             false,
             false,
-            true,
             false
         );
 
-        $factory = Mock::createCustomerFactory();
+        $factory = new CustomerFactory(
+            new EventDispatcher(),
+            $this->getContainer()->get(ConfigService::class),
+            new SalutationRepositoryMock([SalutationRepositoryMock::MRS]),
+            new LanguageRepositoryMock()
+        );
 
         /** @var Customer $customer */
         $customer = $factory->getData($requestData);
@@ -97,11 +106,18 @@ class CustomerFactoryTest extends TestCase
             true,
             false,
             false,
-            false,
             false
         );
 
-        $factory = new CustomerFactory(new EventDispatcher(), new RequestStack());
+        // make sure that the customer does not have a phone number
+        $requestData->getOrder()->getAddresses()->first()->setPhoneNumber(null);
+
+        $factory = new CustomerFactory(
+            new EventDispatcher(),
+            $this->getContainer()->get(ConfigService::class),
+            new SalutationRepositoryMock(),
+            new LanguageRepositoryMock()
+        );
         /** @var Customer $customer */
         $customer = $factory->getData($requestData);
 
@@ -120,7 +136,12 @@ class CustomerFactoryTest extends TestCase
             false,
             false
         );
-        $factory = new CustomerFactory(new EventDispatcher(), new RequestStack());
+        $factory = new CustomerFactory(
+            new EventDispatcher(),
+            $this->getContainer()->get(ConfigService::class),
+            new SalutationRepositoryMock(),
+            new LanguageRepositoryMock()
+        );
 
         /** @var Customer $customer */
         $customer = $factory->getData($requestData);
@@ -147,10 +168,14 @@ class CustomerFactoryTest extends TestCase
             true,
             true,
             false,
-            false,
             false
         );
-        $factory = new CustomerFactory(new EventDispatcher(), new RequestStack());
+        $factory = new CustomerFactory(
+            new EventDispatcher(),
+            $this->getContainer()->get(ConfigService::class),
+            new SalutationRepositoryMock(),
+            new LanguageRepositoryMock()
+        );
 
         /** @var Customer $customer */
         $customer = $factory->getData($requestData);
@@ -175,10 +200,14 @@ class CustomerFactoryTest extends TestCase
             true,
             true,
             false,
-            false,
             true
         );
-        $factory = new CustomerFactory(new EventDispatcher(), new RequestStack());
+        $factory = new CustomerFactory(
+            new EventDispatcher(),
+            $this->getContainer()->get(ConfigService::class),
+            new SalutationRepositoryMock(),
+            new LanguageRepositoryMock()
+        );
 
         /** @var Customer $customer */
         $customer = $factory->getData($requestData);
@@ -192,30 +221,30 @@ class CustomerFactoryTest extends TestCase
         bool $differentAddresses,
         bool $hasCompanyBilling,
         bool $hasCompanyShipping,
-        bool $hasPhoneNumber,
         bool $hasBankData
-    ): PaymentRequestData {
+    ): PaymentRequestData
+    {
         $order = new OrderEntity();
         $order->setId('e2b42780dfbd4fcc95e17f48ad29c871');
-
-        // create language entity
-        $locale = new LocaleEntity();
-        $locale->setCode('de-DE');
-        $language = new LanguageEntity();
-        $language->setLocale($locale);
-        $order->setLanguage($language);
+        $order->setLanguage(LanguageMock::createMock('de', 'de-DE'));
+        $order->setLanguageId($order->getLanguage()->getId());
 
         // create orderCustomer entity
         $orderCustomer = new OrderCustomerEntity();
         $orderCustomer->setRemoteAddress('123.456.789.123');
         $orderCustomer->setEmail('phpunit@dev.local');
         $orderCustomer->setCustomer(new CustomerEntity());
+        $orderCustomer->getCustomer()->setEmail($orderCustomer->getEmail());
         $orderCustomer->getCustomer()->setBirthday((new DateTime())->setDate(1980, 12, 30));
         $order->setOrderCustomer($orderCustomer);
 
         // create addresses
-        $billingAddress = OrderAddressMock::createOrderBillingAddress($order, $billingCountry, $hasCompanyBilling, $hasPhoneNumber);
-        $shippingAddress = $differentAddresses === false ? $billingAddress : OrderAddressMock::createOrderShippingAddress($order, $shippingCountry, $hasCompanyShipping, $hasPhoneNumber);
+        $billingAddress = OrderAddressMock::createAddressEntity($order, $hasCompanyBilling, CountryMock::createMock($billingCountry), 'billing');
+        if ($differentAddresses) {
+            $shippingAddress = OrderAddressMock::createAddressEntity($order, $hasCompanyShipping, CountryMock::createMock($shippingCountry), 'shipping');
+        } else {
+            $shippingAddress = $billingAddress;
+        }
         $order->setAddresses(new OrderAddressCollection());
         $order->getAddresses()->set($billingAddress->getId(), $billingAddress);
         $order->setBillingAddressId($billingAddress->getId());
@@ -230,12 +259,11 @@ class CustomerFactoryTest extends TestCase
         $salesChannelContextMock = $this->createMock(SalesChannelContext::class);
         $salesChannelContextMock->method('getContext')->willReturn(Context::createDefaultContext());
         $transaction = $this->createMock(OrderTransactionEntity::class);
-        $profileConfig = $this->createMock(ProfileConfigEntity::class);
 
         $ratepayDataBag = new RequestDataBag();
         if ($hasBankData) {
             $bankDataDataBag = new RequestDataBag([
-               'iban' => 'DE02120300000000202051',
+                'iban' => 'DE02120300000000202051',
             ]);
             $ratepayDataBag->set('bankData', $bankDataDataBag);
         }
@@ -244,8 +272,8 @@ class CustomerFactoryTest extends TestCase
             $salesChannelContextMock,
             $order,
             $transaction,
-            $profileConfig,
-            new RequestDataBag(['ratepay' => $ratepayDataBag])
+            new RequestDataBag(['ratepay' => $ratepayDataBag]),
+            'transaction-id'
         );
     }
 }

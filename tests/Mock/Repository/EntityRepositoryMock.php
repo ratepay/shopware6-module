@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Tests\Mock\Repository;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
@@ -75,5 +76,18 @@ class EntityRepositoryMock implements EntityRepositoryInterface
 
     public function merge(string $versionId, Context $context): void
     {
+    }
+
+    protected function createEntitySearchResult(array $elements): EntitySearchResult
+    {
+        $entityCollection = new EntityCollection($elements);
+        return new EntitySearchResult(
+            get_class($elements[0]),
+            $entityCollection->count(),
+            $entityCollection,
+            null,
+            new Criteria(),
+            Context::createDefaultContext()
+        );
     }
 }

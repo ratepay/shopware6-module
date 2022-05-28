@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * Copyright (c) 2020 Ratepay GmbH
+ * Copyright (c) Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Tests\Mock\Model;
 
+use Ratepay\RpayPayments\Tests\Mock\Repository\SalutationRepositoryMock;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -26,27 +27,30 @@ class OrderAddressMock
     public static function createAddressEntity(
         OrderEntity $order,
         bool $hasCompany,
-        CountryEntity $country
+        CountryEntity $country,
+        $namesPrefix = ''
     ): OrderAddressEntity
     {
+        $namesPrefix = !empty($namesPrefix) ? $namesPrefix . ' ' : null;
         $address = new OrderAddressEntity();
         $address->setId(Uuid::randomHex());
         $address->setOrder($order);
         $address->setOrderId($order->getId());
         if ($hasCompany) {
-            $address->setCompany('company');
+            $address->setCompany($namesPrefix . 'company');
             $address->setVatId('DE123456');
         }
-        $address->setFirstName('firstname');
-        $address->setLastName('lastname');
-        $address->setStreet('street');
+        $address->setFirstName($namesPrefix . 'firstname');
+        $address->setLastName($namesPrefix . 'lastname');
+        $address->setStreet($namesPrefix . 'street');
         $address->setZipcode('12345');
-        $address->setCity('city');
+        $address->setCity($namesPrefix . 'city');
         $address->setCountry($country);
+        $address->setPhoneNumber('0123456789');
 
         $salutation = new SalutationEntity();
-        $salutation->setSalutationKey('mrs');
-        $salutation->setDisplayName('Frau');
+        $salutation->setSalutationKey(SalutationRepositoryMock::MRS[0]);
+        $salutation->setDisplayName(SalutationRepositoryMock::MRS[1]);
         $address->setSalutation($salutation);
 
         return $address;
