@@ -10,7 +10,7 @@
 namespace Ratepay\RpayPayments\Components\ProfileConfig\Service\Request;
 
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\ProfileRequestData;
+use Ratepay\RpayPayments\Components\ProfileConfig\Dto\ProfileRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\AbstractRequest;
 
 class ProfileRequestService extends AbstractRequest

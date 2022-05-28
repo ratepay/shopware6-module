@@ -7,9 +7,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RpayPayments\Components\RatepayApi\Dto;
+namespace Ratepay\RpayPayments\Components\ProfileConfig\Dto;
 
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Shopware\Core\Framework\Context;
 
 class ProfileRequestData extends AbstractRequestData

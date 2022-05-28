@@ -13,7 +13,7 @@ use RatePAY\Model\Response\ProfileRequest;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\Collection\ProfileConfigCollection;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\ProfileRequestData;
+use Ratepay\RpayPayments\Components\ProfileConfig\Dto\ProfileRequestData;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Request\ProfileRequestService;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Shopware\Core\Framework\Context;
