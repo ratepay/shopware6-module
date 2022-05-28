@@ -14,7 +14,7 @@ use Ratepay\RpayPayments\Components\ProfileConfig\Model\Collection\ProfileConfig
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\ProfileRequestData;
-use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\ProfileRequestService;
+use Ratepay\RpayPayments\Components\ProfileConfig\Service\Request\ProfileRequestService;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;

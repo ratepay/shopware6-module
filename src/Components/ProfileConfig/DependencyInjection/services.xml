@@ -25,13 +25,15 @@
             <argument key="$repository" id="ratepay_profile_config.repository" type="service"/>
         </service>
 
-        <service id="Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileByOrderEntity" />
-        <service id="Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileBySalesChannelContext" />
+        <service id="Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileByOrderEntity"/>
+        <service id="Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileBySalesChannelContext"/>
 
 
         <service id="Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigResponseConverter">
             <argument key="$paymentRepository" id="payment_method.repository" type="service"/>
         </service>
+
+        <service id="Ratepay\RpayPayments\Components\ProfileConfig\Service\Request\ProfileRequestService"/>
 
     </services>
 </container>
