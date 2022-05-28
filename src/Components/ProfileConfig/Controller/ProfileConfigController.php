@@ -44,6 +44,7 @@ class ProfileConfigController extends AbstractController
                 ];
                 /** @var ProfileConfigEntity $config */
                 foreach ($configs->getEntities() as $config) {
+                    // TODO maybe this should be not a 200-response if an error occurred
                     $response[$config->getStatus() ? 'success' : 'error'][$config->getProfileId()] = $config->getStatusMessage();
                 }
 

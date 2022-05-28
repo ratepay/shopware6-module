@@ -5,6 +5,7 @@ namespace Ratepay\RpayPayments\Tests\Components\ProfileConfig\Service\Search;
 use PHPUnit\Framework\TestCase;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileByOrderEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileSearchService;
+use Ratepay\RpayPayments\Tests\Mock\Model\CountryMock;
 use Ratepay\RpayPayments\Tests\Mock\Model\OrderMock;
 use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
 
@@ -18,6 +19,9 @@ class ProfileByOrderEntityTest extends TestCase
         $cartPrice = $this->createMock(CartPrice::class);
         $cartPrice->method('getTotalPrice')->willReturn(119.0);
         $order->setPrice($cartPrice);
+        $shippingOrderAddress = $order->getDeliveries()->first()->getShippingOrderAddress();
+        $shippingOrderAddress->setCountry(CountryMock::createMock('AT'));
+        $shippingOrderAddress->setCountryId($shippingOrderAddress->getCountry()->getId());
 
 
         $searchService = new ProfileByOrderEntity(
@@ -29,8 +33,8 @@ class ProfileByOrderEntityTest extends TestCase
         self::assertEquals(119.0, $searchObject->getTotalAmount());
         self::assertFalse($searchObject->isB2b());
         self::assertEquals('DE', $searchObject->getBillingCountryCode());
-        self::assertEquals('DE', $searchObject->getShippingCountryCode());
-        self::assertFalse($searchObject->isNeedsAllowDifferentAddress());
+        self::assertEquals('AT', $searchObject->getShippingCountryCode());
+        self::assertTrue($searchObject->isNeedsAllowDifferentAddress());
 
 
         // change Street for testing `isNeedsAllowDifferentAddress`

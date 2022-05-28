@@ -48,8 +48,8 @@ class ProfileBySalesChannelContextTest extends TestCase
         self::assertEquals(119.0, $searchObject->getTotalAmount());
         self::assertFalse($searchObject->isB2b());
         self::assertEquals('DE', $searchObject->getBillingCountryCode());
-        self::assertEquals('DE', $searchObject->getShippingCountryCode());
-        self::assertFalse($searchObject->isNeedsAllowDifferentAddress());
+        self::assertEquals('AT', $searchObject->getShippingCountryCode());
+        self::assertTrue($searchObject->isNeedsAllowDifferentAddress());
 
 
         // change Street for testing `isNeedsAllowDifferentAddress`
@@ -68,10 +68,11 @@ class ProfileBySalesChannelContextTest extends TestCase
     private function createCustomer(): CustomerEntity
     {
         $countryDE = CountryMock::createMock('DE');
+        $countryAT = CountryMock::createMock('AT');
         $customer = new CustomerEntity();
 
         $billingAddress = new CustomerAddressEntity();
-        $billingAddress->setFirstName('billing/shipping address');
+        $billingAddress->setFirstName('billing address');
         $billingAddress->setId(Uuid::randomHex());
         $billingAddress->setCountry($countryDE);
         $billingAddress->setCountryId($billingAddress->getCountry()->getId());
@@ -81,7 +82,11 @@ class ProfileBySalesChannelContextTest extends TestCase
         $customer->setDefaultBillingAddressId($customer->getDefaultBillingAddress()->getId());
 
 
-        $shippingAddress = $billingAddress;
+        $shippingAddress = new CustomerAddressEntity();
+        $shippingAddress->setFirstName('shipping address');
+        $shippingAddress->setId(Uuid::randomHex());
+        $shippingAddress->setCountry($countryAT);
+        $shippingAddress->setCountryId($shippingAddress->getCountry()->getId());
 
         $customer->setActiveShippingAddress($shippingAddress);
         $customer->setDefaultShippingAddress($customer->getActiveShippingAddress());
