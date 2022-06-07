@@ -18,7 +18,7 @@ use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
- * @method getData(AbstractRequestData $requestData) : ?Head
+ * @method Head getData(AbstractRequestData $requestData)
  */
 class HeadFactory extends AbstractFactory
 {

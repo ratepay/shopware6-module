@@ -2,8 +2,9 @@
 
 namespace Ratepay\RpayPayments\Tests\Mock\Model;
 
+use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\PaymentHandler\InvoicePaymentHandler;
-use Ratepay\RpayPayments\Tests\TestConfig;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
@@ -30,6 +31,7 @@ class OrderMock
 
         $order = new OrderEntity();
         $order->setId('3ad87271180043478d4941bfdf675fca');
+        $order->setVersionId(Uuid::randomHex());
         $order->setLineItems(new OrderLineItemCollection());
         $order->setCurrency(CurrencyMock::createMock('EUR'));
 
@@ -62,6 +64,19 @@ class OrderMock
         $transaction->setPaymentMethod(PaymentMethodMock::createMock($paymentMethodHandler));
         $transaction->setPaymentMethodId($transaction->getPaymentMethod()->getId());
         $order->setTransactions(new OrderTransactionCollection([$transaction->getId() => $transaction]));
+
+        // set ratepay order data
+        $ratepayExtension = new RatepayOrderDataEntity();
+        $ratepayExtension->__set(RatepayOrderDataEntity::FIELD_PROFILE_ID, 'profile-id');
+        $ratepayExtension->__set(RatepayOrderDataEntity::FIELD_DESCRIPTOR, 'descriptor');
+        $ratepayExtension->__set(RatepayOrderDataEntity::FIELD_ORDER, $order);
+        $ratepayExtension->__set(RatepayOrderDataEntity::FIELD_ORDER_ID, $order->getId());
+        $ratepayExtension->__set(RatepayOrderDataEntity::FIELD_ORDER_VERSION_ID, $order->getVersionId());
+        $ratepayExtension->__set(RatepayOrderDataEntity::FIELD_SEND_DISCOUNT_AS_CART_ITEM, false);
+        $ratepayExtension->__set(RatepayOrderDataEntity::FIELD_SEND_SHIPPING_COSTS_AS_CART_ITEM, false);
+        $ratepayExtension->__set(RatepayOrderDataEntity::FIELD_TRANSACTION_ID, 'transaction-id');
+        $ratepayExtension->__set(RatepayOrderDataEntity::FIELD_SUCCESSFUL, true);
+        $order->addExtension(OrderExtension::EXTENSION_NAME, $ratepayExtension);
 
         // set shipping
         $shippingCosts = new CalculatedPrice(
