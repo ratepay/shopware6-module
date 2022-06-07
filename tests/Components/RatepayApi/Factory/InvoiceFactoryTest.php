@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * Copyright (c) 2020 Ratepay GmbH
+ * Copyright (c) Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,6 +15,7 @@ use DateTime;
 use PHPUnit\Framework\TestCase;
 use RatePAY\Model\Request\SubModel\Content\Invoicing;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
+use Ratepay\RpayPayments\Components\RatepayApi\Factory\InvoiceFactory;
 use Ratepay\RpayPayments\Tests\Mock\RatepayApi\Factory\Mock;
 use Shopware\Core\Checkout\Document\Aggregate\DocumentType\DocumentTypeEntity;
 use Shopware\Core\Checkout\Document\DocumentCollection;
@@ -23,6 +24,7 @@ use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class InvoiceFactoryTest extends TestCase
 {
@@ -30,11 +32,10 @@ class InvoiceFactoryTest extends TestCase
 
     public function testGetData()
     {
-        $factory = Mock::createInvoiceFactory();
+        $factory = $this->getFactory();
 
         $requestData = $this->createRequestData(true);
 
-        /** @var Invoicing $invoice */
         $invoice = $factory->getData($requestData);
 
         self::assertInstanceOf(Invoicing::class, $invoice);
@@ -45,14 +46,14 @@ class InvoiceFactoryTest extends TestCase
 
     public function testGetDataFail()
     {
-        $factory = Mock::createInvoiceFactory();
+        $factory = $this->getFactory();
 
         $requestData = $this->createRequestData(false);
         $invoice = $factory->getData($requestData);
         self::assertNull($invoice);
     }
 
-    private function createRequestData($provideInvoice)
+    private function createRequestData($provideInvoice): OrderOperationData
     {
         $order = new OrderEntity();
         $order->setDocuments(new DocumentCollection([]));
@@ -74,5 +75,10 @@ class InvoiceFactoryTest extends TestCase
         $order->getDocuments()->add($document2);
 
         return new OrderOperationData(Context::createDefaultContext(), $order, '');
+    }
+
+    private function getFactory(): InvoiceFactory
+    {
+        return new InvoiceFactory(new EventDispatcher());
     }
 }
