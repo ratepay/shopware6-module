@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2020 Ratepay GmbH
+ * Copyright (c) Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -19,24 +19,25 @@ use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentZeroPercentPayment
 use Ratepay\RpayPayments\Components\PaymentHandler\InvoicePaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\PrepaymentPaymentHandler;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Factory\PaymentFactory;
 use Ratepay\RpayPayments\Tests\Mock\Model\PaymentMethodMock;
 use Ratepay\RpayPayments\Tests\Mock\RatepayApi\Factory\Mock;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class PaymentFactoryTest extends TestCase
 {
     use KernelTestBehaviour;
 
-    public function testGetData(): void
+    public function testMethodNamesAndAmount(): void
     {
-        $factory = Mock::createPaymentFactory();
+        $factory = $this->getFactory();
 
         foreach (PaymentMethods::PAYMENT_METHODS as $method) {
             $paymentRequestData = $this->createPaymentRequestData($method['handlerIdentifier']);
-            /** @var Payment $payment */
             $payment = $factory->getData($paymentRequestData);
 
             self::assertEquals(123.456, $payment->getAmount());
@@ -73,5 +74,10 @@ class PaymentFactoryTest extends TestCase
         $paymentRequestData->getTransaction()->setPaymentMethod(PaymentMethodMock::createMock($handlerClass));
 
         return $paymentRequestData;
+    }
+
+    private function getFactory(): PaymentFactory
+    {
+        return new PaymentFactory(new EventDispatcher());
     }
 }
