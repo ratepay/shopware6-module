@@ -26,7 +26,7 @@ use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 
 /**
- * @method getData(PaymentRequestData|PaymentQueryData|OrderOperationData $requestData) : ?Head
+ * @method ShoppingBasket getData(PaymentRequestData|PaymentQueryData|OrderOperationData $requestData)
  */
 class ShoppingBasketFactory extends AbstractFactory
 {
@@ -63,7 +63,7 @@ class ShoppingBasketFactory extends AbstractFactory
                 if (!$item) {
                     throw new InvalidArgumentException($id . ' does not belongs to the order ' . $order->getId());
                 }
-                $this->addOrderLineItemToBasketByOrderItem($requestData, $basket, $item, $qty);
+                $this->addOrderLineItemToBasketByOrderItem($requestData, $basket, $item, (int)$qty);
             }
         }
 
@@ -108,7 +108,7 @@ class ShoppingBasketFactory extends AbstractFactory
         OperationDataWithBasket $requestData,
         ShoppingBasket $basket,
         OrderLineItemEntity $item,
-        $qty
+        int $qty
     ): void
     {
         $taxStatus = $this->getTaxStatus($requestData);
