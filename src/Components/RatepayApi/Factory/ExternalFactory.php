@@ -19,6 +19,9 @@ use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
  */
 class ExternalFactory extends AbstractFactory
 {
+
+    public const SHIPPING_PROVIDER_OTHER = 'OTH';
+
     protected function isSupported(AbstractRequestData $requestData): bool
     {
         return $requestData instanceof OrderOperationData;
@@ -43,7 +46,7 @@ class ExternalFactory extends AbstractFactory
                 foreach ($delivery->getTrackingCodes() as $trackingCode) {
                     $id = new Tracking\Id();
                     $id->setId($trackingCode);
-                    $id->setProvider('OTH');
+                    $id->setProvider(self::SHIPPING_PROVIDER_OTHER);
                     $supportedMethods = ['DHL', 'DPD', 'GLS', 'HLG', 'HVS', 'OTH', 'TNT', 'UPS'];
                     foreach ($supportedMethods as $supportedMethod) {
                         if (strpos($delivery->getShippingMethod()->getName(), $supportedMethod) === 0) {
