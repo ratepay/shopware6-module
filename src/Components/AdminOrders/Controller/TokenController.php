@@ -13,7 +13,7 @@ namespace Ratepay\RpayPayments\Components\AdminOrders\Controller;
 
 use Ratepay\RpayPayments\Components\AdminOrders\Model\RatepayAdminOrderTokenEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -31,15 +31,15 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class TokenController extends AbstractController
 {
-    private EntityRepositoryInterface $tokenRepository;
+    private EntityRepository $tokenRepository;
 
-    private EntityRepositoryInterface $salesChannelDomainRepository;
+    private EntityRepository $salesChannelDomainRepository;
 
     private RouterInterface $router;
 
     public function __construct(
-        EntityRepositoryInterface $tokenRepository,
-        EntityRepositoryInterface $salesChannelDomainRepository,
+        EntityRepository $tokenRepository,
+        EntityRepository $salesChannelDomainRepository,
         Router $router
     ) {
         $this->tokenRepository = $tokenRepository;

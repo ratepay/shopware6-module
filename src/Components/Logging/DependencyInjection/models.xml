@@ -19,10 +19,5 @@
         <service id="Ratepay\RpayPayments\Components\Logging\Model\Definition\HistoryLogDefinition">
             <tag name="shopware.entity.definition" entity="ratepay_order_history"/>
         </service>
-
-        <service id="Ratepay\RpayPayments\Components\Logging\Model\Repository\ApiRequestLogRepository"
-                 decorates="ratepay_api_log.repository">
-            <argument type="service" id="Ratepay\RpayPayments\Components\Logging\Model\Repository\ApiRequestLogRepository.inner"/>
-        </service>
     </services>
 </container>

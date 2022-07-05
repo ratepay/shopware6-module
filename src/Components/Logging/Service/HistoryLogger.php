@@ -14,21 +14,21 @@ use Monolog\Logger;
 use Ratepay\RpayPayments\Components\Logging\Model\HistoryLogEntity;
 use Shopware\Core\Framework\Api\Context\AdminApiSource;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\User\UserEntity;
 
 class HistoryLogger
 {
-    protected EntityRepositoryInterface $logRepository;
+    protected EntityRepository $logRepository;
 
-    protected EntityRepositoryInterface $userRepository;
+    protected EntityRepository $userRepository;
 
     protected Logger $logger;
 
     public function __construct(
-        EntityRepositoryInterface $logRepository,
-        EntityRepositoryInterface $userRepository,
+        EntityRepository $logRepository,
+        EntityRepository $userRepository,
         Logger $logger
     ) {
         $this->logRepository = $logRepository;

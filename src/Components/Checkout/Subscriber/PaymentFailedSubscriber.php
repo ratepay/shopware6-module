@@ -16,7 +16,7 @@ use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\Logging\Model\ApiRequestLogEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
 use Ratepay\RpayPayments\Components\RatepayApi\Util\ResponseConverter;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPageLoadedEvent;
@@ -25,12 +25,12 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentFailedSubscriber implements EventSubscriberInterface
 {
-    private EntityRepositoryInterface $ratepayApiLogRepository;
+    private EntityRepository $ratepayApiLogRepository;
 
     private ContainerInterface $container;
 
     public function __construct(
-        EntityRepositoryInterface $ratepayApiLogRepository,
+        EntityRepository $ratepayApiLogRepository,
         ContainerInterface $container
     ) {
         $this->ratepayApiLogRepository = $ratepayApiLogRepository;

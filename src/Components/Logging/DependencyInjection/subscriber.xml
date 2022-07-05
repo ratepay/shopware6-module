@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
-  ~ Copyright (c) 2020 Ratepay GmbH
+  ~ Copyright (c) Ratepay GmbH
   ~
   ~ For the full copyright and license information, please view the LICENSE
   ~ file that was distributed with this source code.
@@ -11,12 +11,14 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <defaults>
+        <defaults autowire="true">
             <bind key="$fileLogger" id="ratepay.logger" type="service"/>
             <tag name="kernel.event_subscriber"/>
         </defaults>
 
-        <service id="Ratepay\RpayPayments\Components\Logging\Subscriber\RequestBuilderFailedSubscriber" autowire="true" />
-        <service id="Ratepay\RpayPayments\Components\Logging\Subscriber\RequestSubscriber" autowire="true" />
+        <service id="Ratepay\RpayPayments\Components\Logging\Subscriber\RequestBuilderFailedSubscriber"/>
+        <service id="Ratepay\RpayPayments\Components\Logging\Subscriber\RequestSubscriber"/>
+        <service id="Ratepay\RpayPayments\Components\Logging\Subscriber\RepositorySubscriber"/>
+
     </services>
 </container>

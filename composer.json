@@ -1,7 +1,7 @@
 {
     "name": "ratepay/shopware6-module",
     "description": "Ratepay payment methods for Shopware 6",
-    "version": "4.1.0",
+    "version": "4.2.0",
     "license": "MIT",
     "authors": [
         {
@@ -38,9 +38,9 @@
     "require": {
         "php": "^7.4 || ^8.0",
         "ratepay/php-library": "^1.8",
-        "shopware/core": "^6.4.0",
-        "shopware/administration": "^6.4.0",
-        "shopware/storefront": "^6.4.0",
+        "shopware/core": "^6.4.11",
+        "shopware/administration": "^6.4.11",
+        "shopware/storefront": "^6.4.11",
         "ext-simplexml": "*",
         "ext-json": "*"
     }

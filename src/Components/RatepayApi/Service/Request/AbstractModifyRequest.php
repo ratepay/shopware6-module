@@ -20,7 +20,7 @@ use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\ExternalFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -31,20 +31,20 @@ abstract class AbstractModifyRequest extends AbstractRequest
 
     protected array $items;
 
-    protected EntityRepositoryInterface $productRepository;
+    protected EntityRepository $productRepository;
 
-    protected EntityRepositoryInterface $orderRepository;
+    protected EntityRepository $orderRepository;
 
     private ShoppingBasketFactory $shoppingBasketFactory;
 
-    private EntityRepositoryInterface $profileConfigRepository;
+    private EntityRepository $profileConfigRepository;
 
     private ExternalFactory $externalFactory;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         HeadFactory $headFactory,
-        EntityRepositoryInterface $profileConfigRepository,
+        EntityRepository $profileConfigRepository,
         ShoppingBasketFactory $shoppingBasketFactory,
         ExternalFactory $externalFactory
     ) {

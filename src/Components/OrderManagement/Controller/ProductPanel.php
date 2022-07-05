@@ -26,7 +26,7 @@ use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Shopware\Core\Checkout\Cart\Order\OrderConverter;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,7 +39,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ProductPanel extends AbstractController
 {
-    private EntityRepositoryInterface $orderRepository;
+    private EntityRepository $orderRepository;
 
     private PaymentCreditService $creditService;
 
@@ -54,7 +54,7 @@ class ProductPanel extends AbstractController
 
     public function __construct(
         OrderConverter $orderConverter,
-        EntityRepositoryInterface $orderRepository,
+        EntityRepository $orderRepository,
         PaymentDeliverService $paymentDeliverService,
         PaymentReturnService $paymentReturnService,
         PaymentCancelService $paymentCancelService,

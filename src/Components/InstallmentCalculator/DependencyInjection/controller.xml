@@ -16,9 +16,9 @@
             <call method="setContainer">
                 <argument id="service_container" type="service"/>
             </call>
+            <argument key="$orderRepository" id="order.repository" type="service"/>
             <tag name="controller.service_arguments"/>
         </service>
-
 
     </services>
 

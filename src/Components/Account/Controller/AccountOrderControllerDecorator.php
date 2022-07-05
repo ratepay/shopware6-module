@@ -12,7 +12,7 @@ namespace Ratepay\RpayPayments\Components\Account\Controller;
 use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Util\MethodHelper;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -35,9 +35,9 @@ class AccountOrderControllerDecorator
     private AccountOrderController $innerService;
 
     /**
-     * @var \Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
+     * @var \Shopware\Core\Framework\DataAbstractionLayer\EntityRepository
      */
-    private EntityRepositoryInterface $orderRepository;
+    private EntityRepository $orderRepository;
 
     /**
      * @var \Symfony\Component\Routing\RouterInterface
@@ -52,7 +52,7 @@ class AccountOrderControllerDecorator
 
     public function __construct(
         AccountOrderController $innerService,
-        EntityRepositoryInterface $orderRepository,
+        EntityRepository $orderRepository,
         RouterInterface $router,
         SessionInterface $session
     )

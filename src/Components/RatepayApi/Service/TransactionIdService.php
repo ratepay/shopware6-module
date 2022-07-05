@@ -20,7 +20,7 @@ use Ratepay\RpayPayments\Components\RatepayApi\Model\TransactionIdEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentInitService;
 use Ratepay\RpayPayments\Exception\RatepayException;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\ContainsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -32,15 +32,15 @@ class TransactionIdService
     public const PREFIX_CART = 'cart-';
     public const PREFIX_ORDER = 'order-';
 
-    private EntityRepositoryInterface $transactionIdRepository;
+    private EntityRepository $transactionIdRepository;
 
     private PaymentInitService $paymentInitService;
 
-    private EntityRepositoryInterface $profileRepository;
+    private EntityRepository $profileRepository;
 
     public function __construct(
-        EntityRepositoryInterface $transactionIdRepository,
-        EntityRepositoryInterface $profileRepository,
+        EntityRepository $transactionIdRepository,
+        EntityRepository $profileRepository,
         PaymentInitService $paymentInitService
     )
     {

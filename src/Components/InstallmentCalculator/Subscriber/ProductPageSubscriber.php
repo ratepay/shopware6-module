@@ -7,7 +7,7 @@ use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentCalcu
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
 use Ratepay\RpayPayments\Components\ProfileConfig\Dto\ProfileConfigSearch;
 use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Core\System\Country\CountryEntity;
@@ -20,13 +20,13 @@ class ProductPageSubscriber implements EventSubscriberInterface
 
     private SystemConfigService $configService;
     private InstallmentService $installmentService;
-    private EntityRepositoryInterface $countryRepository;
+    private EntityRepository $countryRepository;
     private Logger $logger;
 
     public function __construct(
         SystemConfigService $configService,
         InstallmentService $installmentService,
-        EntityRepositoryInterface $countryRepository,
+        EntityRepository $countryRepository,
         Logger $logger
     )
     {

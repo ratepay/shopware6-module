@@ -12,10 +12,8 @@ namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Controller;
 use Ratepay\RpayPayments\Components\Checkout\Util\BankAccountHolderHelper;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentCalculatorContext;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
-use Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Routing\Annotation\LoginRequired;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -32,11 +30,11 @@ class InstallmentController extends StorefrontController
 {
     private InstallmentService $installmentService;
 
-    private EntityRepositoryInterface $orderRepository;
+    private EntityRepository $orderRepository;
 
     public function __construct(
         InstallmentService $installmentService,
-        EntityRepositoryInterface $orderRepository
+        EntityRepository $orderRepository
     )
     {
         $this->installmentService = $installmentService;

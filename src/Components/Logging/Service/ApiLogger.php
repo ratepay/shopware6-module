@@ -16,19 +16,19 @@ use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\Logging\Model\ApiRequestLogEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\RequestDoneEvent;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use SimpleXMLElement;
 
 class ApiLogger
 {
-    protected EntityRepositoryInterface $logRepository;
+    protected EntityRepository $logRepository;
 
     protected Logger $logger;
 
     private string $pluginVersion;
 
     public function __construct(
-        EntityRepositoryInterface $logRepository,
+        EntityRepository $logRepository,
         Logger $logger,
         string $pluginVersion
     )

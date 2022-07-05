@@ -22,7 +22,7 @@ use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Ratepay\RpayPayments\Util\MethodHelper;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\StateMachine\Event\StateMachineTransitionEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -37,15 +37,15 @@ class TransitionSubscriber implements EventSubscriberInterface
 
     private PaymentReturnService $paymentReturnService;
 
-    private EntityRepositoryInterface $orderDeliveryRepository;
+    private EntityRepository $orderDeliveryRepository;
 
-    private EntityRepositoryInterface $orderRepository;
+    private EntityRepository $orderRepository;
 
     private Logger $logger;
 
     public function __construct(
-        EntityRepositoryInterface $orderDeliveryRepository,
-        EntityRepositoryInterface $orderRepository,
+        EntityRepository $orderDeliveryRepository,
+        EntityRepository $orderRepository,
         ConfigService $configService,
         PaymentDeliverService $paymentDeliverService,
         PaymentCancelService $paymentCancelService,

@@ -15,7 +15,7 @@ use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentZeroPercentPayment
 use Ratepay\RpayPayments\Components\PaymentHandler\InvoicePaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\PrepaymentPaymentHandler;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 
@@ -54,7 +54,15 @@ class PaymentMethods extends AbstractBootstrap
         ],
     ];
 
-    private EntityRepositoryInterface $paymentRepository;
+    /**
+     * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
+     * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
+     *
+     * After Shopware has removed the decorator, we can replace this by a normal definition
+     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
+     * TODO remove comment on Shopware Version 6.5.0.0 & readd type int
+     */
+    private $paymentRepository;
 
     public function injectServices(): void
     {

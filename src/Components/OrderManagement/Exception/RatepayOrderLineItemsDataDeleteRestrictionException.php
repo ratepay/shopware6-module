@@ -12,16 +12,16 @@ namespace Ratepay\RpayPayments\Components\OrderManagement\Exception;
 use Shopware\Core\Framework\ShopwareHttpException;
 use Symfony\Component\HttpFoundation\Response;
 
-class OrderDeleteRestrictionException extends ShopwareHttpException
+class RatepayOrderLineItemsDataDeleteRestrictionException extends ShopwareHttpException
 {
     public function __construct()
     {
-        parent::__construct('Orders payed with Ratepay payment methods can not be deleted via API.');
+        parent::__construct('Ratepay data of order line items should not be deleted.');
     }
 
     public function getErrorCode(): string
     {
-        return 'RP_ORDER_MANAGEMENT__ORDER_DELETE_RESTRICTION';
+        return 'RP_ORDER_MANAGEMENT__ORDER_LINE_ITEMS_DATA_DELETE_RESTRICTION';
     }
 
     public function getStatusCode(): int

@@ -25,7 +25,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStat
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PaymentHandlerRegistry;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\Framework\Validation\DataValidationDefinition;
@@ -43,11 +43,19 @@ class AccountSubscriber implements EventSubscriberInterface
 
     private DataValidator $dataValidator;
 
-    private EntityRepositoryInterface $paymentMethodRepository;
+    /**
+     * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
+     * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
+     *
+     * After Shopware has removed the decorator, we can replace this by a normal definition
+     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
+     * TODO remove comment on Shopware Version 6.5.0.0 & readd type int & change constructor argument type
+     */
+    private $paymentMethodRepository;
 
     private PaymentHandlerRegistry $paymentHandlerRegistry;
 
-    private EntityRepositoryInterface $orderRepository;
+    private EntityRepository $orderRepository;
 
     private EventDispatcherInterface $eventDispatcher;
 
@@ -56,8 +64,8 @@ class AccountSubscriber implements EventSubscriberInterface
     public function __construct(
         ExtensionService $extensionService,
         PaymentHandlerRegistry $paymentHandlerRegistry,
-        EntityRepositoryInterface $paymentMethodRepository,
-        EntityRepositoryInterface $orderRepository,
+        $paymentMethodRepository,
+        EntityRepository $orderRepository,
         DataValidator $dataValidator,
         EventDispatcherInterface $eventDispatcher,
         OrderTransactionStateHandler $orderTransactionStateHandler

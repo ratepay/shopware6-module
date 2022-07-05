@@ -13,23 +13,23 @@ namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
 
 use DateTime;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\BeforePaymentEvent;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class UserDataSubscriber implements EventSubscriberInterface
 {
-    private EntityRepositoryInterface $addressRepository;
+    private EntityRepository $addressRepository;
 
-    private EntityRepositoryInterface $customerRepository;
+    private EntityRepository $customerRepository;
 
-    private EntityRepositoryInterface $orderAddressRepository;
+    private EntityRepository $orderAddressRepository;
 
     public function __construct(
-        EntityRepositoryInterface $customerRepository,
-        EntityRepositoryInterface $orderAddressRepository,
-        EntityRepositoryInterface $addressRepository
+        EntityRepository $customerRepository,
+        EntityRepository $orderAddressRepository,
+        EntityRepository $addressRepository
     ) {
         $this->customerRepository = $customerRepository;
         $this->orderAddressRepository = $orderAddressRepository;

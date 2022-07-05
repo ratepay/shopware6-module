@@ -24,7 +24,7 @@ use Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService;
 use Ratepay\RpayPayments\Util\MethodHelper;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Struct\ArrayStruct;
@@ -36,9 +36,9 @@ class ExtensionService
 {
     public const PAYMENT_PAGE_EXTENSION_NAME = 'ratepay';
 
-    private EntityRepositoryInterface $orderExtensionRepository;
+    private EntityRepository $orderExtensionRepository;
 
-    private EntityRepositoryInterface $lineItemExtensionRepository;
+    private EntityRepository $lineItemExtensionRepository;
 
     private TransactionIdService $transactionIdService;
 
@@ -49,8 +49,8 @@ class ExtensionService
     private ProfileByOrderEntity $profileByOrderEntity;
 
     public function __construct(
-        EntityRepositoryInterface $orderExtensionRepository,
-        EntityRepositoryInterface $lineItemExtensionRepository,
+        EntityRepository $orderExtensionRepository,
+        EntityRepository $lineItemExtensionRepository,
         TransactionIdService $transactionIdService,
         EventDispatcherInterface $eventDispatcher,
         ProfileBySalesChannelContext $profileBySalesChannelContext,

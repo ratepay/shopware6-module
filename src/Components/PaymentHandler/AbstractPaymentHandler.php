@@ -29,7 +29,7 @@ use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandler
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -44,17 +44,17 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
 
     private PaymentRequestService $paymentRequestService;
 
-    private EntityRepositoryInterface $orderRepository;
+    private EntityRepository $orderRepository;
 
     private EventDispatcherInterface $eventDispatcher;
 
     private ConfigService $configService;
 
-    private EntityRepositoryInterface $profileRepository;
+    private EntityRepository $profileRepository;
 
     public function __construct(
-        EntityRepositoryInterface $orderRepository,
-        EntityRepositoryInterface $profileRepository,
+        EntityRepository $orderRepository,
+        EntityRepository $profileRepository,
         PaymentRequestService $paymentRequestService,
         EventDispatcherInterface $eventDispatcher,
         ConfigService $configService

@@ -19,16 +19,6 @@
         <service id="Ratepay\RpayPayments\Components\Checkout\Model\Definition\RatepayPositionDefinition">
             <tag name="shopware.entity.definition" entity="ratepay_position"/>
         </service>
-        <service id="Ratepay\RpayPayments\Components\Checkout\Model\Repository\OrderLineItemRepositoryDecorator"
-                 decorates="order_line_item.repository">
-            <argument type="service" id="Ratepay\RpayPayments\Components\Checkout\Model\Repository\OrderLineItemRepositoryDecorator.inner"/>
-            <argument type="service" id="ratepay_order_line_item_data.repository"/>
-        </service>
-        <service id="Ratepay\RpayPayments\Components\Checkout\Model\Repository\OrderRepositoryDecorator"
-                 decorates="order.repository">
-            <argument type="service" id="Ratepay\RpayPayments\Components\Checkout\Model\Repository\OrderRepositoryDecorator.inner"/>
-            <argument type="service" id="ratepay_order_data.repository"/>
-        </service>
 
         <service id="Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension">
             <tag name="shopware.entity.extension"/>

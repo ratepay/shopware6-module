@@ -30,7 +30,7 @@ use RatePAY\Service\LanguageService;
 use RatePAY\Service\OfflineInstallmentCalculation;
 use RuntimeException;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -39,13 +39,21 @@ class InstallmentService
 {
     private CartService $cartService;
 
-    private EntityRepositoryInterface $languageRepository;
+    private EntityRepository $languageRepository;
 
     private TransactionIdService $transactionIdService;
 
     private EventDispatcherInterface $eventDispatcher;
 
-    private EntityRepositoryInterface $paymentMethodRepository;
+    /**
+     * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
+     * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
+     *
+     * After Shopware has removed the decorator, we can replace this by a normal definition
+     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
+     * TODO remove comment on Shopware Version 6.5.0.0 & readd type int & change constructor argument type
+     */
+    private $paymentMethodRepository;
 
     private Logger $logger;
 
@@ -70,13 +78,13 @@ class InstallmentService
 
     public function __construct(
         CartService $cartService,
-        EntityRepositoryInterface $languageRepository,
+        EntityRepository $languageRepository,
         ProfileSearchService $profileSearchService,
         ProfileByOrderEntity $profileByOrderEntity,
         ProfileBySalesChannelContext $profileBySalesChannelContext,
         TransactionIdService $transactionIdService,
         EventDispatcherInterface $eventDispatcher,
-        EntityRepositoryInterface $paymentMethodRepository,
+        $paymentMethodRepository,
         Logger $logger
     )
     {

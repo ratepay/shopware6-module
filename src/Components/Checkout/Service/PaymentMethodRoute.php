@@ -14,7 +14,7 @@ namespace Ratepay\RpayPayments\Components\Checkout\Service;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Shopware\Core\Checkout\Payment\SalesChannel\AbstractPaymentMethodRoute;
 use Shopware\Core\Checkout\Payment\SalesChannel\PaymentMethodRouteResponse;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,16 +28,24 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
 
     private RequestStack $requestStack;
 
-    private EntityRepositoryInterface $orderRepository;
+    private EntityRepository $orderRepository;
 
-    private EntityRepositoryInterface $paymentMethodRepository;
+    /**
+     * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
+     * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
+     *
+     * After Shopware has removed the decorator, we can replace this by a normal definition
+     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
+     * TODO remove comment on Shopware Version 6.5.0.0 & readd type int & change constructor argument type
+     */
+    private $paymentMethodRepository;
 
     public function __construct(
         AbstractPaymentMethodRoute $innerService,
         PaymentFilterService $paymentFilterService,
         RequestStack $requestStack,
-        EntityRepositoryInterface $orderRepository,
-        EntityRepositoryInterface $paymentMethodRepository
+        EntityRepository $orderRepository,
+        $paymentMethodRepository
     ) {
         $this->innerService = $innerService;
         $this->paymentFilterService = $paymentFilterService;

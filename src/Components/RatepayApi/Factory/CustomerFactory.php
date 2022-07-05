@@ -19,7 +19,7 @@ use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEnt
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Language\LanguageEntity;
@@ -32,17 +32,17 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class CustomerFactory extends AbstractFactory
 {
-    private EntityRepositoryInterface $salutationRepository;
+    private EntityRepository $salutationRepository;
 
-    private EntityRepositoryInterface $languageRepository;
+    private EntityRepository $languageRepository;
 
     private ConfigService $configService;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         ConfigService $configService,
-        EntityRepositoryInterface $salutationRepository,
-        EntityRepositoryInterface $languageRepository
+        EntityRepository $salutationRepository,
+        EntityRepository $languageRepository
     ) {
         parent::__construct($eventDispatcher);
         $this->salutationRepository = $salutationRepository;

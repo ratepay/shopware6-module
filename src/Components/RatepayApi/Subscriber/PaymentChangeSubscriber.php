@@ -29,15 +29,15 @@ use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Order\RecalculationService;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentChangeSubscriber implements EventSubscriberInterface
 {
-    private EntityRepositoryInterface $productRepository;
+    private EntityRepository $productRepository;
 
-    private EntityRepositoryInterface $orderRepository;
+    private EntityRepository $orderRepository;
 
     private Logger $logger;
 
@@ -47,15 +47,15 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
 
     private EventDispatcherInterface $eventDispatcher;
 
-    private EntityRepositoryInterface $ratepayPositionRepository;
+    private EntityRepository $ratepayPositionRepository;
 
     private ExtensionService $extensionService;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
-        EntityRepositoryInterface $productRepository,
-        EntityRepositoryInterface $orderRepository,
-        EntityRepositoryInterface $ratepayPositionRepository,
+        EntityRepository $productRepository,
+        EntityRepository $orderRepository,
+        EntityRepository $ratepayPositionRepository,
         ExtensionService $extensionService,
         RecalculationService $recalculationService,
         Logger $logger,

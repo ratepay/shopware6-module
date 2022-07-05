@@ -17,7 +17,7 @@ use Ratepay\RpayPayments\Components\RatepayApi\Dto\ProfileRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\ProfileRequestService;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -26,20 +26,20 @@ class ProfileConfigManagement
 {
     private Context $context;
 
-    private EntityRepositoryInterface $repository;
+    private EntityRepository $repository;
 
     private ProfileRequestService $profileRequestService;
 
-    private EntityRepositoryInterface $methodConfigRepository;
+    private EntityRepository $methodConfigRepository;
 
-    private EntityRepositoryInterface $methodConfigInstallmentRepository;
+    private EntityRepository $methodConfigInstallmentRepository;
 
     private ProfileConfigResponseConverter $profileConfigResponseConverter;
 
     public function __construct(
-        EntityRepositoryInterface $repository,
-        EntityRepositoryInterface $methodConfigRepository,
-        EntityRepositoryInterface $methodConfigInstallmentRepository,
+        EntityRepository $repository,
+        EntityRepository $methodConfigRepository,
+        EntityRepository $methodConfigInstallmentRepository,
         ProfileRequestService $profileRequestService,
         ProfileConfigResponseConverter $profileConfigResponseConverter
     )

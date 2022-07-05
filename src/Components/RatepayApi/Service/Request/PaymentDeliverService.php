@@ -16,7 +16,7 @@ use Ratepay\RpayPayments\Components\RatepayApi\Factory\ExternalFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\InvoiceFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class PaymentDeliverService extends AbstractModifyRequest
@@ -38,7 +38,7 @@ class PaymentDeliverService extends AbstractModifyRequest
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         HeadFactory $headFactory,
-        EntityRepositoryInterface $profileConfigRepository,
+        EntityRepository $profileConfigRepository,
         ShoppingBasketFactory $shoppingBasketFactory,
         InvoiceFactory $invoiceFactory,
         ExternalFactory $externalFactory

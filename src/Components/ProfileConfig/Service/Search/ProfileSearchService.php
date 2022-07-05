@@ -7,7 +7,7 @@ use Ratepay\RpayPayments\Components\ProfileConfig\Event\CreateProfileConfigCrite
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\AndFilter;
@@ -23,16 +23,16 @@ class ProfileSearchService implements ProfileSearchInterface
 
     protected Context $context;
 
-    private EntityRepositoryInterface $countryRepository;
+    private EntityRepository $countryRepository;
 
-    private EntityRepositoryInterface $repository;
+    private EntityRepository $repository;
 
     private EventDispatcherInterface $eventDispatcher;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
-        EntityRepositoryInterface $countryRepository,
-        EntityRepositoryInterface $repository
+        EntityRepository $countryRepository,
+        EntityRepository $repository
     )
     {
         $this->countryRepository = $countryRepository;
