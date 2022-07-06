@@ -31,6 +31,7 @@ use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class ExtensionService
 {
@@ -141,7 +142,8 @@ class ExtensionService
 
     public function buildPaymentDataExtension(
         SalesChannelContext $salesChannelContext,
-        ?OrderEntity $order = null
+        ?OrderEntity $order = null,
+        Request $httpRequest = null
     ): ?ArrayStruct
     {
         $paymentMethod = $salesChannelContext->getPaymentMethod();
@@ -193,6 +195,16 @@ class ExtensionService
                 $profileConfig
             );
             $extension->offsetSet('transactionId', $transactionId);
+        }
+
+        if ($httpRequest) {
+            // add user entered values again, so that the user have not to reenter his values
+            foreach ($httpRequest->request->get('ratepay') ?: [] as $key => $value) {
+                if ($key === 'birthday' && is_array($value)) {
+                    $value = (new \DateTime())->setDate($value['year'], $value['month'], $value['day']);
+                }
+                $extension->set($key, $value);
+            }
         }
 
         /** @var PaymentDataExtensionBuilt $event */

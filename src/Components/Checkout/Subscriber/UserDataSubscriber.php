@@ -81,7 +81,7 @@ class UserDataSubscriber implements EventSubscriberInterface
             $customerUpdates['birthday'] = $date;
         }
 
-        if ($ratepayData->has('phone') && !empty($phone = $ratepayData->get('phone'))) {
+        if ($ratepayData->has('phoneNumber') && !empty($phone = $ratepayData->get('phoneNumber'))) {
             $defaultBillingAddressUpdates['phoneNumber'] = $phone;
             $orderBillingAddress->setPhoneNumber($phone);
             $orderBillingAddressUpdates['phoneNumber'] = $phone;

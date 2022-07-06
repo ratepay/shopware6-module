@@ -107,7 +107,8 @@ class AccountSubscriber implements EventSubscriberInterface
             ) {
                 $extension = $this->extensionService->buildPaymentDataExtension(
                     $event->getSalesChannelContext(),
-                    $order
+                    $order,
+                    $event->getRequest()
                 );
                 if ($extension) {
                     $event->getPage()->addExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME, $extension);

@@ -38,6 +38,7 @@
 
 * RATESWSX-249 - fixed: remove usage of deprecated EntityRepositoryInterface
 * RATESWSX-248 - fixed: phonenumber can not be changed if the phone number got an initial validation error
+* RATESWSX-248 - improvement: refill fields with user-entered values, if validation has been failed
 * RATESWSX-253 - replace mandate information with small text
 
 ### Version 4.1.0 - Released on 2022-05-12

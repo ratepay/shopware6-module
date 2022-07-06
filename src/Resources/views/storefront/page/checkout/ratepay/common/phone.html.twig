@@ -14,7 +14,7 @@
             <input type="text"
                    class="form-control{% if formViolations.getViolations('/ratepay/phone') is not empty %} is-invalid{% endif %}"
                    placeholder="{{ "account.personalPhonePlaceholder"|trans|sw_sanitize }}" value="{{ page.extensions.ratepay.phoneNumber }}"
-                   name="ratepay[phone]"
+                   name="ratepay[phoneNumber]"
                    form="confirmOrderForm"
             >
         </div>
