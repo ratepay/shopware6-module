@@ -23,7 +23,7 @@
 
         <service id="Ratepay\RpayPayments\Components\Checkout\Service\PaymentMethodRoute"
                  decorates="Shopware\Core\Checkout\Payment\SalesChannel\PaymentMethodRoute"
-                  decoration-priority="-2000">
+                 decoration-priority="-1500"> <!-- Priority needs to be higher than Shopware\Core\Checkout\Payment\SalesChannel\CachedPaymentMethodRoute -->
             <argument type="service" id="Ratepay\RpayPayments\Components\Checkout\Service\PaymentMethodRoute.inner"/>
             <argument type="service" id="Ratepay\RpayPayments\Components\Checkout\Service\PaymentFilterService"/>
             <argument type="service" id="request_stack"/>

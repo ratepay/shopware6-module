@@ -86,14 +86,9 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
                 $order
             );
 
-            // We need to reload the entities because the response expects an EntitySearchResult
-            $paymentMethodCriteria = new Criteria($paymentMethods->getIds());
-            $searchResult = $this->paymentMethodRepository->search(
-                $paymentMethodCriteria,
-                $salesChannelContext->getContext()
-            );
+            $criteria->setIds($paymentMethods->getIds());
 
-            return new PaymentMethodRouteResponse($searchResult);
+            return $this->innerService->load($request, $salesChannelContext, $criteria);
         }
 
         return $response;
