@@ -124,7 +124,12 @@ class CustomerFactory extends AbstractFactory
             $customer->setDateOfBirth($birthday->format('Y-m-d'));
         }
 
-        if ($billingAddress->getPhoneNumber()) {
+        if (($phoneNumber = $requestDataBag->get('phoneNumber')) && !empty(trim($phoneNumber))) {
+            $customer->getContacts()->setPhone(
+                (new Customer\Contacts\Phone())
+                    ->setDirectDial($phoneNumber)
+            );
+        } else if ($billingAddress->getPhoneNumber()) {
             $customer->getContacts()->setPhone(
                 (new Customer\Contacts\Phone())
                     ->setDirectDial($billingAddress->getPhoneNumber())
