@@ -1,5 +1,8 @@
 {
     "ratepay": {
+        "errors": {
+            "RP_TAX_RULE_NOT_FOUND": "Für die Bestellung kann kein passender Steuersatz gefunden werden. Bitte wählen Sie eine andere Steuerregel aus oder prüfen Sie die ausgewählte Steuerregel in den Shop-Einstellungen."
+        },
         "orderManagement": {
             "title": "Ratepay Artikelverwaltung",
             "tab": {

@@ -348,10 +348,24 @@ Component.register('ratepay-order-management', {
                     message: this.$tc('ratepay.orderManagement.messages.' + type + '.success')
                 });
             } else {
-                this.createNotificationError({
-                    title: this.$tc('ratepay.orderManagement.messages.failedTitle'),
-                    message: response.message
-                });
+                response = response.response ? response.response : response;
+                if (response.data && response.data.errors) {
+                    response.data.errors.forEach((error, i) => {
+                        let message = error.detail;
+                        if (this.$te('ratepay.errors.' + error.code)) {
+                            message = this.$tc('ratepay.errors.' + error.code)
+                        }
+                        this.createNotificationError({
+                            title: this.$tc('ratepay.orderManagement.messages.failedTitle'),
+                            message: message
+                        });
+                    });
+                } else {
+                    this.createNotificationError({
+                        title: this.$tc('ratepay.orderManagement.messages.failedTitle'),
+                        message: response.message
+                    });
+                }
             }
         },
         getProcessShippingCancelData() {

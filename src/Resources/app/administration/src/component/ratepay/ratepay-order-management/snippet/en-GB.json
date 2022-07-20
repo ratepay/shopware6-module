@@ -1,5 +1,8 @@
 {
     "ratepay": {
+        "errors": {
+            "RP_TAX_RULE_NOT_FOUND": "No suitable tax rule can be found for the current order. Please select another tax-rule or check the selected tax-rule within the store settings."
+        },
         "orderManagement": {
             "title": "Ratepay Article management",
             "tab": {

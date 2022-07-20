@@ -4,6 +4,7 @@
 namespace Ratepay\RpayPayments\Components\OrderManagement\Service;
 
 
+use Ratepay\RpayPayments\Components\OrderManagement\Exception\TaxRuleNotFoundException;
 use Shopware\Core\Checkout\Cart\Calculator;
 use Shopware\Core\Checkout\Cart\CartBehavior;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
@@ -16,20 +17,22 @@ use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRuleCollection;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Exception\EntityNotFoundException;
+use Shopware\Core\Framework\ShopwareHttpException;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Tax\Aggregate\TaxRule\TaxRuleDefinition;
+use Symfony\Component\Translation\Translator;
 
 class LineItemFactory
 {
 
     private OrderConverter $orderConverter;
 
-    /**
-     * @var \Shopware\Core\Checkout\Cart\Calculator
-     */
     private Calculator $calculator;
 
-    public function __construct(OrderConverter $orderConverter, Calculator $calculator)
+    public function __construct(
+        OrderConverter $orderConverter,
+        Calculator $calculator
+    )
     {
         $this->orderConverter = $orderConverter;
         $this->calculator = $calculator;
@@ -44,7 +47,7 @@ class LineItemFactory
         } else {
             $taxRule = $salesChannelContext->getTaxRules()->get($taxRuleIdOrTaxRate)->getRules()->first();
             if ($taxRule === null) {
-                throw new EntityNotFoundException(TaxRuleDefinition::ENTITY_NAME, $taxRuleIdOrTaxRate);
+                throw new TaxRuleNotFoundException();
             }
             $taxRate = $taxRule->getTaxRate();
         }
