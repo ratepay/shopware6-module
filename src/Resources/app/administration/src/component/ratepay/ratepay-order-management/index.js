@@ -387,6 +387,18 @@ Component.register('ratepay-order-management', {
 
         onCloseCreditModal() {
             this.addCredit.showModal = false;
-        }
+        },
+
+        getTaxLabel(tax) {
+            if (!tax) {
+                return '';
+            }
+
+            if (this.$te(`global.tax-rates.${tax.name}`)) {
+                return this.$tc(`global.tax-rates.${tax.name}`);
+            }
+
+            return tax.name;
+        },
     }
 });

@@ -150,7 +150,7 @@
                         :key="tax.id"
                         :value="tax.id"
                         :selected="addDebit.data.taxId === tax.id">
-                    {{ tax.name }}
+                    {{ getTaxLabel(tax) }}
                 </option>
             </sw-field>
         </template>
@@ -185,7 +185,7 @@
                         :key="tax.id"
                         :value="tax.id"
                         :selected="addDebit.data.taxId === tax.id">
-                    {{ tax.name }}
+                    {{ getTaxLabel(tax) }}
                 </option>
             </sw-field>
         </template>
