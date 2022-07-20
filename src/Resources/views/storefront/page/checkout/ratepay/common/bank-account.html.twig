@@ -13,13 +13,6 @@
                 <label class="form-label">
                     <strong>{{ "document.bankAccount"|trans|sw_sanitize }}</strong>
                 </label>
-            </div>
-        </div>
-    {% endblock %}
-
-    {% block ratepay_personal_data_bank_account_legal %}
-        <div class="form-row">
-            <div class="form-group col-sm-12">
                 {% sw_include '@RpayPayments/storefront/page/checkout/ratepay/common/sepa-legal.html.twig' %}
             </div>
         </div>
