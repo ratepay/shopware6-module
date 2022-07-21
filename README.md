@@ -34,7 +34,7 @@
 
 ## Changelog
 
-### Version 4.2.0 - WIP
+### Version 4.2.0 - Released 2022-07-21
 
 * RATESWSX-249 - fixed: remove usage of deprecated EntityRepositoryInterface
 * RATESWSX-248 - fixed: phonenumber can not be changed if the phone number got an initial validation error
