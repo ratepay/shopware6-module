@@ -14,7 +14,7 @@ namespace Ratepay\RpayPayments\Tests\Mock\Repository;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\AggregationResultCollection;
@@ -23,8 +23,13 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\CloneBehavior;
 
-class EntityRepositoryMock implements EntityRepositoryInterface
+class EntityRepositoryMock extends EntityRepository
 {
+    /** @noinspection PhpMissingParentConstructorInspection */
+    public function __construct()
+    {
+    }
+
     public function getDefinition(): EntityDefinition
     {
         return new class() extends EntityDefinition {

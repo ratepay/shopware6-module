@@ -15,6 +15,8 @@ use RatePAY\Model\Request\SubModel\Content\Customer;
 use RatePAY\Model\Request\SubModel\Content\Payment;
 use RatePAY\Model\Request\SubModel\Content\ShoppingBasket;
 use RatePAY\Model\Request\SubModel\Head;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\CustomerFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\PaymentFactory;
@@ -32,7 +34,7 @@ class PaymentRequestServiceTest extends AbstractRequestService
         /** @var PaymentRequestServiceMock $service */
         $service = $this->getServiceMock();
 
-        $content = $service->getRequestContent($this->createEmptyRequestDataDto());
+        $content = $service->getRequestContent($this->createMock(PaymentRequestData::class));
         self::assertNotNull($content->getShoppingBasket(), 'basket must be set for PaymentRequest');
         self::assertNotNull($content->getCustomer(), 'customer must be set for PaymentRequest');
         self::assertNotNull($content->getPayment(), 'payment must be set for PaymentRequest');

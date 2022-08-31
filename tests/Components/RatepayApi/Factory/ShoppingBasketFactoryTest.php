@@ -123,7 +123,7 @@ class ShoppingBasketFactoryTest extends TestCase
     }
 
     /**
-     * @depends testPartialNoShipping
+     * @depends testPartial
      */
     public function testDiscountItemInBasket()
     {
@@ -150,7 +150,7 @@ class ShoppingBasketFactoryTest extends TestCase
     }
 
     /**
-     * @depends testPartialNoShipping
+     * @depends testPartial
      */
     public function testShippingItemInBasket()
     {
@@ -175,7 +175,6 @@ class ShoppingBasketFactoryTest extends TestCase
 
     private function createRequestData(array $operationItems = null): OrderOperationData
     {
-
         $order = OrderMock::createMock();
 
         if (!$operationItems) {

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Tests\Mock\RatepayApi\Service\Request;
 
+use Ratepay\RpayPayments\Components\RatepayApi\Factory\ExternalFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentCancelService;
@@ -24,13 +25,15 @@ class PaymentCancelServiceMock extends PaymentCancelService
 
     public function __construct(
         HeadFactory $headFactory = null,
-        ShoppingBasketFactory $shoppingBasketFactory = null
+        ShoppingBasketFactory $shoppingBasketFactory = null,
+        ExternalFactory $externalFactory = null
     ) {
         parent::__construct(
             new EventDispatcher(),
             $headFactory ?? Mock::createHeadFactory(),
             new EntityRepositoryMock(),
             $shoppingBasketFactory ?? Mock::createShoppingBasketFactory(),
+            $externalFactory ?? Mock::createExternalFactory(),
         );
     }
 }

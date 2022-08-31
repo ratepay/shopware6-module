@@ -15,6 +15,10 @@ use Shopware\Core\TestBootstrapper;
 require_once __DIR__ . '/../../../project/vendor/shopware/platform/src/Core/TestBootstrapper.php';
 $bootstrapper = (new TestBootstrapper())
     ->setPlatformEmbedded(false)
+    ->setLoadEnvFile(true)
+    ->setForceInstallPlugins(true)
+    ->addActivePlugins('RpayPayments')
+    ->addCallingPlugin()
     ->bootstrap();
 
 $bootstrapper->getClassLoader()->setPsr4('Ratepay\\RpayPayments\\Tests\\', __DIR__); // TODO composer

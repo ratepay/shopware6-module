@@ -16,6 +16,9 @@ use RatePAY\Model\Request\SubModel\Head;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 
+/**
+ * This mock makes a few method public to test each behaviour separated from each other
+ */
 trait tMock
 {
     public function getRequestHead(AbstractRequestData $requestData): Head

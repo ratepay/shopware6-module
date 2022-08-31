@@ -63,12 +63,14 @@ class HeadFactoryTest extends TestCase
 
         $orderEntity = OrderMock::createMock();
 
+        $defaultContext = Context::createDefaultContext();
+
         $requestDataObjects = [
-            [true, new OrderOperationData(Context::createDefaultContext(), $orderEntity, OrderOperationData::OPERATION_DELIVER)],
+            [true, new OrderOperationData($defaultContext, $orderEntity, OrderOperationData::OPERATION_DELIVER)],
             [true, new PaymentRequestData($this->createMock(SalesChannelContext::class), $orderEntity, $orderEntity->getTransactions()->first(), new RequestDataBag(), 'transaction-id')],
-            [true, new AddCreditData(Context::createDefaultContext(), $orderEntity, [])],
+            [true, new AddCreditData($defaultContext, $orderEntity, [])],
             [false, new PaymentQueryData($this->createMock(SalesChannelContext::class), $this->createMock(Cart::class), new RequestDataBag(), 'transaction-id')],
-            [false, new PaymentInitData($profileConfig, Context::createDefaultContext())],
+            [false, new PaymentInitData($profileConfig, $defaultContext)],
         ];
 
         foreach ($requestDataObjects as [$needTransactionId, $requestData]) {
@@ -92,8 +94,8 @@ class HeadFactoryTest extends TestCase
     private function getProfileConfig(): ProfileConfigEntity
     {
         $profileConfig = new ProfileConfigEntity();
-        $profileConfig->__set(ProfileConfigEntity::FIELD_PROFILE_ID, 'test-123');
-        $profileConfig->__set(ProfileConfigEntity::FIELD_SECURITY_CODE, '123-test');
+        $profileConfig->__set(ProfileConfigEntity::FIELD_PROFILE_ID, 'profile-id');
+        $profileConfig->__set(ProfileConfigEntity::FIELD_SECURITY_CODE, 'security-code');
         return $profileConfig;
     }
 }

@@ -25,10 +25,11 @@ abstract class AbstractFactory
 
     abstract protected function isSupported(AbstractRequestData $requestData): bool;
 
-    final public function getData(AbstractRequestData $requestData): ?object
+    // we can not make this method `final` because we can not mock final methods within PHPUnit. TODO find solution
+    public function getData(AbstractRequestData $requestData): ?object
     {
         if (!$this->isSupported($requestData)) {
-            throw new InvalidArgumentException(get_class($requestData) . ' is no supported by ' . self::class);
+            throw new InvalidArgumentException(get_class($requestData) . ' is not supported by ' . self::class);
         }
 
         $data = $this->_getData($requestData);
