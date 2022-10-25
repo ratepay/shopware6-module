@@ -79,7 +79,7 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
             )->first();
         }
 
-        if ($order || $request->query->getBoolean('onlyAvailable', false)) {
+        if ($order || $request->query->getBoolean('onlyAvailable') || $request->request->getBoolean('onlyAvailable')) {
             $paymentMethods = $this->paymentFilterService->filterPaymentMethods(
                 $response->getPaymentMethods(),
                 $salesChannelContext,
