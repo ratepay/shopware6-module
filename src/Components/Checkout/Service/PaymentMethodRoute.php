@@ -56,7 +56,7 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
 
     public function getDecorated(): AbstractPaymentMethodRoute
     {
-        return $this;
+        return $this->innerService;
     }
 
     public function load(Request $request, SalesChannelContext $salesChannelContext, Criteria $criteria): PaymentMethodRouteResponse
