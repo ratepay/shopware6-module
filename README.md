@@ -4,7 +4,7 @@
 | Module             | Ratepay Payment Plugin for Shopware 6             |
 |--------------------|---------------------------------------------------|
 | Author             | Interlutions GmbH                                 |
-| Shop Version       | `6.4.x.x`                                         |
+| Shop Version       | `6.3.0.2 to 6.4.13.x`                             |
 | Link               | http://www.ratepay.com                            |
 | Mail               | integration@ratepay.com                           |
 | Full Documentation | https://ratepay.gitbook.io/shopware6/             |
