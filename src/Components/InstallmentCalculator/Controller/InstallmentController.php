@@ -10,10 +10,6 @@
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Controller;
 
 use Ratepay\RpayPayments\Components\Checkout\Util\BankAccountHolderHelper;
-use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentCalculatorContext;
-use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
-use Ratepay\RpayPayments\Util\CriteriaHelper;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Routing\Annotation\LoginRequired;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -28,17 +24,11 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class InstallmentController extends StorefrontController
 {
-    private InstallmentService $installmentService;
+    private InstallmentRoute $installmentRoute;
 
-    private EntityRepository $orderRepository;
-
-    public function __construct(
-        InstallmentService $installmentService,
-        EntityRepository $orderRepository
-    )
+    public function __construct(InstallmentRoute $installmentRoute)
     {
-        $this->installmentService = $installmentService;
-        $this->orderRepository = $orderRepository;
+        $this->installmentRoute = $installmentRoute;
     }
 
     /**
@@ -47,27 +37,15 @@ class InstallmentController extends StorefrontController
      */
     public function calculateInstallment(Request $request, SalesChannelContext $salesChannelContext, $orderId = null): Response
     {
-        $type = $request->query->get('type');
-        $value = (int)$request->query->get('value');
-        $value = $value ?: 1; // RATESWSX-186: fix that no "0" values can be provided
-
-        if ($orderId) {
-            /** @var \Shopware\Core\Checkout\Order\OrderEntity $order */
-            $order = $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($orderId), $salesChannelContext->getContext())->first();
-            if ($order === null) {
-                throw $this->createNotFoundException();
-            }
-        }
-
-        $calcContext = (new InstallmentCalculatorContext($salesChannelContext, $type, $value))
-            ->setPaymentMethodId($salesChannelContext->getPaymentMethod()->getId())
-            ->setOrder($order ?? null);
-
-        $vars = $this->installmentService->getInstallmentPlanTwigVars($calcContext);
+        $vars = $this->installmentRoute->calculateInstallment($request, $salesChannelContext, $orderId);
 
         return $this->renderStorefront('@Storefront/storefront/installment-calculator/installment-plan.html.twig', [
             'ratepay' => [
-                'installment' => $vars,
+                'installment' => [
+                    'plan' => $vars->getPlan(),
+                    'translations' => $vars->getTranslations(),
+                    'transactionId' => $vars->getTransactionId()
+                ],
                 'accountHolders' => BankAccountHolderHelper::getAvailableNames($salesChannelContext)
             ]
         ]);
