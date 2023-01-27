@@ -41,6 +41,8 @@ class RatepayOrderDataEntity extends Entity
 
     public const FIELD_SEND_SHIPPING_COSTS_AS_CART_ITEM = 'sendShippingCostsAsCartItem';
 
+    public const FIELD_ADDITIONAL_DATA = 'additionalData';
+
     protected string $orderId;
 
     protected string $orderVersionId;
@@ -62,6 +64,8 @@ class RatepayOrderDataEntity extends Entity
     protected bool $sendDiscountAsCartItem = false;
 
     protected bool $sendShippingCostsAsCartItem = false;
+
+    protected array $additionalData = [];
 
     public function getOrderId(): string
     {
@@ -116,5 +120,10 @@ class RatepayOrderDataEntity extends Entity
     public function isSendShippingCostsAsCartItem(): bool
     {
         return $this->sendShippingCostsAsCartItem;
+    }
+
+    public function getAdditionalData($key = null)
+    {
+        return $key ? ($this->additionalData[$key] ?? null) : $this->additionalData;
     }
 }

@@ -18,6 +18,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\JsonField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ReferenceVersionField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
@@ -76,6 +77,11 @@ class RatepayOrderDataDefinition extends EntityDefinition
                 'shipping_position_id',
                 RatepayOrderDataEntity::FIELD_SHIPPING_POSITION_ID,
                 RatepayPositionDefinition::class
+            )),
+
+            (new JsonField(
+                'additional_data',
+                RatepayOrderDataEntity::FIELD_ADDITIONAL_DATA
             )),
 
             (new BoolField(

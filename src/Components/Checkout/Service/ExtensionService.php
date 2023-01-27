@@ -9,6 +9,7 @@
 
 namespace Ratepay\RpayPayments\Components\Checkout\Service;
 
+use Ratepay\RpayPayments\Components\Checkout\Event\OrderExtensionDataBuilt;
 use Ratepay\RpayPayments\Components\Checkout\Event\PaymentDataExtensionBuilt;
 use Ratepay\RpayPayments\Components\Checkout\Model\Collection\RatepayOrderLineItemDataCollection;
 use Ratepay\RpayPayments\Components\Checkout\Model\Definition\RatepayOrderDataDefinition;
@@ -111,6 +112,7 @@ class ExtensionService
             RatepayOrderDataEntity::FIELD_TRANSACTION_ID => $transactionId,
             RatepayOrderDataEntity::FIELD_DESCRIPTOR => $descriptor,
             RatepayOrderDataEntity::FIELD_SUCCESSFUL => $successful,
+            RatepayOrderDataEntity::FIELD_ADDITIONAL_DATA => [],
             RatepayOrderDataEntity::FIELD_SEND_DISCOUNT_AS_CART_ITEM => $requestData->isSendDiscountAsCartItem(),
             RatepayOrderDataEntity::FIELD_SEND_SHIPPING_COSTS_AS_CART_ITEM => $requestData->isSendShippingCostsAsCartItem(),
         ];
@@ -130,6 +132,10 @@ class ExtensionService
         if ($ids->firstId()) {
             $orderExtensionData[RatepayOrderDataEntity::FIELD_ID] = $ids->firstId();
         }
+
+        /** @var OrderExtensionDataBuilt $event */
+        $event = $this->eventDispatcher->dispatch(new OrderExtensionDataBuilt($order, $requestData, $orderExtensionData));
+        $orderExtensionData = $event->getData();
 
         $event = $this->orderExtensionRepository->upsert([$orderExtensionData], $context);
 
