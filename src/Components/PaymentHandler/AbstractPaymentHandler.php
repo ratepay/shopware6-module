@@ -17,6 +17,7 @@ use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\IsOfLegalAge;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\BeforePaymentEvent;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
+use Ratepay\RpayPayments\Components\PaymentHandler\Event\ValidationDefinitionCollectEvent;
 use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
@@ -167,6 +168,9 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
             ];
         }
 
-        return $validations;
+        /** @var ValidationDefinitionCollectEvent $event */
+        $event = $this->eventDispatcher->dispatch(new ValidationDefinitionCollectEvent($validations, $requestDataBag, $baseData));
+
+        return $event->getDefinitions();
     }
 }
