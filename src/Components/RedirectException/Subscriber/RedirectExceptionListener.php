@@ -33,7 +33,8 @@ class RedirectExceptionListener implements EventSubscriberInterface
     public function __construct(
         ContainerInterface $container,
         OrderTransactionStateHandler $orderTransactionStateHandler
-    ) {
+    )
+    {
         $this->container = $container;
         $this->orderTransactionStateHandler = $orderTransactionStateHandler;
     }
@@ -58,6 +59,13 @@ class RedirectExceptionListener implements EventSubscriberInterface
         if ($throwable instanceof RedirectException) {
             $event->setResponse($throwable->getRedirectResponse());
         } elseif ($throwable instanceof ForwardException) {
+
+            $routeScope = $event->getRequest()->attributes->get('_routeScope');
+            if (!is_array($routeScope) || $routeScope[0] !== 'storefront') {
+                // skip forwarding request, if it is a api request (e.g. headless)
+                throw $throwable->getPrevious();
+            }
+
             /** @var UrlGeneratorInterface $router */
             $router = $this->container->get('router');
             $url = $router->generate(
