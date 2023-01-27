@@ -3,8 +3,8 @@
 
 namespace Ratepay\RpayPayments\Components\AdminOrders\Service;
 
-
 use Ratepay\RpayPayments\Components\DeviceFingerprint\DfpServiceInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class DfpService implements DfpServiceInterface
@@ -23,23 +23,27 @@ class DfpService implements DfpServiceInterface
         $this->sessionKey = $sessionKey;
     }
 
-    public function getDfpId(): ?string
+    public function generatedDfpId(Request $request, $baseData): ?string
     {
-        if (!$this->session->get($this->sessionKey)) {
-            return $this->decorated->getDfpId();
+        return $this->decorated->generatedDfpId($request, $baseData);
+    }
+
+    public function getDfpSnippet(Request $request, $baseData): ?string
+    {
+        return $this->decorated->getDfpSnippet($request, $baseData);
+    }
+
+    public function isDfpIdValid($baseData, string $dfpId = null): bool
+    {
+        return $this->decorated->isDfpIdValid($baseData, $dfpId);
+    }
+
+    public function isDfpRequired($object): bool
+    {
+        if ($this->session->get($this->sessionKey)) {
+            return false;
         }
 
-        $this->deleteToken(); // make sure that no token is stored in the session by a previous session
-        return null;
-    }
-
-    public function isDfpIdAlreadyGenerated(): bool
-    {
-        return $this->decorated->isDfpIdAlreadyGenerated();
-    }
-
-    public function deleteToken(): void
-    {
-        $this->decorated->deleteToken();
+        return $this->decorated->isDfpRequired($object);
     }
 }

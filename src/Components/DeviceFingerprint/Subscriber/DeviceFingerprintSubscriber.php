@@ -11,74 +11,112 @@ namespace Ratepay\RpayPayments\Components\DeviceFingerprint\Subscriber;
 
 use RatePAY\Model\Request\SubModel\Head;
 use RatePAY\Model\Request\SubModel\Head\CustomerDevice;
-use Ratepay\RpayPayments\Components\Checkout\Service\ExtensionService;
+use Ratepay\RpayPayments\Components\Checkout\Event\OrderExtensionDataBuilt;
+use Ratepay\RpayPayments\Components\Checkout\Event\PaymentDataExtensionBuilt;
+use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
+use Ratepay\RpayPayments\Components\DeviceFingerprint\Constraint\DfpConstraint;
 use Ratepay\RpayPayments\Components\DeviceFingerprint\DfpServiceInterface;
-use Ratepay\RpayPayments\Components\PaymentHandler\Event\AbstractPaymentEvent;
-use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
-use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
+use Ratepay\RpayPayments\Components\PaymentHandler\Event\ValidationDefinitionCollectEvent;
 use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\BuildEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
-use RatePAY\Service\DeviceFingerprint;
-use Shopware\Core\Framework\Struct\ArrayStruct;
-use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
-use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
-use Shopware\Storefront\Page\PageLoadedEvent;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Shopware\Storefront\Event\RouteRequest\OrderRouteRequestEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class DeviceFingerprintSubscriber implements EventSubscriberInterface
 {
     protected DfpServiceInterface $dfpService;
-
+    private RequestStack $requestStack;
     private ConfigService $configService;
 
     public function __construct(
         DfpServiceInterface $dfpService,
-        ConfigService       $configService
+        ConfigService $configService,
+        RequestStack $requestStack
     )
     {
         $this->dfpService = $dfpService;
+        $this->requestStack = $requestStack;
         $this->configService = $configService;
     }
 
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class => ['addRatepayTemplateData', 300],
-            AccountEditOrderPageLoadedEvent::class => ['addRatepayTemplateData', 300],
-            PaymentSuccessfulEvent::class => 'onOrderComplete',
-            PaymentFailedEvent::class => 'onOrderComplete',
+            PaymentDataExtensionBuilt::class => 'addRatepayTemplateData',
             PaymentRequestService::EVENT_BUILD_HEAD => 'onPaymentRequest',
+            ValidationDefinitionCollectEvent::class => 'addValidationDefinition',
+            OrderExtensionDataBuilt::class => 'addDfpTokenToOrder',
+            OrderRouteRequestEvent::class => 'addRatepayDataToAccountOrderCriteria'
         ];
     }
 
+    /**
+     * @param BuildEvent $buildEvent
+     * @return void
+     */
     public function onPaymentRequest(BuildEvent $buildEvent): void
     {
+        /** @var PaymentRequestData $requestData */
+        $requestData = $buildEvent->getRequestData();
         /** @var Head $head */
         $head = $buildEvent->getBuildData();
 
-        if ($this->dfpService->getDfpId()) {
-            $head->setCustomerDevice((new CustomerDevice())->setDeviceToken($this->dfpService->getDfpId()));
+        $ratepayData = $requestData->getRequestDataBag()->get('ratepay');
+
+        if ($token = $ratepayData->get('deviceIdentToken') ?? null) {
+            $head->setCustomerDevice((new CustomerDevice())->setDeviceToken($token));
         }
     }
 
-    public function onOrderComplete(AbstractPaymentEvent $event): void
+    public function addRatepayTemplateData(PaymentDataExtensionBuilt $event): void
     {
-        $this->dfpService->deleteToken();
+        if ($event->getOrderEntity()) {
+            $baseData = $event->getOrderEntity();
+        } else {
+            $baseData = $event->getSalesChannelContext();
+        }
+
+        $snippet = $this->dfpService->getDfpSnippet($this->requestStack->getCurrentRequest(), $baseData);
+        if ($snippet) {
+            $event->getExtension()->set('dfp', [
+                'snippetId' => $this->configService->getDeviceFingerprintSnippetId(),
+                'html' => $snippet,
+                'deviceIdentToken' => $this->dfpService->generatedDfpId($this->requestStack->getCurrentRequest(), $baseData)
+            ]);
+        }
     }
 
-    public function addRatepayTemplateData(PageLoadedEvent $event): void
+    public function addValidationDefinition(ValidationDefinitionCollectEvent $event)
     {
-        if ($event->getPage()->hasExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME)) {
-            $snippetId = $this->configService->getDeviceFingerprintSnippetId();
-            if ($this->dfpService->isDfpIdAlreadyGenerated() === false && ($id = $this->dfpService->getDfpId())) {
-                $dfpHelper = new DeviceFingerprint($snippetId);
-                $snippet = str_replace('\"', '"', $dfpHelper->getDeviceIdentSnippet($id));
-
-                /** @var ArrayStruct $extension */
-                $extension = $event->getPage()->getExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME);
-                $extension->set('dfp', $snippet);
-            }
+        if (!$this->dfpService->isDfpRequired($event->getBaseData())) {
+            return;
         }
+
+        $event->addDefinition('deviceIdentToken', [
+            new NotBlank(),
+            new DfpConstraint($this->dfpService, $event->getBaseData())
+        ]);
+    }
+
+    public function addDfpTokenToOrder(OrderExtensionDataBuilt $event)
+    {
+        $requestDataBag = $event->getPaymentRequestData()->getRequestDataBag();
+        $ratepayData = $requestDataBag->get('ratepay');
+
+        $data = $event->getData();
+        $data[RatepayOrderDataEntity::FIELD_ADDITIONAL_DATA]['deviceIdentToken'] = $ratepayData->get('deviceIdentToken');
+
+        $event->setData($data);
+    }
+
+    public function addRatepayDataToAccountOrderCriteria(OrderRouteRequestEvent $event)
+    {
+        $event->getCriteria()->addAssociation(OrderExtension::EXTENSION_NAME);
     }
 }

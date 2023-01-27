@@ -28,7 +28,11 @@
             </div>
         </div>
         {% if page.extensions.ratepay.dfp %}
-            {{ page.extensions.ratepay.dfp|raw }}
+            <input type="hidden" name="ratepay[deviceIdentToken]" value="{{ page.extensions.ratepay.dfp.deviceIdentToken }}" form="confirmOrderForm"/>
+            {% if app.session.get('twig-ratepay-dfp') != page.extensions.ratepay.dfp.deviceIdentToken %}
+                {{ app.session.set('twig-ratepay-dfp', page.extensions.ratepay.dfp.deviceIdentToken) }}
+                {{ page.extensions.ratepay.dfp.html|raw }}
+            {% endif %}
         {% endif %}
     {% endif %}
     {{ parent() }}
