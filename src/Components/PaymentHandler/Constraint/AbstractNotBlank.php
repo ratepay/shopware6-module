@@ -19,13 +19,13 @@ abstract class AbstractNotBlank extends NotBlank
 {
     abstract protected static function getRatepayErrorCode(): string;
 
-    public function __construct($options = null)
+    public function __construct(array $options = null)
     {
         $options['message'] = AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . static::getRatepayErrorCode();
         parent::__construct($options);
     }
 
-    public static function getErrorName($errorCode): string
+    public static function getErrorName(string $errorCode): string
     {
         if ($errorCode === static::IS_BLANK_ERROR) {
             return static::getRatepayErrorCode();

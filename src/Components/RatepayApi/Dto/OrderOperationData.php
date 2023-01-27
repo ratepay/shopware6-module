@@ -23,16 +23,34 @@ use Shopware\Core\Framework\Context;
 
 class OrderOperationData extends AbstractRequestData implements OperationDataWithBasket
 {
+    /**
+     * @var string
+     */
     public const OPERATION_REQUEST = 'request';
 
+    /**
+     * @var string
+     */
     public const OPERATION_DELIVER = 'deliver';
 
+    /**
+     * @var string
+     */
     public const OPERATION_CANCEL = 'cancel';
 
+    /**
+     * @var string
+     */
     public const OPERATION_RETURN = 'return';
 
+    /**
+     * @var string
+     */
     public const OPERATION_ADD = 'add';
 
+    /**
+     * @var string
+     */
     public const ITEM_ID_SHIPPING = 'shipping';
 
     protected OrderEntity $order;
@@ -49,7 +67,7 @@ class OrderOperationData extends AbstractRequestData implements OperationDataWit
     {
         parent::__construct($context);
         $this->order = $order;
-        $this->transaction = $order->getTransactions() ? $order->getTransactions()->last() : null;
+        $this->transaction = $order->getTransactions() !== null ? $order->getTransactions()->last() : null;
         $this->items = $items;
         $this->operation = $operation;
         $this->updateStock = $items === null ? false : $updateStock;

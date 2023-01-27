@@ -13,8 +13,14 @@ use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 
 class IsOfLegalAge extends LessThanOrEqual
 {
+    /**
+     * @var int
+     */
     public const LEGAL_AGE = 18;
 
+    /**
+     * @var string
+     */
     public const TOO_YOUNG_ERROR_NAME = 'RP_AGE_TO_YOUNG';
 
     protected static $errorNames = [
@@ -23,7 +29,7 @@ class IsOfLegalAge extends LessThanOrEqual
 
     public function __construct($options = null)
     {
-        $options = $options ?? [];
+        $options ??= [];
         $options['value'] = sprintf('-%d years', self::LEGAL_AGE);
         parent::__construct($options);
     }

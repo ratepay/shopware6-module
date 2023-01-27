@@ -9,6 +9,10 @@
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 
+use RatePAY\Model\Request\SubModel\Content\ShoppingBasket\Items;
+use RatePAY\Model\Request\SubModel\Content\ShoppingBasket\Items\Item;
+use RatePAY\Model\Request\SubModel\Content\ShoppingBasket\Shipping;
+use RatePAY\Model\Request\SubModel\Content\ShoppingBasket\Discount;
 use BadMethodCallException;
 use InvalidArgumentException;
 use RatePAY\Model\Request\SubModel\Content\ShoppingBasket;
@@ -44,11 +48,11 @@ class ShoppingBasketFactory extends AbstractFactory
         $currency = $requestData->getCurrencyCode();
 
         $basket = new ShoppingBasket();
-        $basket->setItems(new ShoppingBasket\Items());
+        $basket->setItems(new Items());
         $basket->setCurrency($currency);
 
         $items = $requestData->getItems();
-        if (count($items) === 0) {
+        if ($items === []) {
             throw new EmptyBasketException();
         }
 
@@ -87,7 +91,7 @@ class ShoppingBasketFactory extends AbstractFactory
 
         if ($requestData->isSendShippingCostsAsCartItem()) {
             $basket->getItems()->addItem(
-                (new ShoppingBasket\Items\Item())
+                (new Item())
                     ->setArticleNumber(OrderOperationData::ITEM_ID_SHIPPING)
                     ->setDescription(OrderOperationData::ITEM_ID_SHIPPING) // TODO is it an idea to change it to method name?
                     ->setQuantity(1)
@@ -96,7 +100,7 @@ class ShoppingBasketFactory extends AbstractFactory
             );
         } else {
             $basket->setShipping(
-                (new ShoppingBasket\Shipping())
+                (new Shipping())
                     ->setDescription('shipping')
                     ->setUnitPriceGross($this->getLineItemUnitPrice($taxStatus, $shippingCosts, 1))
                     ->setTaxRate($this->getTaxRate($shippingCosts))
@@ -115,7 +119,7 @@ class ShoppingBasketFactory extends AbstractFactory
 
         if ($this->shouldSubmitItemAsCartItem($requestData, $item, $item->getTotalPrice())) {
             $basket->getItems()->addItem(
-                (new ShoppingBasket\Items\Item())
+                (new Item())
                     ->setArticleNumber($item->getType() === LineItem::PRODUCT_LINE_ITEM_TYPE ? $item->getPayload()['productNumber'] : $item->getIdentifier())
                     ->setDescription($item->getLabel())
                     ->setQuantity($qty)
@@ -123,7 +127,7 @@ class ShoppingBasketFactory extends AbstractFactory
                     ->setTaxRate($this->getTaxRate($item->getPrice()))
             );
         } else {
-            $discount = $basket->getDiscount() ?: new ShoppingBasket\Discount();
+            $discount = $basket->getDiscount() ?: new Discount();
             $discount->setDescription('discount');
             $discount->setDescriptionAddition(($discount->getDescriptionAddition() ? $discount->getDescriptionAddition() . ', ' : null) . $item->getLabel());
             $discount->setUnitPriceGross($discount->getUnitPriceGross() + $this->getLineItemUnitPrice($taxStatus, $item->getPrice(), $qty));
@@ -136,11 +140,11 @@ class ShoppingBasketFactory extends AbstractFactory
     {
         $taxStatus = $this->getTaxStatus($requestData);
 
-        $unitPrice = $item->getPrice() ? $this->getLineItemUnitPrice($taxStatus, $item->getPrice(), $item->getQuantity()) : 0;
+        $unitPrice = $item->getPrice() !== null ? $this->getLineItemUnitPrice($taxStatus, $item->getPrice(), $item->getQuantity()) : 0;
 
         if ($this->shouldSubmitItemAsCartItem($requestData, $item, $unitPrice)) {
             $basket->getItems()->addItem(
-                (new ShoppingBasket\Items\Item())
+                (new Item())
                     ->setArticleNumber($item->getId())
                     ->setDescription($item->getLabel())
                     ->setQuantity($item->getQuantity())
@@ -148,7 +152,7 @@ class ShoppingBasketFactory extends AbstractFactory
                     ->setTaxRate($this->getTaxRate($item->getPrice()))
             );
         } else {
-            $discount = $basket->getDiscount() ?: new ShoppingBasket\Discount();
+            $discount = $basket->getDiscount() ?: new Discount();
             $discount->setDescription('discount');
             $discount->setDescriptionAddition(($discount->getDescriptionAddition() ? $discount->getDescriptionAddition() . ', ' : null) . $item->getLabel());
             $discount->setUnitPriceGross($discount->getUnitPriceGross() + $unitPrice);

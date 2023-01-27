@@ -11,7 +11,7 @@ class DfpConstraintValidator extends ConstraintValidator
     /**
      * @param DfpConstraint $constraint
      */
-    public function validate($value, Constraint $constraint)
+    public function validate($value, Constraint $constraint): void
     {
         if (!$constraint->getDfpService()->isDfpIdValid($constraint->getObject(), $value)) {
 

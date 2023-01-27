@@ -71,12 +71,13 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
         $orderItems = $requestData->getOrder()->getLineItems();
 
         $lineItems = [];
-        foreach ($requestData->getItems() as $id => $item) {
+        foreach (array_keys($requestData->getItems()) as $id) {
             if ($id !== OrderOperationData::ITEM_ID_SHIPPING) {
                 // shipping will written into the order-extension
                 $lineItems[] = $orderItems->get($id);
             }
         }
+
         $this->extensionService->createLineItemExtensionEntities($lineItems, $requestData->getContext());
 
         $this->extensionService->createOrderExtensionEntity(

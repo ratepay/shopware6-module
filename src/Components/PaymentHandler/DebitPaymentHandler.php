@@ -15,6 +15,9 @@ class DebitPaymentHandler extends AbstractPaymentHandler
 {
     use DebitValidationTrait;
 
+    /**
+     * @var string
+     */
     public const RATEPAY_METHOD = 'ELV';
 
     public function getValidationDefinitions(DataBag $requestDataBag, $baseData): array

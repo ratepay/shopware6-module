@@ -9,7 +9,9 @@ class OrderExtensionDataBuilt
 {
 
     private OrderEntity $orderEntity;
+
     private PaymentRequestData $paymentRequestData;
+
     private array $data;
 
     public function __construct(OrderEntity $orderEntity, PaymentRequestData $paymentRequestData, array $data)

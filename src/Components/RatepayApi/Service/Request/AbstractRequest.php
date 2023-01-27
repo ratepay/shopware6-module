@@ -28,26 +28,59 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 abstract class AbstractRequest
 {
+    /**
+     * @var string
+     */
     protected const EVENT_SUCCESSFUL = '.successful';
 
+    /**
+     * @var string
+     */
     protected const EVENT_FAILED = '.failed';
 
+    /**
+     * @var string
+     */
     protected const EVENT_BUILD_HEAD = '.build.head';
 
+    /**
+     * @var string
+     */
     protected const EVENT_BUILD_CONTENT = '.build.content';
 
+    /**
+     * @var string
+     */
     protected const EVENT_INIT_REQUEST = '.init.request';
 
+    /**
+     * @var string
+     */
     public const CALL_PAYMENT_REQUEST = 'PaymentRequest';
 
+    /**
+     * @var string
+     */
     public const CALL_DELIVER = 'ConfirmationDeliver';
 
+    /**
+     * @var string
+     */
     public const CALL_CHANGE = 'PaymentChange';
 
+    /**
+     * @var string
+     */
     public const CALL_PROFILE_REQUEST = 'ProfileRequest';
 
+    /**
+     * @var string
+     */
     public const CALL_PAYMENT_QUERY = 'PaymentQuery';
 
+    /**
+     * @var string
+     */
     public const CALL_PAYMENT_INIT = 'PaymentInit';
 
     /**
@@ -82,6 +115,7 @@ abstract class AbstractRequest
         if (!$this->supportsRequestData($requestData)) {
             throw new InvalidArgumentException(get_class($requestData) . ' is not supported by ' . self::class);
         }
+
         $this->_initRequest($requestData);
 
         $head = $this->_getRequestHead($requestData);
@@ -89,13 +123,13 @@ abstract class AbstractRequest
 
         try {
             $requestBuilder = new RequestBuilder($requestData->getProfileConfig()->isSandbox());
-            $requestBuilder = $requestBuilder->__call('call' . $this->_operation, $content ? [$head, $content] : [$head]);
+            $requestBuilder = $requestBuilder->__call('call' . $this->_operation, $content !== null ? [$head, $content] : [$head]);
             if ($this->_subType) {
                 $requestBuilder = $requestBuilder->subtype($this->_subType);
             }
-        } catch (ExceptionAbstract $e) {
-            $this->eventDispatcher->dispatch(new RequestBuilderFailedEvent($e, $requestData));
-            throw new RatepayException($e->getMessage(), $e->getCode(), $e);
+        } catch (ExceptionAbstract $exception) {
+            $this->eventDispatcher->dispatch(new RequestBuilderFailedEvent($exception, $requestData));
+            throw new RatepayException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         $this->eventDispatcher->dispatch(new RequestDoneEvent($requestData, $requestBuilder));

@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\AdminOrders\Controller;
 
+use DateTime;
+use Exception;
 use Ratepay\RpayPayments\Components\AdminOrders\Model\RatepayAdminOrderTokenEntity;
 use Shopware\Core\Framework\Adapter\Translation\Translator;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -60,8 +62,9 @@ class StorefrontController extends AbstractController
         $criteria->addFilter(new EqualsFilter(RatepayAdminOrderTokenEntity::FIELD_TOKEN, $request->get('token')));
         $criteria->addFilter(new EqualsFilter(RatepayAdminOrderTokenEntity::FIELD_SALES_CHANNEL_ID, $context->getSalesChannelId()));
         $criteria->addFilter(new EqualsFilter(RatepayAdminOrderTokenEntity::FIELD_CART_TOKEN, null));
-        $criteria->addFilter(new RangeFilter(RatepayAdminOrderTokenEntity::FIELD_VAlID_UNTIL, [RangeFilter::GTE => (new \DateTime())->format('Y-m-d H:i:s')]));
+        $criteria->addFilter(new RangeFilter(RatepayAdminOrderTokenEntity::FIELD_VAlID_UNTIL, [RangeFilter::GTE => (new DateTime())->format('Y-m-d H:i:s')]));
         $criteria->setLimit(1);
+
         $result = $this->tokenRepository->search($criteria, $context->getContext());
 
         if ($result->getTotal() !== 1) {
@@ -81,8 +84,8 @@ class StorefrontController extends AbstractController
             ], $context->getContext());
 
             $this->session->set($this->sessionKey, true);
-        } catch (\Exception $e) {
-            $this->addFlash('danger', $e->getMessage());
+        } catch (Exception $exception) {
+            $this->addFlash('danger', $exception->getMessage());
         }
 
         return $this->redirectToRoute('frontend.home.page');

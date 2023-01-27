@@ -9,6 +9,7 @@
 
 namespace Ratepay\RpayPayments\Components\AdminOrders\Model;
 
+use DateTimeInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 
@@ -16,18 +17,39 @@ class RatepayAdminOrderTokenEntity extends Entity
 {
     use EntityIdTrait;
 
+    /**
+     * @var string
+     */
     public const FIELD_ID = 'id';
 
+    /**
+     * @var string
+     */
     public const FIELD_TOKEN = 'token';
 
+    /**
+     * @var string
+     */
     public const FIELD_SALES_CHANNEL_ID = 'salesChannelId';
 
+    /**
+     * @var string
+     */
     public const FIELD_SALES_CHANNEL_DOMAIN_ID = 'salesChannelDomainId';
 
+    /**
+     * @var string
+     */
     public const FIELD_CART_TOKEN = 'cartToken';
 
+    /**
+     * @var string
+     */
     public const FIELD_VAlID_UNTIL = 'validUntil';
 
+    /**
+     * @var string
+     */
     public const FIELD_CREATED_AT = 'createdAt';
 
     protected string $token;
@@ -38,7 +60,7 @@ class RatepayAdminOrderTokenEntity extends Entity
 
     protected string $cartToken;
 
-    protected \DateTimeInterface $validUntil;
+    protected DateTimeInterface $validUntil;
 
     public function getToken(): string
     {
@@ -60,7 +82,7 @@ class RatepayAdminOrderTokenEntity extends Entity
         return $this->cartToken;
     }
 
-    public function getValidUntil(): \DateTimeInterface
+    public function getValidUntil(): DateTimeInterface
     {
         return $this->validUntil;
     }

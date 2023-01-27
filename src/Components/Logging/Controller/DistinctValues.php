@@ -21,6 +21,7 @@ class DistinctValues extends AbstractController
 {
 
     private Connection $connection;
+
     private DefinitionInstanceRegistry $definitionRegistry;
 
     public function __construct(Connection $connection, DefinitionInstanceRegistry $definitionRegistry)
@@ -49,9 +50,7 @@ class DistinctValues extends AbstractController
 
         $fields = explode('|', $fields);
 
-        $fields = array_filter($fields, static function ($item) use ($allowedFields) {
-            return in_array($item, $allowedFields);
-        });
+        $fields = array_filter($fields, static fn($item): bool => in_array($item, $allowedFields));
 
         $definition = $this->definitionRegistry->get(ApiRequestLogDefinition::class);
 
@@ -61,6 +60,7 @@ class DistinctValues extends AbstractController
             if (!$fieldDefinition instanceof StorageAware || $fieldDefinition instanceof AssociationField) {
                 continue;
             }
+
             $columnName = $fieldDefinition->getStorageName();
 
             $qb = $this->connection->createQueryBuilder();
@@ -68,7 +68,7 @@ class DistinctValues extends AbstractController
                 ->select($columnName)
                 ->from($definition->getEntityName())
                 ->andWhere($qb->expr()->isNotNull($columnName))
-                ->andWhere($columnName . ' != \'\'');
+                ->andWhere($columnName . " != ''");
 
             $results[] = [
                 'name' => $field,

@@ -2,6 +2,8 @@
 
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Subscriber;
 
+use Exception;
+use RuntimeException;
 use Monolog\Logger;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentCalculatorContext;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
@@ -19,8 +21,11 @@ class ProductPageSubscriber implements EventSubscriberInterface
 {
 
     private SystemConfigService $configService;
+
     private InstallmentService $installmentService;
+
     private EntityRepository $countryRepository;
+
     private Logger $logger;
 
     public function __construct(
@@ -69,7 +74,8 @@ class ProductPageSubscriber implements EventSubscriberInterface
         // sometimes `getCalculatedPrices` does not return a price. so we use the fallback `getCalculatedCheapestPrice`
         // the fallback `getCalculatedCheapestPrice` can not be always used because it will not return the correct price for configurable prices
         $productPriceObject = $product->getCalculatedPrices()->first();
-        $productPriceObject = $productPriceObject ?? $product->getCalculatedCheapestPrice();
+        $productPriceObject ??= $product->getCalculatedCheapestPrice();
+
         $productPrice = $productPriceObject->getUnitPrice();
 
         $profileConfigSearch = (new ProfileConfigSearch())
@@ -102,10 +108,10 @@ class ProductPageSubscriber implements EventSubscriberInterface
                 'monthCount' => $plan->getMonthCount(),
                 'monthlyRate' => $plan->getMonthlyRate(),
             ]));
-        } catch (ProfileNotFoundException $e) {
+        } catch (ProfileNotFoundException $profileNotFoundException) {
             // we do not log this error, because the error is expected. e.g. if the amount is too low for installments
-        } catch (\Exception $e) {
-            $this->logger->error('Error during display of installment information on detail page: ' . $e->getMessage(), [
+        } catch (Exception $exception) {
+            $this->logger->error('Error during display of installment information on detail page: ' . $exception->getMessage(), [
                 'product_uuid' => $product->getId(),
                 'product_number' => $product->getProductNumber(),
                 'product_name' => $product->getName(),
@@ -117,7 +123,7 @@ class ProductPageSubscriber implements EventSubscriberInterface
         }
     }
 
-    private function getConfig(string $key, $type = 'string')
+    private function getConfig(string $key, string $type = 'string')
     {
         $key = 'RpayPayments.config.productInstallmentCalculator' . $key;
 
@@ -131,7 +137,7 @@ class ProductPageSubscriber implements EventSubscriberInterface
             case 'boolean':
                 return $this->configService->getBool($key);
             default:
-                throw new \RuntimeException('type ' . $type . ' is not valid');
+                throw new RuntimeException('type ' . $type . ' is not valid');
         }
 
     }

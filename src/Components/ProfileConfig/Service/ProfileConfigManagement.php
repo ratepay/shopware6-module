@@ -74,10 +74,11 @@ class ProfileConfigManagement
 
             $this->repository->upsert([$profileConfigData], $this->context);
 
-            if (isset($methodConfigs) && count($methodConfigs)) {
+            if (isset($methodConfigs) && (is_countable($methodConfigs) ? count($methodConfigs) : 0)) {
                 $this->methodConfigRepository->upsert($methodConfigs, $this->context);
             }
-            if (isset($installmentConfigs) && count($installmentConfigs)) {
+
+            if (isset($installmentConfigs) && (is_countable($installmentConfigs) ? count($installmentConfigs) : 0)) {
                 $this->methodConfigInstallmentRepository->upsert($installmentConfigs, $this->context);
             }
         }
@@ -92,12 +93,10 @@ class ProfileConfigManagement
             $this->context
         );
         $deleteIds = $entitiesToDelete->getIds();
-        if (count($deleteIds)) {
-            $this->methodConfigRepository->delete(array_values(array_map(static function ($id) {
-                return [
-                    ProfileConfigMethodEntity::FIELD_ID => $id,
-                ];
-            }, $deleteIds)), $this->context);
+        if ($deleteIds !== []) {
+            $this->methodConfigRepository->delete(array_values(array_map(static fn($id): array => [
+                ProfileConfigMethodEntity::FIELD_ID => $id,
+            ], $deleteIds)), $this->context);
         }
     }
 }

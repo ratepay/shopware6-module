@@ -32,7 +32,7 @@ abstract class AbstractFactory
         }
 
         $data = $this->_getData($requestData);
-        if ($data) {
+        if ($data !== null) {
             /** @var BuildEvent $event */
             $event = $this->eventDispatcher->dispatch(new BuildEvent($requestData, $data), get_class($this));
             $data = $event->getBuildData();

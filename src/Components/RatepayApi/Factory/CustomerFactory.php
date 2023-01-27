@@ -9,6 +9,11 @@
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 
+use RatePAY\Model\Request\SubModel\Content\Customer\Addresses;
+use RatePAY\Model\Request\SubModel\Content\Customer\Contacts;
+use RatePAY\Model\Request\SubModel\Content\Customer\Contacts\Phone;
+use RatePAY\Model\Request\SubModel\Content\Customer\BankAccount;
+use RatePAY\Model\Request\SubModel\Content\Customer\Addresses\Address;
 use DateTime;
 use RatePAY\Model\Request\SubModel\Content\Customer;
 use Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Dto\PaymentQueryData;
@@ -61,13 +66,14 @@ class CustomerFactory extends AbstractFactory
         /** @var DataBag $requestDataBag */
         $requestDataBag = $requestData->getRequestDataBag();
         $requestDataBag = $requestDataBag->get('ratepay', new DataBag());
-        $customerEntity = $this->getCustomer($requestData);
 
+        $customerEntity = $this->getCustomer($requestData);
         /**
          * @var OrderAddressEntity|CustomerAddressEntity $billingAddress
          * @var OrderAddressEntity|CustomerAddressEntity $shippingAddress
          */
-        $billingAddress = $shippingAddress = null;
+        $billingAddress = null;
+        $shippingAddress = null;
         if ($requestData instanceof PaymentRequestData) {
             $order = $requestData->getOrder();
             $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
@@ -90,6 +96,7 @@ class CustomerFactory extends AbstractFactory
                 $gender = 'u';
                 break;
         }
+
         $customer = (new Customer())
             ->setGender($gender)
             ->setSalutation($salutationEntity->getDisplayName())
@@ -98,12 +105,12 @@ class CustomerFactory extends AbstractFactory
             ->setLanguage(strtolower(explode('-', $this->getLocale($requestData)->getCode())[0]))
             ->setIpAddress($this->getRemoteAddress($requestData))
             ->setAddresses(
-                (new Customer\Addresses())
+                (new Addresses())
                     ->addAddress($this->getAddressModel($billingAddress, 'BILLING'))
                     ->addAddress($this->getAddressModel($shippingAddress, 'DELIVERY'))
             )
             ->setContacts(
-                (new Customer\Contacts())
+                (new Contacts())
                     ->setEmail($customerEntity->getEmail())
             );
 
@@ -121,24 +128,24 @@ class CustomerFactory extends AbstractFactory
             $birthday = $customerEntity->getBirthday();
         }
 
-        if ($birthday) {
+        if ($birthday !== null) {
             $customer->setDateOfBirth($birthday->format('Y-m-d'));
         }
 
         if (($phoneNumber = $requestDataBag->get('phoneNumber')) && !empty(trim($phoneNumber))) {
             $customer->getContacts()->setPhone(
-                (new Customer\Contacts\Phone())
+                (new Phone())
                     ->setDirectDial($phoneNumber)
             );
-        } else if ($billingAddress->getPhoneNumber()) {
+        } elseif ($billingAddress->getPhoneNumber()) {
             $customer->getContacts()->setPhone(
-                (new Customer\Contacts\Phone())
+                (new Phone())
                     ->setDirectDial($billingAddress->getPhoneNumber())
             );
         } else {
             // RATEPLUG-67
             $customer->getContacts()->setPhone(
-                (new Customer\Contacts\Phone())
+                (new Phone())
                     ->setAreaCode('030')
                     ->setDirectDial('33988560')
             );
@@ -162,7 +169,7 @@ class CustomerFactory extends AbstractFactory
         if ($requestData instanceof PaymentRequestData && $requestDataBag->has('bankData')) {
             /** @var RequestDataBag $bankData */
             $bankData = $requestDataBag->get('bankData');
-            $bankAccount = new Customer\BankAccount();
+            $bankAccount = new BankAccount();
             $bankAccount->setOwner($bankData->get('accountHolder'));
             $bankAccount->setIban($bankData->get('iban'));
             $customer->setBankAccount($bankAccount);
@@ -175,9 +182,9 @@ class CustomerFactory extends AbstractFactory
      * @param OrderAddressEntity|CustomerAddressEntity $address
      * @param $addressType
      */
-    private function getAddressModel($address, $addressType): Customer\Addresses\Address
+    private function getAddressModel($address, string $addressType): Address
     {
-        $addressModel = new Customer\Addresses\Address();
+        $addressModel = new Address();
         $addressModel->setType(strtolower($addressType))
             ->setStreet($address->getStreet())
             ->setZipCode($address->getZipCode())
@@ -209,6 +216,7 @@ class CustomerFactory extends AbstractFactory
 
     private function getRemoteAddress(AbstractRequestData $requestData): string
     {
+        $customer = null;
         if ($requestData instanceof PaymentRequestData) {
             $customer = $requestData->getOrder()->getOrderCustomer();
         }

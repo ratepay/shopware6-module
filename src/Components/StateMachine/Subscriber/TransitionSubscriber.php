@@ -71,7 +71,7 @@ class TransitionSubscriber implements EventSubscriberInterface
 
     public function onTransition(StateMachineTransitionEvent $event): void
     {
-        if ($event->getEntityName() !== 'order_delivery' || $this->configService->isBidirectionalityEnabled() === false) {
+        if ($event->getEntityName() !== 'order_delivery' || !$this->configService->isBidirectionalityEnabled()) {
             return;
         }
 
@@ -116,7 +116,7 @@ class TransitionSubscriber implements EventSubscriberInterface
         $orderOperationData = new OrderOperationData($event->getContext(), $order, $operation, null, false);
         try {
             $response = $service->doRequest($orderOperationData);
-            if ($response->getResponse()->isSuccessful() === false) {
+            if (!$response->getResponse()->isSuccessful()) {
                 $this->logger->error('Error during bidirectionality. (Exception: ' . $response->getResponse()->getReasonMessage() . ')', [
                     'order' => $order->getId(),
                     'transactionId' => $ratepayData->getTransactionId(),
@@ -124,8 +124,8 @@ class TransitionSubscriber implements EventSubscriberInterface
                     'itemsToProcess' => $orderOperationData->getItems(),
                 ]);
             }
-        } catch (Exception $e) {
-            $this->logger->critical('Exception during bidirectionality. (Exception: ' . $e->getMessage() . ')', [
+        } catch (Exception $exception) {
+            $this->logger->critical('Exception during bidirectionality. (Exception: ' . $exception->getMessage() . ')', [
                 'order' => $order->getId(),
                 'transactionId' => $ratepayData->getTransactionId(),
                 'orderNumber' => $order->getOrderNumber(),

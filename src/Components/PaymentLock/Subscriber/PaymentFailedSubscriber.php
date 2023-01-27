@@ -19,6 +19,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentFailedSubscriber implements EventSubscriberInterface
 {
+    /**
+     * @var int[]
+     */
     public const ERROR_CODES = [703, 720, 721];
 
     private LockService $lockService;

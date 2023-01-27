@@ -38,10 +38,10 @@ class RequestSubscriber implements EventSubscriberInterface
     public function onPaymentFailed(PaymentFailedEvent $event): void
     {
         $exception = $event->getException();
-        if ($exception) {
+        if ($exception !== null) {
             $exception = $exception->getPrevious() ?? $exception;
             $message = $exception->getMessage();
-        } elseif ($event->getResponse()) {
+        } elseif ($event->getResponse() !== null) {
             $message = $event->getResponse()->getReasonMessage();
         }
 

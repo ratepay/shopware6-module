@@ -46,7 +46,7 @@ class PreventOrderDeletion implements EventSubscriberInterface
         ];
     }
 
-    public function preventOrderDeletion(BeforeDeleteEvent $event)
+    public function preventOrderDeletion(BeforeDeleteEvent $event): void
     {
         $this->preventDeleteOrder($event);
         $this->preventDeleteLineItem($event);
@@ -58,14 +58,14 @@ class PreventOrderDeletion implements EventSubscriberInterface
         // check of shopware.
         // in the past we did a validation if the order has a ratepay-data, but after using the BeforeDeleteEvent it is
         // not required/possible anymore to throw an exception before the restriction check has been executed
-        if (count($event->getIds(RatepayOrderDataDefinition::ENTITY_NAME))) {
+        if ($event->getIds(RatepayOrderDataDefinition::ENTITY_NAME) !== []) {
             throw new RatepayOrderDataDeleteRestrictionException();
         }
     }
 
     private function preventDeleteLineItem(BeforeDeleteEvent $event): void
     {
-        if (count($event->getIds(RatepayOrderLineItemDataDefinition::ENTITY_NAME))) {
+        if ($event->getIds(RatepayOrderLineItemDataDefinition::ENTITY_NAME) !== []) {
             throw new RatepayOrderLineItemsDataDeleteRestrictionException();
         }
 

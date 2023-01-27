@@ -19,10 +19,14 @@ use Symfony\Component\Validator\ConstraintViolationList;
 class PaymentQueryValidatorService
 {
 
+    /**
+     * @var string
+     */
     public const CODE_METHOD_NOT_AVAILABLE = 'RP_METHOD_NOT_AVAILABLE';
 
 
     private PaymentQueryService $paymentQueryService;
+
     private ConfigService $configService;
 
     public function __construct(
@@ -37,7 +41,7 @@ class PaymentQueryValidatorService
     /**
      * @thores ConstraintViolationException
      */
-    public function validate(Cart $cart, SalesChannelContext $context, string $transactionId, DataBag $dataBag)
+    public function validate(Cart $cart, SalesChannelContext $context, string $transactionId, DataBag $dataBag): void
     {
         $paymentHandlerIdentifier = $context->getPaymentMethod()->getHandlerIdentifier();
 
@@ -50,12 +54,12 @@ class PaymentQueryValidatorService
                 $this->configService->isSendDiscountsAsCartItem(),
                 $this->configService->isSendShippingCostsAsCartItem()
             ));
-        } catch (RatepayException $e) {
+        } catch (RatepayException $ratepayException) {
             $this->throwException(
                 $context,
                 $dataBag,
 //                    AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . self::CODE_METHOD_NOT_AVAILABLE
-                $e->getMessage()
+                $ratepayException->getMessage()
             );
         }
 
@@ -77,6 +81,9 @@ class PaymentQueryValidatorService
         }
     }
 
+    /**
+     * @return never
+     */
     private function throwException(SalesChannelContext $context, RequestDataBag $requestDataBag, string $code): void
     {
         $violation = new ConstraintViolation(

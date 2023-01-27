@@ -11,6 +11,11 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments;
 
+use Shopware\Core\Framework\Plugin\Context\InstallContext;
+use Shopware\Core\Framework\Plugin\Context\UpdateContext;
+use Shopware\Core\Framework\Plugin\Context\UninstallContext;
+use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
+use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Exception;
 use RatePAY\RequestBuilder;
 use Ratepay\RpayPayments\Bootstrap\AbstractBootstrap;
@@ -28,15 +33,17 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
 class RpayPayments extends Plugin
 {
-    public function install(Plugin\Context\InstallContext $context): void
+    public function install(InstallContext $context): void
     {
         $bootstrapper = $this->getBootstrapClasses($context);
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->preInstall();
         }
+
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->install();
         }
+
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->postInstall();
         }
@@ -45,7 +52,7 @@ class RpayPayments extends Plugin
     /**
      * @return AbstractBootstrap[]
      */
-    protected function getBootstrapClasses(Plugin\Context\InstallContext $context)
+    protected function getBootstrapClasses(InstallContext $context): array
     {
         /** @var AbstractBootstrap[] $bootstrapper */
         $bootstrapper = [
@@ -69,57 +76,65 @@ class RpayPayments extends Plugin
         return $bootstrapper;
     }
 
-    public function update(Plugin\Context\UpdateContext $context): void
+    public function update(UpdateContext $context): void
     {
         $bootstrapper = $this->getBootstrapClasses($context);
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->preUpdate();
         }
+
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->update();
         }
+
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->postUpdate();
         }
     }
 
-    public function uninstall(Plugin\Context\UninstallContext $context): void
+    public function uninstall(UninstallContext $context): void
     {
         $bootstrapper = $this->getBootstrapClasses($context);
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->preUninstall();
         }
+
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->uninstall($context->keepUserData());
         }
+
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->postUninstall();
         }
     }
 
-    public function deactivate(Plugin\Context\DeactivateContext $context): void
+    public function deactivate(DeactivateContext $context): void
     {
         $bootstrapper = $this->getBootstrapClasses($context);
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->preDeactivate();
         }
+
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->deactivate();
         }
+
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->postDeactivate();
         }
     }
 
-    public function activate(Plugin\Context\ActivateContext $context): void
+    public function activate(ActivateContext $context): void
     {
         $bootstrapper = $this->getBootstrapClasses($context);
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->preActivate();
         }
+
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->activate();
         }
+
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->postActivate();
         }
@@ -128,7 +143,7 @@ class RpayPayments extends Plugin
     public function boot(): void
     {
         parent::boot();
-        if (class_exists(RequestBuilder::class) === false) {
+        if (!class_exists(RequestBuilder::class)) {
             $autoloaderPath = dirname(__DIR__) . '/vendor/autoload.php';
             if (file_exists($autoloaderPath)) {
                 /** @noinspection PhpIncludeInspection */
@@ -159,6 +174,7 @@ class RpayPayments extends Plugin
                 }
             }
         }
+
         $containerBuilder->addCompilerPass(new PluginVersionCompilerPass(__DIR__ . '/../'));
     }
 }

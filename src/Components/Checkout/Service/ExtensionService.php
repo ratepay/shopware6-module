@@ -9,6 +9,7 @@
 
 namespace Ratepay\RpayPayments\Components\Checkout\Service;
 
+use DateTime;
 use Ratepay\RpayPayments\Components\Checkout\Event\OrderExtensionDataBuilt;
 use Ratepay\RpayPayments\Components\Checkout\Event\PaymentDataExtensionBuilt;
 use Ratepay\RpayPayments\Components\Checkout\Model\Collection\RatepayOrderLineItemDataCollection;
@@ -36,6 +37,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ExtensionService
 {
+    /**
+     * @var string
+     */
     public const PAYMENT_PAGE_EXTENSION_NAME = 'ratepay';
 
     private EntityRepository $orderExtensionRepository;
@@ -82,6 +86,7 @@ class ExtensionService
                 ],
             ];
         }
+
         $event = $this->lineItemExtensionRepository->upsert($data, $context);
 
         $affected = $this->lineItemExtensionRepository->search(new Criteria(
@@ -128,6 +133,7 @@ class ExtensionService
         foreach ([RatepayOrderDataEntity::FIELD_ORDER_ID, RatepayOrderDataEntity::FIELD_ORDER_VERSION_ID] as $filterKey) {
             $criteria->addFilter(new EqualsFilter($filterKey, $orderExtensionData[$filterKey]));
         }
+
         $ids = $this->orderExtensionRepository->searchIds($criteria, $context);
         if ($ids->firstId()) {
             $orderExtensionData[RatepayOrderDataEntity::FIELD_ID] = $ids->firstId();
@@ -154,7 +160,7 @@ class ExtensionService
     {
         $paymentMethod = $salesChannelContext->getPaymentMethod();
 
-        $searchService = $order ? $this->profileByOrderEntity : $this->profileBySalesChannelContext;
+        $searchService = $order !== null ? $this->profileByOrderEntity : $this->profileBySalesChannelContext;
         $profileConfig = $searchService->search(
             $searchService->createSearchObject($order ?? $salesChannelContext)->setPaymentMethodId($paymentMethod->getId())
         )->first();
@@ -166,10 +172,10 @@ class ExtensionService
 
         $customer = $salesChannelContext->getCustomer();
 
-        if ($customer) {
+        if ($customer !== null) {
             $customerBirthday = $customer->getBirthday();
             $customerBillingAddress = $customer->getActiveBillingAddress();
-            if ($customerBillingAddress) {
+            if ($customerBillingAddress !== null) {
                 $vatIds = $customer->getVatIds();
                 $customerVatId = $vatIds[0] ?? null;
                 $customerPhoneNumber = $customerBillingAddress->getPhoneNumber();
@@ -197,18 +203,19 @@ class ExtensionService
             // this transaction ID will be sent to the storefront separately.
             $transactionId = $this->transactionIdService->getTransactionId(
                 $salesChannelContext,
-                $order ? TransactionIdService::PREFIX_ORDER . $order->getId() . '-' : TransactionIdService::PREFIX_CART,
+                $order !== null ? TransactionIdService::PREFIX_ORDER . $order->getId() . '-' : TransactionIdService::PREFIX_CART,
                 $profileConfig
             );
             $extension->offsetSet('transactionId', $transactionId);
         }
 
-        if ($httpRequest) {
+        if ($httpRequest !== null) {
             // add user entered values again, so that the user have not to reenter his values
             foreach ($httpRequest->request->get('ratepay') ?: [] as $key => $value) {
                 if ($key === 'birthday' && is_array($value)) {
-                    $value = (new \DateTime())->setDate($value['year'], $value['month'], $value['day']);
+                    $value = (new DateTime())->setDate($value['year'], $value['month'], $value['day']);
                 }
+
                 $extension->set($key, $value);
             }
         }

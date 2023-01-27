@@ -9,8 +9,9 @@
 
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Service;
 
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Exception;
 use Monolog\Logger;
-use phpDocumentor\Reflection\Types\Context;
 use RatePAY\Exception\RequestException;
 use RatePAY\ModelBuilder;
 use Ratepay\RpayPayments\Components\Checkout\Event\RatepayPaymentFilterEvent;
@@ -68,11 +69,13 @@ class InstallmentService
 
     /**
      * @deprecated
+     * @var string
      */
     public const CALCULATION_TYPE_TIME = InstallmentCalculatorContext::CALCULATION_TYPE_TIME;
 
     /**
      * @deprecated
+     * @var string
      */
     public const CALCULATION_TYPE_RATE = InstallmentCalculatorContext::CALCULATION_TYPE_RATE;
 
@@ -120,7 +123,7 @@ class InstallmentService
                     $context->getCalculationType(),
                     $context->getCalculationValue()
                 );
-                $matchedPlan = json_decode($panJson, true);
+                $matchedPlan = json_decode($panJson, true, 512, JSON_THROW_ON_ERROR);
 
                 if (is_array($matchedPlan)) {
                     $matchedPlan['hash'] = PlanHasher::hashPlan($matchedPlan);
@@ -133,15 +136,15 @@ class InstallmentService
 
                     return $matchedPlan;
                 }
-            } catch (RequestException $e) {
-                $this->logger->error('Error during fetching installment plan: ' . $e->getMessage(), [
+            } catch (RequestException $requestException) {
+                $this->logger->error('Error during fetching installment plan: ' . $requestException->getMessage(), [
                     'total_amount' => $context->getTotalAmount(),
                     'calculation_type' => $context->getCalculationType(),
                     'calculation_value' => $context->getCalculationValue(),
                     'profile_id' => $matchedBuilder->getProfileConfig()->getProfileId()
                 ]);
 
-                throw $e;
+                throw $requestException;
             }
         }
 
@@ -161,10 +164,10 @@ class InstallmentService
         $salesChannelContext = $context->getSalesChannelContext();
         $shopwareContext = $context->getSalesChannelContext()->getContext();
 
-        if ($context->getProfileConfigSearch()) {
+        if ($context->getProfileConfigSearch() !== null) {
             $profileConfigs = $this->profileSearchService->search($context->getProfileConfigSearch());
         } else {
-            $searchService = $context->getOrder() ? $this->profileByOrderEntity : $this->profileBySalesChannelContext;
+            $searchService = $context->getOrder() !== null ? $this->profileByOrderEntity : $this->profileBySalesChannelContext;
             $profileConfigs = $searchService->search(
                 $searchService->createSearchObject($context->getOrder() ?? $salesChannelContext)
                     ->setPaymentMethodId($context->getPaymentMethodId())
@@ -190,7 +193,7 @@ class InstallmentService
             $filterEvent = new RatepayPaymentFilterEvent($paymentMethod, $profileConfig, $paymentMethodConfig, $salesChannelContext, $context->getOrder());
             /** @var RatepayPaymentFilterEvent $filterEvent */
             $filterEvent = $this->eventDispatcher->dispatch($filterEvent);
-            if ($filterEvent->isAvailable() === false) {
+            if (!$filterEvent->isAvailable()) {
                 continue;
             }
 
@@ -209,21 +212,23 @@ class InstallmentService
     {
         $installmentBuilders = $this->getInstallmentBuilders($context);
 
-        if (count($installmentBuilders) === 0) {
-            throw new \Exception('No installment builder where found');
+        if ($installmentBuilders === []) {
+            throw new Exception('No installment builder where found');
         }
 
         $data = [];
         foreach ($installmentBuilders as $installmentBuilder) {
             $json = $installmentBuilder->getInstallmentCalculatorAsJson($context->getTotalAmount());
-            $configuratorData = json_decode($json, true);
+            $configuratorData = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
 
-            if (count($data) === 0) {
+            if ((is_countable($data) ? count($data) : 0) === 0) {
                 $data = $configuratorData;
             }
+
             /** @noinspection SlowArrayOperationsInLoopInspection */
             $data['rp_allowedMonths'] = array_merge($data['rp_allowedMonths'], $configuratorData['rp_allowedMonths']);
         }
+
         $data['rp_allowedMonths'] = array_unique($data['rp_allowedMonths']);
         sort($data['rp_allowedMonths']);
 
@@ -237,8 +242,8 @@ class InstallmentService
     {
         $installmentBuilders = $this->getInstallmentBuilders($context);
 
-        if (!count($installmentBuilders)) {
-            throw new \Exception('No installment builder where found');
+        if ($installmentBuilders === []) {
+            throw new Exception('No installment builder where found');
         }
 
         /**
@@ -272,7 +277,7 @@ class InstallmentService
         $count = count($amountBuilders);
         if ($count === 0) {
             return null;
-        } else if ($count > 1) {
+        } elseif ($count > 1) {
             // find the best matching for the given monthly rate and the available rates from the calculated plans
             $monthlyRate = null;
             $availableMonthlyRates = array_keys($amountBuilders);
@@ -283,7 +288,7 @@ class InstallmentService
                 foreach ($availableMonthlyRates as $availableMonthlyRate) {
                     if ($monthlyRate === null || abs($context->getCalculationValue() - (float)$monthlyRate) > abs($availableMonthlyRate - $context->getCalculationValue())) {
                         $monthlyRate = $availableMonthlyRate;
-                    } else if ($availableMonthlyRate > $context->getCalculationValue()) {
+                    } elseif ($availableMonthlyRate > $context->getCalculationValue()) {
                         // if it is not a match, and the calculated rate is already higher than the given value,
                         // we can cancel the loop, cause every higher values will not match, either.
                         break;
@@ -302,7 +307,7 @@ class InstallmentService
         );
     }
 
-    private function calculateMonthlyRate($totalAmount, ProfileConfigMethodInstallmentEntity $config, $month)
+    private function calculateMonthlyRate(?float $totalAmount, ProfileConfigMethodInstallmentEntity $config, $month)
     {
         $mbContent = new ModelBuilder('Content');
         $mbContent->setArray([
@@ -323,7 +328,7 @@ class InstallmentService
     public function getTranslations(SalesChannelContext $salesChannelContext): array
     {
         $langId = $salesChannelContext->getContext()->getLanguageId();
-        if (isset($this->_translationCache[$langId]) === false) {
+        if (!isset($this->_translationCache[$langId])) {
             $languageCriteria = new Criteria([$salesChannelContext->getContext()->getLanguageId()]);
             $languageCriteria->addAssociation('locale');
             $language = $this->languageRepository->search(
@@ -352,7 +357,7 @@ class InstallmentService
 
         $transactionId = $this->transactionIdService->getTransactionId(
             $context->getSalesChannelContext(),
-            $context->getOrder() ? TransactionIdService::PREFIX_ORDER . $context->getOrder()->getId() : TransactionIdService::PREFIX_CART,
+            $context->getOrder() !== null ? TransactionIdService::PREFIX_ORDER . $context->getOrder()->getId() : TransactionIdService::PREFIX_CART,
             $installmentPlan['profileUuid']
         );
 

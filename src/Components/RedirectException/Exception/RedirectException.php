@@ -9,9 +9,10 @@
 
 namespace Ratepay\RpayPayments\Components\RedirectException\Exception;
 
+use Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-class RedirectException extends \Exception
+class RedirectException extends Exception
 {
     private RedirectResponse $redirectResponse;
 
@@ -19,7 +20,7 @@ class RedirectException extends \Exception
         RedirectResponse $redirectResponse,
         $message = '',
         $code = 0,
-        \Exception $previousException = null
+        Exception $previousException = null
     ) {
         $this->redirectResponse = $redirectResponse;
         parent::__construct($message, $code, $previousException);

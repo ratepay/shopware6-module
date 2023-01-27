@@ -29,7 +29,14 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 class TransactionIdService
 {
 
+    /**
+     * @var string
+     */
     public const PREFIX_CART = 'cart-';
+
+    /**
+     * @var string
+     */
     public const PREFIX_ORDER = 'order-';
 
     private EntityRepository $transactionIdRepository;
@@ -96,13 +103,14 @@ class TransactionIdService
             } else {
                 $transactionId = $transactionIdEntity->getTransactionId();
             }
-        } catch (RatepayException $exception) {
-            throw new TransactionIdFetchFailedException($exception->getCode(), $exception);
+        } catch (RatepayException $ratepayException) {
+            throw new TransactionIdFetchFailedException($ratepayException->getCode(), $ratepayException);
         }
 
         if ($transactionId) {
             return $transactionId;
         }
+
         throw new TransactionIdFetchFailedException();
     }
 
@@ -112,7 +120,7 @@ class TransactionIdService
             ->addFilter(new EqualsFilter(TransactionIdEntity::FIELD_IDENTIFIER, $identifier))
             ->setLimit(1);
 
-        if ($profileConfigEntity) {
+        if ($profileConfigEntity !== null) {
             $criteria->addFilter(new EqualsFilter(TransactionIdEntity::FIELD_PROFILE_ID, $profileConfigEntity->getId()));
         }
 
@@ -132,12 +140,10 @@ class TransactionIdService
 
         $ids = $this->transactionIdRepository->searchIds($criteria, $context);
 
-        if (count($ids->getIds())) {
-            $this->transactionIdRepository->delete(array_map(static function ($id) {
-                return [
-                    TransactionIdEntity::FIELD_ID => $id,
-                ];
-            }, $ids->getIds()), $context);
+        if ($ids->getIds() !== []) {
+            $this->transactionIdRepository->delete(array_map(static fn($id): array => [
+                TransactionIdEntity::FIELD_ID => $id,
+            ], $ids->getIds()), $context);
         }
     }
 }

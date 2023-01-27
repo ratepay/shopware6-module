@@ -9,6 +9,8 @@
 
 namespace Ratepay\RpayPayments\Components\Checkout\Service;
 
+use Shopware\Core\Checkout\Customer\CustomerEntity;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
 use Ratepay\RpayPayments\Components\Checkout\Event\RatepayPaymentFilterEvent;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\Collection\ProfileConfigMethodCollection;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileByOrderEntity;
@@ -41,13 +43,13 @@ class PaymentFilterService
 
     public function filterPaymentMethods(PaymentMethodCollection $paymentMethodCollection, SalesChannelContext $salesChannelContext, OrderEntity $order = null): PaymentMethodCollection
     {
-        return $paymentMethodCollection->filter(function (PaymentMethodEntity $paymentMethod) use ($salesChannelContext, $order) {
-            if (MethodHelper::isRatepayMethod($paymentMethod->getHandlerIdentifier()) === false) {
+        return $paymentMethodCollection->filter(function (PaymentMethodEntity $paymentMethod) use ($salesChannelContext, $order): ?bool {
+            if (!MethodHelper::isRatepayMethod($paymentMethod->getHandlerIdentifier())) {
                 // payment method is not a ratepay method - so we won't check it.
                 return true;
             }
 
-            if (!$order) {
+            if ($order === null) {
                 $customer = $salesChannelContext->getCustomer();
                 if ($customer === null ||
                     $customer->getActiveBillingAddress() === null ||
@@ -57,7 +59,7 @@ class PaymentFilterService
                 }
             }
 
-            $searchService = $order ? $this->profileByOrderEntity : $this->profileBySalesChannelContext;
+            $searchService = $order !== null ? $this->profileByOrderEntity : $this->profileBySalesChannelContext;
             $profileConfig = $searchService->search(
                 $searchService->createSearchObject($order ?? $salesChannelContext)->setPaymentMethodId($paymentMethod->getId())
             )->first();

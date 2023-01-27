@@ -23,6 +23,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 class PaymentLockDefinition extends EntityDefinition
 {
+    /**
+     * @var string
+     */
     public const ENTITY_NAME = 'ratepay_payment_lock';
 
     public function getEntityName(): string

@@ -13,6 +13,9 @@ use Symfony\Component\Validator\Constraints\Date;
 
 class Birthday extends Date
 {
+    /**
+     * @var string
+     */
     public const ERROR_NAME = 'RP_INVALID_AGE';
 
     protected static $errorNames = [

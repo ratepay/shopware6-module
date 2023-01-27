@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\AdminOrders\Controller;
 
+use DateTime;
 use Ratepay\RpayPayments\Components\AdminOrders\Model\RatepayAdminOrderTokenEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -68,7 +69,7 @@ class TokenController extends AbstractController
                 RatepayAdminOrderTokenEntity::FIELD_TOKEN => $token,
                 RatepayAdminOrderTokenEntity::FIELD_SALES_CHANNEL_ID => $salesChannelId,
                 RatepayAdminOrderTokenEntity::FIELD_SALES_CHANNEL_DOMAIN_ID => $salesChannelDomainId,
-                RatepayAdminOrderTokenEntity::FIELD_VAlID_UNTIL => (new \DateTime())->modify('+30 min'),
+                RatepayAdminOrderTokenEntity::FIELD_VAlID_UNTIL => (new DateTime())->modify('+30 min'),
             ],
         ], $context);
 

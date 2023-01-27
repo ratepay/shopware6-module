@@ -28,12 +28,24 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 class PaymentQueryService extends AbstractRequest
 {
+    /**
+     * @var string
+     */
     public const EVENT_SUCCESSFUL = self::class . parent::EVENT_SUCCESSFUL;
 
+    /**
+     * @var string
+     */
     public const EVENT_FAILED = self::class . parent::EVENT_FAILED;
 
+    /**
+     * @var string
+     */
     public const EVENT_BUILD_HEAD = self::class . parent::EVENT_BUILD_HEAD;
 
+    /**
+     * @var string
+     */
     public const EVENT_BUILD_CONTENT = self::class . parent::EVENT_BUILD_CONTENT;
 
     protected string $_operation = self::CALL_PAYMENT_QUERY;
@@ -43,7 +55,9 @@ class PaymentQueryService extends AbstractRequest
     private ShoppingBasketFactory $shoppingBasketFactory;
 
     private CustomerFactory $customerFactory;
+
     private ProfileBySalesChannelContext $salesChannelSearch;
+
     private ProfileSearchService $profileSearchService;
 
     public function __construct(

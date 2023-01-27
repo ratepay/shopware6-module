@@ -26,6 +26,7 @@ trait DebitValidationTrait
 {
     /**
      * @param OrderEntity|SalesChannelContext $baseData
+     * @return array{bankData: \Shopware\Core\Framework\Validation\DataValidationDefinition}
      */
     public function getDebitConstraints(DataBag $requestDataBag, $baseData): array
     {

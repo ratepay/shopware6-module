@@ -31,7 +31,9 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 class DeviceFingerprintSubscriber implements EventSubscriberInterface
 {
     protected DfpServiceInterface $dfpService;
+
     private RequestStack $requestStack;
+
     private ConfigService $configService;
 
     public function __construct(
@@ -76,11 +78,7 @@ class DeviceFingerprintSubscriber implements EventSubscriberInterface
 
     public function addRatepayTemplateData(PaymentDataExtensionBuilt $event): void
     {
-        if ($event->getOrderEntity()) {
-            $baseData = $event->getOrderEntity();
-        } else {
-            $baseData = $event->getSalesChannelContext();
-        }
+        $baseData = $event->getOrderEntity() ?? $event->getSalesChannelContext();
 
         $snippet = $this->dfpService->getDfpSnippet($this->requestStack->getCurrentRequest(), $baseData);
         if ($snippet) {
@@ -92,7 +90,7 @@ class DeviceFingerprintSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function addValidationDefinition(ValidationDefinitionCollectEvent $event)
+    public function addValidationDefinition(ValidationDefinitionCollectEvent $event): void
     {
         if (!$this->dfpService->isDfpRequired($event->getBaseData())) {
             return;
@@ -104,7 +102,7 @@ class DeviceFingerprintSubscriber implements EventSubscriberInterface
         ]);
     }
 
-    public function addDfpTokenToOrder(OrderExtensionDataBuilt $event)
+    public function addDfpTokenToOrder(OrderExtensionDataBuilt $event): void
     {
         $requestDataBag = $event->getPaymentRequestData()->getRequestDataBag();
         $ratepayData = $requestDataBag->get('ratepay');
@@ -115,7 +113,7 @@ class DeviceFingerprintSubscriber implements EventSubscriberInterface
         $event->setData($data);
     }
 
-    public function addRatepayDataToAccountOrderCriteria(OrderRouteRequestEvent $event)
+    public function addRatepayDataToAccountOrderCriteria(OrderRouteRequestEvent $event): void
     {
         $event->getCriteria()->addAssociation(OrderExtension::EXTENSION_NAME);
     }

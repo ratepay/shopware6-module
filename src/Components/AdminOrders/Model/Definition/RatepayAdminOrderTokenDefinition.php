@@ -26,6 +26,9 @@ use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 
 class RatepayAdminOrderTokenDefinition extends EntityDefinition
 {
+    /**
+     * @var string
+     */
     public const ENTITY_NAME = 'ratepay_admin_order_token';
 
     public function getEntityName(): string

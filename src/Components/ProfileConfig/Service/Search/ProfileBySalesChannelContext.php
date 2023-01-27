@@ -13,6 +13,7 @@ class ProfileBySalesChannelContext implements ProfileSearchInterface
 {
 
     private CartService $cartService;
+
     private ProfileBySalesChannelContextAndCart $searchService;
 
     public function __construct(

@@ -18,6 +18,9 @@ class InstallmentPaymentHandler extends AbstractPaymentHandler
 {
     use DebitValidationTrait;
 
+    /**
+     * @var string
+     */
     public const RATEPAY_METHOD = 'INSTALLMENT';
 
     public function getValidationDefinitions(DataBag $requestDataBag, $baseData): array

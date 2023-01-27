@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Subscriber;
 
+use Ratepay\RpayPayments\Components\RatepayApi\Model\TransactionIdEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\InitEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\RequestDoneEvent;
@@ -46,7 +47,7 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
             $requestData->getOrder() ? TransactionIdService::PREFIX_ORDER . $requestData->getOrder()->getId() : TransactionIdService::PREFIX_CART
         );
 
-        if (!$ratepayTransactionId) {
+        if ($ratepayTransactionId === null) {
             throw new RatepayException('Stored transaction id was not found');
         }
 

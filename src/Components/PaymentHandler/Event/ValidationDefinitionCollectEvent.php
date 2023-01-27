@@ -4,7 +4,6 @@ namespace Ratepay\RpayPayments\Components\PaymentHandler\Event;
 
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\Validator\Constraint;
 
@@ -54,6 +53,7 @@ class ValidationDefinitionCollectEvent
         foreach ($path as $nodeKey) {
             $currentNode = &$currentNode[$nodeKey];
         }
+
         $currentNode[$field] = $constraint;
 
         return $this;

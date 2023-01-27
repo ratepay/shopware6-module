@@ -9,6 +9,7 @@
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 
+use Exception;
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
 use RatePAY\RequestBuilder;
@@ -29,14 +30,29 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 class PaymentRequestService extends AbstractRequest
 {
+    /**
+     * @var string
+     */
     public const EVENT_SUCCESSFUL = self::class . parent::EVENT_SUCCESSFUL;
 
+    /**
+     * @var string
+     */
     public const EVENT_FAILED = self::class . parent::EVENT_FAILED;
 
+    /**
+     * @var string
+     */
     public const EVENT_BUILD_HEAD = self::class . parent::EVENT_BUILD_HEAD;
 
+    /**
+     * @var string
+     */
     public const EVENT_BUILD_CONTENT = self::class . parent::EVENT_BUILD_CONTENT;
 
+    /**
+     * @var string
+     */
     public const EVENT_INIT_REQUEST = self::class . parent::EVENT_INIT_REQUEST;
 
     protected string $_operation = self::CALL_PAYMENT_REQUEST;
@@ -49,7 +65,9 @@ class PaymentRequestService extends AbstractRequest
 
 
     private ExternalFactory $externalFactory;
+
     private ProfileSearchService $profileConfigSearch;
+
     private ProfileByOrderEntity $profileConfigOrderSearch;
 
     public function __construct(
@@ -76,7 +94,7 @@ class PaymentRequestService extends AbstractRequest
     {
         /* @var PaymentRequestData $requestData */
         if ($requestData->getRatepayTransactionId() === null) {
-            throw new \Exception('no transaction id given'); // TODO add exception
+            throw new Exception('no transaction id given'); // TODO add exception
         }
     }
 
@@ -103,7 +121,7 @@ class PaymentRequestService extends AbstractRequest
 
     protected function getProfileConfig(AbstractRequestData $requestData): ProfileConfigEntity
     {
-        if ($requestData->getProfileConfig()) {
+        if ($requestData->getProfileConfig() !== null) {
             // the given profile config should be prioritised
             return $requestData->getProfileConfig();
         }

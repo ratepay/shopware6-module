@@ -9,6 +9,7 @@
 
 namespace Ratepay\RpayPayments\Components\Checkout\Util;
 
+use InvalidArgumentException;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
@@ -26,13 +27,14 @@ class BankAccountHolderHelper
         }
 
         if (!isset($address)) {
-            throw new \InvalidArgumentException('`$baseData` must be one of ' . OrderEntity::class . ' or ' . SalesChannelContext::class);
+            throw new InvalidArgumentException('`$baseData` must be one of ' . OrderEntity::class . ' or ' . SalesChannelContext::class);
         }
 
         $names = [];
         if (!empty($address->getCompany())) {
             $names[] = trim($address->getCompany());
         }
+
         $names[] = trim($address->getFirstName()) . ' ' . trim($address->getLastName());
 
         return $names;

@@ -2,6 +2,7 @@
 
 namespace Ratepay\RpayPayments\Components\ProfileConfig\Service\Search;
 
+use RuntimeException;
 use Ratepay\RpayPayments\Components\ProfileConfig\Dto\ProfileConfigSearch;
 use Ratepay\RpayPayments\Components\ProfileConfig\Event\CreateProfileConfigCriteriaEvent;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
@@ -147,7 +148,7 @@ class ProfileSearchService implements ProfileSearchInterface
             return $country->getIso();
         }
 
-        throw new \RuntimeException('Country ' . $uuid . ' does not exist');
+        throw new RuntimeException('Country ' . $uuid . ' does not exist');
     }
 
 

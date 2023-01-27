@@ -20,6 +20,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 class OrderExtension extends EntityExtension
 {
+    /**
+     * @var string
+     */
     public const EXTENSION_NAME = 'ratepayData';
 
     public function extendFields(FieldCollection $collection): void

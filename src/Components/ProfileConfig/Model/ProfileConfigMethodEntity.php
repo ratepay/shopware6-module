@@ -17,26 +17,59 @@ class ProfileConfigMethodEntity extends Entity
 {
     use EntityIdTrait;
 
+    /**
+     * @var string
+     */
     public const FIELD_ID = 'id';
 
+    /**
+     * @var string
+     */
     public const FIELD_PROFILE = 'profile';
 
+    /**
+     * @var string
+     */
     public const FIELD_PROFILE_ID = 'profileId';
 
+    /**
+     * @var string
+     */
     public const FIELD_PAYMENT_METHOD = 'paymentMethod';
 
+    /**
+     * @var string
+     */
     public const FIELD_PAYMENT_METHOD_ID = 'paymentMethodId';
 
+    /**
+     * @var string
+     */
     public const FIELD_LIMIT_MIN = 'limitMin';
 
+    /**
+     * @var string
+     */
     public const FIELD_LIMIT_MAX = 'limitMax';
 
+    /**
+     * @var string
+     */
     public const FIELD_LIMIT_MAX_B2B = 'limitMaxB2b';
 
+    /**
+     * @var string
+     */
     public const FIELD_ALLOW_DIFFERENT_ADDRESSES = 'allowDifferentAddresses';
 
+    /**
+     * @var string
+     */
     public const FIELD_ALLOW_B2B = 'allowB2b';
 
+    /**
+     * @var string
+     */
     public const FIELD_INSTALLMENT_CONFIG = 'installmentConfig';
 
     protected ?PaymentMethodEntity $paymentMethod = null;
@@ -47,11 +80,11 @@ class ProfileConfigMethodEntity extends Entity
 
     protected string $profileId;
 
-    protected ?float $limitMin;
+    protected ?float $limitMin = null;
 
-    protected ?float $limitMax;
+    protected ?float $limitMax = null;
 
-    protected ?float $limitMaxB2b;
+    protected ?float $limitMaxB2b = null;
 
     protected bool $allowDifferentAddresses;
 

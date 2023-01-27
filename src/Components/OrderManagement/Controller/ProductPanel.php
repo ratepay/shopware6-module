@@ -46,7 +46,7 @@ class ProductPanel extends AbstractController
     /**
      * @var AbstractModifyRequest[]
      */
-    private array $requestServicesByOperation;
+    private array $requestServicesByOperation = [];
 
     private OrderConverter $orderConverter;
 
@@ -103,6 +103,7 @@ class ProductPanel extends AbstractController
                     ];
                 }
             }
+
             /** @var $orderExtension RatepayOrderDataEntity */
             if (($orderExtension = $order->getExtension(OrderExtension::EXTENSION_NAME)) &&
                 $orderExtension->getShippingPosition()) {
@@ -137,21 +138,19 @@ class ProductPanel extends AbstractController
         return $this->processModify($request, $context, OrderOperationData::OPERATION_DELIVER, $orderId);
     }
 
-    protected function processModify(Request $request, Context $context, string $operation, $orderId): JsonResponse
+    protected function processModify(Request $request, Context $context, string $operation, string $orderId): JsonResponse
     {
         $order = $this->fetchOrder($context, $orderId);
 
-        if ($order) {
+        if ($order !== null) {
             $items = [];
             foreach ($request->request->get('items') ?? [] as $data) {
                 $items[$data['id']] = (int) $data['quantity'];
             }
 
-            $items = array_filter($items, function ($quantity) {
-                return $quantity > 0;
-            });
+            $items = array_filter($items, static fn($quantity): bool => $quantity > 0);
 
-            if (count($items) === 0) {
+            if ($items === []) {
                 return $this->json([
                     'success' => false,
                     'message' => 'Please provide at least on item', // todo translation - should we translate it?
@@ -204,7 +203,7 @@ class ProductPanel extends AbstractController
 
         $order = $this->fetchOrder($context, $orderId);
 
-        if (!$order) {
+        if ($order === null) {
             return $this->json([
                 'success' => false,
                 'message' => 'Order was not found',

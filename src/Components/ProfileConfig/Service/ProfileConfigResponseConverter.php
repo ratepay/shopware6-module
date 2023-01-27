@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\ProfileConfig\Service;
 
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use RatePAY\Model\Response\ProfileRequest;
 use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
@@ -40,9 +41,9 @@ class ProfileConfigResponseConverter
     private $paymentRepository;
 
     /**
-     * @var EntitySearchResult|PaymentMethodEntity[]
+     * @var PaymentMethodEntity[]
      */
-    private $paymentMethods;
+    private ?array $paymentMethods = null;
 
     public function __construct($paymentRepository)
     {
@@ -57,7 +58,7 @@ class ProfileConfigResponseConverter
         $profileConfigData = [];
         $responseData = $response->getResult(false);
 
-        if ($response->isSuccessful() === false) {
+        if (!$response->isSuccessful()) {
             $profileConfigData[ProfileConfigEntity::FIELD_STATUS] = false;
             $profileConfigData[ProfileConfigEntity::FIELD_STATUS_MESSAGE] = $response->getReasonMessage();
         } elseif (((int) $responseData['merchantConfig']['merchant-status']) === 1) {
@@ -133,13 +134,16 @@ class ProfileConfigResponseConverter
         return [$profileConfigData, [], []];
     }
 
-    private function getPaymentMethods(): EntitySearchResult
+    /**
+     * @return PaymentMethodEntity[]
+     */
+    private function getPaymentMethods(): array
     {
         if ($this->paymentMethods === null) {
             $criteria = new Criteria();
             $criteria->addAssociation('plugin');
             $criteria->addFilter(new EqualsFilter('plugin.baseClass', RpayPayments::class));
-            $this->paymentMethods = $this->paymentRepository->search($criteria, Context::createDefaultContext());
+            $this->paymentMethods = $this->paymentRepository->search($criteria, Context::createDefaultContext())->getElements();
         }
 
         return $this->paymentMethods;

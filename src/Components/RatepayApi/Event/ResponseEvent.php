@@ -9,11 +9,12 @@
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Event;
 
+use Symfony\Contracts\EventDispatcher\Event;
 use RatePAY\RequestBuilder;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Shopware\Core\Framework\Context;
 
-class ResponseEvent extends \Symfony\Contracts\EventDispatcher\Event
+class ResponseEvent extends Event
 {
     private Context $context;
 

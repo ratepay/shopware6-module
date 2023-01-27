@@ -9,6 +9,7 @@
 
 namespace Ratepay\RpayPayments\Components\PaymentHandler;
 
+use DateTimeInterface;
 use InvalidArgumentException;
 use RatePAY\Model\Response\PaymentRequest;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\Birthday;
@@ -41,6 +42,9 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterface
 {
+    /**
+     * @var string
+     */
     public const ERROR_SNIPPET_VIOLATION_PREFIX = 'VIOLATION::';
 
     private PaymentRequestService $paymentRequestService;
@@ -79,6 +83,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
         if ($order === null || $ratepayData->count() === 0) {
             throw new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'unknown error during payment');
         }
+
         try {
 
             $paymentRequestData = new PaymentRequestData(
@@ -96,6 +101,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
                 if (!$profile) {
                     throw new ProfileNotFoundException();
                 }
+
                 $paymentRequestData->setProfileConfig($profile);
             }
 
@@ -117,17 +123,17 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
                 // will be caught a few lines later.
                 throw new RatepayException($response->getCustomerMessage() ?: $response->getReasonMessage());
             }
-        } catch (RatepayException $e) {
+        } catch (RatepayException $ratepayException) {
             $this->eventDispatcher->dispatch(new PaymentFailedEvent(
                 $order,
                 $transaction,
                 $dataBag,
                 $salesChannelContext,
-                isset($response) ? $response : null,
-                $e->getPrevious() ?? $e
+                $response ?? null,
+                $ratepayException->getPrevious() ?? $ratepayException
             ));
 
-            throw new ForwardException('frontend.account.edit-order.page', ['orderId' => $order->getId()], ['ratepay-errors' => [$e->getMessage()]], new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $e->getMessage()));
+            throw new ForwardException('frontend.account.edit-order.page', ['orderId' => $order->getId()], ['ratepay-errors' => [$ratepayException->getMessage()]], new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $ratepayException->getMessage()));
         }
     }
 
@@ -160,7 +166,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
             throw new InvalidArgumentException('please provide a ' . SalesChannelContext::class . ' or an ' . OrderEntity::class . '. You provided a ' . get_class($baseData) . ' object');
         }
 
-        if ($ratepayData->get('birthday') || ($birthday === null && $isCompany === false)) {
+        if ($ratepayData->get('birthday') || (!$birthday instanceof DateTimeInterface && $isCompany === false)) {
             $validations['birthday'] = [
                 new BirthdayNotBlank(),
                 new Birthday(['message' => self::ERROR_SNIPPET_VIOLATION_PREFIX . Birthday::ERROR_NAME]),

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
 
+use Exception;
 use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\Logging\Model\ApiRequestLogEntity;
@@ -46,14 +47,14 @@ class PaymentFailedSubscriber implements EventSubscriberInterface
 
     public function onFinishPage(CheckoutFinishPageLoadedEvent $event): void
     {
-        if ($event->getPage()->isPaymentFailed() === false) {
+        if (!$event->getPage()->isPaymentFailed()) {
             return;
         }
 
         $order = $event->getPage()->getOrder();
         /** @var RatepayOrderDataEntity $ratepayData */
         $ratepayData = $order->getExtension(OrderExtension::EXTENSION_NAME);
-        if ($ratepayData && $ratepayData->isSuccessful() === false) {
+        if ($ratepayData && !$ratepayData->isSuccessful()) {
             $transactionId = $ratepayData->getTransactionId();
 
             $criteria = new Criteria();
@@ -76,14 +77,14 @@ class PaymentFailedSubscriber implements EventSubscriberInterface
                     PaymentRequestService::CALL_PAYMENT_REQUEST,
                     $logEntry->getResponse()
                 );
-            } catch (\Exception $e) {
+            } catch (Exception $exception) {
                 // response can not be converted.
                 return;
             }
 
             $session = $this->container->get('session');
             if ($response && $session) {
-                $message = !empty($response->getCustomerMessage()) ? $response->getCustomerMessage() : $response->getResultMessage();
+                $message = empty($response->getCustomerMessage()) ? $response->getResultMessage() : $response->getCustomerMessage();
                 $session->getFlashBag()->add('danger', $message);
             }
         }

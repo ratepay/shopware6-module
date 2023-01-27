@@ -9,6 +9,7 @@
 
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Subscriber;
 
+use RatePAY\Model\Request\SubModel\Content\Payment\InstallmentDetails;
 use Exception;
 use InvalidArgumentException;
 use RatePAY\Model\Request\SubModel\Content\Payment;
@@ -88,7 +89,7 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
             $paymentObject
                 ->setAmount($plan['totalAmount'])
                 ->setInstallmentDetails(
-                    (new Payment\InstallmentDetails())
+                    (new InstallmentDetails())
                         ->setInstallmentNumber($plan['numberOfRatesFull'])
                         ->setInstallmentAmount($plan['rate'])
                         ->setLastInstallmentAmount($plan['lastRate'])
@@ -104,7 +105,7 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
         /** @var OrderOperationData $requestData */
         $requestData = $event->getRequestData();
 
-        if ($requestData instanceof PaymentRequestData === false) {
+        if (!$requestData instanceof PaymentRequestData) {
             return $event;
         }
 

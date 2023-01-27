@@ -77,6 +77,7 @@ class RatepayPaymentFilterEvent extends Event
         if ($isAvailable === false) {
             $this->stopPropagation();
         }
+
         $this->isAvailable = $isAvailable;
     }
 

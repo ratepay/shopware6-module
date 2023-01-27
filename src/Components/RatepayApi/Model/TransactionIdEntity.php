@@ -19,16 +19,34 @@ class TransactionIdEntity extends Entity
 {
     use EntityIdTrait;
 
+    /**
+     * @var string
+     */
     public const FIELD_ID = 'id';
 
+    /**
+     * @var string
+     */
     public const FIELD_IDENTIFIER = 'identifier';
 
+    /**
+     * @var string
+     */
     public const FIELD_PROFILE = 'profile';
 
+    /**
+     * @var string
+     */
     public const FIELD_PROFILE_ID = 'profileId';
 
+    /**
+     * @var string
+     */
     public const FIELD_TRANSACTION_ID = 'transactionId';
 
+    /**
+     * @var string
+     */
     public const FIELD_CREATED_AT = 'created_at';
 
     protected ?string $identifier = null;

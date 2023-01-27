@@ -4,6 +4,7 @@
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Model;
 
 
+use BadMethodCallException;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
 
@@ -39,8 +40,9 @@ class InstallmentBuilder extends \RatePAY\Frontend\InstallmentBuilder
     public function setProfileId($profileId): void
     {
         if ($this->profileConfig->getProfileId() !== $profileId) {
-            throw new \BadMethodCallException('please do not set profile id manually. Please use constructor');
+            throw new BadMethodCallException('please do not set profile id manually. Please use constructor');
         }
+
         // call from constructor
         parent::setProfileId($profileId);
     }

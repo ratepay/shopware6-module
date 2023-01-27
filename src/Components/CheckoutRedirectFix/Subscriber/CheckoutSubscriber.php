@@ -34,7 +34,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
             $event->getPage()->getPaymentMethods()->has($paymentMethod->getId())
         ) {
             $customer = $event->getSalesChannelContext()->getCustomer();
-            if ($customer) {
+            if ($customer !== null) {
                 $extension = $event->getPage()->getExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME) ?? new ArrayStruct();
                 $extension->assign([
                     'validation' => [

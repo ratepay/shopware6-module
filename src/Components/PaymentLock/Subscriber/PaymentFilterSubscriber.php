@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\PaymentLock\Subscriber;
 
+use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Ratepay\RpayPayments\Components\Checkout\Event\RatepayPaymentFilterEvent;
 use Ratepay\RpayPayments\Components\PaymentLock\Service\LockService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -33,11 +34,11 @@ class PaymentFilterSubscriber implements EventSubscriberInterface
 
     public function filterPayments(RatepayPaymentFilterEvent $event): void
     {
-        if ($event->getOrderEntity()) {
+        if ($event->getOrderEntity() !== null) {
             $customerId = $event->getOrderEntity()->getOrderCustomer()->getCustomerId();
         } else {
             $customer = $event->getSalesChannelContext()->getCustomer();
-            if (!$customer) {
+            if ($customer === null) {
                 // customer is not logged in, or customer session has not been started yet.
                 return;
             }
@@ -50,6 +51,6 @@ class PaymentFilterSubscriber implements EventSubscriberInterface
             $event->getSalesChannelContext()->getContext()
         );
 
-        $event->setIsAvailable($isLocked !== true);
+        $event->setIsAvailable(!$isLocked);
     }
 }

@@ -42,7 +42,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
         ) {
             $extension = $event->getPage()->getExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME) ?? new ArrayStruct();
             $paymentDataExtension = $this->extensionService->buildPaymentDataExtension($event->getSalesChannelContext(), null, $event->getRequest());
-            if ($paymentDataExtension) {
+            if ($paymentDataExtension !== null) {
                 $extension->assign($paymentDataExtension->getVars());
             }
 

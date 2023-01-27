@@ -28,9 +28,7 @@ class InvoiceFactory extends AbstractFactory
     {
         /** @var OrderOperationData $requestData */
         $order = $requestData->getOrder();
-        $documents = $order->getDocuments()->filter(function (DocumentEntity $documentEntity) {
-            return $documentEntity->getDocumentType()->getTechnicalName() === 'invoice';
-        });
+        $documents = $order->getDocuments()->filter(static fn(DocumentEntity $documentEntity): bool => $documentEntity->getDocumentType()->getTechnicalName() === 'invoice');
 
         if ($invoice = $documents->first()) {
             $dateObject = $invoice->getCreatedAt();

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
 
+use Symfony\Component\HttpFoundation\Request;
 use Ratepay\RpayPayments\Components\PaymentHandler\AbstractPaymentHandler;
 use Ratepay\RpayPayments\Util\DataValidationHelper;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PaymentHandlerRegistry;
@@ -48,7 +49,7 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
     {
         $request = $this->requestStack->getCurrentRequest();
 
-        if (null === $request) {
+        if (!$request instanceof Request) {
             return;
         }
 
@@ -67,7 +68,7 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
         }
     }
 
-    private function getSalesContextFromRequest($request): SalesChannelContext
+    private function getSalesContextFromRequest(Request $request): SalesChannelContext
     {
         return $request->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_CONTEXT_OBJECT);
     }

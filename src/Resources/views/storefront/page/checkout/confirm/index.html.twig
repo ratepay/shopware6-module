@@ -1,14 +1,14 @@
 {#
-  ~ Copyright (c) 2020 Ratepay GmbH
-  ~
-  ~ For the full copyright and license information, please view the LICENSE
-  ~ file that was distributed with this source code.
+~ Copyright (c) Ratepay GmbH
+~
+~ For the full copyright and license information, please view the LICENSE
+~ file that was distributed with this source code.
 #}
 
 {% sw_extends '@Storefront/storefront/page/checkout/confirm/index.html.twig' %}
 
 {% block page_checkout_confirm_product_table %}
-    {%  if (page.extensions.ratepay) %}
+    {% if (page.extensions.ratepay) %}
         <div class="ratepay--billing-form">
             <div class="row">
                 <div class="col-md-12">

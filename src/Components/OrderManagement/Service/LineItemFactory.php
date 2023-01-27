@@ -49,6 +49,7 @@ class LineItemFactory
             if ($taxRule === null) {
                 throw new TaxRuleNotFoundException();
             }
+
             $taxRate = $taxRule->getTaxRate();
         }
 

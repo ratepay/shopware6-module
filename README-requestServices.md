@@ -46,7 +46,7 @@ $response = $requestBuilder->getResponse();
 if($response->isSuccessful()) {
     // do something if the request is successful
     /** @var array $result */
-    $result = $response->getResult(); // this will contains all information to the profile
+    $result = $response->getResult(); // this will contain all information of the profile
 }
 
 ```

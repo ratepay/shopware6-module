@@ -9,6 +9,7 @@
 
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Subscriber;
 
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Ratepay\RpayPayments\Components\Checkout\Event\PaymentDataExtensionBuilt;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentCalculatorContext;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
@@ -50,7 +51,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
                 ->setPaymentMethodId($paymentMethod->getId())
                 ->setOrder($order);
 
-            if (!$order) {
+            if ($order === null) {
                 $calcContext->setTotalAmount($this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext)->getPrice()->getTotalPrice());
             }
 

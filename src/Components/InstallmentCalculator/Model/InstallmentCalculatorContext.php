@@ -13,8 +13,14 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 class InstallmentCalculatorContext
 {
 
+    /**
+     * @var string
+     */
     public const CALCULATION_TYPE_TIME = 'time';
 
+    /**
+     * @var string
+     */
     public const CALCULATION_TYPE_RATE = 'rate';
 
     private SalesChannelContext $salesChannelContext;
@@ -37,6 +43,7 @@ class InstallmentCalculatorContext
     private ?string $paymentMethodId = null;
 
     private ?ProfileConfigSearch $profileConfigSearch = null;
+
     private ?CountryEntity $billingCoutnry = null;
 
     public function __construct(
@@ -85,7 +92,7 @@ class InstallmentCalculatorContext
 
     public function getTotalAmount(): ?float
     {
-        return $this->order ? $this->order->getAmountTotal() : $this->totalAmount;
+        return $this->order !== null ? $this->order->getAmountTotal() : $this->totalAmount;
     }
 
     public function setTotalAmount(?float $totalAmount): self
@@ -139,16 +146,16 @@ class InstallmentCalculatorContext
 
     public function getLanguageId(): string
     {
-        return $this->order ? $this->order->getLanguageId() : $this->salesChannelContext->getContext()->getLanguageId();
+        return $this->order !== null ? $this->order->getLanguageId() : $this->salesChannelContext->getContext()->getLanguageId();
     }
 
     public function getBillingCountry(): CountryEntity
     {
-        if ($this->billingCoutnry) {
+        if ($this->billingCoutnry !== null) {
             return $this->billingCoutnry;
         }
 
-        if ($this->order) {
+        if ($this->order !== null) {
             return $this->order->getAddresses()->get($this->order->getBillingAddressId())->getCountry();
         }
 

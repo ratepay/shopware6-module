@@ -21,14 +21,29 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class PaymentDeliverService extends AbstractModifyRequest
 {
+    /**
+     * @var string
+     */
     public const EVENT_SUCCESSFUL = self::class . parent::EVENT_SUCCESSFUL;
 
+    /**
+     * @var string
+     */
     public const EVENT_FAILED = self::class . parent::EVENT_FAILED;
 
+    /**
+     * @var string
+     */
     public const EVENT_BUILD_HEAD = self::class . parent::EVENT_BUILD_HEAD;
 
+    /**
+     * @var string
+     */
     public const EVENT_BUILD_CONTENT = self::class . parent::EVENT_BUILD_CONTENT;
 
+    /**
+     * @var string
+     */
     public const EVENT_INIT_REQUEST = self::class . parent::EVENT_INIT_REQUEST;
 
     protected string $_operation = self::CALL_DELIVER;
@@ -51,7 +66,7 @@ class PaymentDeliverService extends AbstractModifyRequest
     {
         /** @var OrderOperationData $requestData */
         $content = parent::getRequestContent($requestData);
-        if ($invoicing = $this->invoiceFactory->getData($requestData)) {
+        if (($invoicing = $this->invoiceFactory->getData($requestData)) !== null) {
             $content->setInvoicing($invoicing);
         }
 

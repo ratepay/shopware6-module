@@ -74,6 +74,7 @@ class PaymentMethods extends AbstractBootstrap
         foreach (self::PAYMENT_METHODS as $paymentMethod) {
             $this->upsertPaymentMethod($paymentMethod);
         }
+
         // Keep active flags as they are
     }
 
@@ -113,7 +114,7 @@ class PaymentMethods extends AbstractBootstrap
 
         /** @var PaymentMethodEntity|null $paymentEntity */
         $paymentEntity = $paymentSearchResult->first();
-        if ($paymentEntity) {
+        if ($paymentEntity !== null) {
             $paymentMethod['id'] = $paymentEntity->getId();
         }
 
@@ -128,12 +129,10 @@ class PaymentMethods extends AbstractBootstrap
             $this->defaultContext
         );
 
-        $updateData = array_map(static function (PaymentMethodEntity $entity) use ($activated) {
-            return [
-                'id' => $entity->getId(),
-                'active' => $activated,
-            ];
-        }, $paymentEntities->getElements());
+        $updateData = array_map(static fn(PaymentMethodEntity $entity): array => [
+            'id' => $entity->getId(),
+            'active' => $activated,
+        ], $paymentEntities->getElements());
 
         $this->paymentRepository->update(array_values($updateData), $this->defaultContext);
     }

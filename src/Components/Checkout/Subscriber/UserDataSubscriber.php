@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
 
+use Shopware\Core\Checkout\Customer\CustomerEntity;
+use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
+use RuntimeException;
 use DateTime;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\BeforePaymentEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -49,13 +52,13 @@ class UserDataSubscriber implements EventSubscriberInterface
         $order = $paymentRequestData->getOrder();
 
         $customer = $order->getOrderCustomer()->getCustomer();
-        $defaultBillingAddress = $customer ? $this->addressRepository->search(new Criteria([$customer->getDefaultBillingAddressId()]), $paymentRequestData->getContext())->first() : null;
+        $defaultBillingAddress = $customer !== null ? $this->addressRepository->search(new Criteria([$customer->getDefaultBillingAddressId()]), $paymentRequestData->getContext())->first() : null;
         $orderBillingAddress = $order->getAddresses()->get($order->getBillingAddressId());
         $dataBag = $paymentRequestData->getRequestDataBag();
 
         if ($customer === null || $orderBillingAddress === null) {
-            // should never occurs.
-            throw new \RuntimeException('user data can not be saved. Unknown error.');
+            // should never occur.
+            throw new RuntimeException('user data can not be saved. Unknown error.');
         }
 
         /** @var RequestDataBag $ratepayData */
@@ -64,7 +67,9 @@ class UserDataSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $customerUpdates = $defaultBillingAddressUpdates = $orderBillingAddressUpdates = [];
+        $customerUpdates = [];
+        $defaultBillingAddressUpdates = [];
+        $orderBillingAddressUpdates = [];
 
         // collect updates
         if ($ratepayData->has('birthday')) {
@@ -94,7 +99,7 @@ class UserDataSubscriber implements EventSubscriberInterface
         }
 
         // update collected data
-        if (count($customerUpdates)) {
+        if ($customerUpdates !== []) {
             $this->customerRepository->upsert([array_merge(
                 [
                     'id' => $customer->getId(),
@@ -113,7 +118,7 @@ class UserDataSubscriber implements EventSubscriberInterface
             )], $event->getContext());
         }
 
-        if (count($orderBillingAddressUpdates)) {
+        if ($orderBillingAddressUpdates !== []) {
             $this->orderAddressRepository->upsert([array_merge(
                 [
                     'id' => $orderBillingAddress->getId(),

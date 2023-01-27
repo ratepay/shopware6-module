@@ -11,7 +11,7 @@ class ProfileConfigSearch
 
     private string $shippingCountryCode;
 
-    private ?string $paymentMethodId;
+    private ?string $paymentMethodId = null;
 
     private bool $isAdminOrder;
 

@@ -9,6 +9,7 @@
 
 namespace Ratepay\RpayPayments\Components\DeviceFingerprint;
 
+use RuntimeException;
 use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
@@ -26,6 +27,7 @@ class DfpService implements DfpServiceInterface
 {
 
     private ConfigService $configService;
+
     private EntityRepository $orderCustomerRepository;
 
     public function __construct(
@@ -55,7 +57,7 @@ class DfpService implements DfpServiceInterface
         }
 
         $userAgent = $request->get('userAgent') ?? null;
-        $userAgent = $userAgent ?? $request->headers->get('User-Agent');
+        $userAgent ??= $request->headers->get('User-Agent');
 
         $dataForId = [
             ((string)$userAgent)
@@ -63,6 +65,7 @@ class DfpService implements DfpServiceInterface
         if ($baseData instanceof SalesChannelContext) {
             $dataForId[] = (string)$this->getCustomerFallBack($baseData);
         }
+
         $generatedId = md5(implode('', $dataForId));
 
         $prefix = $this->getDfpPrefix($baseData);
@@ -81,17 +84,13 @@ class DfpService implements DfpServiceInterface
     {
         if ($object instanceof SalesChannelContext) {
             $identifier = md5($object->getToken());
-        } else if ($object instanceof OrderEntity) {
-            if ($token = $this->getOrderDeviceToken($object)) {
-                // order payment has been failed, and we have to reuse the token.
-                // the validation of the token will successfully, because in this special case the prefix got not
-                // appended to the generated token, cause the generated token is just the same token as from the oder
-                $identifier = $token;
-            } else {
-                $identifier = md5($object->getId());
-            }
+        } elseif ($object instanceof OrderEntity) {
+            // order payment has been failed, and we have to reuse the token.
+            // the validation of the token will successfully, because in this special case the prefix got not
+            // appended to the generated token, cause the generated token is just the same token as from the oder
+            $identifier = $this->getOrderDeviceToken($object) ?? md5($object->getId());
         } else {
-            throw new \RuntimeException(sprintf('DFP: object of type %s was not expected', get_class($object)));
+            throw new RuntimeException(sprintf('DFP: object of type %s was not expected', get_class($object)));
         }
 
         return substr($identifier, 0, 5);
@@ -116,9 +115,9 @@ class DfpService implements DfpServiceInterface
         /** @var OrderCustomerEntity $orderCustomer */
         $orderCustomer = $this->orderCustomerRepository->search($orderCriteria, $context->getContext())->last();
         $date = $orderCustomer ? $orderCustomer->getCreatedAt() : null;
-        $date = $date ?? $context->getCustomer()->getLastLogin() ?? $context->getCustomer()->getUpdatedAt();
+        $date ??= $context->getCustomer()->getLastLogin() ?? $context->getCustomer()->getUpdatedAt();
 
-        return $date ? (string)$date->getTimestamp() : null;
+        return $date !== null ? (string)$date->getTimestamp() : null;
     }
 
     /**

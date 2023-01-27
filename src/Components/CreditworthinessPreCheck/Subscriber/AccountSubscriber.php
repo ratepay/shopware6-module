@@ -83,14 +83,17 @@ class AccountSubscriber implements EventSubscriberInterface
                     $response->getReasonMessage()
                 );
             }
-        } catch (RatepayException $e) {
+        } catch (RatepayException $ratepayException) {
             $this->throwException(
                 $event->getOrderEntity(),
-                $e->getMessage()
+                $ratepayException->getMessage()
             );
         }
     }
 
+    /**
+     * @return never
+     */
     private function throwException(OrderEntity $orderEntity, $message): void
     {
         throw new ForwardException('frontend.account.edit-order.page', ['orderId' => $orderEntity->getId()], ['ratepay-errors' => [$message]]);

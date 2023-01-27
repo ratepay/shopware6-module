@@ -11,5 +11,8 @@ namespace Ratepay\RpayPayments\Components\PaymentHandler;
 
 class InvoicePaymentHandler extends AbstractPaymentHandler
 {
+    /**
+     * @var string
+     */
     public const RATEPAY_METHOD = 'INVOICE';
 }

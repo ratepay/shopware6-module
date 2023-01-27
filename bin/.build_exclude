@@ -17,3 +17,4 @@ src/Resources/node_modules
 phpstan.neon
 README-dev.md
 bin
+rector.php

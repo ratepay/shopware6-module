@@ -17,30 +17,69 @@ class RatepayOrderDataEntity extends Entity
 {
     use EntityIdTrait;
 
+    /**
+     * @var string
+     */
     public const FIELD_ID = 'id';
 
+    /**
+     * @var string
+     */
     public const FIELD_ORDER_ID = 'orderId';
 
+    /**
+     * @var string
+     */
     public const FIELD_ORDER_VERSION_ID = 'orderVersionId';
 
+    /**
+     * @var string
+     */
     public const FIELD_ORDER = 'order';
 
+    /**
+     * @var string
+     */
     public const FIELD_PROFILE_ID = 'profileId';
 
+    /**
+     * @var string
+     */
     public const FIELD_TRANSACTION_ID = 'transactionId';
 
+    /**
+     * @var string
+     */
     public const FIELD_DESCRIPTOR = 'descriptor';
 
+    /**
+     * @var string
+     */
     public const FIELD_SHIPPING_POSITION_ID = 'shippingPositionId';
 
+    /**
+     * @var string
+     */
     public const FIELD_SHIPPING_POSITION = 'shippingPosition';
 
+    /**
+     * @var string
+     */
     public const FIELD_SUCCESSFUL = 'successful';
 
+    /**
+     * @var string
+     */
     public const FIELD_SEND_DISCOUNT_AS_CART_ITEM = 'sendDiscountAsCartItem';
 
+    /**
+     * @var string
+     */
     public const FIELD_SEND_SHIPPING_COSTS_AS_CART_ITEM = 'sendShippingCostsAsCartItem';
 
+    /**
+     * @var string
+     */
     public const FIELD_ADDITIONAL_DATA = 'additionalData';
 
     protected string $orderId;

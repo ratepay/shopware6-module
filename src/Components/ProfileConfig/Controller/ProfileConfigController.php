@@ -9,6 +9,7 @@
 
 namespace Ratepay\RpayPayments\Components\ProfileConfig\Controller;
 
+use Exception;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigManagement;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
@@ -48,10 +49,10 @@ class ProfileConfigController extends AbstractController
                 }
 
                 return $this->json($response, 200);
-            } catch (\Exception $e) {
+            } catch (Exception $exception) {
                 return $this->json([
                     'success' => false,
-                    'message' => $e->getMessage(),
+                    'message' => $exception->getMessage(),
                 ], 500);
             }
         } else {

@@ -34,7 +34,7 @@ class PluginVersionCompilerPass implements CompilerPassInterface
     private function getPluginVersion(): string
     {
         $composerJsonString = file_get_contents($this->pluginDir . 'composer.json');
-        $composerJson = json_decode($composerJsonString, true);
+        $composerJson = json_decode($composerJsonString, true, 512, JSON_THROW_ON_ERROR);
 
         return $composerJson['version'];
     }

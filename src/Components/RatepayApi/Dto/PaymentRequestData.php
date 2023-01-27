@@ -55,6 +55,7 @@ class PaymentRequestData extends OrderOperationData
         foreach ($this->getOrder()->getLineItems() as $item) {
             $items[$item->getId()] = $item->getQuantity();
         }
+
         if ($this->getOrder()->getShippingTotal() > 0) {
             $items[self::ITEM_ID_SHIPPING] = 1;
         }

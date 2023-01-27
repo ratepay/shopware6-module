@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\PaymentLock\Model;
 
+use DateTimeInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 
@@ -18,19 +19,31 @@ class PaymentLockEntity extends Entity
 {
     use EntityIdTrait;
 
+    /**
+     * @var string
+     */
     public const FIELD_ID = 'id';
 
+    /**
+     * @var string
+     */
     public const FIELD_CUSTOMER_ID = 'customerId';
 
+    /**
+     * @var string
+     */
     public const FIELD_PAYMENT_METHOD_ID = 'paymentMethodId';
 
+    /**
+     * @var string
+     */
     public const FIELD_LOCKED_UNTIL = 'locketUntil';
 
     private string $customerId;
 
     private string $paymentMethodId;
 
-    private \DateTimeInterface $lockedUntil;
+    private DateTimeInterface $lockedUntil;
 
     public function getId(): string
     {
@@ -47,7 +60,7 @@ class PaymentLockEntity extends Entity
         return $this->paymentMethodId;
     }
 
-    public function getLockedUntil(): \DateTimeInterface
+    public function getLockedUntil(): DateTimeInterface
     {
         return $this->lockedUntil;
     }

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\Account\Subscriber;
 
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Ratepay\RpayPayments\Components\Account\Event\PaymentUpdateRequestBagValidatedEvent;
 use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
@@ -81,6 +82,9 @@ class AccountSubscriber implements EventSubscriberInterface
         $this->orderTransactionStateHandler = $orderTransactionStateHandler;
     }
 
+    /**
+     * @return array{AccountEditOrderPageLoadedEvent: string[]|int[], HandlePaymentMethodRouteRequestEvent: string, SetPaymentOrderRouteRequestEvent: string}
+     */
     public static function getSubscribedEvents(): array
     {
         return [
@@ -111,7 +115,7 @@ class AccountSubscriber implements EventSubscriberInterface
                     $order,
                     $event->getRequest()
                 );
-                if ($extension) {
+                if ($extension !== null) {
                     $event->getPage()->addExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME, $extension);
                 }
             }
@@ -144,7 +148,7 @@ class AccountSubscriber implements EventSubscriberInterface
         $paymentMethod = $this->paymentMethodRepository->search(new Criteria([$paymentMethodId]), $event->getContext())->first();
         if ($orderEntity === null ||
             $paymentMethod === null ||
-            MethodHelper::isRatepayMethod($paymentMethod->getHandlerIdentifier()) === false
+            !MethodHelper::isRatepayMethod($paymentMethod->getHandlerIdentifier())
         ) {
             // not a ratepay method - nothing to do.
             return;
@@ -166,8 +170,8 @@ class AccountSubscriber implements EventSubscriberInterface
         $definition->addSub('ratepay', DataValidationHelper::addSubConstraints(new DataValidationDefinition(), $validationDefinitions));
         try {
             $this->dataValidator->validate(['ratepay' => $ratepayData->all()], $definition);
-        } catch (ConstraintViolationException $formViolations) {
-            throw new ForwardException('frontend.account.edit-order.page', ['orderId' => $orderEntity->getId()], ['formViolations' => $formViolations], $formViolations);
+        } catch (ConstraintViolationException $constraintViolationException) {
+            throw new ForwardException('frontend.account.edit-order.page', ['orderId' => $orderEntity->getId()], ['formViolations' => $constraintViolationException], $constraintViolationException);
         }
 
         $this->eventDispatcher->dispatch(new PaymentUpdateRequestBagValidatedEvent(
@@ -180,7 +184,7 @@ class AccountSubscriber implements EventSubscriberInterface
         // we register an payment-failed-subscriber to throw a forward-exception during the payment-complete in the update-payment process.
         // the listener must have a very low priority to make sure that all other event-subscriber can process
         $orderTransactionStateHandler = $this->orderTransactionStateHandler;
-        $this->eventDispatcher->addListener(PaymentFailedEvent::class, static function (PaymentFailedEvent $event) use ($orderTransactionStateHandler) {
+        $this->eventDispatcher->addListener(PaymentFailedEvent::class, static function (PaymentFailedEvent $event) use ($orderTransactionStateHandler): void {
             // set the transaction to failed. Without this, the customer will not be able to try a repayment.
             // NOTE: this is not required during the validation or the PaymentQuery, cause in this state,
             // the transaction is not set as "open". Only after the PaymentHandler got called
@@ -188,11 +192,11 @@ class AccountSubscriber implements EventSubscriberInterface
 
             // determine the correct error message for the customer.
             $message = $event->getException()->getMessage();
-            if ($response = $event->getResponse()) {
+            if (($response = $event->getResponse()) !== null) {
                 $message = $response->getCustomerMessage();
                 $message = $message ?: $response->getReasonMessage();
             }
             throw new ForwardException('frontend.account.edit-order.page', ['orderId' => $event->getOrder()->getId()], ['ratepay-errors' => [$message]], $event->getException());
-        }, -9999999);
+        }, -9_999_999);
     }
 }

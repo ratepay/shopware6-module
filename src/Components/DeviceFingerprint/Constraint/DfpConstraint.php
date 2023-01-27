@@ -10,6 +10,9 @@ use Symfony\Component\Validator\Constraint;
 class DfpConstraint extends Constraint
 {
 
+    /**
+     * @var string
+     */
     public const ERROR_CODE = 'd8afee2c-7ad7-44e2-aec8-3d8d6a2eadb9';
 
     protected static $errorNames = [

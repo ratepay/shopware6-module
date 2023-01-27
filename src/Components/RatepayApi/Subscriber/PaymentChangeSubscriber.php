@@ -106,6 +106,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
                     // will occur if the item has been just added to the order
                     $ratepayData = $this->extensionService->createLineItemExtensionEntities([$lineItem], $event->getContext())->first();
                 }
+
                 $position = $ratepayData->getPosition();
 
                 $productName = $lineItem->getLabel();
@@ -127,7 +128,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
             );
         }
 
-        if (count($positionUpdates)) {
+        if ($positionUpdates !== []) {
             $this->ratepayPositionRepository->upsert($positionUpdates, $event->getContext());
         }
 
@@ -150,6 +151,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
             $this->recalculationService->addCustomLineItem($requestData->getOrder()->getId(), $item, $versionContext);
             $newItems[$item->getId()] = $item->getPriceDefinition()->getQuantity();
         }
+
         // recalculate the whole order. (without this, shipping costs will added to the order if there is a shipping free position - RATESWSX-71)
         $this->recalculationService->recalculateOrder($requestData->getOrder()->getId(), $versionContext);
         // merge the order with the SYSTEM_SCOPE, cause the recalculateOrder locked the order with this scope.
@@ -198,7 +200,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         $data = [];
         /** @var OrderLineItemEntity $item */
         foreach ($lineItems as $item) {
-            if ($item->getProduct()) {
+            if ($item->getProduct() !== null) {
                 // verify if the product still exists
                 $data[] = [
                     'id' => $item->getProduct()->getId(),
@@ -206,20 +208,22 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
                 ];
             }
         }
-        if (count($data) === 0) {
+
+        if ($data === []) {
             // nothing to do
             return;
         }
+
         try {
             $this->productRepository->update($data, $context);
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             // todo trigger event
             $this->logger->error('Error during the updating of the stock', [
-                'message' => $e->getMessage(),
+                'message' => $exception->getMessage(),
                 'orderId' => $requestData->getOrder()->getId(),
                 'orderNumber' => $requestData->getOrder()->getOrderNumber(),
                 'items' => $requestData->getItems(),
-                'trace' => $e->getTraceAsString(),
+                'trace' => $exception->getTraceAsString(),
             ]);
         }
     }

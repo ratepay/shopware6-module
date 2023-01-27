@@ -18,10 +18,6 @@ class ProfileByOrderEntity implements ProfileSearchInterface
         $this->searchService = $searchService;
     }
 
-    /**
-     * @param OrderEntity $order
-     * @return array<ProfileConfigEntity>|ProfileConfigEntity|null
-     */
     public function createSearchObject(OrderEntity $order): ProfileConfigSearch
     {
         $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());

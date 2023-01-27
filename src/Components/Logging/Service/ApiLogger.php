@@ -57,7 +57,10 @@ class ApiLogger
             $additionalData['transactionId'] = (string)$responseXmlElement->head->{'transaction-id'};
         }
 
-        if (isset($responseXmlElement->content->payment->descriptor)) {
+        if (property_exists($responseXmlElement->content, 'payment') &&
+            property_exists($responseXmlElement->content->payment, 'descriptor') &&
+            $responseXmlElement->content->payment->descriptor !== null
+        ) {
             $additionalData['descriptor'] = (string)$responseXmlElement->content->payment->descriptor;
         }
 
@@ -72,7 +75,7 @@ class ApiLogger
 
             $ratepayData = $order->getExtension(OrderExtension::EXTENSION_NAME);
             if ($ratepayData instanceof RatepayOrderDataEntity) {
-                $additionalData['descriptor'] = $additionalData['descriptor'] ?? $ratepayData->getDescriptor();
+                $additionalData['descriptor'] ??= $ratepayData->getDescriptor();
             }
         }
 
@@ -83,7 +86,7 @@ class ApiLogger
 
         // remove sensitive data
         foreach (['securitycode', 'owner', 'iban'] as $key) {
-            $requestXml = preg_replace("/<$key>(.*)<\/$key>/", "<$key>xxxxxxxx</$key>", $requestXml);
+            $requestXml = preg_replace(sprintf('/<%s>(.*)<\/%s>/', $key, $key), sprintf('<%s>xxxxxxxx</%s>', $key, $key), $requestXml);
         }
 
         $reasonNode = $requestBuilder->getResponseXmlElement()->head->processing->reason;

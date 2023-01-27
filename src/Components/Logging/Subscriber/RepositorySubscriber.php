@@ -19,7 +19,7 @@ class RepositorySubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function addDefaultSortingForLogs(EntitySearchedEvent $event)
+    public function addDefaultSortingForLogs(EntitySearchedEvent $event): void
     {
         if ($event->getDefinition()->getEntityName() !== ApiRequestLogDefinition::ENTITY_NAME) {
             return;

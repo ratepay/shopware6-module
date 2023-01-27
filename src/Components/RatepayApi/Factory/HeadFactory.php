@@ -9,6 +9,10 @@
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 
+use RatePAY\Model\Request\SubModel\Head\Meta;
+use RatePAY\Model\Request\SubModel\Head\Meta\Systems;
+use RatePAY\Model\Request\SubModel\Head\Meta\Systems\System;
+use RatePAY\Model\Request\SubModel\Head\Credential;
 use RatePAY\Model\Request\SubModel\Head;
 use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
@@ -36,24 +40,24 @@ class HeadFactory extends AbstractFactory
         $this->pluginVersion = $pluginVersion;
     }
 
-    public function _getData(AbstractRequestData $requestData): ?object
+    protected function _getData(AbstractRequestData $requestData): ?object
     {
         $head = new Head();
         $head
-            ->setSystemId(isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : 'cli/cronjob/api')
+            ->setSystemId($_SERVER['SERVER_ADDR'] ?? 'cli/cronjob/api')
             ->setMeta(
-                (new Head\Meta())
+                (new Meta())
                     ->setSystems(
-                        (new Head\Meta\Systems())
+                        (new Systems())
                             ->setSystem(
-                                (new Head\Meta\Systems\System())
+                                (new System())
                                     ->setName('Shopware')
                                     ->setVersion($this->shopwareVersion . '_' . $this->pluginVersion)
                             )
                     )
             )
             ->setCredential(
-                (new Head\Credential())
+                (new Credential())
                     ->setProfileId($requestData->getProfileConfig()->getProfileId())
                     ->setSecuritycode($requestData->getProfileConfig()->getSecurityCode())
             );
