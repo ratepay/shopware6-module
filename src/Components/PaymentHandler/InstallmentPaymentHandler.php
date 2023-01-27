@@ -9,8 +9,8 @@
 
 namespace Ratepay\RpayPayments\Components\PaymentHandler;
 
+use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataValidationDefinition;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints\Choice;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -20,9 +20,9 @@ class InstallmentPaymentHandler extends AbstractPaymentHandler
 
     public const RATEPAY_METHOD = 'INSTALLMENT';
 
-    public function getValidationDefinitions(Request $request, $baseData): array
+    public function getValidationDefinitions(DataBag $requestDataBag, $baseData): array
     {
-        $validations = parent::getValidationDefinitions($request, $baseData);
+        $validations = parent::getValidationDefinitions($requestDataBag, $baseData);
 
         $installment = new DataValidationDefinition();
         $installment->add('type',
@@ -41,11 +41,11 @@ class InstallmentPaymentHandler extends AbstractPaymentHandler
             new Choice(['choices' => ['DIRECT-DEBIT', 'BANK-TRANSFER']])
         );
 
-        $ratepayData = $request->get('ratepay');
-        if (isset($ratepayData['installment']['paymentType']) &&
-            $ratepayData['installment']['paymentType'] === 'DIRECT-DEBIT'
-        ) {
-            $validations = array_merge($validations, $this->getDebitConstraints($request, $baseData));
+        /** @var DataBag $ratepayData */
+        $ratepayData = $requestDataBag->get('ratepay');
+        $installmentData = $ratepayData->get('installment');
+        if ($installmentData->get('paymentType') && $installmentData->get('paymentType') === 'DIRECT-DEBIT') {
+            $validations = array_merge($validations, $this->getDebitConstraints($requestDataBag, $baseData));
         }
 
         $validations['installment'] = $installment;

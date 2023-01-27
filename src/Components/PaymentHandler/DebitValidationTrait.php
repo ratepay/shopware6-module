@@ -16,6 +16,8 @@ use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\Iban;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\IbanNotBlank;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\SepaConfirmNotBlank;
 use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Framework\Validation\DataBag\DataBag;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\Framework\Validation\DataValidationDefinition;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +27,7 @@ trait DebitValidationTrait
     /**
      * @param OrderEntity|SalesChannelContext $baseData
      */
-    public function getDebitConstraints(Request $request, $baseData): array
+    public function getDebitConstraints(DataBag $requestDataBag, $baseData): array
     {
         $bankData = new DataValidationDefinition();
         $bankData->add('accountHolder', new BankAccountHolderNotBlank(), new BankAccountHolderChoice(

@@ -158,10 +158,10 @@ class AccountSubscriber implements EventSubscriberInterface
         // got caught in the `RedirectException` component and will be rewritten into forward.
 
         // we must validate the ratepay data on our own. to prevent errors with other extensions, we will only validate ratepay-data.
-        $validationDefinitions = $paymentHandler->getValidationDefinitions($event->getStorefrontRequest(), $orderEntity);
         $requestData = new DataBag($event->getStorefrontRequest()->request->all());
         $ratepayData = $requestData->get('ratepay');
 
+        $validationDefinitions = $paymentHandler->getValidationDefinitions($requestData, $orderEntity);
         $definition = new DataValidationDefinition();
         $definition->addSub('ratepay', DataValidationHelper::addSubConstraints(new DataValidationDefinition(), $validationDefinitions));
         try {

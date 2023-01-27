@@ -59,7 +59,7 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
             /** @var $paymentHandler AbstractPaymentHandler */
             $paymentHandler = $this->paymentHandlerRegistry->getHandler($paymentHandlerIdentifier);
 
-            $validationDefinitions = $paymentHandler->getValidationDefinitions($request, $salesChannelContext);
+            $validationDefinitions = $paymentHandler->getValidationDefinitions(new RequestDataBag($request->request->all()), $salesChannelContext);
 
             $definitions = new DataValidationDefinition();
             DataValidationHelper::addSubConstraints($definitions, $validationDefinitions);

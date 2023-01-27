@@ -36,7 +36,6 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterface
@@ -70,8 +69,9 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
 
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
-        /** @var ParameterBag $ratepayData */
-        $ratepayData = $dataBag->get('ratepay', new ParameterBag([]));
+        $dataBag = $dataBag->get('paymentDetails', $dataBag); // data from pwa
+        /** @var DataBag $ratepayData */
+        $ratepayData = $dataBag->get('ratepay', new DataBag([]));
 
         $order = $this->getOrderWithAssociations($transaction->getOrder(), $salesChannelContext->getContext());
 
@@ -138,7 +138,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
     /**
      * @param OrderEntity|SalesChannelContext $baseData
      */
-    public function getValidationDefinitions(Request $request, $baseData): array
+    public function getValidationDefinitions(DataBag $requestDataBag, $baseData): array
     {
         $validations = [
             'transactionId' => [
@@ -146,7 +146,8 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
             ],
         ];
 
-        $ratepayData = $request->get('ratepay');
+        /** @var DataBag $ratepayData */
+        $ratepayData = $requestDataBag->get('ratepay');
 
         if ($baseData instanceof SalesChannelContext) {
             $birthday = $baseData->getCustomer()->getBirthday();
@@ -158,7 +159,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
             throw new InvalidArgumentException('please provide a ' . SalesChannelContext::class . ' or an ' . OrderEntity::class . '. You provided a ' . get_class($baseData) . ' object');
         }
 
-        if (isset($ratepayData['birthday']) || ($birthday === null && $isCompany === false)) {
+        if ($ratepayData->get('birthday') || ($birthday === null && $isCompany === false)) {
             $validations['birthday'] = [
                 new BirthdayNotBlank(),
                 new Birthday(['message' => self::ERROR_SNIPPET_VIOLATION_PREFIX . Birthday::ERROR_NAME]),
