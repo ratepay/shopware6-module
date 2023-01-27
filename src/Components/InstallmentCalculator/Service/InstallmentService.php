@@ -24,6 +24,7 @@ use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodInsta
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileByOrderEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileSearchService;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileBySalesChannelContext;
+use Ratepay\RpayPayments\Components\RatepayApi\Exception\TransactionIdFetchFailedException;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService;
 use Ratepay\RpayPayments\Util\PaymentFirstday;
 use RatePAY\Service\LanguageService;
@@ -339,7 +340,13 @@ class InstallmentService
         return $this->_translationCache[$langId];
     }
 
-    public function getInstallmentPlanTwigVars(InstallmentCalculatorContext $context)
+    /**
+     * @return array{translations: array, plan: array, transactionId: string}
+     * @throws ProfileNotFoundException
+     * @throws RequestException
+     * @throws TransactionIdFetchFailedException
+     */
+    public function getInstallmentPlanTwigVars(InstallmentCalculatorContext $context): array
     {
         $installmentPlan = $this->getInstallmentPlanData($context);
 
