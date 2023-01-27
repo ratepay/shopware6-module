@@ -11,54 +11,44 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Subscriber;
 
-use RatePAY\Model\Response\PaymentQuery;
-use Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Dto\PaymentQueryData;
-use Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Service\Request\PaymentQueryService;
-use Ratepay\RpayPayments\Components\PaymentHandler\AbstractPaymentHandler;
-use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
-use Ratepay\RpayPayments\Exception\RatepayException;
+use Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Service\PaymentQueryValidatorService;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Framework\Validation\BuildValidationEvent;
+use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\Framework\Validation\DataValidationDefinition;
 use Shopware\Core\Framework\Validation\DataValidator;
-use Shopware\Core\Framework\Validation\Exception\ConstraintViolationException;
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Validator\ConstraintViolation;
-use Symfony\Component\Validator\ConstraintViolationList;
 
 class CheckoutValidationSubscriber implements EventSubscriberInterface
 {
-    public const CODE_METHOD_NOT_AVAILABLE = 'RP_METHOD_NOT_AVAILABLE';
+    /**
+     * @decrecated use PaymentQueryValidatorService::CODE_METHOD_NOT_AVAILABLE
+     */
+    public const CODE_METHOD_NOT_AVAILABLE = PaymentQueryValidatorService::CODE_METHOD_NOT_AVAILABLE;
 
     private RequestStack $requestStack;
-
-    private PaymentQueryService $paymentQueryService;
 
     private CartService $cartService;
 
     private DataValidator $dataValidator;
-    /**
-     * @var \Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService
-     */
-    private ConfigService $configService;
+
+    private PaymentQueryValidatorService $validatorService;
 
     public function __construct(
         RequestStack $requestStack,
         DataValidator $dataValidator,
         CartService $cartService,
-        PaymentQueryService $paymentQueryService,
-        ConfigService $configService
-    ) {
+        PaymentQueryValidatorService $validatorService
+    )
+    {
         $this->requestStack = $requestStack;
-        $this->paymentQueryService = $paymentQueryService;
         $this->cartService = $cartService;
         $this->dataValidator = $dataValidator;
-        $this->configService = $configService;
+        $this->validatorService = $validatorService;
     }
 
     public static function getSubscribedEvents(): array
@@ -87,61 +77,17 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
             $definition->addSub('ratepay', $event->getDefinition()->getSubDefinitions()['ratepay']);
             $this->dataValidator->validate(['ratepay' => $request->request->get('ratepay')], $definition);
 
-            try {
-                $requestBuilder = $this->paymentQueryService->doRequest(new PaymentQueryData(
-                    $context,
-                    $this->cartService->getCart($context->getToken(), $context),
-                    new RequestDataBag($request->request->all()),
-                    $request->request->get('ratepay')['transactionId'],
-                    $this->configService->isSendDiscountsAsCartItem(),
-                    $this->configService->isSendShippingCostsAsCartItem()
-                ));
-            } catch (RatepayException $e) {
-                $this->throwException(
-                    $context,
-                    $request,
-//                    AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . self::CODE_METHOD_NOT_AVAILABLE
-                    $e->getMessage()
-                );
-            }
-
-            $response = isset($requestBuilder) ? $requestBuilder->getResponse() : null;
-            if ($response instanceof PaymentQuery && $response->getStatusCode() === 'OK') {
-                if (!in_array($paymentHandlerIdentifier::RATEPAY_METHOD, $response->getAdmittedPaymentMethods(), true)) {
-                    $this->throwException(
-                        $context,
-                        $request,
-                        AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . self::CODE_METHOD_NOT_AVAILABLE
-                    );
-                }
-            } else {
-                $this->throwException(
-                    $context,
-                    $request,
-                    $response->getReasonMessage()
-                );
-            }
+            $this->validatorService->validate(
+                $this->cartService->getCart($context->getToken(), $context),
+                $context,
+                $request->request->get('ratepay')['transactionId'],
+                new DataBag($request->request->all())
+            );
         }
     }
 
     private function getContextFromRequest($request): SalesChannelContext
     {
         return $request->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_CONTEXT_OBJECT);
-    }
-
-    private function throwException(SalesChannelContext $context, Request $request, string $code): void
-    {
-        $violation = new ConstraintViolation(
-            '',
-            '',
-            [],
-            null,
-            '/ratepay',
-            $context->getPaymentMethod()->getName(),
-            null,
-            $code
-        );
-
-        throw new ConstraintViolationException(new ConstraintViolationList([$violation]), $request->request->all());
     }
 }
