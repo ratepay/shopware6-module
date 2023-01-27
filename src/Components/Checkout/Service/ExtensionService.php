@@ -19,6 +19,7 @@ use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayPositionEntity;
 use Ratepay\RpayPayments\Components\Checkout\Util\BankAccountHolderHelper;
+use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileByOrderEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileBySalesChannelContext;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
@@ -167,7 +168,7 @@ class ExtensionService
 
         if ($profileConfig === null) {
             // should never occur
-            return null;
+            throw new ProfileNotFoundException();
         }
 
         $customer = $salesChannelContext->getCustomer();
@@ -183,7 +184,6 @@ class ExtensionService
                 $accountHolders = BankAccountHolderHelper::getAvailableNames($salesChannelContext);
             }
         }
-
 
         $extension = new ArrayStruct();
         $extension->offsetSet('isSandbox', $profileConfig->isSandbox());
