@@ -15,6 +15,7 @@ use Ratepay\RpayPayments\Components\PaymentHandler\AbstractPaymentHandler;
 use Ratepay\RpayPayments\Util\DataValidationHelper;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PaymentHandlerRegistry;
 use Shopware\Core\Framework\Validation\BuildValidationEvent;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\Framework\Validation\DataValidationDefinition;
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -25,8 +26,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class CheckoutValidationSubscriber implements EventSubscriberInterface
 {
     private RequestStack $requestStack;
-
-    private ContainerInterface $container;
 
     private PaymentHandlerRegistry $paymentHandlerRegistry;
 

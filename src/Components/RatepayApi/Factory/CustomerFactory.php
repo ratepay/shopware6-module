@@ -21,6 +21,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
@@ -57,9 +58,9 @@ class CustomerFactory extends AbstractFactory
 
     protected function _getData(AbstractRequestData $requestData): ?object
     {
-        /** @var RequestDataBag $requestDataBag */
+        /** @var DataBag $requestDataBag */
         $requestDataBag = $requestData->getRequestDataBag();
-        $requestDataBag = $requestDataBag->get('ratepay', new RequestDataBag());
+        $requestDataBag = $requestDataBag->get('ratepay', new DataBag());
         $customerEntity = $this->getCustomer($requestData);
 
         /**

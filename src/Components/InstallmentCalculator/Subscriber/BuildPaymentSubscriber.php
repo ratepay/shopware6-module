@@ -25,6 +25,7 @@ use Ratepay\RpayPayments\Components\RatepayApi\Factory\PaymentFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
 use Ratepay\RpayPayments\Util\MethodHelper;
 use Ratepay\RpayPayments\Util\PaymentFirstday;
+use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -54,7 +55,7 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
             /** @var Payment $paymentObject */
             $paymentObject = $event->getBuildData();
 
-            /** @var RequestDataBag $requestedInstallment */
+            /** @var DataBag $requestedInstallment */
             $requestedInstallment = $requestData->getRequestDataBag()->get('ratepay')->get('installment');
 
             $calcContext = new InstallmentCalculatorContext(

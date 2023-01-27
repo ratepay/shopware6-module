@@ -9,15 +9,14 @@
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Dto;
 
-use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class PaymentRequestData extends OrderOperationData
 {
-    private RequestDataBag $requestDataBag;
+    private DataBag $requestDataBag;
 
     private SalesChannelContext $salesChannelContext;
 
@@ -31,7 +30,7 @@ class PaymentRequestData extends OrderOperationData
         SalesChannelContext $salesChannelContext,
         OrderEntity $order,
         OrderTransactionEntity $transaction,
-        RequestDataBag $requestDataBag,
+        DataBag $requestDataBag,
         string $ratepayTransactionId,
         bool $sendDiscountAsCartItem = false,
         bool $sendShippingCostsAsCartItem = false
@@ -63,7 +62,7 @@ class PaymentRequestData extends OrderOperationData
         return $items;
     }
 
-    public function getRequestDataBag(): RequestDataBag
+    public function getRequestDataBag(): DataBag
     {
         return $this->requestDataBag;
     }

@@ -27,6 +27,7 @@ use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PaymentHandlerRegistry;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\Framework\Validation\DataValidationDefinition;
 use Shopware\Core\Framework\Validation\DataValidator;
@@ -158,11 +159,13 @@ class AccountSubscriber implements EventSubscriberInterface
 
         // we must validate the ratepay data on our own. to prevent errors with other extensions, we will only validate ratepay-data.
         $validationDefinitions = $paymentHandler->getValidationDefinitions($event->getStorefrontRequest(), $orderEntity);
+        $requestData = new DataBag($event->getStorefrontRequest()->request->all());
+        $ratepayData = $requestData->get('ratepay');
+
         $definition = new DataValidationDefinition();
         $definition->addSub('ratepay', DataValidationHelper::addSubConstraints(new DataValidationDefinition(), $validationDefinitions));
-        $requestData = $event->getStorefrontRequest()->request->get('ratepay');
         try {
-            $this->dataValidator->validate(['ratepay' => $requestData], $definition);
+            $this->dataValidator->validate(['ratepay' => $ratepayData->all()], $definition);
         } catch (ConstraintViolationException $formViolations) {
             throw new ForwardException('frontend.account.edit-order.page', ['orderId' => $orderEntity->getId()], ['formViolations' => $formViolations], $formViolations);
         }
@@ -170,7 +173,7 @@ class AccountSubscriber implements EventSubscriberInterface
         $this->eventDispatcher->dispatch(new PaymentUpdateRequestBagValidatedEvent(
             $orderEntity,
             $paymentHandler,
-            new RequestDataBag(['ratepay' => $requestData]),
+            new RequestDataBag(['ratepay' => $ratepayData]),
             $event->getSalesChannelContext()
         ));
 
