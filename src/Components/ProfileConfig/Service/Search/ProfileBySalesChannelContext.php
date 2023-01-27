@@ -13,11 +13,11 @@ class ProfileBySalesChannelContext implements ProfileSearchInterface
 {
 
     private CartService $cartService;
-    private ProfileSearchService $searchService;
+    private ProfileBySalesChannelContextAndCart $searchService;
 
     public function __construct(
         CartService $cartService,
-        ProfileSearchService $searchService
+        ProfileBySalesChannelContextAndCart $searchService
     )
     {
         $this->cartService = $cartService;
@@ -30,24 +30,9 @@ class ProfileBySalesChannelContext implements ProfileSearchInterface
      */
     public function createSearchObject(SalesChannelContext $salesChannelContext): ?ProfileConfigSearch
     {
-        if (($customer = $salesChannelContext->getCustomer()) === null ||
-            ($billingAddress = $customer->getActiveBillingAddress()) === null ||
-            ($shippingAddress = $customer->getActiveShippingAddress()) === null
-        ) {
-            return null;
-        }
-
         $cart = $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext);
 
-        return (new ProfileConfigSearch())
-            ->setPaymentMethodId($salesChannelContext->getPaymentMethod()->getId())
-            ->setBillingCountryCode($billingAddress->getCountry()->getIso())
-            ->setShippingCountryCode($shippingAddress->getCountry()->getIso())
-            ->setSalesChannelId($salesChannelContext->getSalesChannelId())
-            ->setCurrency($salesChannelContext->getCurrency()->getIsoCode())
-            ->setNeedsAllowDifferentAddress(!AddressUtil::areCustomerAddressObjectsIdentical($billingAddress, $shippingAddress))
-            ->setIsB2b(!empty($billingAddress->getCompany()))
-            ->setTotalAmount($cart->getPrice()->getTotalPrice());
+        return $this->searchService->createSearchObject($salesChannelContext, $cart);
     }
 
     public function search(ProfileConfigSearch $profileConfigSearch): EntitySearchResult

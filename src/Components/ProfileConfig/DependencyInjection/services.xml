@@ -27,6 +27,7 @@
 
         <service id="Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileByOrderEntity" />
         <service id="Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileBySalesChannelContext" />
+        <service id="Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileBySalesChannelContextAndCart" />
 
 
         <service id="Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigResponseConverter">
