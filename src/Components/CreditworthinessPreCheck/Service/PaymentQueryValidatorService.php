@@ -84,7 +84,7 @@ class PaymentQueryValidatorService
     /**
      * @return never
      */
-    private function throwException(SalesChannelContext $context, RequestDataBag $requestDataBag, string $code): void
+    private function throwException(SalesChannelContext $context, DataBag $requestDataBag, string $code): void
     {
         $violation = new ConstraintViolation(
             '',
