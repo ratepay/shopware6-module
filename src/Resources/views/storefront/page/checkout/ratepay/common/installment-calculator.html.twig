@@ -8,10 +8,6 @@
 {% set ratepay = page.extensions.ratepay %}
 
 <script type="text/javascript">
-    window.rpBankTransferAllowed = {{ ratepay.installment.calculator.rp_debitPayType.rp_paymentType_bankTransfer ? 'true'  : 'false' }};
-    window.rpBankTransferFirstday = {{ ratepay.installment.calculator.rp_debitPayType.rp_paymentType_bankTransfer_firstday ? : '0' }};
-    window.rpDirectDebitAllowed = {{ ratepay.installment.calculator.rp_debitPayType.rp_paymentType_directDebit ? 'true'  : 'false' }};
-    window.rpDirectDebitFirstday = {{ ratepay.installment.calculator.rp_debitPayType.rp_paymentType_directDebit_firstday ? : '0' }};
     {%  if activeRoute == 'frontend.account.edit-order.page' %}
         window.rpInstallmentCalculateUrl = '{{ url('ratepay.storefront.installment.calculate') }}/{{ page.order.id }}';
     {% else %}

@@ -229,6 +229,9 @@ class InstallmentService
             $data['rp_allowedMonths'] = array_merge($data['rp_allowedMonths'], $configuratorData['rp_allowedMonths']);
         }
 
+        // remove payment types. This will be added by installment plan
+        unset($data['rp_debitPayType']);
+
         $data['rp_allowedMonths'] = array_unique($data['rp_allowedMonths']);
         sort($data['rp_allowedMonths']);
 
