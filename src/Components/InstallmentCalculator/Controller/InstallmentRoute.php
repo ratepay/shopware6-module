@@ -5,6 +5,8 @@ namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Controller;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentCalculatorContext;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Struct\InstallmentCalculationResponse;
+use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
+use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundHttpException;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -47,12 +49,16 @@ class InstallmentRoute
             }
         }
 
-        $calcContext = (new InstallmentCalculatorContext($salesChannelContext, $type, $value))
-            ->setPaymentMethodId($salesChannelContext->getPaymentMethod()->getId())
-            ->setOrder($order ?? null);
+        try {
+            $calcContext = (new InstallmentCalculatorContext($salesChannelContext, $type, $value))
+                ->setPaymentMethodId($salesChannelContext->getPaymentMethod()->getId())
+                ->setOrder($order ?? null);
 
-        $vars = $this->installmentService->getInstallmentPlanTwigVars($calcContext);
+            $vars = $this->installmentService->getInstallmentPlanTwigVars($calcContext);
 
-        return new InstallmentCalculationResponse($vars);
+            return new InstallmentCalculationResponse($vars);
+        } catch (ProfileNotFoundException $profileNotFoundException) {
+            throw new ProfileNotFoundHttpException();
+        }
     }
 }
