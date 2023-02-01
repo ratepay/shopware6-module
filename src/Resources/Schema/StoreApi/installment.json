@@ -1,0 +1,191 @@
+{
+    "openapi": "3.0.0",
+    "info": {},
+    "paths": {
+        "/ratepay/installment/calculate/{orderId}": {
+            "get": {
+                "tags": [
+                    "Ratepay"
+                ],
+                "summary": "Calculates the installment plan for current cart or order",
+                "operationId": "ratepayCalculateInstallmentPlan",
+                "parameters": [
+                    {
+                        "name": "orderId",
+                        "in": "path",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^[0-9a-f]{32}$"
+                        },
+                        "description": "Provide a order-id to calculate the plan based on the order instead of the current cart."
+                    },
+                    {
+                        "name": "type",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "rate",
+                                "time"
+                            ]
+                        },
+                        "description": "Provide the type of calculation. <br>Use `time` to calculate the installment based on a specific time. The installment plan will exactly match this runtime.<br>Use `rate` to calculate the installment based of a specific monthly interest. The calculator will find the nearest matching monthly rate for the provided rate."
+                    },
+                    {
+                        "name": "value",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "description": "Provide the value for the calculation. Please see parameter `type` for more details."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the installment plan and transaction details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RatepayInstallmentResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "RatepayInstallmentCalculationType": {
+                "type": "string",
+                "description": "Provide the type of calculation. <br>Use `time` to calculate the installment based on a specific time. The installment plan will exactly match this runtime.<br>Use `rate` to calculate the installment based of a specific monthly interest. The calculator will find the nearest matching monthly rate for the provided rate.",
+                "required": true,
+                "enum": ["time", "rate"]
+            },
+            "RatepayInstallmentCalculationValue": {
+                "type": "number",
+                "description": "Provide the value for the calculation. Please see parameter `type` for more details.",
+                "required": true,
+                "minimum": 1
+            },
+            "RatepayInstallmentResponse": {
+                "type": "object",
+                "properties": {
+                    "translations": {
+                        "$ref": "#/components/schemas/RatepayInstallmentCalculatorTranslations"
+                    },
+                    "plan": {
+                        "$ref": "#/components/schemas/RatepayInstallmentPlan"
+                    },
+                    "transactionId": {
+                        "$ref": "#/components/schemas/RatepayTransactionId"
+                    }
+                }
+            },
+            "RatepayInstallmentPlan": {
+                "type": "object",
+                "properties": {
+                    "totalAmount": {
+                        "type": "number",
+                        "description": "Total amount to be paid by the shopper, calculated by the shopping cart amount, contract signing fee and interest amount."
+                    },
+                    "amount": {
+                        "type": "number",
+                        "description": "Sum of all products in the basket including shipping."
+                    },
+                    "interestRate": {
+                        "type": "number",
+                        "description": "Interest-rate which will be used to calculate the annual percentage rate"
+                    },
+                    "interestAmount": {
+                        "type": "number",
+                        "description": "Sum of money resulting from the interest rate."
+                    },
+                    "serviceCharge": {
+                        "type": "number",
+                        "description": "Additional costs of financing"
+                    },
+                    "annualPercentageRate": {
+                        "type": "number",
+                        "description": "Interest-rate based on service-charge and interest-rate"
+                    },
+                    "monthlyDebitInterest": {
+                        "type": "number",
+                        "description": "Monthly interest rates based on annual-percentage-rate"
+                    },
+                    "numberOfRatesFull": {
+                        "type": "integer",
+                        "deprecated": true
+                    },
+                    "numberOfRates": {
+                        "type": "integer",
+                        "description": "Number of months; duration of the instalment plan"
+                    },
+                    "rate": {
+                        "type": "number",
+                        "description": "Monthly rate to be paid by the customer"
+                    },
+                    "lastRate": {
+                        "type": "number",
+                        "description": "Last monthly rate to be paid by the customer"
+                    },
+                    "paymentFirstday": {
+                        "type": "number",
+                        "description": "Calendar day of the first payment",
+                        "enum": [
+                            2,
+                            28
+                        ]
+                    },
+                    "responseText": {
+                        "type": "string",
+                        "description": "Short text about the calculation result."
+                    },
+                    "hash": {
+                        "type": "string",
+                        "description": "This hash got calculated based on the installment plan to easily compare in during validations and place-order.<br>You have to submit this value during the payment process."
+                    },
+                    "payment": {
+                        "type": "object",
+                        "properties": {
+                            "bankTransferAllowed": {
+                                "type": "boolean",
+                                "description": "`true` if the bank-transfer payment is allowed with this installment-plan"
+                            },
+                            "directDebitAllowed": {
+                                "type": "boolean",
+                                "description": "`true` if the bank-transfer payment is allowed with this installment-plan"
+                            },
+                            "default": {
+                                "type": "string",
+                                "enum": [
+                                    "DIRECT-DEBIT",
+                                    "BANK-TRANSFER"
+                                ],
+                                "description": "Default payment method for this installment-plan."
+                            }
+                        }
+                    }
+                }
+            },
+            "RatepayInstallmentCalculatorTranslations": {
+                "type": "object",
+                "description": "a list of translation, which you can use for the frontend. Does not contain data related for the plan. Currently only the languages EN and DE are supported. <br>The translations got provided by the php-sdk of Ratepay. So the values may change in the future."
+            },
+            "RatepayTransactionId": {
+                "type": "string",
+                "description": "Ratepay Transaction ID for the payment. You have to submit this value during the payment process",
+                "required": true
+            }
+        }
+    }
+}
