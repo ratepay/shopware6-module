@@ -4,7 +4,7 @@
 | Module             | Ratepay Payment Plugin for Shopware 6             |
 |--------------------|---------------------------------------------------|
 | Author             | Interlutions GmbH                                 |
-| Shop Version       | `6.3.0.2 to 6.4.13.x`                             |
+| Shop Version       | `6.3.0.2 to 6.4.18.x`                             |
 | Link               | http://www.ratepay.com                            |
 | Mail               | integration@ratepay.com                           |
 | Full Documentation | https://ratepay.gitbook.io/shopware6/             |
@@ -33,6 +33,10 @@
 3. Choose Installation and after this activate the module
 
 ## Changelog
+
+### Version 4.2.1 - Released 2023-02-02
+
+* RATESWSX-261 - fixed: reloading profile-config (compatibility > 6.4.14.0)
 
 ### Version 4.2.0 - Released 2022-07-21
 

@@ -71,7 +71,7 @@ class ProfileConfigMethodDefinition extends EntityDefinition
                 PaymentMethodDefinition::class,
                 'id',
                 false
-            ))->addFlags(new CascadeDelete()),
+            ))->addFlags(/*new CascadeDelete()*/),
 
             (new FkField(
                 'payment_method_id',
