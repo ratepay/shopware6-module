@@ -37,6 +37,7 @@
 ### Unreleased
 
 * RATESWSX-279: remove ratepay data for updated non-Ratepay-payment-method (e.g. if Ratepay-payment failed)
+* RATESWSX-270: debit/credit: add input validation
 
 ### Version 5.0.0 - Released on 2023-05-11
 

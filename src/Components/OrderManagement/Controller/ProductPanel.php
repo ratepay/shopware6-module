@@ -30,10 +30,16 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Routing\Exception\InvalidRequestParameterException;
+use Shopware\Core\Framework\Validation\DataValidationDefinition;
+use Shopware\Core\Framework\Validation\DataValidator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\AtLeastOneOf;
+use Symfony\Component\Validator\Constraints\GreaterThan;
+use Symfony\Component\Validator\Constraints\LessThan;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * @Route("/api/ratepay/order-management", defaults={"_routeScope"={"administration"}})
@@ -51,13 +57,16 @@ class ProductPanel extends AbstractController
 
     private LineItemFactory $lineItemFactory;
 
+    private DataValidator $dataValidator;
+
     public function __construct(
         EntityRepository $orderRepository,
         PaymentDeliverService $paymentDeliverService,
         PaymentReturnService $paymentReturnService,
         PaymentCancelService $paymentCancelService,
         PaymentCreditService $creditService,
-        LineItemFactory $lineItemFactory
+        LineItemFactory $lineItemFactory,
+        DataValidator $dataValidator
     ) {
         $this->orderRepository = $orderRepository;
         $this->creditService = $creditService;
@@ -68,6 +77,7 @@ class ProductPanel extends AbstractController
             OrderOperationData::OPERATION_RETURN => $paymentReturnService,
         ];
         $this->lineItemFactory = $lineItemFactory;
+        $this->dataValidator = $dataValidator;
     }
 
     /**
@@ -152,20 +162,27 @@ class ProductPanel extends AbstractController
      */
     public function addItem(string $orderId, Request $request, Context $context): JsonResponse
     {
-        $name = (string) $request->request->get('name');
-        $grossAmount = (float) (string) $request->request->get('grossAmount');
-        $taxRuleId = (string) $request->request->get('taxId');
-
         $order = $this->fetchOrder($context, $orderId);
 
         if (!$order instanceof OrderEntity) {
-            return $this->json([
-                'success' => false,
-                'message' => 'Order was not found',
-            ], 200);
+            throw $this->createNotFoundException('Order was not found');
         }
 
-        $lineItem = $this->lineItemFactory->createLineItem($order, $name, $grossAmount, $taxRuleId, $context);
+        // validate provided data
+        $definition = new DataValidationDefinition();
+        $definition->add('name', new NotBlank());
+        $definition->add('grossAmount', new NotBlank(), new AtLeastOneOf([new GreaterThan(0), new LessThan(0)]));
+        $definition->add('taxId', new NotBlank());
+
+        $this->dataValidator->validate($request->request->all(), $definition);
+
+        $lineItem = $this->lineItemFactory->createLineItem(
+            $order,
+            $request->request->get('name'),
+            $request->request->get('grossAmount'),
+            $request->request->get('taxId'),
+            $context
+        );
         $response = $this->creditService->doRequest(new AddCreditData($context, $order, [$lineItem]));
         if ($response->getResponse()->isSuccessful()) {
             return $this->json([

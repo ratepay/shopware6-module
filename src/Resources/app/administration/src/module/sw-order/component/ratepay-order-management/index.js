@@ -338,7 +338,7 @@ Component.register('ratepay-order-management', {
                             message = this.$tc('ratepay.errors.' + error.code)
                         }
                         this.createNotificationError({
-                            title: this.$tc('ratepay.orderManagement.messages.failedTitle'),
+                            title: error.title ?? this.$tc('ratepay.orderManagement.messages.failedTitle'),
                             message: message
                         });
                     });
