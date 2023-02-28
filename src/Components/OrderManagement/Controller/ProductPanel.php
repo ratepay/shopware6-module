@@ -23,7 +23,6 @@ use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentCreditServ
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentDeliverService;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentReturnService;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
-use Shopware\Core\Checkout\Cart\Order\OrderConverter;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -47,12 +46,9 @@ class ProductPanel extends AbstractController
      */
     private array $requestServicesByOperation = [];
 
-    private OrderConverter $orderConverter;
-
     private LineItemFactory $lineItemFactory;
 
     public function __construct(
-        OrderConverter $orderConverter,
         EntityRepository $orderRepository,
         PaymentDeliverService $paymentDeliverService,
         PaymentReturnService $paymentReturnService,
@@ -60,7 +56,6 @@ class ProductPanel extends AbstractController
         PaymentCreditService $creditService,
         LineItemFactory $lineItemFactory
     ) {
-        $this->orderConverter = $orderConverter;
         $this->orderRepository = $orderRepository;
         $this->creditService = $creditService;
 
