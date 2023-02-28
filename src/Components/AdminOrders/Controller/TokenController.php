@@ -16,7 +16,6 @@ use Ratepay\RpayPayments\Components\AdminOrders\Model\RatepayAdminOrderTokenEnti
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\Aggregate\SalesChannelDomain\SalesChannelDomainEntity;
 use Shopware\Storefront\Framework\Routing\Router;
@@ -27,8 +26,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
- * @RouteScope(scopes={"administration"})
- * @Route("/api/ratepay/admin-order")
+ * @Route("/api/ratepay/admin-order", defaults={"_routeScope"={"administration"}})
  */
 class TokenController extends AbstractController
 {

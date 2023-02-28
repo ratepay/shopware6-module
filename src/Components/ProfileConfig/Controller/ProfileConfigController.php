@@ -12,14 +12,13 @@ namespace Ratepay\RpayPayments\Components\ProfileConfig\Controller;
 use Exception;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigManagement;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/api/ratepay/profile-configuration")
+ * @Route("/api/ratepay/profile-configuration", defaults={"_routeScope"={"administration"}})
  */
 class ProfileConfigController extends AbstractController
 {
@@ -31,7 +30,6 @@ class ProfileConfigController extends AbstractController
     }
 
     /**
-     * @RouteScope(scopes={"administration"})
      * @Route("/reload-config/", name="ratepay.profile.config.reload", methods={"POST"})
      */
     public function reloadProfileConfiguration(Request $request): JsonResponse

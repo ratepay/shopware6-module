@@ -10,8 +10,6 @@
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Controller;
 
 use Ratepay\RpayPayments\Components\Checkout\Util\BankAccountHolderHelper;
-use Shopware\Core\Framework\Routing\Annotation\LoginRequired;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,8 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route(path="/ratepay/installment")
- * @RouteScope(scopes={"storefront"})
+ * @Route(path="/ratepay/installment", defaults={"_routeScope"={"storefront"}})
  */
 class InstallmentController extends StorefrontController
 {
@@ -32,8 +29,7 @@ class InstallmentController extends StorefrontController
     }
 
     /**
-     * @LoginRequired(allowGuest=true)
-     * @Route(path="/calculate/{orderId}", methods={"GET"}, name="ratepay.storefront.installment.calculate", defaults={"XmlHttpRequest"=true})
+     * @Route(path="/calculate/{orderId}", methods={"GET"}, name="ratepay.storefront.installment.calculate", defaults={"XmlHttpRequest"=true, "_loginRequired"=true, "_loginRequiredAllowGuest"=true})
      */
     public function calculateInstallment(Request $request, SalesChannelContext $salesChannelContext, $orderId = null): Response
     {

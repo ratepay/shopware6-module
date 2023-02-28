@@ -8,14 +8,12 @@ use Ratepay\RpayPayments\Components\Logging\Model\Definition\ApiRequestLogDefini
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\AssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StorageAware;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @RouteScope(scopes={"administration"})
- * @Route("/api/ratepay")
+ * @Route("/api/ratepay", defaults={"_routeScope"={"administration"}})
  */
 class DistinctValues extends AbstractController
 {

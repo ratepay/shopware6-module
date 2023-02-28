@@ -28,14 +28,13 @@ use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/api/ratepay/order-management")
+ * @Route("/api/ratepay/order-management", defaults={"_routeScope"={"administration"}})
  */
 class ProductPanel extends AbstractController
 {
@@ -74,7 +73,6 @@ class ProductPanel extends AbstractController
     }
 
     /**
-     * @RouteScope(scopes={"administration"})
      * @Route("/load/{orderId}", name="ratepay.order_management.product_panel.load", methods={"GET"})
      */
     public function load(string $orderId, Context $context): JsonResponse
@@ -130,7 +128,6 @@ class ProductPanel extends AbstractController
     }
 
     /**
-     * @RouteScope(scopes={"administration"})
      * @Route("/deliver/{orderId}", name="ratepay.order_management.product_panel.deliver", methods={"POST"})
      */
     public function deliver(string $orderId, Request $request, Context $context): JsonResponse
@@ -174,7 +171,6 @@ class ProductPanel extends AbstractController
     }
 
     /**
-     * @RouteScope(scopes={"administration"})
      * @Route("/cancel/{orderId}", name="ratepay.order_management.product_panel.cancel", methods={"POST"})
      */
     public function cancel(string $orderId, Request $request, Context $context): JsonResponse
@@ -183,7 +179,6 @@ class ProductPanel extends AbstractController
     }
 
     /**
-     * @RouteScope(scopes={"administration"})
      * @Route("/return/{orderId}", name="ratepay.order_management.product_panel.return", methods={"POST"})
      */
     public function return(string $orderId, Request $request, Context $context): JsonResponse
@@ -192,7 +187,6 @@ class ProductPanel extends AbstractController
     }
 
     /**
-     * @RouteScope(scopes={"administration"})
      * @Route("/addItem/{orderId}", name="ratepay.order_management.product_panel.add_item", methods={"POST"})
      */
     public function addItem(string $orderId, Request $request, Context $context): JsonResponse
