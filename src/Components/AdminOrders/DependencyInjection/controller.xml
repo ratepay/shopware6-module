@@ -18,6 +18,9 @@
 
         <service id="Ratepay\RpayPayments\Components\AdminOrders\Controller\StorefrontController" >
             <argument key="$sessionKey">%ratepay.admin.storefront-login.token%</argument>
+            <call method="setContainer">
+                <argument id="service_container" type="service"/>
+            </call>
         </service>
 
     </services>
