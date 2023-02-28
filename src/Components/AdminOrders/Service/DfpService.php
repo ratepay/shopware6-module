@@ -5,21 +5,21 @@ namespace Ratepay\RpayPayments\Components\AdminOrders\Service;
 
 use Ratepay\RpayPayments\Components\DeviceFingerprint\DfpServiceInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class DfpService implements DfpServiceInterface
 {
 
     private DfpServiceInterface $decorated;
 
-    private SessionInterface $session;
-
     private string $sessionKey;
 
-    public function __construct(DfpServiceInterface $decorated, SessionInterface $session, string $sessionKey)
+    private RequestStack $requestStack;
+
+    public function __construct(DfpServiceInterface $decorated, RequestStack $requestStack, string $sessionKey)
     {
         $this->decorated = $decorated;
-        $this->session = $session;
+        $this->requestStack = $requestStack;
         $this->sessionKey = $sessionKey;
     }
 
@@ -40,7 +40,8 @@ class DfpService implements DfpServiceInterface
 
     public function isDfpRequired($object): bool
     {
-        if ($this->session->get($this->sessionKey)) {
+        $session = $this->requestStack->getMainRequest()->getSession();
+        if ($session->get($this->sessionKey)) {
             return false;
         }
 

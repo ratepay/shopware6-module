@@ -24,7 +24,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -34,20 +33,16 @@ class StorefrontController extends AbstractController
 {
     private EntityRepository $tokenRepository;
 
-    private SessionInterface $session;
-
     private string $sessionKey;
 
     private Translator $translator;
 
     public function __construct(
         EntityRepository $tokenRepository,
-        SessionInterface $session,
         Translator $translator,
         string $sessionKey
     ) {
         $this->tokenRepository = $tokenRepository;
-        $this->session = $session;
         $this->sessionKey = $sessionKey;
         $this->translator = $translator;
     }
@@ -82,7 +77,7 @@ class StorefrontController extends AbstractController
                 ],
             ], $context->getContext());
 
-            $this->session->set($this->sessionKey, true);
+            $request->getSession()->set($this->sessionKey, true);
         } catch (Exception $exception) {
             $this->addFlash('danger', $exception->getMessage());
         }
@@ -93,9 +88,9 @@ class StorefrontController extends AbstractController
     /**
      * @Route(path="/logout/", name="ratepay.frontend.admin-logout")
      */
-    public function logout(): RedirectResponse
+    public function logout(Request $request): RedirectResponse
     {
-        $this->session->set($this->sessionKey, false);
+        $request->getSession()->set($this->sessionKey, false);
         $this->addFlash('success', $this->translator->trans('ratepay.storefront.admin-order.session-destroyed'));
 
         return $this->redirectToRoute('frontend.home.page');

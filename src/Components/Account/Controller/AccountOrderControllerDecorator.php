@@ -19,7 +19,6 @@ use Shopware\Storefront\Controller\AccountOrderController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -44,23 +43,15 @@ class AccountOrderControllerDecorator
      */
     private RouterInterface $router;
 
-    /**
-     * @var \Symfony\Component\HttpFoundation\Session\SessionInterface
-     */
-    private SessionInterface $session;
-
-
     public function __construct(
         AccountOrderController $innerService,
         EntityRepository $orderRepository,
-        RouterInterface $router,
-        SessionInterface $session
+        RouterInterface $router
     )
     {
         $this->innerService = $innerService;
         $this->orderRepository = $orderRepository;
         $this->router = $router;
-        $this->session = $session;
     }
 
     public function updateOrder(string $orderId, Request $request, SalesChannelContext $context): Response
@@ -88,7 +79,7 @@ class AccountOrderControllerDecorator
     protected function addRatepayValidationErrors(Request $request)
     {
         foreach ($request->get('ratepay-errors', []) as $error) {
-            $this->session->getFlashBag()->add('danger', $error);
+            $request->getSession()->getFlashBag()->add('danger', $error);
         }
     }
 
