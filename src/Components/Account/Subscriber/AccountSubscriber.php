@@ -155,7 +155,7 @@ class AccountSubscriber implements EventSubscriberInterface
         }
 
         /** @var AbstractPaymentHandler $paymentHandler */
-        $paymentHandler = $this->paymentHandlerRegistry->getHandler($paymentMethod->getHandlerIdentifier());
+        $paymentHandler = $this->paymentHandlerRegistry->getPaymentMethodHandler($paymentMethod->getId());
 
         // we need to add some functionality to validate the payment data and the response from the gateway.
         // cause shopware do have the opportunity to output custom messages, we will throw an ForwardException, which

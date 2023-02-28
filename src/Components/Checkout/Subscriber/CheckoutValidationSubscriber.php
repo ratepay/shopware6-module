@@ -54,11 +54,12 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
         }
 
         $salesChannelContext = $this->getSalesContextFromRequest($request);
-        $paymentHandlerIdentifier = $salesChannelContext->getPaymentMethod()->getHandlerIdentifier();
+        $paymentMethod = $salesChannelContext->getPaymentMethod();
+        $paymentHandlerIdentifier = $paymentMethod->getHandlerIdentifier();
 
         if (strpos($paymentHandlerIdentifier, 'RpayPayments') !== false) {
             /** @var $paymentHandler AbstractPaymentHandler */
-            $paymentHandler = $this->paymentHandlerRegistry->getHandler($paymentHandlerIdentifier);
+            $paymentHandler = $this->paymentHandlerRegistry->getPaymentMethodHandler($paymentMethod->getId());
 
             $validationDefinitions = $paymentHandler->getValidationDefinitions(new RequestDataBag($request->request->all()), $salesChannelContext);
 
