@@ -9,6 +9,7 @@
  * Custom Components
  */
 import './component/ratepay/ratepay-admin-create-order-form';
+import './component/ratepay-plugin-icon';
 
 /**
  * Custom Modules

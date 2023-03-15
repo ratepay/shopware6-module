@@ -18,7 +18,7 @@ Module.register('ratepay-profile-config', {
     type: 'plugin',
     name: 'profile-config',
     title: 'ratepay.profileConfig.componentTitle',
-    icon: 'default-action-settings',
+    icon: 'regular-cog',
     color: '#e4233e',
     entity: 'ratepay_profile_config',
 
@@ -55,7 +55,7 @@ Module.register('ratepay-profile-config', {
         {
             to: 'ratepay.profile.config.list',
             group: 'plugins',
-            icon: 'default-action-settings',
+            iconComponent: 'ratepay-plugin-icon',
         }
     ]
 });

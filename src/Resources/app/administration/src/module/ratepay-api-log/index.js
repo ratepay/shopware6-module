@@ -19,7 +19,7 @@ Module.register('ratepay-api-log', {
     type: 'plugin',
     name: 'api-log',
     title: 'ratepay.apiLog.componentTitle',
-    icon: 'default-basic-stack-block',
+    icon: 'regular-cog',
     color: '#e4233e',
     entity: 'ratepay_api_log',
 
@@ -42,7 +42,7 @@ Module.register('ratepay-api-log', {
         {
             to: 'ratepay.api.log.list',
             group: 'plugins',
-            icon: 'default-badge-warning',
+            iconComponent: 'ratepay-plugin-icon',
         }
     ],
 
