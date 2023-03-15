@@ -1,0 +1,22 @@
+{#
+  ~ Copyright (c) Ratepay GmbH
+  ~
+  ~ For the full copyright and license information, please view the LICENSE
+  ~ file that was distributed with this source code.
+#}
+
+{% block sw_order_detail_content_tabs_extension %}
+    {% parent %}
+
+    {% block sw_order_detail_content_tabs_ratepay %}
+        <sw-tabs-item
+            v-if="order && order.extensions.ratepayData"
+            class="sw-order-detail__tabs-tab-ratepay"
+            :route="{ name: 'sw.order.detail.ratepay', params: { id: $route.params.id } }"
+            :title="$tc('sw-order.detail.ratepay')"
+        >
+            {{ $tc('sw-order.detail.ratepay') }}
+        </sw-tabs-item>
+    {% endblock %}
+
+{% endblock %}

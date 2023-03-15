@@ -1,0 +1,35 @@
+{#
+~ Copyright (c) Ratepay GmbH
+~
+~ For the full copyright and license information, please view the LICENSE
+~ file that was distributed with this source code.
+#}
+
+<sw-card
+    :title="$tc('ratepay.order-details.title')"
+    positionIdentifier="ratepay-order-details-card"
+    class="ratepay-order-details-card"
+>
+    <template #grid>
+        <sw-container rows="auto auto">
+            <sw-card-section secondary slim>
+                <sw-container columns="repeat(auto-fit, minmax(250px, 1fr))" gap="30px 30px">
+
+                    <sw-description-list columns="1fr" grid="1fr">
+                        <dt>{{ $tc('ratepay.order-details.transactionId') }}</dt>
+                        <dd>
+                            <router-link v-bind:to="{ name: 'ratepay.api.log.list', query: { term: order.extensions.ratepayData.transactionId } }"
+                                         ref="routerLink">
+                                {{ order.extensions.ratepayData.transactionId }}
+                            </router-link>
+                        </dd>
+                        <dt>{{ $tc('ratepay.order-details.descriptor') }}</dt>
+                        <dd>{{ order.extensions.ratepayData.descriptor }}</dd>
+                    </sw-description-list>
+
+                </sw-container>
+            </sw-card-section>
+        </sw-container>
+    </template>
+</sw-card>
+

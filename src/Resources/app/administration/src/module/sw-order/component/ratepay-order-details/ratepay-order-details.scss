@@ -1,0 +1,22 @@
+@import "~scss/variables";
+
+.ratepay-order-details-card {
+    .sw-description-list {
+        line-height: 15px;
+
+        dt,
+        dd {
+            padding: 4px;
+            border-bottom: none;
+        }
+
+        dt {
+            font-weight: $font-weight-semi-bold;
+
+            &:not(:first-child),
+            &:only-of-type {
+                padding-top: 21px;
+            }
+        }
+    }
+}

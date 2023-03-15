@@ -8,8 +8,6 @@
 /**
  * Custom Components
  */
-import './component/ratepay/ratepay-order-history-log-grid';
-import './component/ratepay/ratepay-order-management';
 import './component/ratepay/ratepay-admin-create-order-form';
 
 /**

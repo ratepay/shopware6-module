@@ -155,28 +155,10 @@ Component.register('ratepay-order-management', {
             });
         },
         initCredit() {
-            this.addCredit.data.amount = [
-                {
-                    net: null,
-                    gross: null,
-                    currencyId: this.order.currencyId,
-                    linked: true
-                }
-            ];
-            this.addCredit.data.name = this.$t('ratepay.orderManagement.modal.addCredit.defaultValue.name');
             this.addCredit.data.tax = this.defaultTax;
             this.addCredit.data.taxId = this.defaultTax.id;
         },
         initDebit() {
-            this.addDebit.data.amount = [
-                {
-                    net: null,
-                    gross: null,
-                    currencyId: this.order.currencyId,
-                    linked: true
-                }
-            ];
-            this.addDebit.data.name = this.$t('ratepay.orderManagement.modal.addDebit.defaultValue.name');
             this.addDebit.data.tax = this.defaultTax;
             this.addDebit.data.taxId = this.defaultTax.id;
         },
@@ -198,7 +180,7 @@ Component.register('ratepay-order-management', {
                     this.showMessage(response, 'deliver');
                     this.loadList().then(() => {
                         this.loading.deliver = false;
-                        this.$emit('ratepayActionTriggered');
+                        this.$emit('reload-entity-data');
                     });
                 })
                 .catch((response) => {
@@ -219,7 +201,7 @@ Component.register('ratepay-order-management', {
                     this.loadList().then(() => {
                         this.loading.cancel = false;
                         this.loading.cancelWithStock = false;
-                        this.$emit('ratepayActionTriggered');
+                        this.$emit('reload-entity-data');
                     });
                 })
                 .catch((response) => {
@@ -241,7 +223,8 @@ Component.register('ratepay-order-management', {
                     this.loadList().then(() => {
                         this.loading.rtn = false;
                         this.loading.rtnWithStock = false;
-                        this.$emit('ratepayActionTriggered');
+                        this.$emit('reload-entity-data');
+
                     });
                 })
                 .catch((response) => {
@@ -255,10 +238,9 @@ Component.register('ratepay-order-management', {
             this.loadList().then(() => {
                 this.loading.reload = false;
                 this.items.forEach(function (item, index) {
-                    item.processDeliveryCancel = 0;
-                    item.processReturn = 0;
+                    item.processDeliveryCancel = '0';
+                    item.processReturn = '0';
                 });
-                this.$emit('ratepayActionTriggered');
             });
         },
         onClickButtonAddDebit() {
@@ -278,7 +260,7 @@ Component.register('ratepay-order-management', {
                     this.loadList().then(() => {
                         this.onCloseDebitModal();
                         this.loading.addDebit = false;
-                        this.$emit('ratepayActionTriggered');
+                        this.$emit('reload-entity-data');
                         this.initDebit();
                     });
                 })
@@ -304,7 +286,7 @@ Component.register('ratepay-order-management', {
                     this.loadList().then(() => {
                         this.onCloseCreditModal();
                         this.loading.addCredit = false;
-                        this.$emit('ratepayActionTriggered');
+                        this.$emit('reload-entity-data');
                         this.initCredit();
                     });
                 })

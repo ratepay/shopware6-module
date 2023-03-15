@@ -2,7 +2,7 @@
     "ratepay": {
         "order-log-history": {
             "detailBase": {
-                "ratepayHistoryPanelTitle": "Ratepay History-Log",
+                "ratepayHistoryPanelTitle": "Protocol",
                 "column": {
                     "date": "Date",
                     "user": "User",

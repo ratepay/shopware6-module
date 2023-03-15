@@ -5,8 +5,8 @@
   ~ file that was distributed with this source code.
 #}
 
-<sw-card :title="$tc('ratepay.orderManagement.title')" class="ratepay-article-panel">
-    <sw-tabs defaultItem="shippingCancel">
+<sw-card :title="$tc('ratepay.orderManagement.title')" class="ratepay-article-panel" positionIdentifier="ratepay-order-management-card">
+    <sw-tabs defaultItem="shippingCancel" positionIdentifier="ratepay-order-management">
         <template slot="default" slot-scope="{ active }">
             <sw-tabs-item :activeTab="active" name="shippingCancel">
                 {{ $t('ratepay.orderManagement.tab.shippingCancel') }}
@@ -79,7 +79,6 @@
                     <template slot="column-totalPrice" slot-scope="{ item }">
                         {{ item.totalPrice | currency(order.currency.translated.shortName) }}
                     </template>
-
 
                 </sw-data-grid>
             </template>

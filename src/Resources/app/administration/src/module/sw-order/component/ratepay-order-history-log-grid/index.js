@@ -72,6 +72,7 @@ Component.register('ratepay-order-history-log-grid', {
             this.repository = this.repositoryFactory.create('ratepay_order_history');
 
             let criteria = new Criteria();
+            criteria.setLimit(20);
             criteria.addFilter(Criteria.equals('orderId', this.order.id));
             criteria.addSorting(Criteria.sort('createdAt', 'DESC'));
 

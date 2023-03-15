@@ -1,0 +1,14 @@
+{#
+  ~ Copyright (c) Ratepay GmbH
+  ~
+  ~ For the full copyright and license information, please view the LICENSE
+  ~ file that was distributed with this source code.
+#}
+<div class="sw-order-detail-ratepay" v-if="order && order.extensions.ratepayData">
+
+    <ratepay-order-details :order="order"></ratepay-order-details>
+
+    <ratepay-order-management :order="order" @reload-entity-data="$refs.ratepayOrderHistory.loadOrderHistory()"></ratepay-order-management>
+
+    <ratepay-order-history-log-grid :order="order" ref="ratepayOrderHistory"></ratepay-order-history-log-grid>
+</div>

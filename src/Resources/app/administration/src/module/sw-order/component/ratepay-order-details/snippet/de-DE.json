@@ -1,0 +1,9 @@
+{
+    "ratepay": {
+        "order-details": {
+            "title": "Informationen",
+            "transactionId": "Transaktions ID",
+            "descriptor": "Verwendungszweck"
+        }
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "ratepay": {
+        "order-details": {
+            "title": "Information",
+            "transactionId": "Transaction ID",
+            "descriptor": "Descriptor"
+        }
+    }
+}
