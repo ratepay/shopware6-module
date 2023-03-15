@@ -39,7 +39,6 @@ Component.register('ratepay-api-log-list', {
             repository: null,
             entities: null,
             modalItem: null,
-            searchTerm: null,
             initialLogId: null,
             isLoading: false,
             isLoaded: false,
@@ -178,8 +177,8 @@ Component.register('ratepay-api-log-list', {
         defaultCriteria() {
             const defaultCriteria = new Criteria();
 
-            if (this.searchTerm.length > 0) {
-                defaultCriteria.setTerm(this.searchTerm)
+            if (this.isValidTerm(this.term)) {
+                defaultCriteria.setTerm(this.term)
             }
 
             defaultCriteria.addSorting(Criteria.sort('createdAt', 'DESC'));
@@ -225,12 +224,10 @@ Component.register('ratepay-api-log-list', {
     },
 
     created() {
-        this.searchTerm = this.$route.query.term !== undefined ? this.$route.query.term.trim() : "";
         this.initalLogId = this.$route.query.logId !== undefined ? this.$route.query.logId.trim() : null;
         this.repository = this.repositoryFactory.create(this.entityName);
         hljs.registerLanguage('xml', hljsXml);
         hljs.configure({useBR: false});
-        this.loadData();
 
         this.RatepayLogDistinctValuesService.getDistinctValues(this.automaticFilter.join('|')).then((response) => {
             response.results.forEach((field) => {
@@ -243,9 +240,7 @@ Component.register('ratepay-api-log-list', {
 
     watch: {
         $route() {
-            this.searchTerm = this.$route.query.term !== undefined ? this.$route.query.term.trim() : "";
             this.initalLogId = this.$route.query.logId !== undefined ? this.$route.query.logId.trim() : null;
-            this.loadData();
         }
     },
 
@@ -257,14 +252,16 @@ Component.register('ratepay-api-log-list', {
                 .replaceAll(/]]&gt;\r\n\s*/gi, ']]&gt;');
         },
 
-        async loadData() {
+        async getList() {
             this.isLoading = true;
             let criteria = await Shopware.Service('filterService').mergeWithStoredFilters(
                 this.storeKey,
                 this.defaultCriteria
             );
 
-            criteria = await this.addQueryScores(this.searchTerm, criteria);
+            if (this.isValidTerm(this.term)) {
+                criteria = await this.addQueryScores(this.term, criteria);
+            }
 
             this.repository.search(criteria, Shopware.Context.api)
                 .then((result) => {
@@ -281,10 +278,10 @@ Component.register('ratepay-api-log-list', {
             this.activeFilterNumber = criteria.filters.length;
         },
 
-        onSearch(searchTerm) {
+        onSearch(term) {
             this.initalLogId = null;
-            this.searchTerm = searchTerm.trim();
-            this.loadData();
+            this.term = term.trim();
+            this.getList();
         },
 
         updateCriteria(criteria) {

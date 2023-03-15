@@ -11,7 +11,7 @@
     {% block ratepay_api_log_list_search_bar %}
         <template #search-bar>
             <sw-search-bar initialSearchType="ratepay_api_log"
-                           :initialSearch="searchTerm"
+                           :initialSearch="term"
                            @search="onSearch">
             </sw-search-bar>
         </template>
@@ -24,7 +24,7 @@
     {% block ratepayapilog_list_smart_bar_actions %}
         <template slot="smart-bar-actions">
             <sw-button-process variant="primary"
-                               @click="loadData"
+                               @click="getList"
                                :isLoading="isLoading"
                                :processSuccess="isLoaded"
                                @process-finish="isLoaded = false">
