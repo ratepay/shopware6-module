@@ -188,6 +188,13 @@ Component.register('ratepay-api-log-list', {
                 defaultCriteria.addFilter(filter);
             });
 
+            if (defaultCriteria.getLimit() === undefined || defaultCriteria.getLimit() === null || defaultCriteria.getLimit() === 0) {
+                // shopware will return the criteria in the response, and the entity-listing expect a limit
+                // if we do not provide a limit in the criteria request-object, shopware will not return a default limit.
+                // so we need to provide a default limit
+                defaultCriteria.setLimit(25);
+            }
+
             return defaultCriteria;
         },
 

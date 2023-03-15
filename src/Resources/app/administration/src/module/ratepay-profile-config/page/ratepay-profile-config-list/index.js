@@ -68,6 +68,14 @@ Component.register('ratepay-profile-config-list', {
 
         let criteria = new Criteria();
         criteria.addAssociation('salesChannel');
+
+        if (criteria.getLimit() === undefined || criteria.getLimit() === null || criteria.getLimit() === 0) {
+            // shopware will return the criteria in the response, and the entity-listing expect a limit
+            // if we do not provide a limit in the criteria request-object, shopware will not return a default limit.
+            // so we need to provide a default limit
+            criteria.setLimit(25);
+        }
+
         this.repository
             .search(criteria, Shopware.Context.api)
             .then((result) => {
