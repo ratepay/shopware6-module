@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\Account\Subscriber;
 
+use Ratepay\RpayPayments\Util\RequestHelper;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Ratepay\RpayPayments\Components\Account\Event\PaymentUpdateRequestBagValidatedEvent;
 use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
@@ -127,7 +128,7 @@ class AccountSubscriber implements EventSubscriberInterface
         if ($event->getStorefrontRequest()->request->has('ratepay')) {
             $event->getStoreApiRequest()->request->set(
                 'ratepay',
-                $event->getStorefrontRequest()->request->get('ratepay')
+                RequestHelper::getArrayBag($event->getStorefrontRequest(), 'ratepay')->all()
             );
         }
     }

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\CheckoutRedirectFix\Subscriber;
 
+use Ratepay\RpayPayments\Util\RequestHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Ratepay\RpayPayments\Components\CheckoutRedirectFix\Helper\AddressHelper;
 use Shopware\Core\Framework\Validation\BuildValidationEvent;
@@ -49,7 +50,7 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
         $paymentHandlerIdentifier = $context->getPaymentMethod()->getHandlerIdentifier();
 
         if (strpos($paymentHandlerIdentifier, 'RpayPayments') !== false) {
-            $ratepayData = $request->get('ratepay');
+            $ratepayData = RequestHelper::getArray($request,'ratepay');
             $billingMd5 = $ratepayData['validation']['billing_address_md5'] ?? null;
             $shippingMd5 = $ratepayData['validation']['shipping_address_md5'] ?? null;
 

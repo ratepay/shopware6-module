@@ -25,6 +25,7 @@ use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileBySalesC
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService;
 use Ratepay\RpayPayments\Util\MethodHelper;
+use Ratepay\RpayPayments\Util\RequestHelper;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -211,9 +212,9 @@ class ExtensionService
 
         if ($httpRequest !== null) {
             // add user entered values again, so that the user have not to reenter his values
-            foreach ($httpRequest->request->get('ratepay') ?: [] as $key => $value) {
+            foreach (RequestHelper::getArray($httpRequest, 'ratepay') ?: [] as $key => $value) {
                 if ($key === 'birthday' && is_array($value)) {
-                    $value = (new DateTime())->setDate($value['year'], $value['month'], $value['day']);
+                    $value = (new DateTime())->setDate((int)$value['year'], (int)$value['month'], (int)$value['day']);
                 }
 
                 $extension->set($key, $value);

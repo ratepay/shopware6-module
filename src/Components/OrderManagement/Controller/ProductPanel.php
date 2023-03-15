@@ -27,6 +27,7 @@ use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Routing\Exception\InvalidRequestParameterException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -135,9 +136,13 @@ class ProductPanel extends AbstractController
         $order = $this->fetchOrder($context, $orderId);
 
         if ($order !== null) {
+            $params = $request->request->all();
+            if (!isset($params['items']) || !is_array($params['items'])) {
+                throw new InvalidRequestParameterException('items');
+            }
             $items = [];
-            foreach ($request->request->get('items') ?? [] as $data) {
-                $items[$data['id']] = (int) $data['quantity'];
+            foreach ($params['items'] ?? [] as $data) {
+                $items[$data['id']] = (int)$data['quantity'];
             }
 
             $items = array_filter($items, static fn($quantity): bool => $quantity > 0);

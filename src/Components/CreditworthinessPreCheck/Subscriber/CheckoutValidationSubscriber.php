@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Subscriber;
 
+use Ratepay\RpayPayments\Util\RequestHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Service\PaymentQueryValidatorService;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
@@ -72,17 +73,18 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
         $paymentHandlerIdentifier = $context->getPaymentMethod()->getHandlerIdentifier();
 
         if (strpos($paymentHandlerIdentifier, 'RpayPayments') !== false) {
+            $ratepayData = RequestHelper::getArray($request, 'ratepay', []);
             // we must validate the data BEFORE we send the request to the gateway.
             // this is not the good way, but we do not have another possibility.
             // we just want to validate the ratepay-data to prevent unexpected behavior of third-party-plugins
             $definition = new DataValidationDefinition();
             $definition->addSub('ratepay', $event->getDefinition()->getSubDefinitions()['ratepay']);
-            $this->dataValidator->validate(['ratepay' => $request->request->get('ratepay')], $definition);
+            $this->dataValidator->validate(['ratepay' => $ratepayData], $definition);
 
             $this->validatorService->validate(
                 $this->cartService->getCart($context->getToken(), $context),
                 $context,
-                $request->request->get('ratepay')['transactionId'],
+                $ratepayData['transactionId'] ?? '--',
                 new DataBag($request->request->all())
             );
         }
