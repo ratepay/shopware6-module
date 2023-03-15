@@ -66,8 +66,8 @@ class ApiRequestLogDefinition extends EntityDefinition
             (new StringField('reason_code', ApiRequestLogEntity::FIELD_REASON_CODE)),
             (new StringField('reason_text', ApiRequestLogEntity::FIELD_REASON_TEXT)),
 
-            (new LongTextField('request', ApiRequestLogEntity::FIELD_REQUEST))->addFlags(new Required(), new AllowHtml()),
-            (new LongTextField('response', ApiRequestLogEntity::FIELD_RESPONSE))->addFlags(new Required(), new AllowHtml()),
+            (new LongTextField('request', ApiRequestLogEntity::FIELD_REQUEST))->addFlags(new Required(), new AllowHtml(false)),
+            (new LongTextField('response', ApiRequestLogEntity::FIELD_RESPONSE))->addFlags(new Required(), new AllowHtml(false)),
             (new JsonField('additional_data', ApiRequestLogEntity::FIELD_ADDITIONAL_DATA)),
         ]);
     }
