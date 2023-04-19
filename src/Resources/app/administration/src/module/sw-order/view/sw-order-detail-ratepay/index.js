@@ -24,6 +24,10 @@ Shopware.Component.register('sw-order-detail-ratepay', {
             'order',
         ]),
     },
+
+    created() {
+        this.$emit('loading-change', false);
+    }
 });
 
 Shopware.Module.register('sw-order-detail-tab-ratepay', {
