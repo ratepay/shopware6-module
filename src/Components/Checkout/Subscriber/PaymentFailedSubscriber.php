@@ -49,9 +49,8 @@ class PaymentFailedSubscriber implements EventSubscriberInterface
         }
 
         $order = $event->getPage()->getOrder();
-        /** @var RatepayOrderDataEntity $ratepayData */
         $ratepayData = $order->getExtension(OrderExtension::EXTENSION_NAME);
-        if ($ratepayData && !$ratepayData->isSuccessful()) {
+        if ($ratepayData instanceof RatepayOrderDataEntity && !$ratepayData->isSuccessful()) {
             $transactionId = $ratepayData->getTransactionId();
 
             $criteria = new Criteria();
@@ -60,11 +59,9 @@ class PaymentFailedSubscriber implements EventSubscriberInterface
             $criteria->addFilter(new EqualsFilter(ApiRequestLogEntity::FIELD_ADDITIONAL_DATA . '.orderNumber', $order->getOrderNumber()));
             $criteria->setLimit(1);
 
-            $logEntries = $this->ratepayApiLogRepository->search($criteria, $event->getContext());
-            /** @var ApiRequestLogEntity $logEntry */
-            $logEntry = $logEntries->first();
+            $logEntry = $this->ratepayApiLogRepository->search($criteria, $event->getContext())->first();
 
-            if ($logEntry === null) {
+            if (!$logEntry instanceof ApiRequestLogEntity) {
                 // log entry was not found.
                 return;
             }

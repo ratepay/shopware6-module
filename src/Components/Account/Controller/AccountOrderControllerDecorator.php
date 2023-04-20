@@ -60,7 +60,7 @@ class AccountOrderControllerDecorator
         $orderCriteria = (new Criteria([$orderId]))
             ->addAssociation('transactions.paymentMethod');
         $order = $this->orderRepository->search($orderCriteria, $context->getContext())->first();
-        /** @var RatepayOrderDataEntity $ratepayData */
+        /** @var RatepayOrderDataEntity|null $ratepayData */
         $ratepayData = $order ? $order->getExtension(OrderExtension::EXTENSION_NAME) : null;
         if ($ratepayData && MethodHelper::isRatepayOrder($order) && $ratepayData->isSuccessful()) {
             // You can't change the payment if it is a ratepay order

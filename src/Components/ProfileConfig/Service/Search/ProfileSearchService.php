@@ -6,7 +6,6 @@ use Ratepay\RpayPayments\Components\ProfileConfig\Dto\ProfileConfigSearch;
 use Ratepay\RpayPayments\Components\ProfileConfig\Event\CreateProfileConfigCriteriaEvent;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
-use RuntimeException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -16,7 +15,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\OrFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
-use Shopware\Core\System\Country\CountryEntity;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ProfileSearchService implements ProfileSearchInterface
@@ -24,19 +22,15 @@ class ProfileSearchService implements ProfileSearchInterface
 
     protected Context $context;
 
-    private EntityRepository $countryRepository;
-
     private EntityRepository $repository;
 
     private EventDispatcherInterface $eventDispatcher;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
-        EntityRepository $countryRepository,
         EntityRepository $repository
     )
     {
-        $this->countryRepository = $countryRepository;
         $this->repository = $repository;
         $this->eventDispatcher = $eventDispatcher;
 
@@ -140,18 +134,6 @@ class ProfileSearchService implements ProfileSearchInterface
         /* @phpstan-ignore-next-line */
         return $this->repository->search($criteria, $this->context);
     }
-
-    private function getCountryCode(string $uuid): string
-    {
-        /** @var CountryEntity $country */
-        $country = $this->countryRepository->search(new Criteria([$uuid]), Context::createDefaultContext())->first();
-        if ($country) {
-            return $country->getIso();
-        }
-
-        throw new RuntimeException('Country ' . $uuid . ' does not exist');
-    }
-
 
     public function getProfileConfigById(?string $profileConfigId): ?ProfileConfigEntity
     {

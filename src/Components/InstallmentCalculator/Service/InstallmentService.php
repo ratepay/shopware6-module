@@ -9,7 +9,6 @@
 
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Service;
 
-use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Exception;
 use Monolog\Logger;
 use RatePAY\Exception\RequestException;
@@ -20,6 +19,7 @@ use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentCalcu
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\OfflineInstallmentCalculatorResult;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Util\PlanHasher;
 use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodInstallmentEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileByOrderEntity;
@@ -112,7 +112,8 @@ class InstallmentService
 
         $result = $this->calculateInstallmentOffline($context);
 
-        if ($matchedBuilder = $result->getBuilder()) {
+        if ($result !== null) {
+            $matchedBuilder = $result->getBuilder();
             /** @var ProfileConfigMethodEntity $paymentConfig */
             $paymentConfig = $matchedBuilder->getProfileConfig()->getPaymentMethodConfigs()->filterByMethod($context->getPaymentMethodId())->first();
 
@@ -250,7 +251,7 @@ class InstallmentService
         }
 
         /**
-         * @var array{0: InstallmentBuilder, 0: int} $amountBuilders
+         * @var array{0: InstallmentBuilder, 1: int|float}|array $amountBuilders
          */
         $amountBuilders = [];
 
@@ -277,10 +278,9 @@ class InstallmentService
             }
         }
 
-        $count = count($amountBuilders);
-        if ($count === 0) {
+        if ($amountBuilders === []) {
             return null;
-        } elseif ($count > 1) {
+        } elseif (count($amountBuilders) > 1) {
             // find the best matching for the given monthly rate and the available rates from the calculated plans
             $monthlyRate = null;
             $availableMonthlyRates = array_keys($amountBuilders);

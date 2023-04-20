@@ -21,7 +21,6 @@ use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Ratepay\RpayPayments\Util\DataValidationHelper;
 use Ratepay\RpayPayments\Util\MethodHelper;
 use Ratepay\RpayPayments\Util\RequestHelper;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PaymentHandlerRegistry;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
@@ -59,7 +58,6 @@ class AccountSubscriber implements EventSubscriberInterface
 
     private EventDispatcherInterface $eventDispatcher;
 
-    private OrderTransactionStateHandler $orderTransactionStateHandler;
 
     public function __construct(
         ExtensionService $extensionService,
@@ -67,8 +65,7 @@ class AccountSubscriber implements EventSubscriberInterface
         object $paymentMethodRepository,
         EntityRepository $orderRepository,
         DataValidator $dataValidator,
-        EventDispatcherInterface $eventDispatcher,
-        OrderTransactionStateHandler $orderTransactionStateHandler
+        EventDispatcherInterface $eventDispatcher
     )
     {
         $this->extensionService = $extensionService;
@@ -77,7 +74,6 @@ class AccountSubscriber implements EventSubscriberInterface
         $this->paymentHandlerRegistry = $paymentHandlerRegistry;
         $this->orderRepository = $orderRepository;
         $this->eventDispatcher = $eventDispatcher;
-        $this->orderTransactionStateHandler = $orderTransactionStateHandler;
     }
 
     /**
@@ -96,7 +92,7 @@ class AccountSubscriber implements EventSubscriberInterface
     {
         $page = $event->getPage();
         $order = $page->getOrder();
-        /** @var RatepayOrderDataEntity $ratepayData */
+        /** @var RatepayOrderDataEntity|null $ratepayData */
         $ratepayData = $order->getExtension(OrderExtension::EXTENSION_NAME);
         if ($ratepayData && MethodHelper::isRatepayOrder($order) && $ratepayData->isSuccessful()) {
             // You can't change the payment if it is a ratepay order
@@ -138,14 +134,12 @@ class AccountSubscriber implements EventSubscriberInterface
         }
 
         $orderId = $event->getStoreApiRequest()->get('orderId');
-        /** @var OrderEntity $orderEntity */
         $orderEntity = $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($orderId), $event->getContext())->first();
 
         $paymentMethodId = $event->getStoreApiRequest()->get('paymentMethodId');
-        /** @var PaymentMethodEntity $paymentMethod */
         $paymentMethod = $this->paymentMethodRepository->search(new Criteria([$paymentMethodId]), $event->getContext())->first();
-        if ($orderEntity === null ||
-            $paymentMethod === null ||
+        if (!$orderEntity instanceof OrderEntity ||
+            !$paymentMethod instanceof PaymentMethodEntity ||
             !MethodHelper::isRatepayMethod($paymentMethod->getHandlerIdentifier())
         ) {
             // not a ratepay method - nothing to do.

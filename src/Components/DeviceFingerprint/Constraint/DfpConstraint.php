@@ -38,6 +38,7 @@ class DfpConstraint extends Constraint
         parent::__construct();
         $this->dfpService = $dfpService;
 
+        /** @phpstan-ignore-next-line */
         if (!$object instanceof SalesChannelContext && !$object instanceof OrderEntity) {
             throw new RuntimeException('$object should be on of OrderEntity or SalesChannelContext');
         }

@@ -11,11 +11,11 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
 
-use Shopware\Core\Checkout\Customer\CustomerEntity;
-use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
-use RuntimeException;
 use DateTime;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\BeforePaymentEvent;
+use RuntimeException;
+use Shopware\Core\Checkout\Customer\CustomerEntity;
+use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -33,7 +33,8 @@ class UserDataSubscriber implements EventSubscriberInterface
         EntityRepository $customerRepository,
         EntityRepository $orderAddressRepository,
         EntityRepository $addressRepository
-    ) {
+    )
+    {
         $this->customerRepository = $customerRepository;
         $this->orderAddressRepository = $orderAddressRepository;
         $this->addressRepository = $addressRepository;
@@ -61,9 +62,8 @@ class UserDataSubscriber implements EventSubscriberInterface
             throw new RuntimeException('user data can not be saved. Unknown error.');
         }
 
-        /** @var RequestDataBag $ratepayData */
         $ratepayData = $dataBag->get('ratepay');
-        if (!$ratepayData) {
+        if (!$ratepayData instanceof RequestDataBag) {
             return;
         }
 

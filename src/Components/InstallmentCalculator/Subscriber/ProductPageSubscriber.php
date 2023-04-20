@@ -3,12 +3,12 @@
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Subscriber;
 
 use Exception;
-use RuntimeException;
 use Monolog\Logger;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentCalculatorContext;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
 use Ratepay\RpayPayments\Components\ProfileConfig\Dto\ProfileConfigSearch;
 use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
+use RuntimeException;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Struct\ArrayStruct;
@@ -55,12 +55,10 @@ class ProductPageSubscriber implements EventSubscriberInterface
         }
 
         $billingCountyId = $this->getConfig('BillingCountry');
-        /** @var CountryEntity $billingCountry */
         $billingCountry = $this->countryRepository->search(new Criteria([$billingCountyId]), $event->getContext())->first();
         $shippingCountyId = $this->getConfig('ShippingCountry');
-        /** @var CountryEntity $shippingCountry */
         $shippingCountry = $this->countryRepository->search(new Criteria([$shippingCountyId]), $event->getContext())->first();
-        if (!$billingCountry || !$shippingCountry) {
+        if (!$billingCountry instanceof CountryEntity || !$shippingCountry instanceof CountryEntity) {
             return;
         }
 

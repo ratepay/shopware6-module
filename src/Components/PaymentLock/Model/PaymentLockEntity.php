@@ -39,11 +39,11 @@ class PaymentLockEntity extends Entity
      */
     public const FIELD_LOCKED_UNTIL = 'locketUntil';
 
-    private string $customerId;
+    protected string $customerId;
 
-    private string $paymentMethodId;
+    protected string $paymentMethodId;
 
-    private DateTimeInterface $lockedUntil;
+    protected DateTimeInterface $lockedUntil;
 
     public function getId(): string
     {

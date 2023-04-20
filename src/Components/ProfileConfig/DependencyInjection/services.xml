@@ -21,7 +21,6 @@
         </service>
 
         <service id="Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileSearchService">
-            <argument key="$countryRepository" id="country.repository" type="service"/>
             <argument key="$repository" id="ratepay_profile_config.repository" type="service"/>
         </service>
 

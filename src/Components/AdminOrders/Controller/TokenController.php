@@ -40,7 +40,8 @@ class TokenController extends AbstractController
         EntityRepository $tokenRepository,
         EntityRepository $salesChannelDomainRepository,
         Router $router
-    ) {
+    )
+    {
         $this->tokenRepository = $tokenRepository;
         $this->salesChannelDomainRepository = $salesChannelDomainRepository;
         $this->router = $router;
@@ -55,9 +56,8 @@ class TokenController extends AbstractController
         $salesChannelId = $request->request->get('salesChannelId', null);
         $salesChannelDomainId = $request->request->get('salesChannelDomainId', null);
 
-        /** @var SalesChannelDomainEntity $saleChannelDomain */
         $saleChannelDomain = $this->salesChannelDomainRepository->search(new Criteria([$salesChannelDomainId]), $context)->first();
-        if ($saleChannelDomain === null) {
+        if (!$saleChannelDomain instanceof SalesChannelDomainEntity) {
             throw $this->createNotFoundException('sales channel domain not found');
         }
 

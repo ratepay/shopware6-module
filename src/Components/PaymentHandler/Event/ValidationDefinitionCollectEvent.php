@@ -34,6 +34,7 @@ class ValidationDefinitionCollectEvent
         $this->definitions = $definitions;
         $this->requestDataBag = $requestDataBag;
 
+        /** @phpstan-ignore-next-line */
         if (!$baseData instanceof SalesChannelContext && !$baseData instanceof OrderEntity) {
             throw new RuntimeException('$baseData should be on of OrderEntity or SalesChannelContext');
         }

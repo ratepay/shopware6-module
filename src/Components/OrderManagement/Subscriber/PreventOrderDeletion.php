@@ -11,20 +11,15 @@ namespace Ratepay\RpayPayments\Components\OrderManagement\Subscriber;
 
 use Ratepay\RpayPayments\Components\Checkout\Model\Definition\RatepayOrderDataDefinition;
 use Ratepay\RpayPayments\Components\Checkout\Model\Definition\RatepayOrderLineItemDataDefinition;
-use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
-use Ratepay\RpayPayments\Components\OrderManagement\Exception\RatepayOrderDataDeleteRestrictionException;
 use Ratepay\RpayPayments\Components\OrderManagement\Exception\OrderLineItemDeleteRestrictionException;
+use Ratepay\RpayPayments\Components\OrderManagement\Exception\RatepayOrderDataDeleteRestrictionException;
 use Ratepay\RpayPayments\Components\OrderManagement\Exception\RatepayOrderLineItemsDataDeleteRestrictionException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemDefinition;
-use Shopware\Core\Checkout\Order\OrderDefinition;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\BeforeDeleteEvent;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\StorageAware;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PreventOrderDeletion implements EventSubscriberInterface
@@ -71,7 +66,7 @@ class PreventOrderDeletion implements EventSubscriberInterface
 
         $lineItemIds = $event->getIds(OrderLineItemDefinition::ENTITY_NAME);
 
-        if ($lineItemIds && count($lineItemIds)) {
+        if ($lineItemIds !== []) {
             $criteria = new Criteria();
             $criteria->addFilter(new EqualsAnyFilter(RatepayOrderLineItemDataEntity::FIELD_ORDER_LINE_ITEM_ID, $lineItemIds));
 

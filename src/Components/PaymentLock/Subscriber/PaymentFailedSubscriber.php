@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\PaymentLock\Subscriber;
 
+use RatePAY\Model\Response\AbstractResponse;
 use Ratepay\RpayPayments\Components\PaymentLock\Service\LockService;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\CheckoutOperationInterface;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\RequestDoneEvent;
@@ -41,7 +42,7 @@ class PaymentFailedSubscriber implements EventSubscriberInterface
     {
         $requestData = $event->getRequestData();
         $response = $event->getRequestBuilder()->getResponse();
-        if (!$requestData instanceof CheckoutOperationInterface || $response === null) {
+        if (!$requestData instanceof CheckoutOperationInterface || !$response instanceof AbstractResponse) {
             return;
         }
 

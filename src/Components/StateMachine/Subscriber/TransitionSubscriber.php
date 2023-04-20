@@ -84,10 +84,9 @@ class TransitionSubscriber implements EventSubscriberInterface
             return;
         }
 
-        /** @var RatepayOrderDataEntity $ratepayData */
         $ratepayData = $order->getExtension(OrderExtension::EXTENSION_NAME);
 
-        if ($ratepayData === null) {
+        if (!$ratepayData instanceof RatepayOrderDataEntity) {
             $this->logger->warning('Error during bidirectionality: No Ratepay Data was found.', [
                 'order' => $order->getId(),
                 'orderNumber' => $order->getOrderNumber(),

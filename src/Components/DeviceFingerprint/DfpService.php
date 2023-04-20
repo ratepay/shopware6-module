@@ -112,9 +112,9 @@ class DfpService implements DfpServiceInterface
         $orderCriteria->addFilter(new EqualsFilter('customerId', $context->getCustomerId()));
         $orderCriteria->addSorting(new FieldSorting('createdAt', FieldSorting::DESCENDING));
         $orderCriteria->setLimit(1);
-        /** @var OrderCustomerEntity $orderCustomer */
+        /** @var OrderCustomerEntity|null $orderCustomer */
         $orderCustomer = $this->orderCustomerRepository->search($orderCriteria, $context->getContext())->last();
-        $date = $orderCustomer ? $orderCustomer->getCreatedAt() : null;
+        $date = $orderCustomer !== null ? $orderCustomer->getCreatedAt() : null;
         $date ??= $context->getCustomer()->getLastLogin() ?? $context->getCustomer()->getUpdatedAt();
 
         return $date !== null ? (string)$date->getTimestamp() : null;
@@ -125,7 +125,7 @@ class DfpService implements DfpServiceInterface
      */
     private function getOrderDeviceToken(OrderEntity $order): ?string
     {
-        /** @var RatepayOrderDataEntity $ratepayExtension */
+        /** @var RatepayOrderDataEntity|null $ratepayExtension */
         $ratepayExtension = $order->getExtension(OrderExtension::EXTENSION_NAME);
 
         if ($ratepayExtension && !$ratepayExtension->isSuccessful()) {

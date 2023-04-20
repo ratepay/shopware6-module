@@ -2,13 +2,13 @@
 
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Controller;
 
-use Shopware\Core\Checkout\Order\OrderEntity;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentCalculatorContext;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Struct\InstallmentCalculationResponse;
 use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
 use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundHttpException;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,9 +43,8 @@ class InstallmentRoute
         $value = $value ?: 1; // RATESWSX-186: fix that no "0" values can be provided
 
         if ($orderId) {
-            /** @var OrderEntity $order */
             $order = $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($orderId), $salesChannelContext->getContext())->first();
-            if ($order === null) {
+            if (!$order instanceof OrderEntity) {
                 throw new NotFoundHttpException();
             }
         }

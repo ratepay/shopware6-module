@@ -77,10 +77,9 @@ class ProductPanel extends AbstractController
         $criteria = new Criteria([$orderId]);
         $criteria->addAssociation('lineItems');
 
-        /** @var OrderEntity $order */
         $order = $this->orderRepository->search($criteria, $context)->first();
 
-        if ($order) {
+        if ($order instanceof OrderEntity) {
             $items = [];
             foreach ($order->getLineItems() as $lineItem) {
                 /** @var RatepayOrderLineItemDataEntity $extension */
@@ -142,7 +141,7 @@ class ProductPanel extends AbstractController
             }
 
             $items = [];
-            foreach ($params['items'] ?? [] as $data) {
+            foreach ($params['items'] as $data) {
                 $items[$data['id']] = (int)$data['quantity'];
             }
 

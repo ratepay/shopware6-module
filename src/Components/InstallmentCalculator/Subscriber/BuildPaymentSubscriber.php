@@ -9,10 +9,12 @@
 
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Subscriber;
 
-use RatePAY\Model\Request\SubModel\Content\Payment\InstallmentDetails;
+use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
+use RuntimeException;
 use Exception;
 use InvalidArgumentException;
 use RatePAY\Model\Request\SubModel\Content\Payment;
+use RatePAY\Model\Request\SubModel\Content\Payment\InstallmentDetails;
 use RatePAY\Model\Request\SubModel\Content\ShoppingBasket;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Exception\DebitNotAllowedOnInstallment;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentCalculatorContext;
@@ -27,7 +29,6 @@ use Ratepay\RpayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
 use Ratepay\RpayPayments\Util\MethodHelper;
 use Ratepay\RpayPayments\Util\PaymentFirstday;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class BuildPaymentSubscriber implements EventSubscriberInterface
@@ -105,17 +106,18 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
         /** @var OrderOperationData $requestData */
         $requestData = $event->getRequestData();
 
-        if (!$requestData instanceof PaymentRequestData) {
+        if (!$requestData instanceof AddCreditData) {
             return $event;
         }
 
         $paymentMethod = $requestData->getTransaction()->getPaymentMethod();
+        if (!$paymentMethod instanceof PaymentMethodEntity) {
+            throw new RuntimeException('Payment method is not loaded on transaction entity within the request-data');
+        }
 
         /** @var ShoppingBasket $basket */
         $basket = $event->getBuildData();
-        if ($paymentMethod && $requestData instanceof AddCreditData &&
-            MethodHelper::isInstallmentMethod($paymentMethod->getHandlerIdentifier())
-        ) {
+        if (MethodHelper::isInstallmentMethod($paymentMethod->getHandlerIdentifier())) {
             $items = $basket->getItems()->admittedFields['Item']['value'];
             /** @var ShoppingBasket\Items\Item $item */
             foreach ($items as $item) {

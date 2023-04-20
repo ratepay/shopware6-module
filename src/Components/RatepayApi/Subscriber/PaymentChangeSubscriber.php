@@ -101,9 +101,8 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
                 /** @var OrderLineItemEntity $lineItem */
                 $lineItem = $requestData->getOrder()->getLineItems()->get($id);
 
-                /** @var RatepayOrderLineItemDataEntity $ratepayData */
                 $ratepayData = $lineItem->getExtension(OrderExtension::EXTENSION_NAME);
-                if ($ratepayData === null) {
+                if (!$ratepayData instanceof RatepayOrderLineItemDataEntity) {
                     // will occur if the item has been just added to the order
                     $ratepayData = $this->extensionService->createLineItemExtensionEntities([$lineItem], $event->getContext())->first();
                 }

@@ -126,6 +126,7 @@ class ShoppingBasketFactory extends AbstractFactory
                     ->setTaxRate($this->getTaxRate($item->getPrice()))
             );
         } else {
+            /* @phpstan-ignore-next-line */
             $discount = $basket->getDiscount() ?: new Discount();
             $discount->setDescription('discount');
             $discount->setDescriptionAddition((!empty($discount->getDescriptionAddition()) ? $discount->getDescriptionAddition() . ', ' : null) . $item->getLabel());
@@ -151,6 +152,7 @@ class ShoppingBasketFactory extends AbstractFactory
                     ->setTaxRate($this->getTaxRate($item->getPrice()))
             );
         } else {
+            /* @phpstan-ignore-next-line */
             $discount = $basket->getDiscount() ?: new Discount();
             $discount->setDescription('discount');
             $discount->setDescriptionAddition((!empty($discount->getDescriptionAddition()) ? $discount->getDescriptionAddition() . ', ' : null) . $item->getLabel());

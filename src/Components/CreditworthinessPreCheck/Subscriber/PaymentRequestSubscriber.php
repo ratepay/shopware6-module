@@ -11,10 +11,10 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Subscriber;
 
-use Ratepay\RpayPayments\Components\RatepayApi\Model\TransactionIdEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\InitEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\RequestDoneEvent;
+use Ratepay\RpayPayments\Components\RatepayApi\Model\TransactionIdEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService;
 use Ratepay\RpayPayments\Exception\RatepayException;
@@ -44,7 +44,7 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
 
         $ratepayTransactionId = $this->transactionIdService->getStoredTransactionId(
             $requestData->getSalesChannelContext(),
-            $requestData->getOrder() ? TransactionIdService::PREFIX_ORDER . $requestData->getOrder()->getId() : TransactionIdService::PREFIX_CART
+            TransactionIdService::PREFIX_ORDER . $requestData->getOrder()->getId()
         );
 
         if (!$ratepayTransactionId instanceof TransactionIdEntity) {
