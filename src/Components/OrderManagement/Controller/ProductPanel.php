@@ -56,7 +56,8 @@ class ProductPanel extends AbstractController
         PaymentCancelService $paymentCancelService,
         PaymentCreditService $creditService,
         LineItemFactory $lineItemFactory
-    ) {
+    )
+    {
         $this->orderRepository = $orderRepository;
         $this->creditService = $creditService;
 
@@ -98,9 +99,8 @@ class ProductPanel extends AbstractController
                 }
             }
 
-            /** @var RatepayOrderDataEntity $orderExtension */
-            if (($orderExtension = $order->getExtension(OrderExtension::EXTENSION_NAME)) &&
-                $orderExtension->getShippingPosition()) {
+            $orderExtension = $order->getExtension(OrderExtension::EXTENSION_NAME);
+            if ($orderExtension instanceof RatepayOrderDataEntity && $orderExtension->getShippingPosition()) {
                 $items[OrderOperationData::ITEM_ID_SHIPPING] = [
                     'id' => OrderOperationData::ITEM_ID_SHIPPING,
                     'name' => 'shipping',

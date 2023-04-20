@@ -14,7 +14,7 @@ use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 
 /**
- * @method getData(PaymentRequestData $requestData) : ?Head
+ * @method Payment getData(PaymentRequestData $requestData)
  */
 class PaymentFactory extends AbstractFactory
 {

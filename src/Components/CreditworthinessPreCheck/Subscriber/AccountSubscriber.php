@@ -69,34 +69,31 @@ class AccountSubscriber implements EventSubscriberInterface
                 $this->configService->isSendShippingCostsAsCartItem()
             ));
 
-            $response = isset($paymentQuery) ? $paymentQuery->getResponse() : null;
+            $response = $paymentQuery->getResponse();
             if ($response instanceof PaymentQuery && $response->getStatusCode() === 'OK') {
-                if (!in_array($event->getPaymentHandler()::RATEPAY_METHOD, $response->getAdmittedPaymentMethods(), true)) {
-                    $this->throwException(
+                if (!in_array($event->getPaymentHandler()::getRatepayPaymentMethodName(), $response->getAdmittedPaymentMethods(), true)) {
+                    throw $this->createException(
                         $event->getOrderEntity(),
                         $this->translator->trans('error.' . AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . CheckoutValidationSubscriber::CODE_METHOD_NOT_AVAILABLE)
                     );
                 }
             } else {
-                $this->throwException(
+                throw $this->createException(
                     $event->getOrderEntity(),
                     $response->getReasonMessage()
                 );
             }
         } catch (RatepayException $ratepayException) {
-            $this->throwException(
+            throw $this->createException(
                 $event->getOrderEntity(),
                 $ratepayException->getMessage()
             );
         }
     }
 
-    /**
-     * @return never
-     */
-    private function throwException(OrderEntity $orderEntity, ?string $message): void
+    private function createException(OrderEntity $orderEntity, ?string $message): ForwardException
     {
-        throw (new ForwardException(
+        return (new ForwardException(
             'frontend.account.edit-order.page',
             ['orderId' => $orderEntity->getId()], ['ratepay-errors' => [$message]])
         )->setCustomerMessage($message);

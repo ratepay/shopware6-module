@@ -19,6 +19,7 @@ use Shopware\Storefront\Controller\AccountOrderController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -79,7 +80,9 @@ class AccountOrderControllerDecorator
     protected function addRatepayValidationErrors(Request $request)
     {
         foreach ($request->get('ratepay-errors', []) as $error) {
-            $request->getSession()->getFlashBag()->add('danger', $error);
+            if (($session = $request->getSession()) instanceof Session) {
+                $session->getFlashBag()->add('danger', $error);
+            }
         }
     }
 

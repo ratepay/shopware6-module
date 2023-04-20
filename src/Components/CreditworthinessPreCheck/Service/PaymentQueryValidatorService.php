@@ -10,7 +10,6 @@ use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Exception\RatepayException;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\Framework\Validation\Exception\ConstraintViolationException;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -55,7 +54,7 @@ class PaymentQueryValidatorService
                 $this->configService->isSendShippingCostsAsCartItem()
             ));
         } catch (RatepayException $ratepayException) {
-            $this->throwException(
+            throw $this->createException(
                 $context,
                 $dataBag,
 //                    AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . self::CODE_METHOD_NOT_AVAILABLE
@@ -63,17 +62,17 @@ class PaymentQueryValidatorService
             );
         }
 
-        $response = isset($requestBuilder) ? $requestBuilder->getResponse() : null;
+        $response = $requestBuilder->getResponse();
         if ($response instanceof PaymentQuery && $response->getStatusCode() === 'OK') {
             if (!in_array($paymentHandlerIdentifier::RATEPAY_METHOD, $response->getAdmittedPaymentMethods(), true)) {
-                $this->throwException(
+                throw $this->createException(
                     $context,
                     $dataBag,
                     AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . self::CODE_METHOD_NOT_AVAILABLE
                 );
             }
         } else {
-            $this->throwException(
+            throw $this->createException(
                 $context,
                 $dataBag,
                 $response->getReasonMessage()
@@ -81,10 +80,7 @@ class PaymentQueryValidatorService
         }
     }
 
-    /**
-     * @return never
-     */
-    private function throwException(SalesChannelContext $context, DataBag $requestDataBag, string $code): void
+    private function createException(SalesChannelContext $context, DataBag $requestDataBag, string $code): ConstraintViolationException
     {
         $violation = new ConstraintViolation(
             '',
@@ -97,7 +93,7 @@ class PaymentQueryValidatorService
             $code
         );
 
-        throw new ConstraintViolationException(new ConstraintViolationList([$violation]), $requestDataBag->all());
+        return new ConstraintViolationException(new ConstraintViolationList([$violation]), $requestDataBag->all());
     }
 
 }

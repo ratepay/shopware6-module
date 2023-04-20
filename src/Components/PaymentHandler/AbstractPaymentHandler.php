@@ -77,6 +77,8 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
         $this->requestStack = $requestStack;
     }
 
+    public abstract static function getRatepayPaymentMethodName(): string;
+
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
         $dataBag = $dataBag->get('paymentDetails', $dataBag); // data from pwa
@@ -112,8 +114,8 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
 
             $this->eventDispatcher->dispatch(new BeforePaymentEvent($paymentRequestData));
 
-            /** @var PaymentRequest $response */
             $requestBuilder = $this->paymentRequestService->doRequest($paymentRequestData);
+            /** @var PaymentRequest $response */
             $response = $requestBuilder->getResponse();
 
             if ($response->isSuccessful()) {
@@ -125,8 +127,17 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
                     $response
                 ));
             } else {
+                $message = null;
+                if (method_exists($response, 'getCustomerMessage')) {
+                    $message = $response->getCustomerMessage();
+                }
+
+                if (empty($message)) {
+                    $message = $response->getReasonMessage();
+                }
+
                 // will be caught a few lines later.
-                throw new RatepayException($response->getCustomerMessage() ?: $response->getReasonMessage());
+                throw new RatepayException($message);
             }
         } catch (RatepayException $ratepayException) {
             $this->eventDispatcher->dispatch(new PaymentFailedEvent(

@@ -9,6 +9,7 @@
 
 namespace Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Dto;
 
+use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\CheckoutOperationInterface;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OperationDataWithBasket;
@@ -117,5 +118,10 @@ class PaymentQueryData extends AbstractRequestData implements OperationDataWithB
     public function getPaymentMethodId(): string
     {
         return $this->getSalesChannelContext()->getPaymentMethod()->getId();
+    }
+
+    public function getCustomer(): ?CustomerEntity
+    {
+        return $this->getSalesChannelContext()->getCustomer();
     }
 }

@@ -90,9 +90,9 @@ class OrderOperationData extends AbstractRequestData implements OperationDataWit
             }
         }
 
-        /** @var RatepayOrderDataEntity $orderExtension */
+        $orderExtension = $this->order->getExtension(OrderExtension::EXTENSION_NAME);
         if ($this->order->getShippingTotal() > 0 &&
-            ($orderExtension = $this->order->getExtension(OrderExtension::EXTENSION_NAME)) &&
+            $orderExtension instanceof RatepayOrderDataEntity &&
             ($shippingPosition = $orderExtension->getShippingPosition())
         ) {
             $quantity = $this->getMaxQuantityForOperation($shippingPosition, 1);

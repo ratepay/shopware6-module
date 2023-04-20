@@ -97,4 +97,9 @@ class PaymentRequestData extends OrderOperationData implements CheckoutOperation
     {
         return $this->getOrder()->getTransactions()->last()->getPaymentMethodId();
     }
+
+    public function getCustomer()
+    {
+        return $this->getOrder()->getOrderCustomer()->getCustomer();
+    }
 }

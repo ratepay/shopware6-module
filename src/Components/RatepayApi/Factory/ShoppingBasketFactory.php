@@ -28,7 +28,7 @@ use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 
 /**
- * @method getData(PaymentRequestData|PaymentQueryData|OrderOperationData $requestData) : ?Head
+ * @method ShoppingBasket getData(PaymentRequestData|PaymentQueryData|OrderOperationData $requestData)
  */
 class ShoppingBasketFactory extends AbstractFactory
 {

@@ -9,12 +9,12 @@
 
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Subscriber;
 
-use Shopware\Core\Checkout\Order\OrderEntity;
 use Ratepay\RpayPayments\Components\Checkout\Event\PaymentDataExtensionBuilt;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentCalculatorContext;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
 use Ratepay\RpayPayments\Util\MethodHelper;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutSubscriber implements EventSubscriberInterface
@@ -47,7 +47,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
         $extension = $event->getExtension();
 
         if (MethodHelper::isInstallmentMethod($paymentMethod->getHandlerIdentifier())) {
-            $calcContext = (new InstallmentCalculatorContext($salesChannelContext, '', ''))
+            $calcContext = (new InstallmentCalculatorContext($salesChannelContext, '', null))
                 ->setPaymentMethodId($paymentMethod->getId())
                 ->setOrder($order);
 

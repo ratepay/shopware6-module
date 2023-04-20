@@ -15,4 +15,9 @@ class InstallmentZeroPercentPaymentHandler extends AbstractPaymentHandler
      * @var string
      */
     public const RATEPAY_METHOD = 'INSTALLMENT';
+
+    public static function getRatepayPaymentMethodName(): string
+    {
+        return self::RATEPAY_METHOD;
+    }
 }

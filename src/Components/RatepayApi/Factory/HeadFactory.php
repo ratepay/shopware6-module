@@ -9,11 +9,11 @@
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 
+use RatePAY\Model\Request\SubModel\Head;
+use RatePAY\Model\Request\SubModel\Head\Credential;
 use RatePAY\Model\Request\SubModel\Head\Meta;
 use RatePAY\Model\Request\SubModel\Head\Meta\Systems;
 use RatePAY\Model\Request\SubModel\Head\Meta\Systems\System;
-use RatePAY\Model\Request\SubModel\Head\Credential;
-use RatePAY\Model\Request\SubModel\Head;
 use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
@@ -22,7 +22,7 @@ use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
- * @method getData(AbstractRequestData $requestData) : ?Head
+ * @method Head getData(AbstractRequestData $requestData)
  */
 class HeadFactory extends AbstractFactory
 {

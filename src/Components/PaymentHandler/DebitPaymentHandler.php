@@ -27,4 +27,9 @@ class DebitPaymentHandler extends AbstractPaymentHandler
             $this->getDebitConstraints($requestDataBag, $baseData)
         );
     }
+
+    public static function getRatepayPaymentMethodName(): string
+    {
+        return self::RATEPAY_METHOD;
+    }
 }

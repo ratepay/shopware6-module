@@ -15,4 +15,9 @@ class PrepaymentPaymentHandler extends AbstractPaymentHandler
      * @var string
      */
     public const RATEPAY_METHOD = 'PREPAYMENT';
+
+    public static function getRatepayPaymentMethodName(): string
+    {
+        return self::RATEPAY_METHOD;
+    }
 }

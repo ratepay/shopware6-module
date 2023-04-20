@@ -55,4 +55,9 @@ class InstallmentPaymentHandler extends AbstractPaymentHandler
 
         return $validations;
     }
+
+    public static function getRatepayPaymentMethodName(): string
+    {
+        return self::RATEPAY_METHOD;
+    }
 }

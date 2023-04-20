@@ -54,7 +54,7 @@ class PaymentFailedSubscriber implements EventSubscriberInterface
             $this->lockService->lockPaymentMethod(
                 $requestData->getContext(),
                 $requestData->getSalesChannelContext()->getCustomer()->getId(),
-                $requestData->getPaymentMethodId()
+                [$requestData->getPaymentMethodId()]
             );
         }
     }

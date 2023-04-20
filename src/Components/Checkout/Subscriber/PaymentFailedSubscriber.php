@@ -21,21 +21,18 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPageLoadedEvent;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class PaymentFailedSubscriber implements EventSubscriberInterface
 {
     private EntityRepository $ratepayApiLogRepository;
 
-    private ContainerInterface $container;
-
     public function __construct(
-        EntityRepository $ratepayApiLogRepository,
-        ContainerInterface $container
-    ) {
+        EntityRepository $ratepayApiLogRepository
+    )
+    {
         $this->ratepayApiLogRepository = $ratepayApiLogRepository;
-        $this->container = $container;
     }
 
     public static function getSubscribedEvents(): array
@@ -82,10 +79,14 @@ class PaymentFailedSubscriber implements EventSubscriberInterface
                 return;
             }
 
-            $session = $this->container->get('session');
-            if ($response && $session) {
-                $message = empty($response->getCustomerMessage()) ? $response->getResultMessage() : $response->getCustomerMessage();
-                $session->getFlashBag()->add('danger', $message);
+            $session = $event->getRequest()->getSession();
+            if ($session instanceof Session) {
+                $message = null;
+                if (method_exists($response, 'getCustomerMessage')) {
+                    $message = $response->getCustomerMessage();
+                }
+
+                $session->getFlashBag()->add('danger', !empty($message) ? $message : $response->getResultMessage());
             }
         }
     }

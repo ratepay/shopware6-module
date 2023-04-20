@@ -24,7 +24,6 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class RedirectExceptionListener implements EventSubscriberInterface
 {
@@ -72,7 +71,7 @@ class RedirectExceptionListener implements EventSubscriberInterface
                 $session->getFlashBag()->add(StorefrontController::DANGER, $throwable->getCustomerMessage());
             }
 
-            /** @var UrlGeneratorInterface $router */
+            /** @var \Symfony\Component\Routing\Router $router */
             $router = $this->container->get('router');
             $url = $router->generate(
                 $throwable->getRoute(),

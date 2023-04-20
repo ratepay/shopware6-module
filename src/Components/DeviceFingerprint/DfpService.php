@@ -9,11 +9,11 @@
 
 namespace Ratepay\RpayPayments\Components\DeviceFingerprint;
 
-use RuntimeException;
 use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use RatePAY\Service\DeviceFingerprint;
+use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderCustomer\OrderCustomerEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -78,7 +78,7 @@ class DfpService implements DfpServiceInterface
      * generates a unique prefix for the current cart.
      * we add this prefix to the beginning of the dfp-id to make sure we can validate it when using a headless application
      * if the client does not provide a User-Agent header, the client have to provide a dfp-id via request
-     * @var SalesChannelContext|OrderEntity $object
+     * @param SalesChannelContext|OrderEntity $object
      */
     private function getDfpPrefix($object): string
     {

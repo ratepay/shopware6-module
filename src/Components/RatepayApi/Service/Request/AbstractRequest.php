@@ -169,7 +169,6 @@ abstract class AbstractRequest
         }
 
         $this->initRequest($requestData);
-        /** @var BuildEvent $event */
         $this->eventDispatcher->dispatch(new InitEvent($requestData), get_class($this) . self::EVENT_INIT_REQUEST);
     }
 

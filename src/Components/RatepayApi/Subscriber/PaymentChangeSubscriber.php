@@ -27,6 +27,7 @@ use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentReturnServ
 use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Order\RecalculationService;
+use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -60,7 +61,8 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         RecalculationService $recalculationService,
         Logger $logger,
         HistoryLogger $historyLogger
-    ) {
+    )
+    {
         $this->eventDispatcher = $eventDispatcher;
         $this->productRepository = $productRepository;
         $this->orderRepository = $orderRepository;
@@ -87,7 +89,6 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         $requestData = $event->getRequestData();
 
         $positionUpdates = [];
-        /** @var OrderLineItemEntity $item */
         foreach ($requestData->getItems() as $id => $qty) {
             if ($id === OrderOperationData::ITEM_ID_SHIPPING) {
                 /** @var RatepayOrderDataEntity $ratepayData */
@@ -149,7 +150,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         /** @var LineItem $item */
         foreach ($requestData->getItems() as $item) {
             $this->recalculationService->addCustomLineItem($requestData->getOrder()->getId(), $item, $versionContext);
-            $newItems[$item->getId()] = $item->getPriceDefinition()->getQuantity();
+            $newItems[$item->getId()] = $item->getPriceDefinition() instanceof QuantityPriceDefinition ? $item->getPriceDefinition()->getQuantity() : 1;
         }
 
         // recalculate the whole order. (without this, shipping costs will added to the order if there is a shipping free position - RATESWSX-71)

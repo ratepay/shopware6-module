@@ -9,6 +9,7 @@
 
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Service;
 
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Exception;
 use Monolog\Logger;
 use RatePAY\Exception\RequestException;
@@ -183,6 +184,7 @@ class InstallmentService
         }
 
         $installmentBuilders = [];
+        /** @var ProfileConfigEntity $profileConfig */
         foreach ($profileConfigs->getElements() as $profileConfig) {
             /** @var ProfileConfigMethodEntity $paymentMethodConfig */
             $paymentMethodConfig = $profileConfig->getPaymentMethodConfigs()->filterByMethod($context->getPaymentMethodId())->first();
