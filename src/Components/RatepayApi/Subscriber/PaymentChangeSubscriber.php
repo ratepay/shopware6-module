@@ -87,7 +87,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         $requestData = $event->getRequestData();
 
         $positionUpdates = [];
-        /* @var OrderLineItemEntity $item */
+        /** @var OrderLineItemEntity $item */
         foreach ($requestData->getItems() as $id => $qty) {
             if ($id === OrderOperationData::ITEM_ID_SHIPPING) {
                 /** @var RatepayOrderDataEntity $ratepayData */

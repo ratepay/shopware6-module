@@ -25,17 +25,16 @@ class LockService
     private EntityRepository $paymentLockRepository;
 
     /**
+     * @var EntityRepository
      * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
      * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
-     *
      * After Shopware has removed the decorator, we can replace this by a normal definition
-     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
-     * TODO remove comment on Shopware Version 6.5.0.0 & readd type int & change constructor argument type
+     * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
      */
-    private $paymentMethodRepository;
+    private object $paymentMethodRepository;
 
     public function __construct(
-        $paymentMethodRepository,
+        object $paymentMethodRepository,
         EntityRepository $paymentLockRepository
     ) {
         $this->paymentMethodRepository = $paymentMethodRepository;

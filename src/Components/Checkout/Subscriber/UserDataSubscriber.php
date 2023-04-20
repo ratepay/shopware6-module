@@ -56,7 +56,7 @@ class UserDataSubscriber implements EventSubscriberInterface
         $orderBillingAddress = $order->getAddresses()->get($order->getBillingAddressId());
         $dataBag = $paymentRequestData->getRequestDataBag();
 
-        if ($customer === null || $orderBillingAddress === null) {
+        if (!$customer instanceof CustomerEntity || !$orderBillingAddress instanceof OrderAddressEntity) {
             // should never occur.
             throw new RuntimeException('user data can not be saved. Unknown error.');
         }

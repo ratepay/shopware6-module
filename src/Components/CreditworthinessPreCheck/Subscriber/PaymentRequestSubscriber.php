@@ -47,7 +47,7 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
             $requestData->getOrder() ? TransactionIdService::PREFIX_ORDER . $requestData->getOrder()->getId() : TransactionIdService::PREFIX_CART
         );
 
-        if ($ratepayTransactionId === null) {
+        if (!$ratepayTransactionId instanceof TransactionIdEntity) {
             throw new RatepayException('Stored transaction id was not found');
         }
 

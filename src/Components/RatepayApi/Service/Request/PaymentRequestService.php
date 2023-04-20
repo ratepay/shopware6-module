@@ -92,7 +92,7 @@ class PaymentRequestService extends AbstractRequest
 
     protected function initRequest(AbstractRequestData $requestData): void
     {
-        /* @var PaymentRequestData $requestData */
+        /** @var PaymentRequestData $requestData */
         if ($requestData->getRatepayTransactionId() === null) {
             throw new Exception('no transaction id given'); // TODO add exception
         }
@@ -100,7 +100,7 @@ class PaymentRequestService extends AbstractRequest
 
     protected function getRequestContent(AbstractRequestData $requestData): ?Content
     {
-        /* @var PaymentRequestData $requestData */
+        /** @var PaymentRequestData $requestData */
         return (new Content())
             ->setShoppingBasket($this->shoppingBasketFactory->getData($requestData))
             ->setCustomer($this->customerFactory->getData($requestData))
@@ -109,10 +109,10 @@ class PaymentRequestService extends AbstractRequest
 
     protected function getRequestHead(AbstractRequestData $requestData): Head
     {
-        /* @var PaymentRequestData $requestData */
+        /** @var PaymentRequestData $requestData */
         $head = parent::getRequestHead($requestData);
         $head->setExternal($this->externalFactory->getData($requestData));
-        if ($requestData->getRatepayTransactionId()) {
+        if ($requestData->getRatepayTransactionId() !== null) {
             $head->setTransactionId($requestData->getRatepayTransactionId());
         }
 
@@ -126,7 +126,7 @@ class PaymentRequestService extends AbstractRequest
             return $requestData->getProfileConfig();
         }
 
-        /* @var $requestData PaymentRequestData */
+        /** @var PaymentRequestData $requestData */
         $search = $this->profileConfigOrderSearch->createSearchObject($requestData->getOrder());
         $search->setPaymentMethodId($requestData->getTransaction()->getPaymentMethodId());
 

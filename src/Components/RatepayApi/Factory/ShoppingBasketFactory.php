@@ -9,13 +9,13 @@
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 
-use RatePAY\Model\Request\SubModel\Content\ShoppingBasket\Items;
-use RatePAY\Model\Request\SubModel\Content\ShoppingBasket\Items\Item;
-use RatePAY\Model\Request\SubModel\Content\ShoppingBasket\Shipping;
-use RatePAY\Model\Request\SubModel\Content\ShoppingBasket\Discount;
 use BadMethodCallException;
 use InvalidArgumentException;
 use RatePAY\Model\Request\SubModel\Content\ShoppingBasket;
+use RatePAY\Model\Request\SubModel\Content\ShoppingBasket\Discount;
+use RatePAY\Model\Request\SubModel\Content\ShoppingBasket\Items;
+use RatePAY\Model\Request\SubModel\Content\ShoppingBasket\Items\Item;
+use RatePAY\Model\Request\SubModel\Content\ShoppingBasket\Shipping;
 use Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Dto\PaymentQueryData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OperationDataWithBasket;
@@ -25,8 +25,6 @@ use Ratepay\RpayPayments\Components\RatepayApi\Exception\EmptyBasketException;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
-use Shopware\Core\Checkout\Cart\Price\Struct\PriceDefinitionInterface;
-use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 
 /**
@@ -64,9 +62,10 @@ class ShoppingBasketFactory extends AbstractFactory
             } elseif ($requestData instanceof OrderOperationData) {
                 $order = $requestData->getOrder();
                 $item = $order->getLineItems()->get($id);
-                if (!$item) {
+                if (!$item instanceof OrderLineItemEntity) {
                     throw new InvalidArgumentException($id . ' does not belongs to the order ' . $order->getId());
                 }
+
                 $this->addOrderLineItemToBasketByOrderItem($requestData, $basket, $item, $qty);
             }
         }
@@ -129,7 +128,7 @@ class ShoppingBasketFactory extends AbstractFactory
         } else {
             $discount = $basket->getDiscount() ?: new Discount();
             $discount->setDescription('discount');
-            $discount->setDescriptionAddition(($discount->getDescriptionAddition() ? $discount->getDescriptionAddition() . ', ' : null) . $item->getLabel());
+            $discount->setDescriptionAddition((!empty($discount->getDescriptionAddition()) ? $discount->getDescriptionAddition() . ', ' : null) . $item->getLabel());
             $discount->setUnitPriceGross($discount->getUnitPriceGross() + $this->getLineItemUnitPrice($taxStatus, $item->getPrice(), $qty));
             $discount->setTaxRate($this->getTaxRate($item->getPrice()));
             $basket->setDiscount($discount);
@@ -154,7 +153,7 @@ class ShoppingBasketFactory extends AbstractFactory
         } else {
             $discount = $basket->getDiscount() ?: new Discount();
             $discount->setDescription('discount');
-            $discount->setDescriptionAddition(($discount->getDescriptionAddition() ? $discount->getDescriptionAddition() . ', ' : null) . $item->getLabel());
+            $discount->setDescriptionAddition((!empty($discount->getDescriptionAddition()) ? $discount->getDescriptionAddition() . ', ' : null) . $item->getLabel());
             $discount->setUnitPriceGross($discount->getUnitPriceGross() + $unitPrice);
             $discount->setTaxRate($this->getTaxRate($item->getPrice()));
             $basket->setDiscount($discount);

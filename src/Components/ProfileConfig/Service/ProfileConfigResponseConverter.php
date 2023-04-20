@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\ProfileConfig\Service;
 
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use RatePAY\Model\Response\ProfileRequest;
 use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
@@ -24,30 +23,28 @@ use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
 
 class ProfileConfigResponseConverter
 {
     /**
+     * @var EntityRepository
      * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
      * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
-     *
      * After Shopware has removed the decorator, we can replace this by a normal definition
-     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
-     * TODO remove comment on Shopware Version 6.5.0.0 & readd type int & change constructor argument type
+     * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
      */
-    private $paymentRepository;
+    private object $paymentMethodRepository;
 
     /**
-     * @var PaymentMethodEntity[]
+     * @var PaymentMethodEntity[]|null
      */
     private ?array $paymentMethods = null;
 
-    public function __construct($paymentRepository)
+    public function __construct(object $paymentMethodRepository)
     {
-        $this->paymentRepository = $paymentRepository;
+        $this->paymentMethodRepository = $paymentMethodRepository;
     }
 
     /**
@@ -143,7 +140,7 @@ class ProfileConfigResponseConverter
             $criteria = new Criteria();
             $criteria->addAssociation('plugin');
             $criteria->addFilter(new EqualsFilter('plugin.baseClass', RpayPayments::class));
-            $this->paymentMethods = $this->paymentRepository->search($criteria, Context::createDefaultContext())->getElements();
+            $this->paymentMethods = $this->paymentMethodRepository->search($criteria, Context::createDefaultContext())->getElements();
         }
 
         return $this->paymentMethods;

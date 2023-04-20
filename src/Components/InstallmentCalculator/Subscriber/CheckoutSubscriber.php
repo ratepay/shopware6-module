@@ -51,7 +51,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
                 ->setPaymentMethodId($paymentMethod->getId())
                 ->setOrder($order);
 
-            if ($order === null) {
+            if (!$order instanceof OrderEntity) {
                 $calcContext->setTotalAmount($this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext)->getPrice()->getTotalPrice());
             }
 

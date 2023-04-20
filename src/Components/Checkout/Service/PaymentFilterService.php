@@ -51,7 +51,7 @@ class PaymentFilterService
 
             if ($order === null) {
                 $customer = $salesChannelContext->getCustomer();
-                if ($customer === null ||
+                if (!$customer instanceof CustomerEntity ||
                     $customer->getActiveBillingAddress() === null ||
                     $customer->getActiveShippingAddress() === null
                 ) {
@@ -73,7 +73,7 @@ class PaymentFilterService
             $methodConfigs = $profileConfig->getPaymentMethodConfigs()->filterByMethod($paymentMethod->getId());
             $methodConfig = $methodConfigs->first();
 
-            if ($methodConfig === null) {
+            if (!$methodConfig instanceof ProfileConfigMethodEntity) {
                 // no profile method config is found
                 return null;
             }

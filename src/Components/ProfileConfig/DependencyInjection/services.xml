@@ -31,7 +31,7 @@
 
 
         <service id="Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigResponseConverter">
-            <argument key="$paymentRepository" id="payment_method.repository" type="service"/>
+            <argument key="$paymentMethodRepository" id="payment_method.repository" type="service"/>
         </service>
 
     </services>

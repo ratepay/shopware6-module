@@ -9,7 +9,6 @@
 
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Service;
 
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Exception;
 use Monolog\Logger;
 use RatePAY\Exception\RequestException;
@@ -23,8 +22,8 @@ use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundExcep
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodInstallmentEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileByOrderEntity;
-use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileSearchService;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileBySalesChannelContext;
+use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileSearchService;
 use Ratepay\RpayPayments\Components\RatepayApi\Exception\TransactionIdFetchFailedException;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService;
 use Ratepay\RpayPayments\Util\PaymentFirstday;
@@ -48,14 +47,13 @@ class InstallmentService
     private EventDispatcherInterface $eventDispatcher;
 
     /**
+     * @var EntityRepository
      * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
      * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
-     *
      * After Shopware has removed the decorator, we can replace this by a normal definition
-     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
-     * TODO remove comment on Shopware Version 6.5.0.0 & readd type int & change constructor argument type
+     * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
      */
-    private $paymentMethodRepository;
+    private object $paymentMethodRepository;
 
     private Logger $logger;
 
@@ -88,7 +86,7 @@ class InstallmentService
         ProfileBySalesChannelContext $profileBySalesChannelContext,
         TransactionIdService $transactionIdService,
         EventDispatcherInterface $eventDispatcher,
-        $paymentMethodRepository,
+        object $paymentMethodRepository,
         Logger $logger
     )
     {

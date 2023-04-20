@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
+use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
 use Rector\CodingStyle\Rector\FuncCall\ConsistentPregDelimiterRector;
 use Rector\Config\RectorConfig;
-use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 
@@ -16,12 +16,13 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->skip([
         \Rector\Php74\Rector\LNumber\AddLiteralSeparatorToNumberRector::class,
+        \Rector\CodeQuality\Rector\Ternary\SwitchNegatedTernaryRector::class,
     ]);
 
-    // register a single rule
     $rectorConfig->rule(InlineConstructorDefaultToPropertyRector::class);
+    $rectorConfig->rule(ExplicitBoolCompareRector::class);
 
-    $rectorConfig->importNames(true, false);
+    $rectorConfig->importNames(true, true);
 
     // define sets of rules
     $rectorConfig->sets([
@@ -36,4 +37,7 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->ruleWithConfiguration(ConsistentPregDelimiterRector::class, [
         ConsistentPregDelimiterRector::DELIMITER => '/',
     ]);
+
+
+    $rectorConfig->phpstanConfig(__DIR__ . '/phpstan.neon');
 };

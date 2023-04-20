@@ -98,7 +98,7 @@ class ProductPanel extends AbstractController
                 }
             }
 
-            /** @var $orderExtension RatepayOrderDataEntity */
+            /** @var RatepayOrderDataEntity $orderExtension */
             if (($orderExtension = $order->getExtension(OrderExtension::EXTENSION_NAME)) &&
                 $orderExtension->getShippingPosition()) {
                 $items[OrderOperationData::ITEM_ID_SHIPPING] = [
@@ -140,6 +140,7 @@ class ProductPanel extends AbstractController
             if (!isset($params['items']) || !is_array($params['items'])) {
                 throw new InvalidRequestParameterException('items');
             }
+
             $items = [];
             foreach ($params['items'] ?? [] as $data) {
                 $items[$data['id']] = (int)$data['quantity'];
@@ -197,7 +198,7 @@ class ProductPanel extends AbstractController
 
         $order = $this->fetchOrder($context, $orderId);
 
-        if ($order === null) {
+        if (!$order instanceof OrderEntity) {
             return $this->json([
                 'success' => false,
                 'message' => 'Order was not found',

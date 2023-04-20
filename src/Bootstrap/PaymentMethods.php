@@ -59,10 +59,10 @@ class PaymentMethods extends AbstractBootstrap
      * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
      *
      * After Shopware has removed the decorator, we can replace this by a normal definition
-     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
+     * @var EntityRepository|null
      * TODO remove comment on Shopware Version 6.5.0.0 & readd type int
      */
-    private $paymentRepository;
+    private ?object $paymentRepository = null;
 
     public function injectServices(): void
     {

@@ -3,6 +3,7 @@
 namespace Ratepay\RpayPayments\Components\DeviceFingerprint\Constraint;
 
 use Ratepay\RpayPayments\Components\DeviceFingerprint\DfpServiceInterface;
+use RuntimeException;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\Validator\Constraint;
@@ -23,17 +24,24 @@ class DfpConstraint extends Constraint
 
     /**
      * @var OrderEntity|SalesChannelContext
+     * @noinspection PhpDocFieldTypeMismatchInspection
      */
-    private $object;
+    private object $object;
 
     /**
      * @param DfpServiceInterface $dfpService
      * @param SalesChannelContext|OrderEntity $object
+     * @noinspection PhpDocSignatureInspection
      */
-    public function __construct(DfpServiceInterface $dfpService, $object)
+    public function __construct(DfpServiceInterface $dfpService, object $object)
     {
         parent::__construct();
         $this->dfpService = $dfpService;
+
+        if (!$object instanceof SalesChannelContext && !$object instanceof OrderEntity) {
+            throw new RuntimeException('$object should be on of OrderEntity or SalesChannelContext');
+        }
+
         $this->object = $object;
     }
 
@@ -45,7 +53,7 @@ class DfpConstraint extends Constraint
     /**
      * @return OrderEntity|SalesChannelContext
      */
-    public function getObject()
+    public function getObject(): object
     {
         return $this->object;
     }

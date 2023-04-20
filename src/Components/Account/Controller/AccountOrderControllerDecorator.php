@@ -29,17 +29,17 @@ class AccountOrderControllerDecorator
 {
 
     /**
-     * @var \Shopware\Storefront\Controller\AccountOrderController
+     * @var AccountOrderController
      */
     private AccountOrderController $innerService;
 
     /**
-     * @var \Shopware\Core\Framework\DataAbstractionLayer\EntityRepository
+     * @var EntityRepository
      */
     private EntityRepository $orderRepository;
 
     /**
-     * @var \Symfony\Component\Routing\RouterInterface
+     * @var RouterInterface
      */
     private RouterInterface $router;
 

@@ -2,6 +2,7 @@
 
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Controller;
 
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentCalculatorContext;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Struct\InstallmentCalculationResponse;
@@ -42,7 +43,7 @@ class InstallmentRoute
         $value = $value ?: 1; // RATESWSX-186: fix that no "0" values can be provided
 
         if ($orderId) {
-            /** @var \Shopware\Core\Checkout\Order\OrderEntity $order */
+            /** @var OrderEntity $order */
             $order = $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($orderId), $salesChannelContext->getContext())->first();
             if ($order === null) {
                 throw new NotFoundHttpException();

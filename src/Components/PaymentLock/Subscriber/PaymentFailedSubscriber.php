@@ -11,9 +11,8 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\PaymentLock\Subscriber;
 
-use Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Dto\PaymentQueryData;
 use Ratepay\RpayPayments\Components\PaymentLock\Service\LockService;
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\CheckoutOperationInterface;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\RequestDoneEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -42,29 +41,21 @@ class PaymentFailedSubscriber implements EventSubscriberInterface
     {
         $requestData = $event->getRequestData();
         $response = $event->getRequestBuilder()->getResponse();
-        if ($requestData instanceof PaymentRequestData || $requestData instanceof PaymentQueryData) {
-            if ($response &&
-                in_array((int) $response->getReasonCode(), self::ERROR_CODES, false)
-            ) {
-                if ($requestData->getSalesChannelContext()->getCustomer() === null) {
-                    // customer is not logged in - guest order
-                    return;
-                }
+        if (!$requestData instanceof CheckoutOperationInterface || $response === null) {
+            return;
+        }
 
-                $paymentMethodIds = [];
-                /* @noinspection NotOptimalIfConditionsInspection */
-                if ($requestData instanceof PaymentRequestData) {
-                    $paymentMethodIds[] = $requestData->getOrder()->getTransactions()->last()->getPaymentMethodId();
-                } elseif ($requestData instanceof PaymentQueryData) {
-                    $paymentMethodIds[] = $requestData->getSalesChannelContext()->getPaymentMethod()->getId();
-                }
-
-                $this->lockService->lockPaymentMethod(
-                    $requestData->getContext(),
-                    $requestData->getSalesChannelContext()->getCustomer()->getId(),
-                    count($paymentMethodIds) ? $paymentMethodIds : null
-                );
+        if (in_array((int)$response->getReasonCode(), self::ERROR_CODES, false)) {
+            if ($requestData->getSalesChannelContext()->getCustomer() === null) {
+                // customer is not logged in - guest order
+                return;
             }
+
+            $this->lockService->lockPaymentMethod(
+                $requestData->getContext(),
+                $requestData->getSalesChannelContext()->getCustomer()->getId(),
+                $requestData->getPaymentMethodId()
+            );
         }
     }
 }

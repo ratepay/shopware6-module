@@ -85,7 +85,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
 
         $order = $this->getOrderWithAssociations($transaction->getOrder(), $salesChannelContext->getContext());
 
-        if ($order === null || $ratepayData->count() === 0) {
+        if (!$order instanceof OrderEntity || $ratepayData->count() === 0) {
             throw new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'unknown error during payment');
         }
 

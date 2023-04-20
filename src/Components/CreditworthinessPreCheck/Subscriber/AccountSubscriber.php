@@ -94,7 +94,7 @@ class AccountSubscriber implements EventSubscriberInterface
     /**
      * @return never
      */
-    private function throwException(OrderEntity $orderEntity, $message): void
+    private function throwException(OrderEntity $orderEntity, ?string $message): void
     {
         throw (new ForwardException(
             'frontend.account.edit-order.page',

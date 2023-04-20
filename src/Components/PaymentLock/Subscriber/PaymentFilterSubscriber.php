@@ -38,10 +38,11 @@ class PaymentFilterSubscriber implements EventSubscriberInterface
             $customerId = $event->getOrderEntity()->getOrderCustomer()->getCustomerId();
         } else {
             $customer = $event->getSalesChannelContext()->getCustomer();
-            if ($customer === null) {
+            if (!$customer instanceof CustomerEntity) {
                 // customer is not logged in, or customer session has not been started yet.
                 return;
             }
+
             $customerId = $customer->getId();
         }
 

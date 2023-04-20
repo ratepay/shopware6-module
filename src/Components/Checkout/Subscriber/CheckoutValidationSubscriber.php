@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
 
-use Symfony\Component\HttpFoundation\Request;
 use Ratepay\RpayPayments\Components\PaymentHandler\AbstractPaymentHandler;
 use Ratepay\RpayPayments\Util\DataValidationHelper;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PaymentHandlerRegistry;
@@ -20,8 +19,8 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\Framework\Validation\DataValidationDefinition;
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class CheckoutValidationSubscriber implements EventSubscriberInterface
@@ -58,7 +57,7 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
         $paymentHandlerIdentifier = $paymentMethod->getHandlerIdentifier();
 
         if (strpos($paymentHandlerIdentifier, 'RpayPayments') !== false) {
-            /** @var $paymentHandler AbstractPaymentHandler */
+            /** @var AbstractPaymentHandler $paymentHandler */
             $paymentHandler = $this->paymentHandlerRegistry->getPaymentMethodHandler($paymentMethod->getId());
 
             $validationDefinitions = $paymentHandler->getValidationDefinitions(new RequestDataBag($request->request->all()), $salesChannelContext);

@@ -14,13 +14,14 @@ use RatePAY\Model\Request\SubModel\Head;
 use RatePAY\RequestBuilder;
 use Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Dto\PaymentQueryData;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
-use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileSearchService;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileBySalesChannelContext;
+use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileSearchService;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\CustomerFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\AbstractRequest;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -78,7 +79,7 @@ class PaymentQueryService extends AbstractRequest
 
     protected function getRequestHead(AbstractRequestData $requestData): Head
     {
-        /* @var PaymentQueryData $requestData */
+        /** @var PaymentQueryData $requestData */
         $head = parent::getRequestHead($requestData);
         $head->setTransactionId($requestData->getTransactionId());
 
@@ -87,7 +88,7 @@ class PaymentQueryService extends AbstractRequest
 
     protected function getRequestContent(AbstractRequestData $requestData): ?Content
     {
-        /* @var PaymentQueryData $requestData */
+        /** @var PaymentQueryData $requestData */
         return (new Content())
             ->setShoppingBasket($this->shoppingBasketFactory->getData($requestData))
             ->setCustomer($this->customerFactory->getData($requestData));
@@ -95,9 +96,8 @@ class PaymentQueryService extends AbstractRequest
 
     protected function getProfileConfig(AbstractRequestData $requestData): ?ProfileConfigEntity
     {
-        /* @var $requestData PaymentQueryData */
-
-        /** @var \Shopware\Core\Framework\Validation\DataBag\RequestDataBag $ratepayData */
+        /** @var PaymentQueryData $requestData */
+        /** @var RequestDataBag $ratepayData */
         $ratepayData = $requestData->getRequestDataBag()->get('ratepay');
 
         if ($ratepayData->has('profile_uuid')) {

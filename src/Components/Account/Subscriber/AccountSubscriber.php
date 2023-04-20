@@ -11,18 +11,16 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\Account\Subscriber;
 
-use Ratepay\RpayPayments\Util\RequestHelper;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Ratepay\RpayPayments\Components\Account\Event\PaymentUpdateRequestBagValidatedEvent;
 use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\Checkout\Service\ExtensionService;
 use Ratepay\RpayPayments\Components\PaymentHandler\AbstractPaymentHandler;
-use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
 use Ratepay\RpayPayments\Components\RedirectException\Exception\ForwardException;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Ratepay\RpayPayments\Util\DataValidationHelper;
 use Ratepay\RpayPayments\Util\MethodHelper;
+use Ratepay\RpayPayments\Util\RequestHelper;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PaymentHandlerRegistry;
@@ -47,14 +45,13 @@ class AccountSubscriber implements EventSubscriberInterface
     private DataValidator $dataValidator;
 
     /**
+     * @var EntityRepository
      * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
      * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
-     *
      * After Shopware has removed the decorator, we can replace this by a normal definition
-     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
-     * TODO remove comment on Shopware Version 6.5.0.0 & readd type int & change constructor argument type
+     * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
      */
-    private $paymentMethodRepository;
+    private object $paymentMethodRepository;
 
     private PaymentHandlerRegistry $paymentHandlerRegistry;
 
@@ -67,7 +64,7 @@ class AccountSubscriber implements EventSubscriberInterface
     public function __construct(
         ExtensionService $extensionService,
         PaymentHandlerRegistry $paymentHandlerRegistry,
-        $paymentMethodRepository,
+        object $paymentMethodRepository,
         EntityRepository $orderRepository,
         DataValidator $dataValidator,
         EventDispatcherInterface $eventDispatcher,

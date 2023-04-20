@@ -10,16 +10,16 @@
 namespace Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Dto;
 
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\CheckoutOperationInterface;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OperationDataWithBasket;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class PaymentQueryData extends AbstractRequestData implements OperationDataWithBasket
+class PaymentQueryData extends AbstractRequestData implements OperationDataWithBasket, CheckoutOperationInterface
 {
     private DataBag $requestDataBag;
 
@@ -112,5 +112,10 @@ class PaymentQueryData extends AbstractRequestData implements OperationDataWithB
     public function isSendShippingCostsAsCartItem(): bool
     {
         return $this->sendShippingCostsAsCartItem;
+    }
+
+    public function getPaymentMethodId(): string
+    {
+        return $this->getSalesChannelContext()->getPaymentMethod()->getId();
     }
 }

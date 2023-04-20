@@ -14,13 +14,13 @@ use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class PaymentRequestData extends OrderOperationData
+class PaymentRequestData extends OrderOperationData implements CheckoutOperationInterface
 {
     private DataBag $requestDataBag;
 
     private SalesChannelContext $salesChannelContext;
 
-    private string $ratepayTransactionId;
+    private ?string $ratepayTransactionId;
 
     private bool $sendDiscountAsCartItem;
 
@@ -31,7 +31,7 @@ class PaymentRequestData extends OrderOperationData
         OrderEntity $order,
         OrderTransactionEntity $transaction,
         DataBag $requestDataBag,
-        string $ratepayTransactionId,
+        string $ratepayTransactionId = null,
         bool $sendDiscountAsCartItem = false,
         bool $sendShippingCostsAsCartItem = false
     )
@@ -73,12 +73,12 @@ class PaymentRequestData extends OrderOperationData
         return $this->salesChannelContext;
     }
 
-    public function getRatepayTransactionId(): string
+    public function getRatepayTransactionId(): ?string
     {
         return $this->ratepayTransactionId;
     }
 
-    public function setRatepayTransactionId(string $ratepayTransactionId): void
+    public function setRatepayTransactionId(string $ratepayTransactionId = null): void
     {
         $this->ratepayTransactionId = $ratepayTransactionId;
     }
@@ -91,5 +91,10 @@ class PaymentRequestData extends OrderOperationData
     public function isSendShippingCostsAsCartItem(): bool
     {
         return $this->sendShippingCostsAsCartItem;
+    }
+
+    public function getPaymentMethodId(): string
+    {
+        return $this->getOrder()->getTransactions()->last()->getPaymentMethodId();
     }
 }
