@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -22,7 +24,6 @@ use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\BuildEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Storefront\Event\RouteRequest\OrderRouteRequestEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -40,8 +41,7 @@ class DeviceFingerprintSubscriber implements EventSubscriberInterface
         DfpServiceInterface $dfpService,
         ConfigService $configService,
         RequestStack $requestStack
-    )
-    {
+    ) {
         $this->dfpService = $dfpService;
         $this->requestStack = $requestStack;
         $this->configService = $configService;
@@ -54,14 +54,10 @@ class DeviceFingerprintSubscriber implements EventSubscriberInterface
             PaymentRequestService::EVENT_BUILD_HEAD => 'onPaymentRequest',
             ValidationDefinitionCollectEvent::class => 'addValidationDefinition',
             OrderExtensionDataBuilt::class => 'addDfpTokenToOrder',
-            OrderRouteRequestEvent::class => 'addRatepayDataToAccountOrderCriteria'
+            OrderRouteRequestEvent::class => 'addRatepayDataToAccountOrderCriteria',
         ];
     }
 
-    /**
-     * @param BuildEvent $buildEvent
-     * @return void
-     */
     public function onPaymentRequest(BuildEvent $buildEvent): void
     {
         /** @var PaymentRequestData $requestData */
@@ -85,7 +81,7 @@ class DeviceFingerprintSubscriber implements EventSubscriberInterface
             $event->getExtension()->set('dfp', [
                 'snippetId' => $this->configService->getDeviceFingerprintSnippetId(),
                 'html' => $snippet,
-                'deviceIdentToken' => $this->dfpService->generatedDfpId($this->requestStack->getCurrentRequest(), $baseData)
+                'deviceIdentToken' => $this->dfpService->generatedDfpId($this->requestStack->getCurrentRequest(), $baseData),
             ]);
         }
     }
@@ -98,7 +94,7 @@ class DeviceFingerprintSubscriber implements EventSubscriberInterface
 
         $event->addDefinition('deviceIdentToken', [
             new NotBlank(),
-            new DfpConstraint($this->dfpService, $event->getBaseData())
+            new DfpConstraint($this->dfpService, $event->getBaseData()),
         ]);
     }
 

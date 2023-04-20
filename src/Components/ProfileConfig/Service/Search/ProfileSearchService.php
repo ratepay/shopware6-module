@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+/*
+ * Copyright (c) Ratepay GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Ratepay\RpayPayments\Components\ProfileConfig\Service\Search;
 
 use Ratepay\RpayPayments\Components\ProfileConfig\Dto\ProfileConfigSearch;
@@ -19,7 +27,6 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ProfileSearchService implements ProfileSearchInterface
 {
-
     protected Context $context;
 
     private EntityRepository $repository;
@@ -29,8 +36,7 @@ class ProfileSearchService implements ProfileSearchInterface
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         EntityRepository $repository
-    )
-    {
+    ) {
         $this->repository = $repository;
         $this->eventDispatcher = $eventDispatcher;
 
@@ -38,7 +44,6 @@ class ProfileSearchService implements ProfileSearchInterface
     }
 
     /**
-     * @param ProfileConfigSearch $profileConfigSearch
      * @return EntitySearchResult<ProfileConfigEntity>
      */
     public function search(ProfileConfigSearch $profileConfigSearch): EntitySearchResult
@@ -88,12 +93,16 @@ class ProfileSearchService implements ProfileSearchInterface
         // total amount
         $paymentMethodConfigFilters[] = new RangeFilter(
             ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_LIMIT_MIN,
-            [RangeFilter::LTE => $profileConfigSearch->getTotalAmount()]
+            [
+                RangeFilter::LTE => $profileConfigSearch->getTotalAmount(),
+            ]
         );
 
         $b2cRangeFilter = new RangeFilter(
             ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_LIMIT_MAX,
-            [RangeFilter::GTE => $profileConfigSearch->getTotalAmount()]
+            [
+                RangeFilter::GTE => $profileConfigSearch->getTotalAmount(),
+            ]
         );
         if ($profileConfigSearch->isB2b()) {
             $paymentMethodConfigFilters[] = new OrFilter([
@@ -102,12 +111,14 @@ class ProfileSearchService implements ProfileSearchInterface
                         ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_LIMIT_MAX_B2B,
                         null
                     ),
-                    $b2cRangeFilter
+                    $b2cRangeFilter,
                 ]),
                 new RangeFilter(
                     ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS . '.' . ProfileConfigMethodEntity::FIELD_LIMIT_MAX_B2B,
-                    [RangeFilter::GTE => $profileConfigSearch->getTotalAmount()]
-                )
+                    [
+                        RangeFilter::GTE => $profileConfigSearch->getTotalAmount(),
+                    ]
+                ),
             ]);
         } else {
             $paymentMethodConfigFilters[] = $b2cRangeFilter;
@@ -128,8 +139,8 @@ class ProfileSearchService implements ProfileSearchInterface
             $this->context
         ));
 
-//        TODO implement
-//        $this->eventDispatcher->dispatch(new CreateProfileConfigCriteriaEvent($criteria, $profileConfigSearch, $this->context));
+        //        TODO implement
+        //        $this->eventDispatcher->dispatch(new CreateProfileConfigCriteriaEvent($criteria, $profileConfigSearch, $this->context));
 
         /* @phpstan-ignore-next-line */
         return $this->repository->search($criteria, $this->context);
@@ -139,5 +150,4 @@ class ProfileSearchService implements ProfileSearchInterface
     {
         return $this->repository->search(new Criteria([$profileConfigId]), $this->context)->first();
     }
-
 }

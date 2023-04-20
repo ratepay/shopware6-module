@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+/*
+ * Copyright (c) Ratepay GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Subscriber;
 
 use Exception;
@@ -19,7 +27,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ProductPageSubscriber implements EventSubscriberInterface
 {
-
     private SystemConfigService $configService;
 
     private InstallmentService $installmentService;
@@ -33,8 +40,7 @@ class ProductPageSubscriber implements EventSubscriberInterface
         InstallmentService $installmentService,
         EntityRepository $countryRepository,
         Logger $logger
-    )
-    {
+    ) {
         $this->configService = $configService;
         $this->installmentService = $installmentService;
         $this->countryRepository = $countryRepository;
@@ -44,7 +50,7 @@ class ProductPageSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            ProductPageLoadedEvent::class => 'addRatepayData'
+            ProductPageLoadedEvent::class => 'addRatepayData',
         ];
     }
 
@@ -140,6 +146,5 @@ class ProductPageSubscriber implements EventSubscriberInterface
             default:
                 throw new RuntimeException('type ' . $type . ' is not valid');
         }
-
     }
 }

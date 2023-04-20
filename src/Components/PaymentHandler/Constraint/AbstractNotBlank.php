@@ -17,8 +17,6 @@ use Symfony\Component\Validator\Constraints\NotBlankValidator;
 
 abstract class AbstractNotBlank extends NotBlank
 {
-    abstract protected static function getRatepayErrorCode(): string;
-
     public function __construct(array $options = null)
     {
         $options['message'] = AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . static::getRatepayErrorCode();
@@ -38,4 +36,6 @@ abstract class AbstractNotBlank extends NotBlank
     {
         return NotBlankValidator::class;
     }
+
+    abstract protected static function getRatepayErrorCode(): string;
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -15,7 +17,6 @@ use Shopware\Core\Framework\Context;
 
 class AddCreditData extends OrderOperationData
 {
-
     /**
      * @param LineItem[] $items
      */

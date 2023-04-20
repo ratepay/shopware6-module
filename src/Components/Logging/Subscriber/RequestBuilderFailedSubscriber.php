@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -31,7 +33,7 @@ class RequestBuilderFailedSubscriber implements EventSubscriberInterface
 
     public function onRequestBuilderFailed(RequestBuilderFailedEvent $event): void
     {
-        //$requestData = $event->getRequestData();
+        // $requestData = $event->getRequestData();
         $exception = $event->getException();
         $this->logger->error('RequestBuilder failed', [
             'message' => $exception->getMessage(),

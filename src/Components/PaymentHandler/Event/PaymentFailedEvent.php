@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -27,8 +29,7 @@ class PaymentFailedEvent extends AbstractPaymentEvent
         SalesChannelContext $salesChannelContext,
         PaymentRequest $response = null,
         Throwable $exception = null
-    )
-    {
+    ) {
         parent::__construct($order, $transaction, $requestDataBag, $salesChannelContext, $response);
         $this->exception = $exception;
     }

@@ -46,7 +46,7 @@ class PaymentFailedSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if (in_array((int)$response->getReasonCode(), self::ERROR_CODES, false)) {
+        if (in_array((int) $response->getReasonCode(), self::ERROR_CODES, false)) {
             if ($requestData->getSalesChannelContext()->getCustomer() === null) {
                 // customer is not logged in - guest order
                 return;

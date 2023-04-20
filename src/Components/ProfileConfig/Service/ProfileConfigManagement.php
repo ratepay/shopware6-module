@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -9,13 +11,13 @@
 
 namespace Ratepay\RpayPayments\Components\ProfileConfig\Service;
 
-use Ratepay\RpayPayments\Exception\RatepayException;
 use RatePAY\Model\Response\ProfileRequest;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\Collection\ProfileConfigCollection;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\ProfileRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\ProfileRequestService;
+use Ratepay\RpayPayments\Exception\RatepayException;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -43,8 +45,7 @@ class ProfileConfigManagement
         EntityRepository $methodConfigInstallmentRepository,
         ProfileRequestService $profileRequestService,
         ProfileConfigResponseConverter $profileConfigResponseConverter
-    )
-    {
+    ) {
         $this->repository = $repository;
         $this->methodConfigRepository = $methodConfigRepository;
         $this->methodConfigInstallmentRepository = $methodConfigInstallmentRepository;
@@ -99,7 +100,7 @@ class ProfileConfigManagement
         );
         $deleteIds = $entitiesToDelete->getIds();
         if ($deleteIds !== []) {
-            $this->methodConfigRepository->delete(array_values(array_map(static fn($id): array => [
+            $this->methodConfigRepository->delete(array_values(array_map(static fn ($id): array => [
                 ProfileConfigMethodEntity::FIELD_ID => $id,
             ], $deleteIds)), $this->context);
         }

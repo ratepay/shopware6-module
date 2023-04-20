@@ -40,8 +40,7 @@ class TokenController extends AbstractController
         EntityRepository $tokenRepository,
         EntityRepository $salesChannelDomainRepository,
         Router $router
-    )
-    {
+    ) {
         $this->tokenRepository = $tokenRepository;
         $this->salesChannelDomainRepository = $salesChannelDomainRepository;
         $this->router = $router;

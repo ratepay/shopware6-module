@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -56,8 +58,7 @@ class ProductPanel extends AbstractController
         PaymentCancelService $paymentCancelService,
         PaymentCreditService $creditService,
         LineItemFactory $lineItemFactory
-    )
-    {
+    ) {
         $this->orderRepository = $orderRepository;
         $this->creditService = $creditService;
 
@@ -130,46 +131,6 @@ class ProductPanel extends AbstractController
         return $this->processModify($request, $context, OrderOperationData::OPERATION_DELIVER, $orderId);
     }
 
-    protected function processModify(Request $request, Context $context, string $operation, string $orderId): JsonResponse
-    {
-        $order = $this->fetchOrder($context, $orderId);
-
-        if ($order !== null) {
-            $params = $request->request->all();
-            if (!isset($params['items']) || !is_array($params['items'])) {
-                throw new InvalidRequestParameterException('items');
-            }
-
-            $items = [];
-            foreach ($params['items'] as $data) {
-                $items[$data['id']] = (int)$data['quantity'];
-            }
-
-            $items = array_filter($items, static fn($quantity): bool => $quantity > 0);
-
-            if ($items === []) {
-                return $this->json([
-                    'success' => false,
-                    'message' => 'Please provide at least on item', // todo translation - should we translate it?
-                ], 200); // todo is this status OK ?
-            }
-
-            $response = $this->requestServicesByOperation[$operation]->doRequest(
-                new OrderOperationData($context, $order, $operation, $items, $request->request->get('updateStock') == true)
-            );
-
-            return $this->json([
-                'success' => $response->getResponse()->isSuccessful(),
-                'message' => $response->getResponse()->getReasonMessage(),
-            ], 200);
-        }
-
-        return $this->json([
-            'success' => false,
-            'message' => 'Order not found',
-        ], 400);
-    }
-
     /**
      * @Route("/cancel/{orderId}", name="ratepay.order_management.product_panel.cancel", methods={"POST"})
      */
@@ -191,9 +152,9 @@ class ProductPanel extends AbstractController
      */
     public function addItem(string $orderId, Request $request, Context $context): JsonResponse
     {
-        $name = (string)$request->request->get('name');
-        $grossAmount = (float) (string)$request->request->get('grossAmount');
-        $taxRuleId = (string)$request->request->get('taxId');
+        $name = (string) $request->request->get('name');
+        $grossAmount = (float) (string) $request->request->get('grossAmount');
+        $taxRuleId = (string) $request->request->get('taxId');
 
         $order = $this->fetchOrder($context, $orderId);
 
@@ -216,6 +177,46 @@ class ProductPanel extends AbstractController
             'success' => false,
             'message' => $response->getResponse()->getReasonMessage(),
         ], 200);
+    }
+
+    protected function processModify(Request $request, Context $context, string $operation, string $orderId): JsonResponse
+    {
+        $order = $this->fetchOrder($context, $orderId);
+
+        if ($order !== null) {
+            $params = $request->request->all();
+            if (!isset($params['items']) || !is_array($params['items'])) {
+                throw new InvalidRequestParameterException('items');
+            }
+
+            $items = [];
+            foreach ($params['items'] as $data) {
+                $items[$data['id']] = (int) $data['quantity'];
+            }
+
+            $items = array_filter($items, static fn ($quantity): bool => $quantity > 0);
+
+            if ($items === []) {
+                return $this->json([
+                    'success' => false,
+                    'message' => 'Please provide at least on item', // todo translation - should we translate it?
+                ], 200); // todo is this status OK ?
+            }
+
+            $response = $this->requestServicesByOperation[$operation]->doRequest(
+                new OrderOperationData($context, $order, $operation, $items, (bool) $request->request->get('updateStock'))
+            );
+
+            return $this->json([
+                'success' => $response->getResponse()->isSuccessful(),
+                'message' => $response->getResponse()->getReasonMessage(),
+            ], 200);
+        }
+
+        return $this->json([
+            'success' => false,
+            'message' => 'Order not found',
+        ], 400);
     }
 
     protected function fetchOrder(Context $context, string $orderId): ?OrderEntity

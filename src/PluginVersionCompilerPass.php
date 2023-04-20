@@ -23,9 +23,6 @@ class PluginVersionCompilerPass implements CompilerPassInterface
         $this->pluginDir = $pluginDir;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container): void
     {
         $container->setParameter('ratepay.shopware_payment.plugin_version', $this->getPluginVersion());

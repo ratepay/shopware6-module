@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -10,8 +12,8 @@
 namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 
 use RatePAY\RequestBuilder;
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentInitData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentInitData;
 
 /**
  * @method RequestBuilder doRequest(PaymentInitData $requestData)

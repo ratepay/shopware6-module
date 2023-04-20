@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -68,8 +70,7 @@ class PaymentQueryService extends AbstractRequest
         CustomerFactory $customerFactory,
         ProfileBySalesChannelContext $salesChannelSearch,
         ProfileSearchService $profileSearchService
-    )
-    {
+    ) {
         parent::__construct($eventDispatcher, $headFactory);
         $this->shoppingBasketFactory = $shoppingBasketFactory;
         $this->customerFactory = $customerFactory;

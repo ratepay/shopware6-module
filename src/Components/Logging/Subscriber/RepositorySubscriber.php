@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+/*
+ * Copyright (c) Ratepay GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Ratepay\RpayPayments\Components\Logging\Subscriber;
 
 use Ratepay\RpayPayments\Components\Logging\Model\ApiRequestLogEntity;
@@ -11,11 +19,10 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class RepositorySubscriber implements EventSubscriberInterface
 {
-
     public static function getSubscribedEvents(): array
     {
         return [
-            EntitySearchedEvent::class => 'addDefaultSortingForLogs'
+            EntitySearchedEvent::class => 'addDefaultSortingForLogs',
         ];
     }
 

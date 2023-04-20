@@ -1,8 +1,14 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
+/*
+ * Copyright (c) Ratepay GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Ratepay\RpayPayments\Components\Checkout\Event;
-
 
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Struct\ArrayStruct;
@@ -11,7 +17,6 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class PaymentDataExtensionBuilt extends Event
 {
-
     private ArrayStruct $extension;
 
     private SalesChannelContext $salesChannelContext;
@@ -39,5 +44,4 @@ class PaymentDataExtensionBuilt extends Event
     {
         return $this->orderEntity;
     }
-
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -31,31 +33,6 @@ abstract class AbstractRequest
     /**
      * @var string
      */
-    protected const EVENT_SUCCESSFUL = '.successful';
-
-    /**
-     * @var string
-     */
-    protected const EVENT_FAILED = '.failed';
-
-    /**
-     * @var string
-     */
-    protected const EVENT_BUILD_HEAD = '.build.head';
-
-    /**
-     * @var string
-     */
-    protected const EVENT_BUILD_CONTENT = '.build.content';
-
-    /**
-     * @var string
-     */
-    protected const EVENT_INIT_REQUEST = '.init.request';
-
-    /**
-     * @var string
-     */
     public const CALL_PAYMENT_REQUEST = 'PaymentRequest';
 
     /**
@@ -84,6 +61,31 @@ abstract class AbstractRequest
     public const CALL_PAYMENT_INIT = 'PaymentInit';
 
     /**
+     * @var string
+     */
+    protected const EVENT_SUCCESSFUL = '.successful';
+
+    /**
+     * @var string
+     */
+    protected const EVENT_FAILED = '.failed';
+
+    /**
+     * @var string
+     */
+    protected const EVENT_BUILD_HEAD = '.build.head';
+
+    /**
+     * @var string
+     */
+    protected const EVENT_BUILD_CONTENT = '.build.content';
+
+    /**
+     * @var string
+     */
+    protected const EVENT_INIT_REQUEST = '.init.request';
+
+    /**
      * @deprecated
      */
     protected string $_operation;
@@ -104,8 +106,6 @@ abstract class AbstractRequest
         $this->headFactory = $headFactory;
         $this->eventDispatcher = $eventDispatcher;
     }
-
-    abstract protected function supportsRequestData(AbstractRequestData $requestData): bool;
 
     /**
      * @throws RatepayException
@@ -139,14 +139,30 @@ abstract class AbstractRequest
             $requestData->getContext(),
             $requestBuilder,
             $requestData
-        ), get_class($this) . $eventName);
+        ), static::class . $eventName);
 
         return $requestBuilder;
     }
 
+    abstract protected function supportsRequestData(AbstractRequestData $requestData): bool;
+
     protected function getProfileConfig(AbstractRequestData $requestData): ?ProfileConfigEntity
     {
         return $requestData->getProfileConfig();
+    }
+
+    protected function getRequestHead(AbstractRequestData $requestData): Head
+    {
+        return $this->headFactory->getData($requestData);
+    }
+
+    protected function getRequestContent(AbstractRequestData $requestData): ?Content
+    {
+        return null;
+    }
+
+    protected function initRequest(AbstractRequestData $requestData): void
+    {
     }
 
     private function _getRequestHead(AbstractRequestData $requestData): Head
@@ -154,7 +170,7 @@ abstract class AbstractRequest
         $head = $this->getRequestHead($requestData);
 
         /** @var BuildEvent $event */
-        $event = $this->eventDispatcher->dispatch(new BuildEvent($requestData, $head), get_class($this) . self::EVENT_BUILD_HEAD);
+        $event = $this->eventDispatcher->dispatch(new BuildEvent($requestData, $head), static::class . self::EVENT_BUILD_HEAD);
 
         return $event->getBuildData();
     }
@@ -169,12 +185,7 @@ abstract class AbstractRequest
         }
 
         $this->initRequest($requestData);
-        $this->eventDispatcher->dispatch(new InitEvent($requestData), get_class($this) . self::EVENT_INIT_REQUEST);
-    }
-
-    protected function getRequestHead(AbstractRequestData $requestData): Head
-    {
-        return $this->headFactory->getData($requestData);
+        $this->eventDispatcher->dispatch(new InitEvent($requestData), static::class . self::EVENT_INIT_REQUEST);
     }
 
     private function _getRequestContent(AbstractRequestData $requestData): ?Content
@@ -182,17 +193,8 @@ abstract class AbstractRequest
         $content = $this->getRequestContent($requestData);
 
         /** @var BuildEvent $event */
-        $event = $this->eventDispatcher->dispatch(new BuildEvent($requestData, $content), get_class($this) . self::EVENT_BUILD_CONTENT);
+        $event = $this->eventDispatcher->dispatch(new BuildEvent($requestData, $content), static::class . self::EVENT_BUILD_CONTENT);
 
         return $event->getBuildData();
-    }
-
-    protected function getRequestContent(AbstractRequestData $requestData): ?Content
-    {
-        return null;
-    }
-
-    protected function initRequest(AbstractRequestData $requestData): void
-    {
     }
 }

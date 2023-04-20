@@ -77,7 +77,9 @@ class LockService
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter(PaymentLockEntity::FIELD_CUSTOMER_ID, $customerId));
         $criteria->addFilter(new EqualsFilter(PaymentLockEntity::FIELD_PAYMENT_METHOD_ID, $paymentMethodId));
-        $criteria->addFilter(new RangeFilter(PaymentLockEntity::FIELD_LOCKED_UNTIL, [RangeFilter::GT => $now]));
+        $criteria->addFilter(new RangeFilter(PaymentLockEntity::FIELD_LOCKED_UNTIL, [
+            RangeFilter::GT => $now,
+        ]));
 
         $ids = $this->paymentLockRepository->searchIds($criteria, $context);
 

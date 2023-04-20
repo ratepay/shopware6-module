@@ -1,4 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+/*
+ * Copyright (c) Ratepay GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Ratepay\RpayPayments\Components\PaymentHandler\Event;
 
@@ -10,7 +18,6 @@ use Symfony\Component\Validator\Constraint;
 
 class ValidationDefinitionCollectEvent
 {
-
     private array $definitions;
 
     private DataBag $requestDataBag;
@@ -29,8 +36,7 @@ class ValidationDefinitionCollectEvent
         array $definitions,
         DataBag $requestDataBag,
         object $baseData
-    )
-    {
+    ) {
         $this->definitions = $definitions;
         $this->requestDataBag = $requestDataBag;
 
@@ -42,9 +48,6 @@ class ValidationDefinitionCollectEvent
         $this->baseData = $baseData;
     }
 
-    /**
-     * @return array
-     */
     public function getDefinitions(): array
     {
         return $this->definitions;
@@ -80,5 +83,4 @@ class ValidationDefinitionCollectEvent
     {
         return $this->requestDataBag;
     }
-
 }

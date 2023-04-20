@@ -58,7 +58,6 @@ class AccountSubscriber implements EventSubscriberInterface
 
     private EventDispatcherInterface $eventDispatcher;
 
-
     public function __construct(
         ExtensionService $extensionService,
         PaymentHandlerRegistry $paymentHandlerRegistry,
@@ -66,8 +65,7 @@ class AccountSubscriber implements EventSubscriberInterface
         EntityRepository $orderRepository,
         DataValidator $dataValidator,
         EventDispatcherInterface $eventDispatcher
-    )
-    {
+    ) {
         $this->extensionService = $extensionService;
         $this->dataValidator = $dataValidator;
         $this->paymentMethodRepository = $paymentMethodRepository;
@@ -76,9 +74,6 @@ class AccountSubscriber implements EventSubscriberInterface
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    /**
-     * @return array
-     */
     public static function getSubscribedEvents(): array
     {
         return [
@@ -161,15 +156,23 @@ class AccountSubscriber implements EventSubscriberInterface
         $definition = new DataValidationDefinition();
         $definition->addSub('ratepay', DataValidationHelper::addSubConstraints(new DataValidationDefinition(), $validationDefinitions));
         try {
-            $this->dataValidator->validate(['ratepay' => $ratepayData->all()], $definition);
+            $this->dataValidator->validate([
+                'ratepay' => $ratepayData->all(),
+            ], $definition);
         } catch (ConstraintViolationException $constraintViolationException) {
-            throw new ForwardException('frontend.account.edit-order.page', ['orderId' => $orderEntity->getId()], ['formViolations' => $constraintViolationException], $constraintViolationException);
+            throw new ForwardException('frontend.account.edit-order.page', [
+                'orderId' => $orderEntity->getId(),
+            ], [
+                'formViolations' => $constraintViolationException,
+            ], $constraintViolationException);
         }
 
         $this->eventDispatcher->dispatch(new PaymentUpdateRequestBagValidatedEvent(
             $orderEntity,
             $paymentHandler,
-            new RequestDataBag(['ratepay' => $ratepayData]),
+            new RequestDataBag([
+                'ratepay' => $ratepayData,
+            ]),
             $event->getSalesChannelContext()
         ));
     }

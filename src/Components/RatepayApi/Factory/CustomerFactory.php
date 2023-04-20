@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -50,8 +52,7 @@ class CustomerFactory extends AbstractFactory
         ConfigService $configService,
         EntityRepository $salutationRepository,
         EntityRepository $languageRepository
-    )
-    {
+    ) {
         parent::__construct($eventDispatcher);
         $this->salutationRepository = $salutationRepository;
         $this->languageRepository = $languageRepository;

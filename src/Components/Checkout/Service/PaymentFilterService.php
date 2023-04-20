@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -9,13 +11,13 @@
 
 namespace Ratepay\RpayPayments\Components\Checkout\Service;
 
-use Shopware\Core\Checkout\Customer\CustomerEntity;
-use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
 use Ratepay\RpayPayments\Components\Checkout\Event\RatepayPaymentFilterEvent;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\Collection\ProfileConfigMethodCollection;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileByOrderEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileBySalesChannelContext;
 use Ratepay\RpayPayments\Util\MethodHelper;
+use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
@@ -34,8 +36,7 @@ class PaymentFilterService
         EventDispatcherInterface $eventDispatcher,
         ProfileByOrderEntity $profileByOrderEntity,
         ProfileBySalesChannelContext $profileBySalesChannelContext
-    )
-    {
+    ) {
         $this->eventDispatcher = $eventDispatcher;
         $this->profileByOrderEntity = $profileByOrderEntity;
         $this->profileBySalesChannelContext = $profileBySalesChannelContext;

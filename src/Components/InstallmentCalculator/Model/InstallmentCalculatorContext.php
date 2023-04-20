@@ -1,8 +1,14 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
+/*
+ * Copyright (c) Ratepay GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Model;
-
 
 use Ratepay\RpayPayments\Components\ProfileConfig\Dto\ProfileConfigSearch;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -12,7 +18,6 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class InstallmentCalculatorContext
 {
-
     /**
      * @var string
      */
@@ -56,15 +61,14 @@ class InstallmentCalculatorContext
         SalesChannelContext $salesChannelContext,
         string $calculationType,
         $calculationValue = null
-    )
-    {
+    ) {
         $this->salesChannelContext = $salesChannelContext;
         $this->calculationType = $calculationType;
-        
+
         if ($this->calculationType === self::CALCULATION_TYPE_RATE) {
-            $this->calculationValue = (float)$calculationValue;
+            $this->calculationValue = (float) $calculationValue;
         } elseif ($this->calculationType === self::CALCULATION_TYPE_TIME) {
-            $this->calculationValue = (int)$calculationValue;
+            $this->calculationValue = (int) $calculationValue;
         }
     }
 
@@ -142,7 +146,6 @@ class InstallmentCalculatorContext
     }
 
     /**
-     * @return PaymentMethodEntity|null
      * @deprecated please use getPaymentMethodId
      */
     public function getPaymentMethod(): ?PaymentMethodEntity
@@ -209,5 +212,4 @@ class InstallmentCalculatorContext
 
         return $this;
     }
-
 }

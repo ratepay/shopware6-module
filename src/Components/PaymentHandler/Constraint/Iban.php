@@ -17,6 +17,11 @@ use Symfony\Component\Validator\Constraints\IbanValidator;
 class Iban extends \Symfony\Component\Validator\Constraints\Iban
 {
     /**
+     * @var string
+     */
+    public $message = AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . 'RP_MISSING_IBAN';
+
+    /**
      * @var string[]
      */
     protected static $errorNames = [
@@ -26,11 +31,6 @@ class Iban extends \Symfony\Component\Validator\Constraints\Iban
         self::INVALID_FORMAT_ERROR => 'RP_INVALID_FORMAT_ERROR',
         self::NOT_SUPPORTED_COUNTRY_CODE_ERROR => 'RP_NOT_SUPPORTED_COUNTRY_CODE_ERROR',
     ];
-
-    /**
-     * @var string
-     */
-    public $message = AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . 'RP_MISSING_IBAN';
 
     public function validatedBy(): string
     {

@@ -38,12 +38,12 @@ class Migration1615564688AdminOrder extends MigrationStep
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         ');
 
-        $connection->executeStatement("
+        $connection->executeStatement('
             UPDATE `ratepay_profile_config` SET `backend` = 0 WHERE `backend` IS NULL
-        ");
-        $connection->executeStatement("
+        ');
+        $connection->executeStatement('
             UPDATE `ratepay_profile_config` SET `sandbox` = 0 WHERE `sandbox` IS NULL
-        ");
+        ');
 
         $connection->executeStatement("
             ALTER TABLE `ratepay_profile_config`

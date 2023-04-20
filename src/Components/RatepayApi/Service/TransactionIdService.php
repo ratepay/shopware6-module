@@ -28,7 +28,6 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class TransactionIdService
 {
-
     /**
      * @var string
      */
@@ -49,8 +48,7 @@ class TransactionIdService
         EntityRepository $transactionIdRepository,
         EntityRepository $profileRepository,
         PaymentInitService $paymentInitService
-    )
-    {
+    ) {
         $this->transactionIdRepository = $transactionIdRepository;
         $this->paymentInitService = $paymentInitService;
         $this->profileRepository = $profileRepository;
@@ -62,10 +60,7 @@ class TransactionIdService
     }
 
     /**
-     * @param SalesChannelContext $salesChannelContext
-     * @param string $prefix
      * @param ProfileConfigEntity|null|string $profileConfigId if string: uuid of the profile
-     * @return string
      * @throws ProfileNotFoundException
      * @throws TransactionIdFetchFailedException
      */
@@ -114,6 +109,21 @@ class TransactionIdService
         throw new TransactionIdFetchFailedException();
     }
 
+    public function deleteTransactionId(string $transactionId, Context $context): void
+    {
+        // do not delete all transactions for the sales-channel-token. Only for the processed transaction-id.
+        $criteria = (new Criteria())
+            ->addFilter(new ContainsFilter(TransactionIdEntity::FIELD_TRANSACTION_ID, $transactionId));
+
+        $ids = $this->transactionIdRepository->searchIds($criteria, $context);
+
+        if ($ids->getIds() !== []) {
+            $this->transactionIdRepository->delete(array_map(static fn ($id): array => [
+                TransactionIdEntity::FIELD_ID => $id,
+            ], $ids->getIds()), $context);
+        }
+    }
+
     private function searchTransaction(string $identifier, ProfileConfigEntity $profileConfigEntity = null): ?TransactionIdEntity
     {
         $criteria = (new Criteria())
@@ -130,20 +140,5 @@ class TransactionIdService
     private function getIdentifier(SalesChannelContext $salesChannelContext, string $prefix = ''): string
     {
         return $prefix . $salesChannelContext->getToken();
-    }
-
-    public function deleteTransactionId(string $transactionId, Context $context): void
-    {
-        // do not delete all transactions for the sales-channel-token. Only for the processed transaction-id.
-        $criteria = (new Criteria())
-            ->addFilter(new ContainsFilter(TransactionIdEntity::FIELD_TRANSACTION_ID, $transactionId));
-
-        $ids = $this->transactionIdRepository->searchIds($criteria, $context);
-
-        if ($ids->getIds() !== []) {
-            $this->transactionIdRepository->delete(array_map(static fn($id): array => [
-                TransactionIdEntity::FIELD_ID => $id,
-            ], $ids->getIds()), $context);
-        }
     }
 }

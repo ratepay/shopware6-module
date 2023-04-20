@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+/*
+ * Copyright (c) Ratepay GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Controller;
 
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentCalculatorContext;
@@ -27,8 +35,7 @@ class InstallmentRoute
     public function __construct(
         InstallmentService $installmentService,
         EntityRepository $orderRepository
-    )
-    {
+    ) {
         $this->installmentService = $installmentService;
         $this->orderRepository = $orderRepository;
     }
@@ -39,7 +46,7 @@ class InstallmentRoute
     public function calculateInstallment(Request $request, SalesChannelContext $salesChannelContext, ?string $orderId = null): InstallmentCalculationResponse
     {
         $type = $request->query->get('type');
-        $value = (int)$request->query->get('value');
+        $value = (int) $request->query->get('value');
         $value = $value ?: 1; // RATESWSX-186: fix that no "0" values can be provided
 
         if ($orderId) {

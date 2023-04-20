@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -68,12 +70,12 @@ class ProfileConfigDefinition extends EntityDefinition
             (new BoolField(
                 'sandbox',
                 ProfileConfigEntity::FIELD_SANDBOX
-            ))->addFlags(new Required()/*, new PrimaryKey()*/),
+            ))->addFlags(new Required()/* , new PrimaryKey() */),
 
             (new BoolField(
                 'only_admin_orders',
                 ProfileConfigEntity::FIELD_ONLY_ADMIN_ORDERS
-            ))->addFlags(new Required()/*, new PrimaryKey()*/),
+            ))->addFlags(new Required()/* , new PrimaryKey() */),
 
             (new OneToOneAssociationField(
                 ProfileConfigEntity::FIELD_SALES_CHANNEL,

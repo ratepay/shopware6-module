@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -67,8 +69,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
         EventDispatcherInterface $eventDispatcher,
         ConfigService $configService,
         RequestStack $requestStack
-    )
-    {
+    ) {
         $this->orderRepository = $orderRepository;
         $this->paymentRequestService = $paymentRequestService;
         $this->eventDispatcher = $eventDispatcher;
@@ -77,7 +78,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
         $this->requestStack = $requestStack;
     }
 
-    public abstract static function getRatepayPaymentMethodName(): string;
+    abstract public static function getRatepayPaymentMethodName(): string;
 
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
@@ -92,7 +93,6 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
         }
 
         try {
-
             $paymentRequestData = new PaymentRequestData(
                 $salesChannelContext,
                 $order,
@@ -133,7 +133,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
                 }
 
                 if (empty($message)) {
-                    $message = (string)$response->getReasonMessage();
+                    $message = (string) $response->getReasonMessage();
                 }
 
                 // will be caught a few lines later.
@@ -157,11 +157,6 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
         }
     }
 
-    protected function getOrderWithAssociations(OrderEntity $order, Context $context): ?OrderEntity
-    {
-        return $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($order->getId()), $context)->first();
-    }
-
     /**
      * @param OrderEntity|SalesChannelContext $baseData
      */
@@ -169,7 +164,9 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
     {
         $validations = [
             'transactionId' => [
-                new NotBlank(['message' => 'Unknown error.']),
+                new NotBlank([
+                    'message' => 'Unknown error.',
+                ]),
             ],
         ];
 
@@ -189,8 +186,12 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
         if ($ratepayData->get('birthday') || (!$birthday instanceof DateTimeInterface && $isCompany === false)) {
             $validations['birthday'] = [
                 new BirthdayNotBlank(),
-                new Birthday(['message' => self::ERROR_SNIPPET_VIOLATION_PREFIX . Birthday::ERROR_NAME]),
-                new IsOfLegalAge(['message' => self::ERROR_SNIPPET_VIOLATION_PREFIX . IsOfLegalAge::TOO_YOUNG_ERROR_NAME]),
+                new Birthday([
+                    'message' => self::ERROR_SNIPPET_VIOLATION_PREFIX . Birthday::ERROR_NAME,
+                ]),
+                new IsOfLegalAge([
+                    'message' => self::ERROR_SNIPPET_VIOLATION_PREFIX . IsOfLegalAge::TOO_YOUNG_ERROR_NAME,
+                ]),
             ];
         }
 
@@ -198,5 +199,10 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
         $event = $this->eventDispatcher->dispatch(new ValidationDefinitionCollectEvent($validations, $requestDataBag, $baseData));
 
         return $event->getDefinitions();
+    }
+
+    protected function getOrderWithAssociations(OrderEntity $order, Context $context): ?OrderEntity
+    {
+        return $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($order->getId()), $context)->first();
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -9,9 +11,9 @@
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 
-use RatePAY\Model\Request\SubModel\Head\External\Tracking\Id;
 use RatePAY\Model\Request\SubModel\Head\External;
 use RatePAY\Model\Request\SubModel\Head\External\Tracking;
+use RatePAY\Model\Request\SubModel\Head\External\Tracking\Id;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 

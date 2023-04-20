@@ -11,18 +11,17 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Subscriber;
 
-use Ratepay\RpayPayments\Util\RequestHelper;
-use Symfony\Component\HttpFoundation\Request;
 use Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Service\PaymentQueryValidatorService;
+use Ratepay\RpayPayments\Util\RequestHelper;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Framework\Validation\BuildValidationEvent;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\Framework\Validation\DataValidationDefinition;
 use Shopware\Core\Framework\Validation\DataValidator;
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class CheckoutValidationSubscriber implements EventSubscriberInterface
@@ -46,8 +45,7 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
         DataValidator $dataValidator,
         CartService $cartService,
         PaymentQueryValidatorService $validatorService
-    )
-    {
+    ) {
         $this->requestStack = $requestStack;
         $this->cartService = $cartService;
         $this->dataValidator = $dataValidator;
@@ -79,7 +77,9 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
             // we just want to validate the ratepay-data to prevent unexpected behavior of third-party-plugins
             $definition = new DataValidationDefinition();
             $definition->addSub('ratepay', $event->getDefinition()->getSubDefinitions()['ratepay']);
-            $this->dataValidator->validate(['ratepay' => $ratepayData], $definition);
+            $this->dataValidator->validate([
+                'ratepay' => $ratepayData,
+            ], $definition);
 
             $this->validatorService->validate(
                 $this->cartService->getCart($context->getToken(), $context),

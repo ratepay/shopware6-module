@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -19,13 +21,13 @@ class CriteriaHelper
     public static function getCriteriaForOrder(string $orderId): Criteria
     {
         $criteria = new Criteria([$orderId]);
-        //$criteria->addAssociation(OrderExtension::RATEPAY_DATA);
+        // $criteria->addAssociation(OrderExtension::RATEPAY_DATA);
         $criteria->addAssociation('currency');
         $criteria->addAssociation('language.locale');
         $criteria->addAssociation('addresses.country');
         $criteria->addAssociation('addresses.salutation');
         $criteria->addAssociation('orderCustomer.customer');
-        //$criteria->addAssociation('lineItems.'.OrderLineItemExtension::RATEPAY_DATA);
+        // $criteria->addAssociation('lineItems.'.OrderLineItemExtension::RATEPAY_DATA);
         $criteria->addAssociation('lineItems.product');
         $criteria->addAssociation('deliveries.shippingMethod');
         $criteria->addAssociation('deliveries.positions');

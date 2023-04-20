@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -9,7 +11,6 @@
 
 namespace Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Dto;
 
-use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\CheckoutOperationInterface;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OperationDataWithBasket;
@@ -17,6 +18,7 @@ use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
+use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
@@ -46,8 +48,7 @@ class PaymentQueryData extends AbstractRequestData implements OperationDataWithB
         string $transactionId,
         bool $sendDiscountAsCartItem = false,
         bool $sendShippingCostsAsCartItem = false
-    )
-    {
+    ) {
         parent::__construct($salesChannelContext->getContext());
         $this->requestDataBag = $requestDataBag;
         $this->salesChannelContext = $salesChannelContext;

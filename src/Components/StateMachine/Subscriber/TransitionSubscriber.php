@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -51,8 +53,7 @@ class TransitionSubscriber implements EventSubscriberInterface
         PaymentCancelService $paymentCancelService,
         PaymentReturnService $paymentReturnService,
         Logger $logger
-    )
-    {
+    ) {
         $this->orderDeliveryRepository = $orderDeliveryRepository;
         $this->orderRepository = $orderRepository;
         $this->configService = $configService;

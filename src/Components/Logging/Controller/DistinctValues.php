@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+/*
+ * Copyright (c) Ratepay GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Ratepay\RpayPayments\Components\Logging\Controller;
 
 use Doctrine\DBAL\Connection;
@@ -17,7 +25,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class DistinctValues extends AbstractController
 {
-
     private Connection $connection;
 
     private DefinitionInstanceRegistry $definitionRegistry;
@@ -48,7 +55,7 @@ class DistinctValues extends AbstractController
 
         $fields = explode('|', $fields);
 
-        $fields = array_filter($fields, static fn($item): bool => in_array($item, $allowedFields));
+        $fields = array_filter($fields, static fn ($item): bool => in_array($item, $allowedFields, true));
 
         $definition = $this->definitionRegistry->get(ApiRequestLogDefinition::class);
 
@@ -70,7 +77,7 @@ class DistinctValues extends AbstractController
 
             $results[] = [
                 'name' => $field,
-                'options' => $qb->execute()->fetchFirstColumn()
+                'options' => $qb->execute()->fetchFirstColumn(),
             ];
         }
 

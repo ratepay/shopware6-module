@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -107,21 +109,6 @@ class OrderOperationData extends AbstractRequestData implements OperationDataWit
         return $items;
     }
 
-    private function getMaxQuantityForOperation(RatepayPositionEntity $position, int $ordered): int
-    {
-        $maxValues = LineItemUtil::addMaxActionValues($position, $ordered);
-        switch ($this->operation) {
-            case self::OPERATION_DELIVER:
-                return $maxValues['maxDelivery'];
-            case self::OPERATION_CANCEL:
-                return $maxValues['maxCancel'];
-            case self::OPERATION_RETURN:
-                return $maxValues['maxReturn'];
-            default:
-                throw new RuntimeException('the operation ' . $this->operation . '` is not supported for automatic delivery');
-        }
-    }
-
     public function getOrder(): OrderEntity
     {
         return $this->order;
@@ -164,5 +151,20 @@ class OrderOperationData extends AbstractRequestData implements OperationDataWit
         /** @var RatepayOrderDataEntity|null $orderExtension */
         $orderExtension = $this->order->getExtension(OrderExtension::EXTENSION_NAME);
         return $orderExtension && $orderExtension->isSendShippingCostsAsCartItem();
+    }
+
+    private function getMaxQuantityForOperation(RatepayPositionEntity $position, int $ordered): int
+    {
+        $maxValues = LineItemUtil::addMaxActionValues($position, $ordered);
+        switch ($this->operation) {
+            case self::OPERATION_DELIVER:
+                return $maxValues['maxDelivery'];
+            case self::OPERATION_CANCEL:
+                return $maxValues['maxCancel'];
+            case self::OPERATION_RETURN:
+                return $maxValues['maxReturn'];
+            default:
+                throw new RuntimeException('the operation ' . $this->operation . '` is not supported for automatic delivery');
+        }
     }
 }

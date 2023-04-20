@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -25,7 +27,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class DfpService implements DfpServiceInterface
 {
-
     private ConfigService $configService;
 
     private EntityRepository $orderCustomerRepository;
@@ -33,8 +34,7 @@ class DfpService implements DfpServiceInterface
     public function __construct(
         ConfigService $configService,
         EntityRepository $orderCustomerRepository
-    )
-    {
+    ) {
         $this->configService = $configService;
         $this->orderCustomerRepository = $orderCustomerRepository;
     }
@@ -60,10 +60,10 @@ class DfpService implements DfpServiceInterface
         $userAgent ??= $request->headers->get('User-Agent');
 
         $dataForId = [
-            ((string)$userAgent)
+            ((string) $userAgent),
         ];
         if ($baseData instanceof SalesChannelContext) {
-            $dataForId[] = (string)$this->getCustomerFallBack($baseData);
+            $dataForId[] = (string) $this->getCustomerFallBack($baseData);
         }
 
         $generatedId = md5(implode('', $dataForId));
@@ -72,6 +72,29 @@ class DfpService implements DfpServiceInterface
 
         // replace the beginning of the generated id with the generated prefix
         return $prefix . substr($generatedId, strlen($prefix));
+    }
+
+    public function isDfpIdValid($baseData, string $dfpId = null): bool
+    {
+        $prefix = $this->getDfpPrefix($baseData);
+
+        // verify if the prefix is at the beginning of the id
+        return substr($dfpId, 0, strlen($prefix)) === $prefix;
+    }
+
+    public function getDfpSnippet(Request $request, $baseData): ?string
+    {
+        if ($id = $this->generatedDfpId($request, $baseData)) {
+            $dfpHelper = new DeviceFingerprint($this->configService->getDeviceFingerprintSnippetId());
+            return str_replace('\"', '"', $dfpHelper->getDeviceIdentSnippet($id));
+        }
+
+        return null;
+    }
+
+    public function isDfpRequired($object): bool
+    {
+        return true;
     }
 
     /**
@@ -117,7 +140,7 @@ class DfpService implements DfpServiceInterface
         $date = $orderCustomer !== null ? $orderCustomer->getCreatedAt() : null;
         $date ??= $context->getCustomer()->getLastLogin() ?? $context->getCustomer()->getUpdatedAt();
 
-        return $date !== null ? (string)$date->getTimestamp() : null;
+        return $date !== null ? (string) $date->getTimestamp() : null;
     }
 
     /**
@@ -133,28 +156,5 @@ class DfpService implements DfpServiceInterface
         }
 
         return null;
-    }
-
-    public function isDfpIdValid($baseData, string $dfpId = null): bool
-    {
-        $prefix = $this->getDfpPrefix($baseData);
-
-        // verify if the prefix is at the beginning of the id
-        return substr($dfpId, 0, strlen($prefix)) === $prefix;
-    }
-
-    public function getDfpSnippet(Request $request, $baseData): ?string
-    {
-        if ($id = $this->generatedDfpId($request, $baseData)) {
-            $dfpHelper = new DeviceFingerprint($this->configService->getDeviceFingerprintSnippetId());
-            return str_replace('\"', '"', $dfpHelper->getDeviceIdentSnippet($id));
-        }
-
-        return null;
-    }
-
-    public function isDfpRequired($object): bool
-    {
-        return true;
     }
 }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * Copyright (c) Ratepay GmbH
@@ -28,28 +30,17 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class AccountOrderControllerDecorator
 {
-
-    /**
-     * @var AccountOrderController
-     */
     private AccountOrderController $innerService;
 
-    /**
-     * @var EntityRepository
-     */
     private EntityRepository $orderRepository;
 
-    /**
-     * @var RouterInterface
-     */
     private RouterInterface $router;
 
     public function __construct(
         AccountOrderController $innerService,
         EntityRepository $orderRepository,
         RouterInterface $router
-    )
-    {
+    ) {
         $this->innerService = $innerService;
         $this->orderRepository = $orderRepository;
         $this->router = $router;
@@ -64,7 +55,9 @@ class AccountOrderControllerDecorator
         $ratepayData = $order ? $order->getExtension(OrderExtension::EXTENSION_NAME) : null;
         if ($ratepayData && MethodHelper::isRatepayOrder($order) && $ratepayData->isSuccessful()) {
             // You can't change the payment if it is a ratepay order
-            return new RedirectResponse($this->router->generate('frontend.account.edit-order.page', ['orderId' => $orderId]));
+            return new RedirectResponse($this->router->generate('frontend.account.edit-order.page', [
+                'orderId' => $orderId,
+            ]));
         }
 
         $this->addRatepayValidationErrors($request);
@@ -75,15 +68,6 @@ class AccountOrderControllerDecorator
     {
         $this->addRatepayValidationErrors($request);
         return $this->innerService->editOrder($orderId, $request, $context);
-    }
-
-    protected function addRatepayValidationErrors(Request $request): void
-    {
-        foreach ($request->get('ratepay-errors', []) as $error) {
-            if (($session = $request->getSession()) instanceof Session) {
-                $session->getFlashBag()->add('danger', $error);
-            }
-        }
     }
 
     /* unchanged methods */
@@ -111,5 +95,14 @@ class AccountOrderControllerDecorator
     public function orderSingleOverview(Request $request, SalesChannelContext $context): Response
     {
         return $this->innerService->orderSingleOverview($request, $context);
+    }
+
+    protected function addRatepayValidationErrors(Request $request): void
+    {
+        foreach ($request->get('ratepay-errors', []) as $error) {
+            if (($session = $request->getSession()) instanceof Session) {
+                $session->getFlashBag()->add('danger', $error);
+            }
+        }
     }
 }

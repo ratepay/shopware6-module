@@ -30,8 +30,7 @@ class PaymentFailedSubscriber implements EventSubscriberInterface
 
     public function __construct(
         EntityRepository $ratepayApiLogRepository
-    )
-    {
+    ) {
         $this->ratepayApiLogRepository = $ratepayApiLogRepository;
     }
 

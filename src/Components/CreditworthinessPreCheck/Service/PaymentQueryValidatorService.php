@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+/*
+ * Copyright (c) Ratepay GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Service;
 
 use RatePAY\Model\Response\PaymentQuery;
@@ -17,12 +25,10 @@ use Symfony\Component\Validator\ConstraintViolationList;
 
 class PaymentQueryValidatorService
 {
-
     /**
      * @var string
      */
     public const CODE_METHOD_NOT_AVAILABLE = 'RP_METHOD_NOT_AVAILABLE';
-
 
     private PaymentQueryService $paymentQueryService;
 
@@ -31,8 +37,7 @@ class PaymentQueryValidatorService
     public function __construct(
         PaymentQueryService $paymentQueryService,
         ConfigService $configService
-    )
-    {
+    ) {
         $this->paymentQueryService = $paymentQueryService;
         $this->configService = $configService;
     }
@@ -57,7 +62,7 @@ class PaymentQueryValidatorService
             throw $this->createException(
                 $context,
                 $dataBag,
-//                    AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . self::CODE_METHOD_NOT_AVAILABLE
+                //                    AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . self::CODE_METHOD_NOT_AVAILABLE
                 $ratepayException->getMessage()
             );
         }
@@ -75,7 +80,7 @@ class PaymentQueryValidatorService
             throw $this->createException(
                 $context,
                 $dataBag,
-                (string)$response->getReasonMessage()
+                (string) $response->getReasonMessage()
             );
         }
     }
@@ -95,5 +100,4 @@ class PaymentQueryValidatorService
 
         return new ConstraintViolationException(new ConstraintViolationList([$violation]), $requestDataBag->all());
     }
-
 }

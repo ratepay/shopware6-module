@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\RatepayApi\Dto;
 
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Shopware\Core\Framework\Context;
 
 class PaymentInitData extends AbstractRequestData

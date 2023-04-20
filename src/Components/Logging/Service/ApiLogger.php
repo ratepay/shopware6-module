@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -31,8 +33,7 @@ class ApiLogger
         EntityRepository $logRepository,
         Logger $logger,
         string $pluginVersion
-    )
-    {
+    ) {
         $this->logRepository = $logRepository;
         $this->logger = $logger;
         $this->pluginVersion = $pluginVersion;
@@ -52,16 +53,16 @@ class ApiLogger
         $responseXmlElement = $requestBuilder->getResponseXmlElement();
 
         if (isset($requestXmlElement->head->{'transaction-id'})) {
-            $additionalData['transactionId'] = (string)$requestXmlElement->head->{'transaction-id'};
+            $additionalData['transactionId'] = (string) $requestXmlElement->head->{'transaction-id'};
         } elseif (isset($responseXmlElement->head->{'transaction-id'})) {
-            $additionalData['transactionId'] = (string)$responseXmlElement->head->{'transaction-id'};
+            $additionalData['transactionId'] = (string) $responseXmlElement->head->{'transaction-id'};
         }
 
         if (property_exists($responseXmlElement->content, 'payment') &&
             property_exists($responseXmlElement->content->payment, 'descriptor') &&
             $responseXmlElement->content->payment->descriptor !== null
         ) {
-            $additionalData['descriptor'] = (string)$responseXmlElement->content->payment->descriptor;
+            $additionalData['descriptor'] = (string) $responseXmlElement->content->payment->descriptor;
         }
 
         if ($requestData instanceof OrderOperationData) {
@@ -81,8 +82,8 @@ class ApiLogger
 
         /** @var SimpleXMLElement $operationNode */
         $operationNode = $requestBuilder->getRequestXmlElement()->head->operation;
-        $operationSubtype = (string)$operationNode->attributes()->subtype;
-        $operation = (string)$operationNode;
+        $operationSubtype = (string) $operationNode->attributes()->subtype;
+        $operation = (string) $operationNode;
 
         // remove sensitive data
         foreach (['securitycode', 'owner', 'iban'] as $key) {
@@ -101,12 +102,12 @@ class ApiLogger
                         ApiRequestLogEntity::FIELD_OPERATION => $operation,
                         ApiRequestLogEntity::FIELD_SUB_OPERATION => $operationSubtype,
 
-                        ApiRequestLogEntity::FIELD_RESULT_CODE => (string)$resultNode->attributes()->code,
-                        ApiRequestLogEntity::FIELD_RESULT_TEXT => (string)$resultNode,
-                        ApiRequestLogEntity::FIELD_STATUS_CODE => (string)$statusNode->attributes()->code,
-                        ApiRequestLogEntity::FIELD_STATUS_TEXT => (string)$statusNode,
-                        ApiRequestLogEntity::FIELD_REASON_CODE => (string)$reasonNode->attributes()->code,
-                        ApiRequestLogEntity::FIELD_REASON_TEXT => (string)$reasonNode,
+                        ApiRequestLogEntity::FIELD_RESULT_CODE => (string) $resultNode->attributes()->code,
+                        ApiRequestLogEntity::FIELD_RESULT_TEXT => (string) $resultNode,
+                        ApiRequestLogEntity::FIELD_STATUS_CODE => (string) $statusNode->attributes()->code,
+                        ApiRequestLogEntity::FIELD_STATUS_TEXT => (string) $statusNode,
+                        ApiRequestLogEntity::FIELD_REASON_CODE => (string) $reasonNode->attributes()->code,
+                        ApiRequestLogEntity::FIELD_REASON_TEXT => (string) $reasonNode,
 
                         ApiRequestLogEntity::FIELD_REQUEST => $requestXml,
                         ApiRequestLogEntity::FIELD_RESPONSE => $responseXml,

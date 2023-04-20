@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -26,8 +28,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
     public function __construct(
         InstallmentService $installmentService,
         CartService $cartService
-    )
-    {
+    ) {
         $this->installmentService = $installmentService;
         $this->cartService = $cartService;
     }
@@ -66,5 +67,4 @@ class CheckoutSubscriber implements EventSubscriberInterface
             $extension->offsetSet('installment', $vars);
         }
     }
-
 }

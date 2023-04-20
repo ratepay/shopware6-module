@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -39,6 +41,18 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class InstallmentService
 {
+    /**
+     * @deprecated
+     * @var string
+     */
+    public const CALCULATION_TYPE_TIME = InstallmentCalculatorContext::CALCULATION_TYPE_TIME;
+
+    /**
+     * @deprecated
+     * @var string
+     */
+    public const CALCULATION_TYPE_RATE = InstallmentCalculatorContext::CALCULATION_TYPE_RATE;
+
     private CartService $cartService;
 
     private EntityRepository $languageRepository;
@@ -66,19 +80,6 @@ class InstallmentService
 
     private array $_translationCache = [];
 
-    /**
-     * @deprecated
-     * @var string
-     */
-    public const CALCULATION_TYPE_TIME = InstallmentCalculatorContext::CALCULATION_TYPE_TIME;
-
-    /**
-     * @deprecated
-     * @var string
-     */
-    public const CALCULATION_TYPE_RATE = InstallmentCalculatorContext::CALCULATION_TYPE_RATE;
-
-
     public function __construct(
         CartService $cartService,
         EntityRepository $languageRepository,
@@ -89,8 +90,7 @@ class InstallmentService
         EventDispatcherInterface $eventDispatcher,
         object $paymentMethodRepository,
         Logger $logger
-    )
-    {
+    ) {
         $this->cartService = $cartService;
         $this->languageRepository = $languageRepository;
         $this->transactionIdService = $transactionIdService;
@@ -141,7 +141,7 @@ class InstallmentService
                     'total_amount' => $context->getTotalAmount(),
                     'calculation_type' => $context->getCalculationType(),
                     'calculation_value' => $context->getCalculationValue(),
-                    'profile_id' => $matchedBuilder->getProfileConfig()->getProfileId()
+                    'profile_id' => $matchedBuilder->getProfileConfig()->getProfileId(),
                 ]);
 
                 throw $requestException;
@@ -151,8 +151,149 @@ class InstallmentService
         throw new RuntimeException('We were not able to calculate the installment rate.');
     }
 
+    public function getInstallmentCalculatorData(InstallmentCalculatorContext $context): array
+    {
+        $installmentBuilders = $this->getInstallmentBuilders($context);
+
+        if ($installmentBuilders === []) {
+            throw new Exception('No installment builder where found');
+        }
+
+        $data = [];
+        foreach ($installmentBuilders as $installmentBuilder) {
+            $json = $installmentBuilder->getInstallmentCalculatorAsJson($context->getTotalAmount());
+            $configuratorData = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+
+            if ((is_countable($data) ? count($data) : 0) === 0) {
+                $data = $configuratorData;
+            }
+
+            /** @noinspection SlowArrayOperationsInLoopInspection */
+            $data['rp_allowedMonths'] = array_merge($data['rp_allowedMonths'], $configuratorData['rp_allowedMonths']);
+        }
+
+        // remove payment types. This will be added by installment plan
+        unset($data['rp_debitPayType']);
+
+        $data['rp_allowedMonths'] = array_unique($data['rp_allowedMonths']);
+        sort($data['rp_allowedMonths']);
+
+        $data['defaults']['type'] = self::CALCULATION_TYPE_TIME;
+        $data['defaults']['value'] = $data['rp_allowedMonths'][0];
+
+        return $data;
+    }
+
+    public function calculateInstallmentOffline(InstallmentCalculatorContext $context): ?OfflineInstallmentCalculatorResult
+    {
+        $installmentBuilders = $this->getInstallmentBuilders($context);
+
+        if ($installmentBuilders === []) {
+            throw new Exception('No installment builder where found');
+        }
+
+        /** @var array{0: InstallmentBuilder, 1: int|float}|array{} $amountBuilders */
+        $amountBuilders = [];
+
+        foreach ($installmentBuilders as $installmentBuilder) {
+            $installmentConfig = $installmentBuilder->getMethodConfig()->getInstallmentConfig();
+
+            if ($context->getCalculationType() === InstallmentCalculatorContext::CALCULATION_TYPE_TIME) {
+                $rate = $this->calculateMonthlyRate($context->getTotalAmount(), $installmentConfig, (int) $context->getCalculationValue());
+                if ($rate >= $installmentConfig->getRateMin()) {
+                    $amountBuilders[$rate] = [$installmentBuilder, $context->getCalculationValue()];
+                    break; // an explicit month was requested and there is a result. It is not required to compare it with other profiles
+                }
+            }
+
+            if ($context->getCalculationType() === InstallmentCalculatorContext::CALCULATION_TYPE_RATE) {
+                // collect all rates for all available plans
+                foreach ($installmentConfig->getAllowedMonths() as $month) {
+                    $rate = $this->calculateMonthlyRate($context->getTotalAmount(), $installmentConfig, (int) $month);
+                    if ($rate >= $installmentConfig->getRateMin()) {
+                        $amountBuilders[(string) $rate] = [$installmentBuilder, $month];
+                        // we will NOT break the parent foreach, cause there might be a better result (of a builder) which is nearer to the requested value than the current.
+                    }
+                }
+            }
+        }
+
+        if ($amountBuilders === []) {
+            return null;
+        } elseif (count($amountBuilders) > 1) {
+            // find the best matching for the given monthly rate and the available rates from the calculated plans
+            $monthlyRate = null;
+            $availableMonthlyRates = array_keys($amountBuilders);
+            sort($availableMonthlyRates);
+            if ($context->isUseCheapestRate()) {
+                $monthlyRate = $availableMonthlyRates[0];
+            } else {
+                foreach ($availableMonthlyRates as $availableMonthlyRate) {
+                    if ($monthlyRate === null || abs($context->getCalculationValue() - (float) $monthlyRate) > abs($availableMonthlyRate - $context->getCalculationValue())) {
+                        $monthlyRate = $availableMonthlyRate;
+                    } elseif ($availableMonthlyRate > $context->getCalculationValue()) {
+                        // if it is not a match, and the calculated rate is already higher than the given value,
+                        // we can cancel the loop, cause every higher values will not match, either.
+                        break;
+                    }
+                }
+            }
+        } else {
+            $monthlyRate = array_key_first($amountBuilders);
+        }
+
+        return new OfflineInstallmentCalculatorResult(
+            $context,
+            $amountBuilders[$monthlyRate][0],
+            $amountBuilders[$monthlyRate][1],
+            (float) $monthlyRate
+        );
+    }
+
+    public function getTranslations(SalesChannelContext $salesChannelContext): array
+    {
+        $langId = $salesChannelContext->getContext()->getLanguageId();
+        if (!isset($this->_translationCache[$langId])) {
+            $languageCriteria = new Criteria([$salesChannelContext->getContext()->getLanguageId()]);
+            $languageCriteria->addAssociation('locale');
+            $language = $this->languageRepository->search(
+                $languageCriteria,
+                $salesChannelContext->getContext()
+            )->first();
+
+            $languageCode = strtoupper(explode('-', $language->getLocale()->getCode())[0]);
+            $translations = (new LanguageService($languageCode))->getArray();
+
+            $this->_translationCache[$langId] = $translations;
+        }
+
+        return $this->_translationCache[$langId];
+    }
+
     /**
-     * @param InstallmentCalculatorContext $context
+     * @return array{translations: array, plan: array, transactionId: string}
+     * @throws ProfileNotFoundException
+     * @throws RequestException
+     * @throws TransactionIdFetchFailedException
+     */
+    public function getInstallmentPlanTwigVars(InstallmentCalculatorContext $context): array
+    {
+        $installmentPlan = $this->getInstallmentPlanData($context);
+
+        $transactionId = $this->transactionIdService->getTransactionId(
+            $context->getSalesChannelContext(),
+            $context->getOrder() !== null ? TransactionIdService::PREFIX_ORDER . $context->getOrder()->getId() : TransactionIdService::PREFIX_CART,
+            $installmentPlan['profileUuid']
+        );
+
+        return [
+            'translations' => $this->getTranslations($context->getSalesChannelContext()),
+            'plan' => $installmentPlan,
+            'transactionId' => $transactionId,
+        ];
+    }
+
+    /**
      * @return array<InstallmentBuilder>
      */
     protected function getInstallmentBuilders(InstallmentCalculatorContext $context): array
@@ -198,7 +339,7 @@ class InstallmentService
                 continue;
             }
 
-            if (($context->getCalculationType() === self::CALCULATION_TYPE_TIME) && !in_array((int)$context->getCalculationValue(), $paymentMethodConfig->getInstallmentConfig()->getAllowedMonths(), true)) {
+            if (($context->getCalculationType() === self::CALCULATION_TYPE_TIME) && !in_array((int) $context->getCalculationValue(), $paymentMethodConfig->getInstallmentConfig()->getAllowedMonths(), true)) {
                 // filter the zero percent installment configs for the allowed months
                 continue;
             }
@@ -207,107 +348,6 @@ class InstallmentService
         }
 
         return $installmentBuilders;
-    }
-
-    public function getInstallmentCalculatorData(InstallmentCalculatorContext $context): array
-    {
-        $installmentBuilders = $this->getInstallmentBuilders($context);
-
-        if ($installmentBuilders === []) {
-            throw new Exception('No installment builder where found');
-        }
-
-        $data = [];
-        foreach ($installmentBuilders as $installmentBuilder) {
-            $json = $installmentBuilder->getInstallmentCalculatorAsJson($context->getTotalAmount());
-            $configuratorData = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
-
-            if ((is_countable($data) ? count($data) : 0) === 0) {
-                $data = $configuratorData;
-            }
-
-            /** @noinspection SlowArrayOperationsInLoopInspection */
-            $data['rp_allowedMonths'] = array_merge($data['rp_allowedMonths'], $configuratorData['rp_allowedMonths']);
-        }
-
-        // remove payment types. This will be added by installment plan
-        unset($data['rp_debitPayType']);
-
-        $data['rp_allowedMonths'] = array_unique($data['rp_allowedMonths']);
-        sort($data['rp_allowedMonths']);
-
-        $data['defaults']['type'] = self::CALCULATION_TYPE_TIME;
-        $data['defaults']['value'] = $data['rp_allowedMonths'][0];
-
-        return $data;
-    }
-
-    public function calculateInstallmentOffline(InstallmentCalculatorContext $context): ?OfflineInstallmentCalculatorResult
-    {
-        $installmentBuilders = $this->getInstallmentBuilders($context);
-
-        if ($installmentBuilders === []) {
-            throw new Exception('No installment builder where found');
-        }
-
-        /**
-         * @var array{0: InstallmentBuilder, 1: int|float}|array{} $amountBuilders
-         */
-        $amountBuilders = [];
-
-        foreach ($installmentBuilders as $installmentBuilder) {
-            $installmentConfig = $installmentBuilder->getMethodConfig()->getInstallmentConfig();
-
-            if ($context->getCalculationType() === InstallmentCalculatorContext::CALCULATION_TYPE_TIME) {
-                $rate = $this->calculateMonthlyRate($context->getTotalAmount(), $installmentConfig, (int)$context->getCalculationValue());
-                if ($rate >= $installmentConfig->getRateMin()) {
-                    $amountBuilders[$rate] = [$installmentBuilder, $context->getCalculationValue()];
-                    break; // an explicit month was requested and there is a result. It is not required to compare it with other profiles
-                }
-            }
-
-            if ($context->getCalculationType() === InstallmentCalculatorContext::CALCULATION_TYPE_RATE) {
-                // collect all rates for all available plans
-                foreach ($installmentConfig->getAllowedMonths() as $month) {
-                    $rate = $this->calculateMonthlyRate($context->getTotalAmount(), $installmentConfig, (int)$month);
-                    if ($rate >= $installmentConfig->getRateMin()) {
-                        $amountBuilders[(string)$rate] = [$installmentBuilder, $month];
-                        // we will NOT break the parent foreach, cause there might be a better result (of a builder) which is nearer to the requested value than the current.
-                    }
-                }
-            }
-        }
-
-        if ($amountBuilders === []) {
-            return null;
-        } elseif (count($amountBuilders) > 1) {
-            // find the best matching for the given monthly rate and the available rates from the calculated plans
-            $monthlyRate = null;
-            $availableMonthlyRates = array_keys($amountBuilders);
-            sort($availableMonthlyRates);
-            if ($context->isUseCheapestRate()) {
-                $monthlyRate = $availableMonthlyRates[0];
-            } else {
-                foreach ($availableMonthlyRates as $availableMonthlyRate) {
-                    if ($monthlyRate === null || abs($context->getCalculationValue() - (float)$monthlyRate) > abs($availableMonthlyRate - $context->getCalculationValue())) {
-                        $monthlyRate = $availableMonthlyRate;
-                    } elseif ($availableMonthlyRate > $context->getCalculationValue()) {
-                        // if it is not a match, and the calculated rate is already higher than the given value,
-                        // we can cancel the loop, cause every higher values will not match, either.
-                        break;
-                    }
-                }
-            }
-        } else {
-            $monthlyRate = array_key_first($amountBuilders);
-        }
-
-        return new OfflineInstallmentCalculatorResult(
-            $context,
-            $amountBuilders[$monthlyRate][0],
-            $amountBuilders[$monthlyRate][1],
-            (float)$monthlyRate
-        );
     }
 
     private function calculateMonthlyRate(?float $totalAmount, ProfileConfigMethodInstallmentEntity $config, int $month): float
@@ -320,54 +360,11 @@ class InstallmentService
                 'InterestRate' => $config->getDefaultInterestRate(),
                 'ServiceCharge' => $config->getServiceCharge(),
                 'CalculationTime' => [
-                    'Month' => $month
-                ]
-            ]
+                    'Month' => $month,
+                ],
+            ],
         ]);
 
         return (new OfflineInstallmentCalculation())->callOfflineCalculation($mbContent)->subtype('calculation-by-time');
-    }
-
-    public function getTranslations(SalesChannelContext $salesChannelContext): array
-    {
-        $langId = $salesChannelContext->getContext()->getLanguageId();
-        if (!isset($this->_translationCache[$langId])) {
-            $languageCriteria = new Criteria([$salesChannelContext->getContext()->getLanguageId()]);
-            $languageCriteria->addAssociation('locale');
-            $language = $this->languageRepository->search(
-                $languageCriteria,
-                $salesChannelContext->getContext()
-            )->first();
-
-            $languageCode = strtoupper(explode('-', $language->getLocale()->getCode())[0]);
-            $translations = (new LanguageService($languageCode))->getArray();
-
-            $this->_translationCache[$langId] = $translations;
-        }
-
-        return $this->_translationCache[$langId];
-    }
-
-    /**
-     * @return array{translations: array, plan: array, transactionId: string}
-     * @throws ProfileNotFoundException
-     * @throws RequestException
-     * @throws TransactionIdFetchFailedException
-     */
-    public function getInstallmentPlanTwigVars(InstallmentCalculatorContext $context): array
-    {
-        $installmentPlan = $this->getInstallmentPlanData($context);
-
-        $transactionId = $this->transactionIdService->getTransactionId(
-            $context->getSalesChannelContext(),
-            $context->getOrder() !== null ? TransactionIdService::PREFIX_ORDER . $context->getOrder()->getId() : TransactionIdService::PREFIX_CART,
-            $installmentPlan['profileUuid']
-        );
-
-        return [
-            'translations' => $this->getTranslations($context->getSalesChannelContext()),
-            'plan' => $installmentPlan,
-            'transactionId' => $transactionId,
-        ];
     }
 }

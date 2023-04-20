@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -37,11 +39,6 @@ class ConfigService
     public function getPluginConfiguration(): array
     {
         return $this->systemConfigService->get('RpayPayments.config', null) ?: [];
-    }
-
-    protected function getContext(): Context
-    {
-        return Context::createDefaultContext();
     }
 
     public function isBidirectionalityEnabled(): bool
@@ -102,13 +99,18 @@ class ConfigService
     {
         $config = $this->getPluginConfiguration();
 
-        return (bool)($config['sendDiscountsAsCartItem'] ?? false);
+        return (bool) ($config['sendDiscountsAsCartItem'] ?? false);
     }
 
     public function isSendShippingCostsAsCartItem(): bool
     {
         $config = $this->getPluginConfiguration();
 
-        return (bool)($config['sendShippingCostsAsCartItem'] ?? false);
+        return (bool) ($config['sendShippingCostsAsCartItem'] ?? false);
+    }
+
+    protected function getContext(): Context
+    {
+        return Context::createDefaultContext();
     }
 }

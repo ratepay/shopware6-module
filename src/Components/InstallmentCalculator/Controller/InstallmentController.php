@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -40,10 +42,10 @@ class InstallmentController extends StorefrontController
                 'installment' => [
                     'plan' => $vars->getPlan(),
                     'translations' => $vars->getTranslations(),
-                    'transactionId' => $vars->getTransactionId()
+                    'transactionId' => $vars->getTransactionId(),
                 ],
-                'accountHolders' => BankAccountHolderHelper::getAvailableNames($salesChannelContext)
-            ]
+                'accountHolders' => BankAccountHolderHelper::getAvailableNames($salesChannelContext),
+            ],
         ]);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -28,7 +30,7 @@ class IsOfLegalAgeValidator extends LessThanOrEqualValidator
                 throw new UnexpectedValueException($value, 'array');
             }
 
-            parent::validate((new DateTime())->setDate($value['year'], $value['month'], $value['day']), $constraint);
+            parent::validate((new DateTime())->setDate((int) $value['year'], (int) $value['month'], (int) $value['day']), $constraint);
         }
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -34,8 +36,7 @@ class PaymentRequestData extends OrderOperationData implements CheckoutOperation
         string $ratepayTransactionId = null,
         bool $sendDiscountAsCartItem = false,
         bool $sendShippingCostsAsCartItem = false
-    )
-    {
+    ) {
         parent::__construct($salesChannelContext->getContext(), $order, self::OPERATION_REQUEST, null, false);
         $this->transaction = $transaction;
         $this->requestDataBag = $requestDataBag;

@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+/*
+ * Copyright (c) Ratepay GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Ratepay\RpayPayments\Components\ProfileConfig\Service\Search;
 
 use Ratepay\RpayPayments\Components\ProfileConfig\Dto\ProfileConfigSearch;
@@ -10,13 +18,11 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class ProfileBySalesChannelContextAndCart implements ProfileSearchInterface
 {
-
     private ProfileSearchService $searchService;
 
     public function __construct(
         ProfileSearchService $searchService
-    )
-    {
+    ) {
         $this->searchService = $searchService;
     }
 
@@ -44,5 +50,4 @@ class ProfileBySalesChannelContextAndCart implements ProfileSearchInterface
     {
         return $this->searchService->search($profileConfigSearch);
     }
-
 }

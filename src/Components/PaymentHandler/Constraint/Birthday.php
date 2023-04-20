@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -19,7 +21,7 @@ class Birthday extends Date
     public const ERROR_NAME = 'RP_INVALID_AGE';
 
     /**
-     * @var string[] 
+     * @var string[]
      */
     protected static $errorNames = [
         self::INVALID_FORMAT_ERROR => self::ERROR_NAME,

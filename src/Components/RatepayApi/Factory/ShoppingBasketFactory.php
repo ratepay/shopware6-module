@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -32,7 +34,6 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
  */
 class ShoppingBasketFactory extends AbstractFactory
 {
-
     protected function isSupported(AbstractRequestData $requestData): bool
     {
         return $requestData instanceof OperationDataWithBasket;
@@ -66,18 +67,11 @@ class ShoppingBasketFactory extends AbstractFactory
                     throw new InvalidArgumentException($id . ' does not belongs to the order ' . $order->getId());
                 }
 
-                $this->addOrderLineItemToBasketByOrderItem($requestData, $basket, $item, (int)$qty);
+                $this->addOrderLineItemToBasketByOrderItem($requestData, $basket, $item, (int) $qty);
             }
         }
 
         return $basket;
-    }
-
-    private function getTaxRate(CalculatedPrice $calculatedPrice): float
-    {
-        $tax = $calculatedPrice->getCalculatedTaxes()->first();
-
-        return $tax ? $tax->getTaxRate() : 0;
     }
 
     protected function addShippingCosts(OperationDataWithBasket $requestData, ShoppingBasket $basket, CalculatedPrice $shippingCosts): void
@@ -112,8 +106,7 @@ class ShoppingBasketFactory extends AbstractFactory
         ShoppingBasket $basket,
         OrderLineItemEntity $item,
         int $qty
-    ): void
-    {
+    ): void {
         $taxStatus = $this->getTaxStatus($requestData);
 
         if ($this->shouldSubmitItemAsCartItem($requestData, $item, $item->getTotalPrice())) {
@@ -163,10 +156,7 @@ class ShoppingBasketFactory extends AbstractFactory
     }
 
     /**
-     * @param OperationDataWithBasket $requestData
      * @param LineItem|OrderLineItemEntity $item
-     * @param float $price
-     * @return bool
      */
     protected function shouldSubmitItemAsCartItem(OperationDataWithBasket $requestData, $item, float $price): bool
     {
@@ -175,6 +165,13 @@ class ShoppingBasketFactory extends AbstractFactory
         }
 
         return $requestData->isSendDiscountAsCartItem();
+    }
+
+    private function getTaxRate(CalculatedPrice $calculatedPrice): float
+    {
+        $tax = $calculatedPrice->getCalculatedTaxes()->first();
+
+        return $tax ? $tax->getTaxRate() : 0;
     }
 
     private function getTaxStatus(OperationDataWithBasket $requestData): string
@@ -204,5 +201,4 @@ class ShoppingBasketFactory extends AbstractFactory
 
         return $unitPrice;
     }
-
 }

@@ -23,7 +23,7 @@ class TransactionIdFetchFailedException extends RatepayException
     {
         parent::__construct(
             "Ratepay wasn't able to fetch a transaction id. So the payment can not complete.",
-            is_numeric($code) ? (int)$code : 0,
+            is_numeric($code) ? (int) $code : 0,
             $previous
         );
     }

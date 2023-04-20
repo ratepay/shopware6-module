@@ -39,8 +39,7 @@ class AccountSubscriber implements EventSubscriberInterface
         PaymentQueryService $paymentQueryService,
         OrderConverter $orderConverter,
         ConfigService $configService
-    )
-    {
+    ) {
         $this->translator = $translator;
         $this->paymentQueryService = $paymentQueryService;
         $this->orderConverter = $orderConverter;
@@ -80,7 +79,7 @@ class AccountSubscriber implements EventSubscriberInterface
             } else {
                 throw $this->createException(
                     $event->getOrderEntity(),
-                    (string)$response->getReasonMessage()
+                    (string) $response->getReasonMessage()
                 );
             }
         } catch (RatepayException $ratepayException) {
@@ -95,7 +94,13 @@ class AccountSubscriber implements EventSubscriberInterface
     {
         return (new ForwardException(
             'frontend.account.edit-order.page',
-            ['orderId' => $orderEntity->getId()], ['ratepay-errors' => [$message]])
+            [
+                'orderId' => $orderEntity->getId(),
+            ],
+            [
+                'ratepay-errors' => [$message],
+            ]
+        )
         )->setCustomerMessage($message);
     }
 }

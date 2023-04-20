@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -34,8 +36,7 @@ class RedirectExceptionListener implements EventSubscriberInterface
     public function __construct(
         ContainerInterface $container,
         OrderTransactionStateHandler $orderTransactionStateHandler
-    )
-    {
+    ) {
         $this->container = $container;
         $this->orderTransactionStateHandler = $orderTransactionStateHandler;
     }
@@ -60,7 +61,6 @@ class RedirectExceptionListener implements EventSubscriberInterface
         if ($throwable instanceof RedirectException) {
             $event->setResponse($throwable->getRedirectResponse());
         } elseif ($throwable instanceof ForwardException) {
-
             $routeScope = $event->getRequest()->attributes->get('_routeScope');
             if (!is_array($routeScope) || $routeScope[0] !== 'storefront') {
                 // skip forwarding request, if it is a api request (e.g. headless)
@@ -92,7 +92,9 @@ class RedirectExceptionListener implements EventSubscriberInterface
                 $this->container->get(RequestTransformerInterface::class)->extractInheritableAttributes($event->getRequest()),
                 $route,
                 $throwable->getQueryParams(),
-                ['_route_params' => $throwable->getRouteParams()]
+                [
+                    '_route_params' => $throwable->getRouteParams(),
+                ]
             );
             $subRequest = $event->getRequest()->duplicate($route, null, $attributes);
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -63,7 +65,6 @@ class PaymentRequestService extends AbstractRequest
 
     private PaymentFactory $paymentFactory;
 
-
     private ExternalFactory $externalFactory;
 
     private ProfileSearchService $profileConfigSearch;
@@ -79,8 +80,7 @@ class PaymentRequestService extends AbstractRequest
         CustomerFactory $customerFactory,
         PaymentFactory $paymentFactory,
         ExternalFactory $externalFactory
-    )
-    {
+    ) {
         parent::__construct($eventDispatcher, $headFactory);
         $this->shoppingBasketFactory = $shoppingBasketFactory;
         $this->customerFactory = $customerFactory;

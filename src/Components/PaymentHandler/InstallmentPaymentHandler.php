@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -31,20 +33,28 @@ class InstallmentPaymentHandler extends AbstractPaymentHandler
         $validations = parent::getValidationDefinitions($requestDataBag, $baseData);
 
         $installment = new DataValidationDefinition();
-        $installment->add('type',
+        $installment->add(
+            'type',
             new NotBlank(),
-            new Choice(['choices' => ['time', 'rate']])
+            new Choice([
+                'choices' => ['time', 'rate'],
+            ])
         );
-        $installment->add('value',
+        $installment->add(
+            'value',
             new NotBlank()
         );
 
-        $installment->add('hash',
+        $installment->add(
+            'hash',
             new NotBlank()
         );
-        $installment->add('paymentType',
+        $installment->add(
+            'paymentType',
             new NotBlank(),
-            new Choice(['choices' => ['DIRECT-DEBIT', 'BANK-TRANSFER']])
+            new Choice([
+                'choices' => ['DIRECT-DEBIT', 'BANK-TRANSFER'],
+            ])
         );
 
         /** @var DataBag $ratepayData */

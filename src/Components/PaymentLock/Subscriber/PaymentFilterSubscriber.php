@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\PaymentLock\Subscriber;
 
-use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Ratepay\RpayPayments\Components\Checkout\Event\RatepayPaymentFilterEvent;
 use Ratepay\RpayPayments\Components\PaymentLock\Service\LockService;
+use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentFilterSubscriber implements EventSubscriberInterface

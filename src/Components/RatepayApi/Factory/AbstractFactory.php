@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -23,8 +25,6 @@ abstract class AbstractFactory
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    abstract protected function isSupported(AbstractRequestData $requestData): bool;
-
     final public function getData(AbstractRequestData $requestData): ?object
     {
         if (!$this->isSupported($requestData)) {
@@ -34,12 +34,14 @@ abstract class AbstractFactory
         $data = $this->_getData($requestData);
         if ($data !== null) {
             /** @var BuildEvent $event */
-            $event = $this->eventDispatcher->dispatch(new BuildEvent($requestData, $data), get_class($this));
+            $event = $this->eventDispatcher->dispatch(new BuildEvent($requestData, $data), static::class);
             $data = $event->getBuildData();
         }
 
         return $data;
     }
+
+    abstract protected function isSupported(AbstractRequestData $requestData): bool;
 
     abstract protected function _getData(AbstractRequestData $requestData): ?object;
 }

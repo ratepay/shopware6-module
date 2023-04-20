@@ -1,8 +1,14 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
+/*
+ * Copyright (c) Ratepay GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Model;
-
 
 use BadMethodCallException;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
@@ -10,7 +16,6 @@ use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntit
 
 class InstallmentBuilder extends \RatePAY\Frontend\InstallmentBuilder
 {
-
     private ProfileConfigEntity $profileConfig;
 
     private ProfileConfigMethodEntity $methodConfig;
@@ -20,8 +25,7 @@ class InstallmentBuilder extends \RatePAY\Frontend\InstallmentBuilder
         ProfileConfigMethodEntity $methodConfig,
         string $language = 'DE',
         string $country = 'DE'
-    )
-    {
+    ) {
         $this->profileConfig = $profileConfig;
         $this->methodConfig = $methodConfig;
 

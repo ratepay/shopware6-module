@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -63,8 +65,7 @@ class ExtensionService
         EventDispatcherInterface $eventDispatcher,
         ProfileBySalesChannelContext $profileBySalesChannelContext,
         ProfileByOrderEntity $profileByOrderEntity
-    )
-    {
+    ) {
         $this->orderExtensionRepository = $orderExtensionRepository;
         $this->lineItemExtensionRepository = $lineItemExtensionRepository;
         $this->transactionIdService = $transactionIdService;
@@ -76,8 +77,7 @@ class ExtensionService
     public function createLineItemExtensionEntities(
         array $lineItems,
         Context $context
-    ): RatepayOrderLineItemDataCollection
-    {
+    ): RatepayOrderLineItemDataCollection {
         $data = [];
         foreach ($lineItems as $lineItem) {
             $data[] = [
@@ -106,9 +106,7 @@ class ExtensionService
         ?string $transactionId,
         ?string $descriptor,
         bool $successful
-    ): RatepayOrderDataEntity
-    {
-
+    ): RatepayOrderDataEntity {
         $order = $requestData->getOrder();
         $context = $requestData->getContext();
 
@@ -158,8 +156,7 @@ class ExtensionService
         SalesChannelContext $salesChannelContext,
         ?OrderEntity $order = null,
         Request $httpRequest = null
-    ): ?ArrayStruct
-    {
+    ): ?ArrayStruct {
         $paymentMethod = $salesChannelContext->getPaymentMethod();
 
         $searchService = $order !== null ? $this->profileByOrderEntity : $this->profileBySalesChannelContext;
@@ -214,7 +211,7 @@ class ExtensionService
             // add user entered values again, so that the user have not to reenter his values
             foreach (RequestHelper::getArray($httpRequest, 'ratepay') ?: [] as $key => $value) {
                 if ($key === 'birthday' && is_array($value)) {
-                    $value = (new DateTime())->setDate((int)$value['year'], (int)$value['month'], (int)$value['day']);
+                    $value = (new DateTime())->setDate((int) $value['year'], (int) $value['month'], (int) $value['day']);
                 }
 
                 $extension->set($key, $value);

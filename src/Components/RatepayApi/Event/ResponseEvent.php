@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -9,10 +11,10 @@
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Event;
 
-use Symfony\Contracts\EventDispatcher\Event;
 use RatePAY\RequestBuilder;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Shopware\Core\Framework\Context;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class ResponseEvent extends Event
 {

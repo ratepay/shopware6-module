@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -74,13 +76,13 @@ class ProfileConfigMethodDefinition extends EntityDefinition
                 PaymentMethodDefinition::class,
                 'id',
                 false
-            ))->addFlags(/*new CascadeDelete()*/),
+            ))->addFlags(/* new CascadeDelete() */),
 
             (new FkField(
                 'payment_method_id',
                 ProfileConfigMethodEntity::FIELD_PAYMENT_METHOD_ID,
                 PaymentMethodDefinition::class
-            ))->addFlags(new Required()/*, new PrimaryKey()*/), // shopware does not support multiple primary keys
+            ))->addFlags(new Required()/* , new PrimaryKey() */), // shopware does not support multiple primary keys
 
             (new FloatField(
                 'limit_min',

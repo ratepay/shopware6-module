@@ -11,11 +11,6 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments;
 
-use Shopware\Core\Framework\Plugin\Context\InstallContext;
-use Shopware\Core\Framework\Plugin\Context\UpdateContext;
-use Shopware\Core\Framework\Plugin\Context\UninstallContext;
-use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
-use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Exception;
 use RatePAY\RequestBuilder;
 use Ratepay\RpayPayments\Bootstrap\AbstractBootstrap;
@@ -26,6 +21,11 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Plugin;
+use Shopware\Core\Framework\Plugin\Context\ActivateContext;
+use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
+use Shopware\Core\Framework\Plugin\Context\InstallContext;
+use Shopware\Core\Framework\Plugin\Context\UninstallContext;
+use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 use Shopware\Core\Kernel;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -47,33 +47,6 @@ class RpayPayments extends Plugin
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->postInstall();
         }
-    }
-
-    /**
-     * @return AbstractBootstrap[]
-     */
-    protected function getBootstrapClasses(InstallContext $context): array
-    {
-        /** @var AbstractBootstrap[] $bootstrapper */
-        $bootstrapper = [
-            new Database(),
-            new PaymentMethods(),
-        ];
-
-        /** @var EntityRepository $pluginRepository */
-        $pluginRepository = $this->container->get('plugin.repository');
-        $plugins = $pluginRepository->search((new Criteria())->addFilter(new EqualsFilter('baseClass', get_class($this))), Context::createDefaultContext());
-        $plugin = $plugins->first();
-        //$logger = new FileLogger($this->container->getParameter('kernel.logs_dir'));
-        foreach ($bootstrapper as $bootstrap) {
-            $bootstrap->setInstallContext($context);
-            //$bootstrap->setLogger($logger);
-            $bootstrap->setContainer($this->container);
-            $bootstrap->injectServices();
-            $bootstrap->setPlugin($plugin);
-        }
-
-        return $bootstrapper;
     }
 
     public function update(UpdateContext $context): void
@@ -176,5 +149,32 @@ class RpayPayments extends Plugin
         }
 
         $containerBuilder->addCompilerPass(new PluginVersionCompilerPass(__DIR__ . '/../'));
+    }
+
+    /**
+     * @return AbstractBootstrap[]
+     */
+    protected function getBootstrapClasses(InstallContext $context): array
+    {
+        /** @var AbstractBootstrap[] $bootstrapper */
+        $bootstrapper = [
+            new Database(),
+            new PaymentMethods(),
+        ];
+
+        /** @var EntityRepository $pluginRepository */
+        $pluginRepository = $this->container->get('plugin.repository');
+        $plugins = $pluginRepository->search((new Criteria())->addFilter(new EqualsFilter('baseClass', static::class)), Context::createDefaultContext());
+        $plugin = $plugins->first();
+        // $logger = new FileLogger($this->container->getParameter('kernel.logs_dir'));
+        foreach ($bootstrapper as $bootstrap) {
+            $bootstrap->setInstallContext($context);
+            // $bootstrap->setLogger($logger);
+            $bootstrap->setContainer($this->container);
+            $bootstrap->injectServices();
+            $bootstrap->setPlugin($plugin);
+        }
+
+        return $bootstrapper;
     }
 }

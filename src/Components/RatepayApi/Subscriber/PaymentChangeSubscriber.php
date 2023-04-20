@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -61,8 +63,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         RecalculationService $recalculationService,
         Logger $logger,
         HistoryLogger $historyLogger
-    )
-    {
+    ) {
         $this->eventDispatcher = $eventDispatcher;
         $this->productRepository = $productRepository;
         $this->orderRepository = $orderRepository;
@@ -113,7 +114,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
                 $productNumber = $lineItem->getPayload()['productNumber'] ?? $id;
             }
 
-            $updateData = $this->getPositionUpdates($requestData, $position, (int)$qty);
+            $updateData = $this->getPositionUpdates($requestData, $position, (int) $qty);
             $updateData[RatepayPositionEntity::FIELD_ID] = $position->getId();
             $positionUpdates[] = $updateData;
 

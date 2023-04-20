@@ -56,7 +56,9 @@ class StorefrontController extends AbstractController
         $criteria->addFilter(new EqualsFilter(RatepayAdminOrderTokenEntity::FIELD_TOKEN, $request->get('token')));
         $criteria->addFilter(new EqualsFilter(RatepayAdminOrderTokenEntity::FIELD_SALES_CHANNEL_ID, $context->getSalesChannelId()));
         $criteria->addFilter(new EqualsFilter(RatepayAdminOrderTokenEntity::FIELD_CART_TOKEN, null));
-        $criteria->addFilter(new RangeFilter(RatepayAdminOrderTokenEntity::FIELD_VAlID_UNTIL, [RangeFilter::GTE => (new DateTime())->format('Y-m-d H:i:s')]));
+        $criteria->addFilter(new RangeFilter(RatepayAdminOrderTokenEntity::FIELD_VAlID_UNTIL, [
+            RangeFilter::GTE => (new DateTime())->format('Y-m-d H:i:s'),
+        ]));
         $criteria->setLimit(1);
 
         $result = $this->tokenRepository->search($criteria, $context->getContext());

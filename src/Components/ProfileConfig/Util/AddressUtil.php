@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+/*
+ * Copyright (c) Ratepay GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Ratepay\RpayPayments\Components\ProfileConfig\Util;
 
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
@@ -8,7 +16,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 
 class AddressUtil
 {
-
     public static function areOrderAddressObjectsIdentical(OrderAddressEntity $entity1, OrderAddressEntity $entity2): bool
     {
         $fieldsToCompare = [
@@ -19,7 +26,7 @@ class AddressUtil
             'zipcode',
             'city',
             'countryId',
-            'countryStateId'
+            'countryStateId',
         ];
 
         if (empty($entity1->getCompany()) || empty($entity2->getCompany())) {
@@ -39,7 +46,7 @@ class AddressUtil
             'zipcode',
             'city',
             'countryId',
-            'countryStateId'
+            'countryStateId',
         ];
 
         if (empty($entity1->getCompany()) || empty($entity2->getCompany())) {
@@ -59,5 +66,4 @@ class AddressUtil
 
         return true;
     }
-
 }

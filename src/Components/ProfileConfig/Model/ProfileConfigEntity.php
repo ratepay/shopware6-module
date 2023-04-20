@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -151,7 +153,7 @@ class ProfileConfigEntity extends Entity
     {
         return $this->countryCodeDelivery;
     }
-    
+
     /**
      * @return string[]
      */

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -24,20 +26,18 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PreventOrderDeletion implements EventSubscriberInterface
 {
-
     private EntityRepository $ratepayOrderLineItemDataRepository;
 
     public function __construct(
         EntityRepository $ratepayOrderLineItemDataRepository
-    )
-    {
+    ) {
         $this->ratepayOrderLineItemDataRepository = $ratepayOrderLineItemDataRepository;
     }
 
     public static function getSubscribedEvents(): array
     {
         return [
-            BeforeDeleteEvent::class => 'preventOrderDeletion'
+            BeforeDeleteEvent::class => 'preventOrderDeletion',
         ];
     }
 

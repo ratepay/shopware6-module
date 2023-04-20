@@ -1,4 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+/*
+ * Copyright (c) Ratepay GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Ratepay\RpayPayments\Util;
 
@@ -8,7 +16,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class RequestHelper
 {
-
     public static function getArrayBag(Request $request, string $key, ?array $default = null): ?RequestDataBag
     {
         $data = self::getArray($request, $key, $default);
@@ -28,5 +35,4 @@ class RequestHelper
 
         return $data;
     }
-
 }

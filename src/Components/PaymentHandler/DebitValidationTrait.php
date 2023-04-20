@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -17,10 +19,8 @@ use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\IbanNotBlank;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\SepaConfirmNotBlank;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\Framework\Validation\DataValidationDefinition;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Symfony\Component\HttpFoundation\Request;
 
 trait DebitValidationTrait
 {
@@ -34,11 +34,13 @@ trait DebitValidationTrait
         $bankData->add('accountHolder', new BankAccountHolderNotBlank(), new BankAccountHolderChoice(
             BankAccountHolderHelper::getAvailableNames($baseData)
         ));
-        $bankData->add('iban',
+        $bankData->add(
+            'iban',
             new IbanNotBlank(),
             new Iban()
         );
-        $bankData->add('sepaConfirmation',
+        $bankData->add(
+            'sepaConfirmation',
             new SepaConfirmNotBlank()
         );
 
