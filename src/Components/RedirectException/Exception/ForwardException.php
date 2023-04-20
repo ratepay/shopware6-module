@@ -10,6 +10,7 @@
 namespace Ratepay\RpayPayments\Components\RedirectException\Exception;
 
 use Exception;
+
 class ForwardException extends Exception
 {
     private string $route;
@@ -17,6 +18,8 @@ class ForwardException extends Exception
     private array $routeParams;
 
     private array $queryParams;
+
+    private ?string $customerMessage = null;
 
     public function __construct(string $route, array $routeParams = [], array $query = [], Exception $exception = null)
     {
@@ -39,5 +42,17 @@ class ForwardException extends Exception
     public function getQueryParams(): array
     {
         return $this->queryParams;
+    }
+
+    public function getCustomerMessage(): ?string
+    {
+        return $this->customerMessage;
+    }
+
+    public function setCustomerMessage(?string $customerMessage): self
+    {
+        $this->customerMessage = $customerMessage;
+
+        return $this;
     }
 }

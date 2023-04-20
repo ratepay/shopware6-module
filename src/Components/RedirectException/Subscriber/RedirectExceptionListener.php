@@ -15,10 +15,12 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStat
 use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Routing\RequestTransformerInterface;
+use Shopware\Storefront\Controller\StorefrontController;
 use Shopware\Storefront\Framework\Routing\Router;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -64,6 +66,10 @@ class RedirectExceptionListener implements EventSubscriberInterface
             if (!is_array($routeScope) || $routeScope[0] !== 'storefront') {
                 // skip forwarding request, if it is a api request (e.g. headless)
                 throw $throwable->getPrevious();
+            }
+
+            if ($throwable->getCustomerMessage() !== null && ($session = $event->getRequest()->getSession()) instanceof Session) {
+                $session->getFlashBag()->add(StorefrontController::DANGER, $throwable->getCustomerMessage());
             }
 
             /** @var UrlGeneratorInterface $router */

@@ -181,23 +181,5 @@ class AccountSubscriber implements EventSubscriberInterface
             new RequestDataBag(['ratepay' => $ratepayData]),
             $event->getSalesChannelContext()
         ));
-
-        // we register an payment-failed-subscriber to throw a forward-exception during the payment-complete in the update-payment process.
-        // the listener must have a very low priority to make sure that all other event-subscriber can process
-        $orderTransactionStateHandler = $this->orderTransactionStateHandler;
-        $this->eventDispatcher->addListener(PaymentFailedEvent::class, static function (PaymentFailedEvent $event) use ($orderTransactionStateHandler): void {
-            // set the transaction to failed. Without this, the customer will not be able to try a repayment.
-            // NOTE: this is not required during the validation or the PaymentQuery, cause in this state,
-            // the transaction is not set as "open". Only after the PaymentHandler got called
-            $orderTransactionStateHandler->fail($event->getTransaction()->getOrderTransaction()->getId(), $event->getContext());
-
-            // determine the correct error message for the customer.
-            $message = $event->getException()->getMessage();
-            if (($response = $event->getResponse()) !== null) {
-                $message = $response->getCustomerMessage();
-                $message = $message ?: $response->getReasonMessage();
-            }
-            throw new ForwardException('frontend.account.edit-order.page', ['orderId' => $event->getOrder()->getId()], ['ratepay-errors' => [$message]], $event->getException());
-        }, -9_999_999);
     }
 }
