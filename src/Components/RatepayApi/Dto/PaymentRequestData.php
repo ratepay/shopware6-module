@@ -45,6 +45,9 @@ class PaymentRequestData extends OrderOperationData implements CheckoutOperation
         $this->sendShippingCostsAsCartItem = $sendShippingCostsAsCartItem;
     }
 
+    /**
+     * @return array<int, string>
+     */
     public function getItems(): array
     {
         if ($this->items) {

@@ -55,6 +55,9 @@ class OrderOperationData extends AbstractRequestData implements OperationDataWit
 
     protected OrderEntity $order;
 
+    /**
+     * @var array<int, string>|null
+     */
     protected ?array $items;
 
     protected ?OrderTransactionEntity $transaction;

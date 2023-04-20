@@ -13,13 +13,7 @@ use Ratepay\RpayPayments\Components\AdminOrders\Model\RatepayAdminOrderTokenEnti
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**
- * @method void                              add(RatepayAdminOrderTokenEntity $entity)
- * @method void                              set(string $key, RatepayAdminOrderTokenEntity $entity)
- * @method RatepayAdminOrderTokenEntity[]    getIterator()
- * @method RatepayAdminOrderTokenEntity[]    getElements()
- * @method RatepayAdminOrderTokenEntity|null get(string $key)
- * @method RatepayAdminOrderTokenEntity|null first()
- * @method RatepayAdminOrderTokenEntity|null last()
+ * @extends EntityCollection<RatepayAdminOrderTokenEntity>
  */
 class RatepayAdminOrderTokenCollection extends EntityCollection
 {

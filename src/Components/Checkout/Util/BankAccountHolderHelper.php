@@ -16,7 +16,8 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 class BankAccountHolderHelper
 {
     /**
-     * @param $baseData OrderEntity|SalesChannelContext
+     * @param OrderEntity|SalesChannelContext $baseData
+     * @return string[]
      */
     public static function getAvailableNames($baseData): array
     {

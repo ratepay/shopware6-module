@@ -15,13 +15,7 @@ use Ratepay\RpayPayments\Components\RatepayApi\Model\TransactionIdEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**
- * @method void                     add(TransactionIdEntity $entity)
- * @method void                     set(string $key, TransactionIdEntity $entity)
- * @method TransactionIdEntity[]    getIterator()
- * @method TransactionIdEntity[]    getElements()
- * @method TransactionIdEntity|null get(string $key)
- * @method TransactionIdEntity|null first()
- * @method TransactionIdEntity|null last()
+ * @extends EntityCollection<TransactionIdEntity>
  */
 class TransactionIdCollection extends EntityCollection
 {

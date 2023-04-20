@@ -113,7 +113,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
                 $productNumber = $lineItem->getPayload()['productNumber'] ?? $id;
             }
 
-            $updateData = $this->getPositionUpdates($requestData, $position, $qty);
+            $updateData = $this->getPositionUpdates($requestData, $position, (int)$qty);
             $updateData[RatepayPositionEntity::FIELD_ID] = $position->getId();
             $positionUpdates[] = $updateData;
 
@@ -172,7 +172,10 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         ), PaymentDeliverService::EVENT_SUCCESSFUL);
     }
 
-    protected function getPositionUpdates(OrderOperationData $requestData, RatepayPositionEntity $position, $qty): array
+    /**
+     * @return array<string, int>
+     */
+    protected function getPositionUpdates(OrderOperationData $requestData, RatepayPositionEntity $position, int $qty): array
     {
         $updates = [];
         switch ($requestData->getOperation()) {

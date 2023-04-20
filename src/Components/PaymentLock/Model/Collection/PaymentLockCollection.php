@@ -15,13 +15,7 @@ use Ratepay\RpayPayments\Components\PaymentLock\Model\PaymentLockEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**
- * @method void                   add(PaymentLockEntity $entity)
- * @method void                   set(string $key, PaymentLockEntity $entity)
- * @method PaymentLockEntity[]    getIterator()
- * @method PaymentLockEntity[]    getElements()
- * @method PaymentLockEntity|null get(string $key)
- * @method PaymentLockEntity|null first()
- * @method PaymentLockEntity|null last()
+ * @extends EntityCollection<PaymentLockEntity>
  */
 class PaymentLockCollection extends EntityCollection
 {

@@ -91,10 +91,19 @@ class ProfileConfigEntity extends Entity
 
     protected string $salesChannelId;
 
+    /**
+     * @var string[]
+     */
     protected array $countryCodeBilling = [];
 
+    /**
+     * @var string[]
+     */
     protected array $countryCodeDelivery = [];
 
+    /**
+     * @var string[]
+     */
     protected array $currency = [];
 
     protected bool $sandbox;
@@ -127,16 +136,25 @@ class ProfileConfigEntity extends Entity
         return $this->salesChannelId;
     }
 
+    /**
+     * @return string[]
+     */
     public function getCountryCodeBilling(): array
     {
         return $this->countryCodeBilling;
     }
 
+    /**
+     * @return string[]
+     */
     public function getCountryCodeDelivery(): array
     {
         return $this->countryCodeDelivery;
     }
-
+    
+    /**
+     * @return string[]
+     */
     public function getCurrency(): array
     {
         return $this->currency;

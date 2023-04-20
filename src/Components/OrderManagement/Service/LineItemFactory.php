@@ -16,11 +16,7 @@ use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRule;
 use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRuleCollection;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\Exception\EntityNotFoundException;
-use Shopware\Core\Framework\ShopwareHttpException;
 use Shopware\Core\Framework\Uuid\Uuid;
-use Shopware\Core\System\Tax\Aggregate\TaxRule\TaxRuleDefinition;
-use Symfony\Component\Translation\Translator;
 
 class LineItemFactory
 {
@@ -38,6 +34,9 @@ class LineItemFactory
         $this->calculator = $calculator;
     }
 
+    /**
+     * @param float|string $taxRuleIdOrTaxRate
+     */
     public function createLineItem(OrderEntity $orderEntity, string $label, float $grossAmount, $taxRuleIdOrTaxRate, Context $context): LineItem
     {
         $salesChannelContext = $this->orderConverter->assembleSalesChannelContext($orderEntity, $context);

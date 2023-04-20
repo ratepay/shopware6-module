@@ -13,13 +13,7 @@ use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntit
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**
- * @method void                                add(RatepayOrderLineItemDataEntity $entity)
- * @method void                                set(string $key, RatepayOrderLineItemDataEntity $entity)
- * @method RatepayOrderLineItemDataEntity[]    getIterator()
- * @method RatepayOrderLineItemDataEntity[]    getElements()
- * @method RatepayOrderLineItemDataEntity|null get(string $key)
- * @method RatepayOrderLineItemDataEntity|null first()
- * @method RatepayOrderLineItemDataEntity|null last()
+ * @extends EntityCollection<RatepayOrderLineItemDataEntity>
  */
 class RatepayOrderLineItemDataCollection extends EntityCollection
 {

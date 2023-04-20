@@ -8,7 +8,9 @@ use Shopware\Core\System\SalesChannel\StoreApiResponse;
 class InstallmentCalculationResponse extends StoreApiResponse
 {
 
-    /** @var ArrayStruct */
+    /**
+     * @var ArrayStruct
+     */
     protected $object;
 
     /**

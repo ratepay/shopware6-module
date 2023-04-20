@@ -18,6 +18,9 @@ class Birthday extends Date
      */
     public const ERROR_NAME = 'RP_INVALID_AGE';
 
+    /**
+     * @var string[] 
+     */
     protected static $errorNames = [
         self::INVALID_FORMAT_ERROR => self::ERROR_NAME,
         self::INVALID_DATE_ERROR => self::ERROR_NAME,

@@ -18,8 +18,8 @@ class InstallmentBuilder extends \RatePAY\Frontend\InstallmentBuilder
     public function __construct(
         ProfileConfigEntity $profileConfig,
         ProfileConfigMethodEntity $methodConfig,
-        $language = 'DE',
-        $country = 'DE'
+        string $language = 'DE',
+        string $country = 'DE'
     )
     {
         $this->profileConfig = $profileConfig;

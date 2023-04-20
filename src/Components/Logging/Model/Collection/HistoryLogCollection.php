@@ -13,13 +13,7 @@ use Ratepay\RpayPayments\Components\Logging\Model\HistoryLogEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**
- * @method void                  add(HistoryLogEntity $entity)
- * @method void                  set(string $key, HistoryLogEntity $entity)
- * @method HistoryLogEntity[]    getIterator()
- * @method HistoryLogEntity[]    getElements()
- * @method HistoryLogEntity|null get(string $key)
- * @method HistoryLogEntity|null first()
- * @method HistoryLogEntity|null last()
+ * @extends EntityCollection<HistoryLogEntity>
  */
 class HistoryLogCollection extends EntityCollection
 {

@@ -66,7 +66,7 @@ class ShoppingBasketFactory extends AbstractFactory
                     throw new InvalidArgumentException($id . ' does not belongs to the order ' . $order->getId());
                 }
 
-                $this->addOrderLineItemToBasketByOrderItem($requestData, $basket, $item, $qty);
+                $this->addOrderLineItemToBasketByOrderItem($requestData, $basket, $item, (int)$qty);
             }
         }
 
@@ -111,7 +111,7 @@ class ShoppingBasketFactory extends AbstractFactory
         OperationDataWithBasket $requestData,
         ShoppingBasket $basket,
         OrderLineItemEntity $item,
-        $qty
+        int $qty
     ): void
     {
         $taxStatus = $this->getTaxStatus($requestData);

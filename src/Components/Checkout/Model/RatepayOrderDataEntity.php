@@ -161,7 +161,10 @@ class RatepayOrderDataEntity extends Entity
         return $this->sendShippingCostsAsCartItem;
     }
 
-    public function getAdditionalData($key = null)
+    /**
+     * @return mixed
+     */
+    public function getAdditionalData(string $key = null)
     {
         return $key ? ($this->additionalData[$key] ?? null) : $this->additionalData;
     }

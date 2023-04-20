@@ -77,7 +77,7 @@ class AccountOrderControllerDecorator
         return $this->innerService->editOrder($orderId, $request, $context);
     }
 
-    protected function addRatepayValidationErrors(Request $request)
+    protected function addRatepayValidationErrors(Request $request): void
     {
         foreach ($request->get('ratepay-errors', []) as $error) {
             if (($session = $request->getSession()) instanceof Session) {

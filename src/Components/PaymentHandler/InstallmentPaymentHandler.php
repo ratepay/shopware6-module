@@ -23,6 +23,9 @@ class InstallmentPaymentHandler extends AbstractPaymentHandler
      */
     public const RATEPAY_METHOD = 'INSTALLMENT';
 
+    /**
+     * @return DataValidationDefinition[]
+     */
     public function getValidationDefinitions(DataBag $requestDataBag, $baseData): array
     {
         $validations = parent::getValidationDefinitions($requestDataBag, $baseData);

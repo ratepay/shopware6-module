@@ -36,7 +36,7 @@ class InstallmentRoute
     /**
      * @Route(path="/store-api/ratepay/installment/calculate/{orderId}", methods={"GET"}, name="store-api.checkout.ratepay.installment.calculate", defaults={"_loginRequired"=true, "_loginRequiredAllowGuest"=true})
      */
-    public function calculateInstallment(Request $request, SalesChannelContext $salesChannelContext, $orderId = null): InstallmentCalculationResponse
+    public function calculateInstallment(Request $request, SalesChannelContext $salesChannelContext, ?string $orderId = null): InstallmentCalculationResponse
     {
         $type = $request->query->get('type');
         $value = (int)$request->query->get('value');

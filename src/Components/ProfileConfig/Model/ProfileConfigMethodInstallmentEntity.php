@@ -66,6 +66,9 @@ class ProfileConfigMethodInstallmentEntity extends Entity
      */
     public const FIELD_SERVICE_CHARGE = 'serviceCharge';
 
+    /**
+     * @var int[]
+     */
     protected array $allowedMonths = [];
 
     protected ?bool $isBankTransferAllowed = null;
@@ -80,6 +83,9 @@ class ProfileConfigMethodInstallmentEntity extends Entity
 
     protected float $serviceCharge;
 
+    /**
+     * @return int[]
+     */
     public function getAllowedMonths(): array
     {
         return $this->allowedMonths;

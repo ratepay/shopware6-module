@@ -16,6 +16,9 @@ class DfpConstraint extends Constraint
      */
     public const ERROR_CODE = 'd8afee2c-7ad7-44e2-aec8-3d8d6a2eadb9';
 
+    /**
+     * @var string[]
+     */
     protected static $errorNames = [
         self::ERROR_CODE => 'RP_INVALID_DFP',
     ];

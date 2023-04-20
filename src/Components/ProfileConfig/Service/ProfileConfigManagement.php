@@ -9,6 +9,7 @@
 
 namespace Ratepay\RpayPayments\Components\ProfileConfig\Service;
 
+use Ratepay\RpayPayments\Exception\RatepayException;
 use RatePAY\Model\Response\ProfileRequest;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\Collection\ProfileConfigCollection;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
@@ -53,6 +54,10 @@ class ProfileConfigManagement
         $this->context = Context::createDefaultContext();
     }
 
+    /**
+     * @param string[] $ids
+     * @throws RatepayException
+     */
     public function refreshProfileConfigs(array $ids): EntitySearchResult
     {
         /** @var ProfileConfigCollection|ProfileConfigEntity[] $profileConfigs */

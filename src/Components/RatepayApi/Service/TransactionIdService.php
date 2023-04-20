@@ -12,9 +12,9 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\RatepayApi\Service;
 
 use RatePAY\Model\Response\PaymentInit;
+use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentInitData;
-use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
 use Ratepay\RpayPayments\Components\RatepayApi\Exception\TransactionIdFetchFailedException;
 use Ratepay\RpayPayments\Components\RatepayApi\Model\TransactionIdEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentInitService;
@@ -86,7 +86,7 @@ class TransactionIdService
 
         $transactionId = null;
         try {
-            if ($transactionIdEntity === null) {
+            if (!$transactionIdEntity instanceof TransactionIdEntity) {
                 /** @var PaymentInit $paymentInitResponse */
                 $paymentInitResponse = $this->paymentInitService->doRequest(new PaymentInitData($profileConfig, $salesChannelContext->getContext()));
                 if ($paymentInitResponse->isSuccessful()) {
@@ -114,7 +114,7 @@ class TransactionIdService
         throw new TransactionIdFetchFailedException();
     }
 
-    private function searchTransaction(string $identifier, ProfileConfigEntity $profileConfigEntity = null)
+    private function searchTransaction(string $identifier, ProfileConfigEntity $profileConfigEntity = null): ?TransactionIdEntity
     {
         $criteria = (new Criteria())
             ->addFilter(new EqualsFilter(TransactionIdEntity::FIELD_IDENTIFIER, $identifier))
@@ -127,7 +127,7 @@ class TransactionIdService
         return $this->transactionIdRepository->search($criteria, Context::createDefaultContext())->first();
     }
 
-    private function getIdentifier(SalesChannelContext $salesChannelContext, string $prefix = '')
+    private function getIdentifier(SalesChannelContext $salesChannelContext, string $prefix = ''): string
     {
         return $prefix . $salesChannelContext->getToken();
     }

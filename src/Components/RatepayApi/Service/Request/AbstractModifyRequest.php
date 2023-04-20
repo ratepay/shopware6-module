@@ -13,7 +13,6 @@ use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
 use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
-use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
@@ -28,8 +27,6 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 abstract class AbstractModifyRequest extends AbstractRequest
 {
     protected string $_operation = self::CALL_CHANGE;
-
-    protected array $items;
 
     protected EntityRepository $productRepository;
 

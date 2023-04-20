@@ -41,6 +41,9 @@ class LockService
         $this->paymentLockRepository = $paymentLockRepository;
     }
 
+    /**
+     * @param string[]|null $paymentMethodIds
+     */
     public function lockPaymentMethod(Context $context, string $customerId, ?array $paymentMethodIds): void
     {
         $lockedUntil = new DateTime('+48 hours');

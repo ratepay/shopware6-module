@@ -16,7 +16,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 
 class CriteriaHelper
 {
-    public static function getCriteriaForOrder($orderId): Criteria
+    public static function getCriteriaForOrder(string $orderId): Criteria
     {
         $criteria = new Criteria([$orderId]);
         //$criteria->addAssociation(OrderExtension::RATEPAY_DATA);
@@ -43,7 +43,10 @@ class CriteriaHelper
         return $criteria;
     }
 
-    public static function getCriteriaForProfileConfig($profileConfigIds): Criteria
+    /**
+     * @param string[] $profileConfigIds
+     */
+    public static function getCriteriaForProfileConfig(array $profileConfigIds): Criteria
     {
         $criteria = new Criteria($profileConfigIds);
         $criteria->addAssociation(ProfileConfigEntity::FIELD_SALES_CHANNEL);

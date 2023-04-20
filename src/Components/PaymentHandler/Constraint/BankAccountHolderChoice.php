@@ -15,14 +15,29 @@ use Symfony\Component\Validator\Constraints\ChoiceValidator;
 
 class BankAccountHolderChoice extends Choice
 {
+    /**
+     * @var string
+     */
     public $message = AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . 'RP_INVALID_BANK_ACCOUNT_HOLDER';
 
+    /**
+     * @var string
+     */
     public $multipleMessage = AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . 'RP_INVALID_BANK_ACCOUNT_HOLDER';
 
+    /**
+     * @var string
+     */
     public $minMessage = AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . 'RP_INVALID_BANK_ACCOUNT_HOLDER';
 
+    /**
+     * @var string
+     */
     public $maxMessage = AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . 'RP_INVALID_BANK_ACCOUNT_HOLDER';
 
+    /**
+     * @var string[]
+     */
     protected static $errorNames = [
         self::NO_SUCH_CHOICE_ERROR => 'RP_INVALID_BANK_ACCOUNT_HOLDER',
         self::TOO_FEW_ERROR => 'RP_INVALID_BANK_ACCOUNT_HOLDER',

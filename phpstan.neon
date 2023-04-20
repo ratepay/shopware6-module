@@ -1,15 +1,13 @@
 parameters:
-    level: 5
+    level: 6
     paths:
         - %currentWorkingDirectory%/src
 
     ignoreErrors:
-        - '#apcu_#'
-        - '#ioncube_#'
-        - '#opcache_#'
-        - '#imagettftext#'
-        - '#class Redis#'
-        - '#Constant STARTTIME#'
+        - '#with no value type specified in iterable type array#'
+        - '#type has no value type specified in iterable type array.#'
+        - '#generic class Shopware\\Core\\Framework\\Struct\\ArrayStruct does not specify its types#'
+        - '#generic class Shopware\\Core\\Framework\\Struct\\ArrayStruct but does not specify its types#'
 
     reportUnmatchedIgnoredErrors: false
     tipsOfTheDay: false

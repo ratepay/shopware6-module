@@ -13,17 +13,14 @@ use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntit
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**
- * @method void                           add(ProfileConfigMethodEntity $entity)
- * @method void                           set(string $key, ProfileConfigMethodEntity $entity)
- * @method ProfileConfigMethodEntity[]    getIterator()
- * @method ProfileConfigMethodEntity[]    getElements()
- * @method ProfileConfigMethodEntity|null get(string $key)
- * @method ProfileConfigMethodEntity|null first()
- * @method ProfileConfigMethodEntity|null last()
+ * @extends EntityCollection<ProfileConfigMethodEntity>
  */
 class ProfileConfigMethodCollection extends EntityCollection
 {
-    public function filterByMethod(string $paymentMethodId)
+    /**
+     * @return EntityCollection<ProfileConfigMethodEntity>
+     */
+    public function filterByMethod(string $paymentMethodId): EntityCollection
     {
         return $this->filterByProperty(ProfileConfigMethodEntity::FIELD_PAYMENT_METHOD_ID, $paymentMethodId);
     }

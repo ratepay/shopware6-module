@@ -16,6 +16,9 @@ use Shopware\Core\Framework\Context;
 class AddCreditData extends OrderOperationData
 {
 
+    /**
+     * @param LineItem[] $items
+     */
     public function __construct(Context $context, OrderEntity $order, array $items = [])
     {
         parent::__construct($context, $order, self::OPERATION_ADD, $items, false);

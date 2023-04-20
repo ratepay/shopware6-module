@@ -13,13 +13,7 @@ use Ratepay\RpayPayments\Components\Logging\Model\ApiRequestLogEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**
- * @method void                     add(ApiRequestLogEntity $entity)
- * @method void                     set(string $key, ApiRequestLogEntity $entity)
- * @method ApiRequestLogEntity[]    getIterator()
- * @method ApiRequestLogEntity[]    getElements()
- * @method ApiRequestLogEntity|null get(string $key)
- * @method ApiRequestLogEntity|null first()
- * @method ApiRequestLogEntity|null last()
+ * @extends EntityCollection<ApiRequestLogEntity>
  */
 class ApiRequestLogCollection extends EntityCollection
 {

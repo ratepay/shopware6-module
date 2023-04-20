@@ -13,6 +13,9 @@ use Ratepay\RpayPayments\Components\Checkout\Model\RatepayPositionEntity;
 
 class LineItemUtil
 {
+    /**
+     * @return array<string, int>
+     */
     public static function addMaxActionValues(RatepayPositionEntity $position, int $ordered): array
     {
         $return = $position->getVars();

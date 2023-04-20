@@ -121,6 +121,9 @@ class ProductPageSubscriber implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @return bool|float|int|string
+     */
     private function getConfig(string $key, string $type = 'string')
     {
         $key = 'RpayPayments.config.productInstallmentCalculator' . $key;

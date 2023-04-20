@@ -23,6 +23,9 @@ class IsOfLegalAge extends LessThanOrEqual
      */
     public const TOO_YOUNG_ERROR_NAME = 'RP_AGE_TO_YOUNG';
 
+    /**
+     * @var string[] 
+     */
     protected static $errorNames = [
         self::TOO_HIGH_ERROR => self::TOO_YOUNG_ERROR_NAME,
     ];

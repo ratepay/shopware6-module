@@ -13,13 +13,7 @@ use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodInsta
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**
- * @method void                                      add(ProfileConfigMethodInstallmentEntity $entity)
- * @method void                                      set(string $key, ProfileConfigMethodInstallmentEntity $entity)
- * @method ProfileConfigMethodInstallmentEntity[]    getIterator()
- * @method ProfileConfigMethodInstallmentEntity[]    getElements()
- * @method ProfileConfigMethodInstallmentEntity|null get(string $key)
- * @method ProfileConfigMethodInstallmentEntity|null first()
- * @method ProfileConfigMethodInstallmentEntity|null last()
+ * @extends EntityCollection<ProfileConfigMethodInstallmentEntity>
  */
 class ProfileConfigMethodInstallmentCollection extends EntityCollection
 {

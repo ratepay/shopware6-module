@@ -16,8 +16,15 @@ use Throwable;
 
 class TransactionIdFetchFailedException extends RatepayException
 {
-    public function __construct($code = 0, Throwable $previous = null)
+    /**
+     * @param int|string $code
+     */
+    public function __construct($code = '', Throwable $previous = null)
     {
-        parent::__construct("Ratepay wasn't able to fetch a transaction id. So the payment can not complete.", $code, $previous);
+        parent::__construct(
+            "Ratepay wasn't able to fetch a transaction id. So the payment can not complete.",
+            is_numeric($code) ? (int)$code : 0,
+            $previous
+        );
     }
 }

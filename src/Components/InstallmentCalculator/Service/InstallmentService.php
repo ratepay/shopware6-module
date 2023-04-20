@@ -251,7 +251,7 @@ class InstallmentService
         }
 
         /**
-         * @var array{0: InstallmentBuilder, 1: int|float}|array $amountBuilders
+         * @var array{0: InstallmentBuilder, 1: int|float}|array{} $amountBuilders
          */
         $amountBuilders = [];
 
@@ -259,7 +259,7 @@ class InstallmentService
             $installmentConfig = $installmentBuilder->getMethodConfig()->getInstallmentConfig();
 
             if ($context->getCalculationType() === InstallmentCalculatorContext::CALCULATION_TYPE_TIME) {
-                $rate = $this->calculateMonthlyRate($context->getTotalAmount(), $installmentConfig, $context->getCalculationValue());
+                $rate = $this->calculateMonthlyRate($context->getTotalAmount(), $installmentConfig, (int)$context->getCalculationValue());
                 if ($rate >= $installmentConfig->getRateMin()) {
                     $amountBuilders[$rate] = [$installmentBuilder, $context->getCalculationValue()];
                     break; // an explicit month was requested and there is a result. It is not required to compare it with other profiles
@@ -269,7 +269,7 @@ class InstallmentService
             if ($context->getCalculationType() === InstallmentCalculatorContext::CALCULATION_TYPE_RATE) {
                 // collect all rates for all available plans
                 foreach ($installmentConfig->getAllowedMonths() as $month) {
-                    $rate = $this->calculateMonthlyRate($context->getTotalAmount(), $installmentConfig, $month);
+                    $rate = $this->calculateMonthlyRate($context->getTotalAmount(), $installmentConfig, (int)$month);
                     if ($rate >= $installmentConfig->getRateMin()) {
                         $amountBuilders[(string)$rate] = [$installmentBuilder, $month];
                         // we will NOT break the parent foreach, cause there might be a better result (of a builder) which is nearer to the requested value than the current.
@@ -310,7 +310,7 @@ class InstallmentService
         );
     }
 
-    private function calculateMonthlyRate(?float $totalAmount, ProfileConfigMethodInstallmentEntity $config, $month)
+    private function calculateMonthlyRate(?float $totalAmount, ProfileConfigMethodInstallmentEntity $config, int $month): float
     {
         $mbContent = new ModelBuilder('Content');
         $mbContent->setArray([

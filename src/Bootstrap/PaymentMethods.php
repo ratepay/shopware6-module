@@ -86,7 +86,7 @@ class PaymentMethods extends AbstractBootstrap
         $this->setActiveFlags(false);
     }
 
-    public function uninstall($keepUserData = false): void
+    public function uninstall(bool $keepUserData = false): void
     {
         $this->setActiveFlags(false);
     }
