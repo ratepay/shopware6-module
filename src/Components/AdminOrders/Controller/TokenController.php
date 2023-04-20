@@ -56,7 +56,7 @@ class TokenController extends AbstractController
         $salesChannelId = $request->request->get('salesChannelId', null);
         $salesChannelDomainId = $request->request->get('salesChannelDomainId', null);
 
-        $saleChannelDomain = $this->salesChannelDomainRepository->search(new Criteria([$salesChannelDomainId]), $context)->first();
+        $saleChannelDomain = is_string($salesChannelDomainId) ? $this->salesChannelDomainRepository->search(new Criteria([$salesChannelDomainId]), $context)->first() : null;
         if (!$saleChannelDomain instanceof SalesChannelDomainEntity) {
             throw $this->createNotFoundException('sales channel domain not found');
         }

@@ -191,9 +191,9 @@ class ProductPanel extends AbstractController
      */
     public function addItem(string $orderId, Request $request, Context $context): JsonResponse
     {
-        $name = $request->request->get('name');
-        $grossAmount = $request->request->get('grossAmount');
-        $taxRuleId = $request->request->get('taxId');
+        $name = (string)$request->request->get('name');
+        $grossAmount = (float) (string)$request->request->get('grossAmount');
+        $taxRuleId = (string)$request->request->get('taxId');
 
         $order = $this->fetchOrder($context, $orderId);
 

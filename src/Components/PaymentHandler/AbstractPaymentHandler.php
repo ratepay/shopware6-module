@@ -133,7 +133,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
                 }
 
                 if (empty($message)) {
-                    $message = $response->getReasonMessage();
+                    $message = (string)$response->getReasonMessage();
                 }
 
                 // will be caught a few lines later.
