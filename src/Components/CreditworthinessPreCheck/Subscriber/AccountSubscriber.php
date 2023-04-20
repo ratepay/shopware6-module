@@ -80,7 +80,7 @@ class AccountSubscriber implements EventSubscriberInterface
             } else {
                 throw $this->createException(
                     $event->getOrderEntity(),
-                    $response->getReasonMessage()
+                    (string)$response->getReasonMessage()
                 );
             }
         } catch (RatepayException $ratepayException) {

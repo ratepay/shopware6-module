@@ -75,7 +75,7 @@ class PaymentQueryValidatorService
             throw $this->createException(
                 $context,
                 $dataBag,
-                $response->getReasonMessage()
+                (string)$response->getReasonMessage()
             );
         }
     }

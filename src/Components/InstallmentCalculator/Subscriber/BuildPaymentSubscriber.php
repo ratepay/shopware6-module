@@ -9,8 +9,6 @@
 
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Subscriber;
 
-use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
-use RuntimeException;
 use Exception;
 use InvalidArgumentException;
 use RatePAY\Model\Request\SubModel\Content\Payment;
@@ -28,6 +26,8 @@ use Ratepay\RpayPayments\Components\RatepayApi\Factory\PaymentFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
 use Ratepay\RpayPayments\Util\MethodHelper;
 use Ratepay\RpayPayments\Util\PaymentFirstday;
+use RuntimeException;
+use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -95,6 +95,7 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
                         ->setInstallmentAmount($plan['rate'])
                         ->setLastInstallmentAmount($plan['lastRate'])
                         ->setInterestRate($plan['interestRate'])
+                        /* @phpstan-ignore-next-line */
                         ->setPaymentFirstday($paymentFirstDay)
                 )
                 ->setDebitPayType($paymentType);

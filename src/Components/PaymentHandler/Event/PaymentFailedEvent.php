@@ -9,16 +9,16 @@
 
 namespace Ratepay\RpayPayments\Components\PaymentHandler\Event;
 
-use Exception;
 use RatePAY\Model\Response\PaymentRequest;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Throwable;
 
 class PaymentFailedEvent extends AbstractPaymentEvent
 {
-    private ?Exception $exception;
+    private ?Throwable $exception;
 
     public function __construct(
         OrderEntity $order,
@@ -26,13 +26,14 @@ class PaymentFailedEvent extends AbstractPaymentEvent
         RequestDataBag $requestDataBag,
         SalesChannelContext $salesChannelContext,
         PaymentRequest $response = null,
-        Exception $exception = null
-    ) {
+        Throwable $exception = null
+    )
+    {
         parent::__construct($order, $transaction, $requestDataBag, $salesChannelContext, $response);
         $this->exception = $exception;
     }
 
-    public function getException(): ?Exception
+    public function getException(): ?Throwable
     {
         return $this->exception;
     }

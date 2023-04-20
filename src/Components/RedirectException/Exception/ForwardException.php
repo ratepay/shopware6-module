@@ -23,7 +23,7 @@ class ForwardException extends Exception
 
     public function __construct(string $route, array $routeParams = [], array $query = [], Exception $exception = null)
     {
-        parent::__construct(null, null, $exception);
+        parent::__construct('', 0, $exception);
         $this->route = $route;
         $this->routeParams = $routeParams;
         $this->queryParams = $query;
