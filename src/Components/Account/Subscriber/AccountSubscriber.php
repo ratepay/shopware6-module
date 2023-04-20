@@ -81,7 +81,7 @@ class AccountSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @return array{AccountEditOrderPageLoadedEvent: string[]|int[], HandlePaymentMethodRouteRequestEvent: string, SetPaymentOrderRouteRequestEvent: string}
+     * @return array
      */
     public static function getSubscribedEvents(): array
     {

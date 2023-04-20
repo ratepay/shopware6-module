@@ -2,11 +2,11 @@
 
 namespace Ratepay\RpayPayments\Components\ProfileConfig\Service\Search;
 
-use RuntimeException;
 use Ratepay\RpayPayments\Components\ProfileConfig\Dto\ProfileConfigSearch;
 use Ratepay\RpayPayments\Components\ProfileConfig\Event\CreateProfileConfigCriteriaEvent;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
+use RuntimeException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -137,6 +137,7 @@ class ProfileSearchService implements ProfileSearchInterface
 //        TODO implement
 //        $this->eventDispatcher->dispatch(new CreateProfileConfigCriteriaEvent($criteria, $profileConfigSearch, $this->context));
 
+        /* @phpstan-ignore-next-line */
         return $this->repository->search($criteria, $this->context);
     }
 
