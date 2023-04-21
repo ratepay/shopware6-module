@@ -31,6 +31,7 @@ use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Order\RecalculationService;
 use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
+use Shopware\Core\Content\Product\ProductEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -204,7 +205,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         $data = [];
         /** @var OrderLineItemEntity $item */
         foreach ($lineItems as $item) {
-            if ($item->getProduct() !== null) {
+            if ($item->getProduct() instanceof ProductEntity) {
                 // verify if the product still exists
                 $data[] = [
                     'id' => $item->getProduct()->getId(),

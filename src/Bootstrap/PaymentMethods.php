@@ -116,7 +116,7 @@ class PaymentMethods extends AbstractBootstrap
 
         /** @var PaymentMethodEntity|null $paymentEntity */
         $paymentEntity = $paymentSearchResult->first();
-        if ($paymentEntity !== null) {
+        if ($paymentEntity instanceof PaymentMethodEntity) {
             $paymentMethod['id'] = $paymentEntity->getId();
         }
 

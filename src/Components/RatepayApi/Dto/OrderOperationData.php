@@ -19,6 +19,7 @@ use Ratepay\RpayPayments\Components\Checkout\Model\RatepayPositionEntity;
 use Ratepay\RpayPayments\Components\OrderManagement\Util\LineItemUtil;
 use RuntimeException;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
@@ -72,7 +73,7 @@ class OrderOperationData extends AbstractRequestData implements OperationDataWit
     {
         parent::__construct($context);
         $this->order = $order;
-        $this->transaction = $order->getTransactions() !== null ? $order->getTransactions()->last() : null;
+        $this->transaction = $order->getTransactions() instanceof OrderTransactionCollection ? $order->getTransactions()->last() : null;
         $this->items = $items;
         $this->operation = $operation;
         $this->updateStock = $items === null ? false : $updateStock;

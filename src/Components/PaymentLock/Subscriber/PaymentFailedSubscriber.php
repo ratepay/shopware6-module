@@ -15,6 +15,7 @@ use RatePAY\Model\Response\AbstractResponse;
 use Ratepay\RpayPayments\Components\PaymentLock\Service\LockService;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\CheckoutOperationInterface;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\RequestDoneEvent;
+use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentFailedSubscriber implements EventSubscriberInterface
@@ -47,7 +48,7 @@ class PaymentFailedSubscriber implements EventSubscriberInterface
         }
 
         if (in_array((int) $response->getReasonCode(), self::ERROR_CODES, false)) {
-            if ($requestData->getSalesChannelContext()->getCustomer() === null) {
+            if (!$requestData->getSalesChannelContext()->getCustomer() instanceof CustomerEntity) {
                 // customer is not logged in - guest order
                 return;
             }

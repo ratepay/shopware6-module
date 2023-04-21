@@ -12,10 +12,12 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\Logging\Subscriber;
 
 use Monolog\Logger;
+use RatePAY\Model\Response\PaymentRequest;
 use Ratepay\RpayPayments\Components\Logging\Service\ApiLogger;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\RequestDoneEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Throwable;
 
 class RequestSubscriber implements EventSubscriberInterface
 {
@@ -40,10 +42,10 @@ class RequestSubscriber implements EventSubscriberInterface
     public function onPaymentFailed(PaymentFailedEvent $event): void
     {
         $exception = $event->getException();
-        if ($exception !== null) {
+        if ($exception instanceof Throwable) {
             $exception = $exception->getPrevious() ?? $exception;
             $message = $exception->getMessage();
-        } elseif ($event->getResponse() !== null) {
+        } elseif ($event->getResponse() instanceof PaymentRequest) {
             $message = $event->getResponse()->getReasonMessage();
         }
 

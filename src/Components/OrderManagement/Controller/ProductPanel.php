@@ -183,7 +183,7 @@ class ProductPanel extends AbstractController
     {
         $order = $this->fetchOrder($context, $orderId);
 
-        if ($order !== null) {
+        if ($order instanceof OrderEntity) {
             $params = $request->request->all();
             if (!isset($params['items']) || !is_array($params['items'])) {
                 throw new InvalidRequestParameterException('items');

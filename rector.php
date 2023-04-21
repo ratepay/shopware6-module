@@ -27,7 +27,6 @@ return static function (RectorConfig $rectorConfig): void {
     // define sets of rules
     $rectorConfig->sets([
         SetList::CODE_QUALITY,
-        SetList::TYPE_DECLARATION_STRICT,
         SetList::TYPE_DECLARATION,
         SetList::PSR_4,
         SetList::CODING_STYLE,

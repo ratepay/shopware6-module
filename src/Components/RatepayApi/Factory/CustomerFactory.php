@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 
 use DateTime;
+use DateTimeInterface;
 use RatePAY\Model\Request\SubModel\Content\Customer;
 use RatePAY\Model\Request\SubModel\Content\Customer\Addresses;
 use RatePAY\Model\Request\SubModel\Content\Customer\Addresses\Address;
@@ -128,7 +129,7 @@ class CustomerFactory extends AbstractFactory
             $birthday = $customerEntity->getBirthday();
         }
 
-        if ($birthday !== null) {
+        if ($birthday instanceof DateTimeInterface) {
             $customer->setDateOfBirth($birthday->format('Y-m-d'));
         }
 

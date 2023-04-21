@@ -17,6 +17,7 @@ use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntit
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileByOrderEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileBySalesChannelContext;
 use Ratepay\RpayPayments\Util\MethodHelper;
+use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
@@ -50,17 +51,17 @@ class PaymentFilterService
                 return true;
             }
 
-            if ($order === null) {
+            if (!$order instanceof OrderEntity) {
                 $customer = $salesChannelContext->getCustomer();
                 if (!$customer instanceof CustomerEntity ||
-                    $customer->getActiveBillingAddress() === null ||
-                    $customer->getActiveShippingAddress() === null
+                    !$customer->getActiveBillingAddress() instanceof CustomerAddressEntity ||
+                    !$customer->getActiveShippingAddress() instanceof CustomerAddressEntity
                 ) {
                     return false;
                 }
             }
 
-            $searchService = $order !== null ? $this->profileByOrderEntity : $this->profileBySalesChannelContext;
+            $searchService = $order instanceof OrderEntity ? $this->profileByOrderEntity : $this->profileBySalesChannelContext;
             $profileConfig = $searchService->search(
                 $searchService->createSearchObject($order ?? $salesChannelContext)->setPaymentMethodId($paymentMethod->getId())
             )->first();

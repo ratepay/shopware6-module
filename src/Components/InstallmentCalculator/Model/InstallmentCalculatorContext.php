@@ -113,7 +113,7 @@ class InstallmentCalculatorContext
 
     public function getTotalAmount(): ?float
     {
-        return $this->order !== null ? $this->order->getAmountTotal() : $this->totalAmount;
+        return $this->order instanceof OrderEntity ? $this->order->getAmountTotal() : $this->totalAmount;
     }
 
     public function setTotalAmount(?float $totalAmount): self
@@ -166,16 +166,16 @@ class InstallmentCalculatorContext
 
     public function getLanguageId(): string
     {
-        return $this->order !== null ? $this->order->getLanguageId() : $this->salesChannelContext->getContext()->getLanguageId();
+        return $this->order instanceof OrderEntity ? $this->order->getLanguageId() : $this->salesChannelContext->getContext()->getLanguageId();
     }
 
     public function getBillingCountry(): CountryEntity
     {
-        if ($this->billingCountry !== null) {
+        if ($this->billingCountry instanceof CountryEntity) {
             return $this->billingCountry;
         }
 
-        if ($this->order !== null) {
+        if ($this->order instanceof OrderEntity) {
             return $this->order->getAddresses()->get($this->order->getBillingAddressId())->getCountry();
         }
 

@@ -130,7 +130,7 @@ class TransactionIdService
             ->addFilter(new EqualsFilter(TransactionIdEntity::FIELD_IDENTIFIER, $identifier))
             ->setLimit(1);
 
-        if ($profileConfigEntity !== null) {
+        if ($profileConfigEntity instanceof ProfileConfigEntity) {
             $criteria->addFilter(new EqualsFilter(TransactionIdEntity::FIELD_PROFILE_ID, $profileConfigEntity->getId()));
         }
 

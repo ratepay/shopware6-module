@@ -28,6 +28,8 @@ use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService;
 use Ratepay\RpayPayments\Util\MethodHelper;
 use Ratepay\RpayPayments\Util\RequestHelper;
+use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
+use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -159,7 +161,7 @@ class ExtensionService
     ): ?ArrayStruct {
         $paymentMethod = $salesChannelContext->getPaymentMethod();
 
-        $searchService = $order !== null ? $this->profileByOrderEntity : $this->profileBySalesChannelContext;
+        $searchService = $order instanceof OrderEntity ? $this->profileByOrderEntity : $this->profileBySalesChannelContext;
         $profileConfig = $searchService->search(
             $searchService->createSearchObject($order ?? $salesChannelContext)->setPaymentMethodId($paymentMethod->getId())
         )->first();
@@ -171,10 +173,10 @@ class ExtensionService
 
         $customer = $salesChannelContext->getCustomer();
 
-        if ($customer !== null) {
+        if ($customer instanceof CustomerEntity) {
             $customerBirthday = $customer->getBirthday();
             $customerBillingAddress = $customer->getActiveBillingAddress();
-            if ($customerBillingAddress !== null) {
+            if ($customerBillingAddress instanceof CustomerAddressEntity) {
                 $vatIds = $customer->getVatIds();
                 $customerVatId = $vatIds[0] ?? null;
                 $customerPhoneNumber = $customerBillingAddress->getPhoneNumber();
@@ -201,13 +203,13 @@ class ExtensionService
             // this transaction ID will be sent to the storefront separately.
             $transactionId = $this->transactionIdService->getTransactionId(
                 $salesChannelContext,
-                $order !== null ? TransactionIdService::PREFIX_ORDER . $order->getId() . '-' : TransactionIdService::PREFIX_CART,
+                $order instanceof OrderEntity ? TransactionIdService::PREFIX_ORDER . $order->getId() . '-' : TransactionIdService::PREFIX_CART,
                 $profileConfig
             );
             $extension->offsetSet('transactionId', $transactionId);
         }
 
-        if ($httpRequest !== null) {
+        if ($httpRequest instanceof Request) {
             // add user entered values again, so that the user have not to reenter his values
             foreach (RequestHelper::getArray($httpRequest, 'ratepay') ?: [] as $key => $value) {
                 if ($key === 'birthday' && is_array($value)) {

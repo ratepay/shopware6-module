@@ -52,7 +52,7 @@ class UserDataSubscriber implements EventSubscriberInterface
         $order = $paymentRequestData->getOrder();
 
         $customer = $order->getOrderCustomer()->getCustomer();
-        $defaultBillingAddress = $customer !== null ? $this->addressRepository->search(new Criteria([$customer->getDefaultBillingAddressId()]), $paymentRequestData->getContext())->first() : null;
+        $defaultBillingAddress = $customer instanceof CustomerEntity ? $this->addressRepository->search(new Criteria([$customer->getDefaultBillingAddressId()]), $paymentRequestData->getContext())->first() : null;
         $orderBillingAddress = $order->getAddresses()->get($order->getBillingAddressId());
         $dataBag = $paymentRequestData->getRequestDataBag();
 

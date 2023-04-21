@@ -123,7 +123,7 @@ abstract class AbstractRequest
 
         try {
             $requestBuilder = new RequestBuilder($requestData->getProfileConfig()->isSandbox());
-            $requestBuilder = $requestBuilder->__call('call' . $this->_operation, $content !== null ? [$head, $content] : [$head]);
+            $requestBuilder = $requestBuilder->__call('call' . $this->_operation, $content instanceof Content ? [$head, $content] : [$head]);
             if ($this->_subType) {
                 $requestBuilder = $requestBuilder->subtype($this->_subType);
             }
@@ -180,7 +180,7 @@ abstract class AbstractRequest
         // set profile config to $requestData object in case it differs to the given object (or it was null)
         $requestData->setProfileConfig($this->getProfileConfig($requestData));
 
-        if ($requestData->getProfileConfig() === null) {
+        if (!$requestData->getProfileConfig() instanceof ProfileConfigEntity) {
             throw new ProfileNotFoundException();
         }
 

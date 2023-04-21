@@ -30,7 +30,7 @@ class AddressUtil
         ];
 
         if (empty($entity1->getCompany()) || empty($entity2->getCompany())) {
-            $fieldsToCompare = array_merge($fieldsToCompare, ['firstName', 'lastName', 'salutationId']);
+            $fieldsToCompare = [...$fieldsToCompare, 'firstName', 'lastName', 'salutationId'];
         }
 
         return self::areEntitiesIdentical($entity1, $entity2, $fieldsToCompare);
@@ -50,7 +50,7 @@ class AddressUtil
         ];
 
         if (empty($entity1->getCompany()) || empty($entity2->getCompany())) {
-            $fieldsToCompare = array_merge($fieldsToCompare, ['firstName', 'lastName', 'salutationId']);
+            $fieldsToCompare = [...$fieldsToCompare, 'firstName', 'lastName', 'salutationId'];
         }
 
         return self::areEntitiesIdentical($entity1, $entity2, $fieldsToCompare);

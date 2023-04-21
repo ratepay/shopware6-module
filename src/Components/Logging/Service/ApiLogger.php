@@ -60,7 +60,7 @@ class ApiLogger
 
         if (property_exists($responseXmlElement->content, 'payment') &&
             property_exists($responseXmlElement->content->payment, 'descriptor') &&
-            $responseXmlElement->content->payment->descriptor !== null
+            $responseXmlElement->content->payment->descriptor instanceof SimpleXMLElement
         ) {
             $additionalData['descriptor'] = (string) $responseXmlElement->content->payment->descriptor;
         }

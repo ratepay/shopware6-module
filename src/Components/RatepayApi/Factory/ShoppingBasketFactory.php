@@ -133,7 +133,7 @@ class ShoppingBasketFactory extends AbstractFactory
     {
         $taxStatus = $this->getTaxStatus($requestData);
 
-        $unitPrice = $item->getPrice() !== null ? $this->getLineItemUnitPrice($taxStatus, $item->getPrice(), $item->getQuantity()) : 0;
+        $unitPrice = $item->getPrice() instanceof CalculatedPrice ? $this->getLineItemUnitPrice($taxStatus, $item->getPrice(), $item->getQuantity()) : 0;
 
         if ($this->shouldSubmitItemAsCartItem($requestData, $item, $unitPrice)) {
             $basket->getItems()->addItem(

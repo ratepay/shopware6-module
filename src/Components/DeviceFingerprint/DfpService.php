@@ -11,11 +11,13 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\DeviceFingerprint;
 
+use DateTimeInterface;
 use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use RatePAY\Service\DeviceFingerprint;
 use RuntimeException;
+use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderCustomer\OrderCustomerEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -127,7 +129,7 @@ class DfpService implements DfpServiceInterface
      */
     private function getCustomerFallBack(SalesChannelContext $context): ?string
     {
-        if ($context->getCustomer() === null) {
+        if (!$context->getCustomer() instanceof CustomerEntity) {
             return null;
         }
 
@@ -137,10 +139,10 @@ class DfpService implements DfpServiceInterface
         $orderCriteria->setLimit(1);
         /** @var OrderCustomerEntity|null $orderCustomer */
         $orderCustomer = $this->orderCustomerRepository->search($orderCriteria, $context->getContext())->last();
-        $date = $orderCustomer !== null ? $orderCustomer->getCreatedAt() : null;
+        $date = $orderCustomer instanceof OrderCustomerEntity ? $orderCustomer->getCreatedAt() : null;
         $date ??= $context->getCustomer()->getLastLogin() ?? $context->getCustomer()->getUpdatedAt();
 
-        return $date !== null ? (string) $date->getTimestamp() : null;
+        return $date instanceof DateTimeInterface ? (string) $date->getTimestamp() : null;
     }
 
     /**

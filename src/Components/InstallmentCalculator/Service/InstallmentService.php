@@ -20,6 +20,7 @@ use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentBuild
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentCalculatorContext;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\OfflineInstallmentCalculatorResult;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Util\PlanHasher;
+use Ratepay\RpayPayments\Components\ProfileConfig\Dto\ProfileConfigSearch;
 use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
@@ -34,6 +35,7 @@ use RatePAY\Service\LanguageService;
 use RatePAY\Service\OfflineInstallmentCalculation;
 use RuntimeException;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -112,7 +114,7 @@ class InstallmentService
 
         $result = $this->calculateInstallmentOffline($context);
 
-        if ($result !== null) {
+        if ($result instanceof OfflineInstallmentCalculatorResult) {
             $matchedBuilder = $result->getBuilder();
             /** @var ProfileConfigMethodEntity $paymentConfig */
             $paymentConfig = $matchedBuilder->getProfileConfig()->getPaymentMethodConfigs()->filterByMethod($context->getPaymentMethodId())->first();
@@ -282,7 +284,7 @@ class InstallmentService
 
         $transactionId = $this->transactionIdService->getTransactionId(
             $context->getSalesChannelContext(),
-            $context->getOrder() !== null ? TransactionIdService::PREFIX_ORDER . $context->getOrder()->getId() : TransactionIdService::PREFIX_CART,
+            $context->getOrder() instanceof OrderEntity ? TransactionIdService::PREFIX_ORDER . $context->getOrder()->getId() : TransactionIdService::PREFIX_CART,
             $installmentPlan['profileUuid']
         );
 
@@ -305,10 +307,10 @@ class InstallmentService
         $salesChannelContext = $context->getSalesChannelContext();
         $shopwareContext = $context->getSalesChannelContext()->getContext();
 
-        if ($context->getProfileConfigSearch() !== null) {
+        if ($context->getProfileConfigSearch() instanceof ProfileConfigSearch) {
             $profileConfigs = $this->profileSearchService->search($context->getProfileConfigSearch());
         } else {
-            $searchService = $context->getOrder() !== null ? $this->profileByOrderEntity : $this->profileBySalesChannelContext;
+            $searchService = $context->getOrder() instanceof OrderEntity ? $this->profileByOrderEntity : $this->profileBySalesChannelContext;
             $profileConfigs = $searchService->search(
                 $searchService->createSearchObject($context->getOrder() ?? $salesChannelContext)
                     ->setPaymentMethodId($context->getPaymentMethodId())

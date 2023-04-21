@@ -121,7 +121,7 @@ class PaymentRequestService extends AbstractRequest
 
     protected function getProfileConfig(AbstractRequestData $requestData): ProfileConfigEntity
     {
-        if ($requestData->getProfileConfig() !== null) {
+        if ($requestData->getProfileConfig() instanceof ProfileConfigEntity) {
             // the given profile config should be prioritised
             return $requestData->getProfileConfig();
         }

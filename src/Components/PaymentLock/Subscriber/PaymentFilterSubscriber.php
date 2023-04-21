@@ -14,6 +14,7 @@ namespace Ratepay\RpayPayments\Components\PaymentLock\Subscriber;
 use Ratepay\RpayPayments\Components\Checkout\Event\RatepayPaymentFilterEvent;
 use Ratepay\RpayPayments\Components\PaymentLock\Service\LockService;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentFilterSubscriber implements EventSubscriberInterface
@@ -34,7 +35,7 @@ class PaymentFilterSubscriber implements EventSubscriberInterface
 
     public function filterPayments(RatepayPaymentFilterEvent $event): void
     {
-        if ($event->getOrderEntity() !== null) {
+        if ($event->getOrderEntity() instanceof OrderEntity) {
             $customerId = $event->getOrderEntity()->getOrderCustomer()->getCustomerId();
         } else {
             $customer = $event->getSalesChannelContext()->getCustomer();
