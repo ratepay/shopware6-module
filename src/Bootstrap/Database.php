@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Bootstrap;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DBALException;
+use Exception;
 
 class Database extends AbstractBootstrap
 {
@@ -32,7 +32,7 @@ class Database extends AbstractBootstrap
     }
 
     /**
-     * @throws DBALException
+     * @throws Exception
      */
     public function uninstall(bool $keepUserData = false): void
     {

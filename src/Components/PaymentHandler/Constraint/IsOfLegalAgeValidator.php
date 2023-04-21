@@ -19,6 +19,9 @@ use Symfony\Component\Validator\Exception\UnexpectedValueException;
 
 class IsOfLegalAgeValidator extends LessThanOrEqualValidator
 {
+    /**
+     * @param mixed $value
+     */
     public function validate($value, Constraint $constraint): void
     {
         if (!$constraint instanceof IsOfLegalAge) {

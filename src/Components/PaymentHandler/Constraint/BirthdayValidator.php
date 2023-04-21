@@ -18,6 +18,9 @@ use Symfony\Component\Validator\Exception\UnexpectedValueException;
 
 class BirthdayValidator extends DateValidator
 {
+    /**
+     * @param mixed $value
+     */
     public function validate($value, Constraint $constraint): void
     {
         if (!$constraint instanceof Birthday) {

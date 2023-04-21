@@ -16,6 +16,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 class DfpConstraintValidator extends ConstraintValidator
 {
     /**
+     * @param mixed $value
      * @param DfpConstraint $constraint
      */
     public function validate($value, Constraint $constraint): void
