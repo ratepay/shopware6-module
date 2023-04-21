@@ -12,4 +12,4 @@ parameters:
     reportUnmatchedIgnoredErrors: false
     tipsOfTheDay: false
     bootstrapFiles:
-        - ../../project/vendor/autoload.php
+        - ../../../vendor/autoload.php

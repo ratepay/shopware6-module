@@ -43,5 +43,24 @@
         "shopware/storefront": "^6.4.11",
         "ext-simplexml": "*",
         "ext-json": "*"
+    },
+    "scripts": {
+        "init-dev-ops": [
+            "composer req rector/rector symplify/easy-coding-standard phpstan/phpstan --dev --no-scripts --no-plugins -d ../../../"
+        ],
+        "rector-fix": "../../../vendor/bin/rector process",
+        "rector-lint": "../../../vendor/bin/rector process --dry-run",
+        "phpstan-lint": "../../../vendor/bin/phpstan analyse",
+        "code-style-fix": "../../../vendor/bin/ecs --fix",
+        "code-style-lint": "../../../vendor/bin/ecs",
+        "lint": [
+            "@rector-lint",
+            "@phpstan-lint",
+            "@code-style-lint"
+        ],
+        "fix": [
+            "@rector-fix",
+            "@code-style-fix"
+        ]
     }
 }
