@@ -26,13 +26,19 @@ class IsOfLegalAge extends LessThanOrEqual
     public const TOO_YOUNG_ERROR_NAME = 'RP_AGE_TO_YOUNG';
 
     /**
-     * @var string[]
+     * @var array<string, string>
      */
-    protected static $errorNames = [
+    protected const ERROR_NAMES = [
         self::TOO_HIGH_ERROR => self::TOO_YOUNG_ERROR_NAME,
     ];
 
-    public function __construct($options = null)
+    /**
+     * @var string[]
+     * @deprecated since Symfony 6.1, use const ERROR_NAMES instead
+     */
+    protected static $errorNames = self::ERROR_NAMES;
+
+    public function __construct(mixed $options = null)
     {
         $options ??= [];
         $options['value'] = sprintf('-%d years', self::LEGAL_AGE);

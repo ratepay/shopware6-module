@@ -18,6 +18,15 @@ use Symfony\Component\Validator\Constraints\ChoiceValidator;
 class BankAccountHolderChoice extends Choice
 {
     /**
+     * @var array<string, string>
+     */
+    protected const ERROR_NAMES = [
+        self::NO_SUCH_CHOICE_ERROR => 'RP_INVALID_BANK_ACCOUNT_HOLDER',
+        self::TOO_FEW_ERROR => 'RP_INVALID_BANK_ACCOUNT_HOLDER',
+        self::TOO_MANY_ERROR => 'RP_INVALID_BANK_ACCOUNT_HOLDER',
+    ];
+
+    /**
      * @var string
      */
     public $message = AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . 'RP_INVALID_BANK_ACCOUNT_HOLDER';
@@ -39,12 +48,9 @@ class BankAccountHolderChoice extends Choice
 
     /**
      * @var string[]
+     * @deprecated since Symfony 6.1, use const ERROR_NAMES instead
      */
-    protected static $errorNames = [
-        self::NO_SUCH_CHOICE_ERROR => 'RP_INVALID_BANK_ACCOUNT_HOLDER',
-        self::TOO_FEW_ERROR => 'RP_INVALID_BANK_ACCOUNT_HOLDER',
-        self::TOO_MANY_ERROR => 'RP_INVALID_BANK_ACCOUNT_HOLDER',
-    ];
+    protected static $errorNames = self::ERROR_NAMES;
 
     public function __construct(array $choices)
     {
