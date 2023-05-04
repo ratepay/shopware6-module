@@ -23,11 +23,9 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class InstallmentController extends StorefrontController
 {
-    private InstallmentRoute $installmentRoute;
-
-    public function __construct(InstallmentRoute $installmentRoute)
-    {
-        $this->installmentRoute = $installmentRoute;
+    public function __construct(
+        private readonly InstallmentRoute $installmentRoute
+    ) {
     }
 
     /**

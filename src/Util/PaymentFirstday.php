@@ -17,12 +17,12 @@ class PaymentFirstday
     /**
      * @var int
      */
-    public const DIRECT_DEBIT = 2;
+    final public const DIRECT_DEBIT = 2;
 
     /**
      * @var int
      */
-    public const BANK_TRANSFER = 28;
+    final public const BANK_TRANSFER = 28;
 
     public static function getFirstdayForType(string $type): int
     {

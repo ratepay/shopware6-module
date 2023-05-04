@@ -27,31 +27,15 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 
 class ProfileConfigManagement
 {
-    private Context $context;
-
-    private EntityRepository $repository;
-
-    private ProfileRequestService $profileRequestService;
-
-    private EntityRepository $methodConfigRepository;
-
-    private EntityRepository $methodConfigInstallmentRepository;
-
-    private ProfileConfigResponseConverter $profileConfigResponseConverter;
+    private readonly Context $context;
 
     public function __construct(
-        EntityRepository $repository,
-        EntityRepository $methodConfigRepository,
-        EntityRepository $methodConfigInstallmentRepository,
-        ProfileRequestService $profileRequestService,
-        ProfileConfigResponseConverter $profileConfigResponseConverter
+        private readonly EntityRepository $repository,
+        private readonly EntityRepository $methodConfigRepository,
+        private readonly EntityRepository $methodConfigInstallmentRepository,
+        private readonly ProfileRequestService $profileRequestService,
+        private readonly ProfileConfigResponseConverter $profileConfigResponseConverter
     ) {
-        $this->repository = $repository;
-        $this->methodConfigRepository = $methodConfigRepository;
-        $this->methodConfigInstallmentRepository = $methodConfigInstallmentRepository;
-        $this->profileRequestService = $profileRequestService;
-        $this->profileConfigResponseConverter = $profileConfigResponseConverter;
-
         $this->context = Context::createDefaultContext();
     }
 

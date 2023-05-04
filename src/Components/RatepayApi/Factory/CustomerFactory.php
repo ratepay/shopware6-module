@@ -42,22 +42,13 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class CustomerFactory extends AbstractFactory
 {
-    private EntityRepository $salutationRepository;
-
-    private EntityRepository $languageRepository;
-
-    private ConfigService $configService;
-
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
-        ConfigService $configService,
-        EntityRepository $salutationRepository,
-        EntityRepository $languageRepository
+        private readonly ConfigService $configService,
+        private readonly EntityRepository $salutationRepository,
+        private readonly EntityRepository $languageRepository
     ) {
         parent::__construct($eventDispatcher);
-        $this->salutationRepository = $salutationRepository;
-        $this->languageRepository = $languageRepository;
-        $this->configService = $configService;
     }
 
     protected function isSupported(AbstractRequestData $requestData): bool
@@ -81,22 +72,16 @@ class CustomerFactory extends AbstractFactory
             $billingAddress = $customerEntity->getActiveBillingAddress();
             $shippingAddress = $customerEntity->getActiveShippingAddress();
         } else {
-            throw new RuntimeException(sprintf('%s is not supported by %s', get_class($requestData), self::class));
+            throw new RuntimeException(sprintf('%s is not supported by %s', $requestData::class, self::class));
         }
 
         $salutationEntity = $this->getSalutation($billingAddress);
 
-        switch ($salutationEntity->getSalutationKey()) {
-            case 'mrs':
-                $gender = 'f';
-                break;
-            case 'mr':
-                $gender = 'm';
-                break;
-            default:
-                $gender = 'u';
-                break;
-        }
+        $gender = match ($salutationEntity->getSalutationKey()) {
+            'mrs' => 'f',
+            'mr' => 'm',
+            default => 'u',
+        };
 
         $customer = (new Customer())
             ->setGender($gender)
@@ -133,7 +118,7 @@ class CustomerFactory extends AbstractFactory
             $customer->setDateOfBirth($birthday->format('Y-m-d'));
         }
 
-        if (($phoneNumber = $requestDataBag->get('phoneNumber')) && !empty(trim($phoneNumber))) {
+        if (($phoneNumber = $requestDataBag->get('phoneNumber')) && !empty(trim((string) $phoneNumber))) {
             $customer->getContacts()->setPhone(
                 (new Phone())
                     ->setDirectDial($phoneNumber)
@@ -162,8 +147,8 @@ class CustomerFactory extends AbstractFactory
                 $vatId = $billingAddress->getVatId();
             }
 
-            if (!empty(trim($vatId))) {
-                $customer->setVatId(trim($vatId));
+            if (!empty(trim((string) $vatId))) {
+                $customer->setVatId(trim((string) $vatId));
             }
         }
 
@@ -179,10 +164,7 @@ class CustomerFactory extends AbstractFactory
         return $customer;
     }
 
-    /**
-     * @param OrderAddressEntity|CustomerAddressEntity $address
-     */
-    private function getAddressModel($address, string $addressType): Address
+    private function getAddressModel(OrderAddressEntity|CustomerAddressEntity $address, string $addressType): Address
     {
         $addressModel = new Address();
         $addressModel->setType(strtolower($addressType))
@@ -199,17 +181,12 @@ class CustomerFactory extends AbstractFactory
             $addressModel->setCompany($address->getCompany());
         }
 
-        switch ($this->configService->getSubmitAdditionalAddress()) {
-            case 'line-1':
-                $addressModel->setStreetAdditional($address->getAdditionalAddressLine1());
-                break;
-            case 'line-2':
-                $addressModel->setStreetAdditional($address->getAdditionalAddressLine2());
-                break;
-            case 'combined':
-                $addressModel->setStreetAdditional($address->getAdditionalAddressLine1() . ' ' . $address->getAdditionalAddressLine2());
-                break;
-        }
+        match ($this->configService->getSubmitAdditionalAddress()) {
+            'line-1' => $addressModel->setStreetAdditional($address->getAdditionalAddressLine1()),
+            'line-2' => $addressModel->setStreetAdditional($address->getAdditionalAddressLine2()),
+            'combined' => $addressModel->setStreetAdditional($address->getAdditionalAddressLine1() . ' ' . $address->getAdditionalAddressLine2()),
+            default => $addressModel,
+        };
 
         return $addressModel;
     }
@@ -236,10 +213,7 @@ class CustomerFactory extends AbstractFactory
         return $result->getLocale();
     }
 
-    /**
-     * @param OrderAddressEntity|CustomerAddressEntity $address
-     */
-    private function getSalutation($address): SalutationEntity
+    private function getSalutation(OrderAddressEntity|CustomerAddressEntity $address): SalutationEntity
     {
         return $this->salutationRepository->search(
             new Criteria([$address->getSalutationId()]),

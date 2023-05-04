@@ -1,7 +1,7 @@
 parameters:
     level: 6
     paths:
-        - %currentWorkingDirectory%/src
+        - src
 
     ignoreErrors:
         - '#with no value type specified in iterable type array#'

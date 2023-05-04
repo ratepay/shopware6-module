@@ -16,11 +16,9 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class PluginVersionCompilerPass implements CompilerPassInterface
 {
-    private string $pluginDir;
-
-    public function __construct(string $pluginDir)
-    {
-        $this->pluginDir = $pluginDir;
+    public function __construct(
+        private readonly string $pluginDir
+    ) {
     }
 
     public function process(ContainerBuilder $container): void
@@ -31,8 +29,8 @@ class PluginVersionCompilerPass implements CompilerPassInterface
     private function getPluginVersion(): string
     {
         $composerJsonString = file_get_contents($this->pluginDir . 'composer.json');
-        $composerJson = json_decode($composerJsonString, true, 512, JSON_THROW_ON_ERROR);
+        $composerJson = json_decode((string) $composerJsonString, true, 512, JSON_THROW_ON_ERROR);
 
-        return $composerJson['version'];
+        return is_array($composerJson) ? $composerJson['version'] : '0.0.1-dev';
     }
 }

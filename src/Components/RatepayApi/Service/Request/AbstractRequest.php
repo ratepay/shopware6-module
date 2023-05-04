@@ -33,32 +33,32 @@ abstract class AbstractRequest
     /**
      * @var string
      */
-    public const CALL_PAYMENT_REQUEST = 'PaymentRequest';
+    final public const CALL_PAYMENT_REQUEST = 'PaymentRequest';
 
     /**
      * @var string
      */
-    public const CALL_DELIVER = 'ConfirmationDeliver';
+    final public const CALL_DELIVER = 'ConfirmationDeliver';
 
     /**
      * @var string
      */
-    public const CALL_CHANGE = 'PaymentChange';
+    final public const CALL_CHANGE = 'PaymentChange';
 
     /**
      * @var string
      */
-    public const CALL_PROFILE_REQUEST = 'ProfileRequest';
+    final public const CALL_PROFILE_REQUEST = 'ProfileRequest';
 
     /**
      * @var string
      */
-    public const CALL_PAYMENT_QUERY = 'PaymentQuery';
+    final public const CALL_PAYMENT_QUERY = 'PaymentQuery';
 
     /**
      * @var string
      */
-    public const CALL_PAYMENT_INIT = 'PaymentInit';
+    final public const CALL_PAYMENT_INIT = 'PaymentInit';
 
     /**
      * @var string
@@ -95,16 +95,10 @@ abstract class AbstractRequest
      */
     protected ?string $_subType = null;
 
-    private HeadFactory $headFactory;
-
-    private EventDispatcherInterface $eventDispatcher;
-
     public function __construct(
-        EventDispatcherInterface $eventDispatcher,
-        HeadFactory $headFactory
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly HeadFactory $headFactory
     ) {
-        $this->headFactory = $headFactory;
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -113,7 +107,7 @@ abstract class AbstractRequest
     final public function doRequest(AbstractRequestData $requestData): RequestBuilder
     {
         if (!$this->supportsRequestData($requestData)) {
-            throw new InvalidArgumentException(get_class($requestData) . ' is not supported by ' . self::class);
+            throw new InvalidArgumentException($requestData::class . ' is not supported by ' . self::class);
         }
 
         $this->_initRequest($requestData);

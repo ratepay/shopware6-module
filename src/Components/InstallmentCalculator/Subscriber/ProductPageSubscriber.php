@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Subscriber;
 
 use Exception;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentCalculatorContext;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
 use Ratepay\RpayPayments\Components\ProfileConfig\Dto\ProfileConfigSearch;
@@ -27,24 +27,12 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ProductPageSubscriber implements EventSubscriberInterface
 {
-    private SystemConfigService $configService;
-
-    private InstallmentService $installmentService;
-
-    private EntityRepository $countryRepository;
-
-    private Logger $logger;
-
     public function __construct(
-        SystemConfigService $configService,
-        InstallmentService $installmentService,
-        EntityRepository $countryRepository,
-        Logger $logger
+        private readonly SystemConfigService $configService,
+        private readonly InstallmentService $installmentService,
+        private readonly EntityRepository $countryRepository,
+        private readonly LoggerInterface $logger
     ) {
-        $this->configService = $configService;
-        $this->installmentService = $installmentService;
-        $this->countryRepository = $countryRepository;
-        $this->logger = $logger;
     }
 
     public static function getSubscribedEvents(): array
@@ -112,7 +100,7 @@ class ProductPageSubscriber implements EventSubscriberInterface
                 'monthCount' => $plan->getMonthCount(),
                 'monthlyRate' => $plan->getMonthlyRate(),
             ]));
-        } catch (ProfileNotFoundException $profileNotFoundException) {
+        } catch (ProfileNotFoundException) {
             // we do not log this error, because the error is expected. e.g. if the amount is too low for installments
         } catch (Exception $exception) {
             $this->logger->error('Error during display of installment information on detail page: ' . $exception->getMessage(), [
@@ -127,24 +115,16 @@ class ProductPageSubscriber implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @return bool|float|int|string
-     */
-    private function getConfig(string $key, string $type = 'string')
+    private function getConfig(string $key, string $type = 'string'): bool|float|int|string
     {
         $key = 'RpayPayments.config.productInstallmentCalculator' . $key;
 
-        switch ($type) {
-            case 'string':
-                return $this->configService->getString($key);
-            case 'float':
-                return $this->configService->getFloat($key);
-            case 'integer':
-                return $this->configService->getInt($key);
-            case 'boolean':
-                return $this->configService->getBool($key);
-            default:
-                throw new RuntimeException('type ' . $type . ' is not valid');
-        }
+        return match ($type) {
+            'string' => $this->configService->getString($key),
+            'float' => $this->configService->getFloat($key),
+            'integer' => $this->configService->getInt($key),
+            'boolean' => $this->configService->getBool($key),
+            default => throw new RuntimeException('type ' . $type . ' is not valid'),
+        };
     }
 }

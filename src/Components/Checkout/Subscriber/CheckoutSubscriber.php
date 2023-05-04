@@ -19,11 +19,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutSubscriber implements EventSubscriberInterface
 {
-    protected ExtensionService $extensionService;
-
-    public function __construct(ExtensionService $extensionService)
-    {
-        $this->extensionService = $extensionService;
+    public function __construct(
+        protected ExtensionService $extensionService
+    ) {
     }
 
     public static function getSubscribedEvents(): array

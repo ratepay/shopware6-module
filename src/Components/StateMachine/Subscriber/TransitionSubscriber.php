@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\StateMachine\Subscriber;
 
 use Exception;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
@@ -31,36 +31,15 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class TransitionSubscriber implements EventSubscriberInterface
 {
-    private ConfigService $configService;
-
-    private PaymentDeliverService $paymentDeliverService;
-
-    private PaymentCancelService $paymentCancelService;
-
-    private PaymentReturnService $paymentReturnService;
-
-    private EntityRepository $orderDeliveryRepository;
-
-    private EntityRepository $orderRepository;
-
-    private Logger $logger;
-
     public function __construct(
-        EntityRepository $orderDeliveryRepository,
-        EntityRepository $orderRepository,
-        ConfigService $configService,
-        PaymentDeliverService $paymentDeliverService,
-        PaymentCancelService $paymentCancelService,
-        PaymentReturnService $paymentReturnService,
-        Logger $logger
+        private readonly EntityRepository $orderDeliveryRepository,
+        private readonly EntityRepository $orderRepository,
+        private readonly ConfigService $configService,
+        private readonly PaymentDeliverService $paymentDeliverService,
+        private readonly PaymentCancelService $paymentCancelService,
+        private readonly PaymentReturnService $paymentReturnService,
+        private readonly LoggerInterface $logger
     ) {
-        $this->orderDeliveryRepository = $orderDeliveryRepository;
-        $this->orderRepository = $orderRepository;
-        $this->configService = $configService;
-        $this->paymentDeliverService = $paymentDeliverService;
-        $this->paymentCancelService = $paymentCancelService;
-        $this->paymentReturnService = $paymentReturnService;
-        $this->logger = $logger;
     }
 
     public static function getSubscribedEvents(): array

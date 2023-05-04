@@ -20,12 +20,9 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class ProfileBySalesChannelContextAndCart implements ProfileSearchInterface
 {
-    private ProfileSearchService $searchService;
-
     public function __construct(
-        ProfileSearchService $searchService
+        private readonly ProfileSearchService $searchService
     ) {
-        $this->searchService = $searchService;
     }
 
     public function createSearchObject(SalesChannelContext $salesChannelContext, Cart $cart): ?ProfileConfigSearch

@@ -19,11 +19,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentFilterSubscriber implements EventSubscriberInterface
 {
-    private LockService $lockService;
-
-    public function __construct(LockService $lockService)
-    {
-        $this->lockService = $lockService;
+    public function __construct(
+        private readonly LockService $lockService
+    ) {
     }
 
     public static function getSubscribedEvents(): array

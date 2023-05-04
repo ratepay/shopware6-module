@@ -16,11 +16,9 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class InitEvent extends Event
 {
-    private AbstractRequestData $requestData;
-
-    public function __construct(AbstractRequestData $requestData)
-    {
-        $this->requestData = $requestData;
+    public function __construct(
+        private readonly AbstractRequestData $requestData
+    ) {
     }
 
     public function getRequestData(): AbstractRequestData

@@ -49,7 +49,7 @@ class ExternalFactory extends AbstractFactory
                     $id->setProvider('OTH');
                     $supportedMethods = ['DHL', 'DPD', 'GLS', 'HLG', 'HVS', 'OTH', 'TNT', 'UPS'];
                     foreach ($supportedMethods as $supportedMethod) {
-                        if (strpos($delivery->getShippingMethod()->getName(), $supportedMethod) === 0) {
+                        if (str_starts_with((string) $delivery->getShippingMethod()->getName(), $supportedMethod)) {
                             $id->setProvider($supportedMethod);
                             break;
                         }

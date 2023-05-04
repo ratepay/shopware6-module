@@ -17,14 +17,10 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class RequestDoneEvent extends Event
 {
-    private RequestBuilder $requestBuilder;
-
-    private AbstractRequestData $requestData;
-
-    public function __construct(AbstractRequestData $requestData, RequestBuilder $requestBuilder)
-    {
-        $this->requestData = $requestData;
-        $this->requestBuilder = $requestBuilder;
+    public function __construct(
+        private readonly AbstractRequestData $requestData,
+        private readonly RequestBuilder $requestBuilder
+    ) {
     }
 
     public function getRequestBuilder(): RequestBuilder

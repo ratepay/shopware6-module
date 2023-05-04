@@ -22,37 +22,37 @@ class RatepayAdminOrderTokenEntity extends Entity
     /**
      * @var string
      */
-    public const FIELD_ID = 'id';
+    final public const FIELD_ID = 'id';
 
     /**
      * @var string
      */
-    public const FIELD_TOKEN = 'token';
+    final public const FIELD_TOKEN = 'token';
 
     /**
      * @var string
      */
-    public const FIELD_SALES_CHANNEL_ID = 'salesChannelId';
+    final public const FIELD_SALES_CHANNEL_ID = 'salesChannelId';
 
     /**
      * @var string
      */
-    public const FIELD_SALES_CHANNEL_DOMAIN_ID = 'salesChannelDomainId';
+    final public const FIELD_SALES_CHANNEL_DOMAIN_ID = 'salesChannelDomainId';
 
     /**
      * @var string
      */
-    public const FIELD_CART_TOKEN = 'cartToken';
+    final public const FIELD_CART_TOKEN = 'cartToken';
 
     /**
      * @var string
      */
-    public const FIELD_VAlID_UNTIL = 'validUntil';
+    final public const FIELD_VAlID_UNTIL = 'validUntil';
 
     /**
      * @var string
      */
-    public const FIELD_CREATED_AT = 'createdAt';
+    final public const FIELD_CREATED_AT = 'createdAt';
 
     protected string $token;
 

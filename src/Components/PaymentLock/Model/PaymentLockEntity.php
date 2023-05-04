@@ -22,22 +22,22 @@ class PaymentLockEntity extends Entity
     /**
      * @var string
      */
-    public const FIELD_ID = 'id';
+    final public const FIELD_ID = 'id';
 
     /**
      * @var string
      */
-    public const FIELD_CUSTOMER_ID = 'customerId';
+    final public const FIELD_CUSTOMER_ID = 'customerId';
 
     /**
      * @var string
      */
-    public const FIELD_PAYMENT_METHOD_ID = 'paymentMethodId';
+    final public const FIELD_PAYMENT_METHOD_ID = 'paymentMethodId';
 
     /**
      * @var string
      */
-    public const FIELD_LOCKED_UNTIL = 'locketUntil';
+    final public const FIELD_LOCKED_UNTIL = 'locketUntil';
 
     protected string $customerId;
 

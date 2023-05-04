@@ -16,48 +16,18 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 
 class CreateProfileConfigCriteriaEvent
 {
-    private Criteria $criteria;
-
-    private string $paymentMethodId;
-
-    private string $billingCountryIso;
-
-    private string $shippingCountryIso;
-
-    private string $salesChannelId;
-
-    private string $currencyIso;
-
-    private bool $differentAddresses;
-
-    private bool $isB2b;
-
-    private float $totalAmount;
-
-    private Context $context;
-
     public function __construct(
-        Criteria $criteria,
-        string $paymentMethodId,
-        string $billingCountryIso,
-        string $shippingCountryIso,
-        string $salesChannelId,
-        string $currencyIso,
-        bool $differentAddresses,
-        bool $isB2b,
-        float $totalAmount,
-        Context $context
+        private readonly Criteria $criteria,
+        private readonly string $paymentMethodId,
+        private readonly string $billingCountryIso,
+        private readonly string $shippingCountryIso,
+        private readonly string $salesChannelId,
+        private readonly string $currencyIso,
+        private readonly bool $differentAddresses,
+        private readonly bool $isB2b,
+        private readonly float $totalAmount,
+        private readonly Context $context
     ) {
-        $this->criteria = $criteria;
-        $this->paymentMethodId = $paymentMethodId;
-        $this->billingCountryIso = $billingCountryIso;
-        $this->shippingCountryIso = $shippingCountryIso;
-        $this->salesChannelId = $salesChannelId;
-        $this->currencyIso = $currencyIso;
-        $this->differentAddresses = $differentAddresses;
-        $this->context = $context;
-        $this->isB2b = $isB2b;
-        $this->totalAmount = $totalAmount;
     }
 
     public function getCriteria(): Criteria

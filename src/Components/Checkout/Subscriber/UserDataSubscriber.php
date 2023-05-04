@@ -23,20 +23,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class UserDataSubscriber implements EventSubscriberInterface
 {
-    private EntityRepository $addressRepository;
-
-    private EntityRepository $customerRepository;
-
-    private EntityRepository $orderAddressRepository;
-
     public function __construct(
-        EntityRepository $customerRepository,
-        EntityRepository $orderAddressRepository,
-        EntityRepository $addressRepository
+        private readonly EntityRepository $customerRepository,
+        private readonly EntityRepository $orderAddressRepository,
+        private readonly EntityRepository $addressRepository
     ) {
-        $this->customerRepository = $customerRepository;
-        $this->orderAddressRepository = $orderAddressRepository;
-        $this->addressRepository = $addressRepository;
     }
 
     public static function getSubscribedEvents(): array
@@ -99,32 +90,26 @@ class UserDataSubscriber implements EventSubscriberInterface
 
         // update collected data
         if ($customerUpdates !== []) {
-            $this->customerRepository->upsert([array_merge(
-                [
-                    'id' => $customer->getId(),
-                    'versionId' => $customer->getVersionId(),
-                ],
-                $customerUpdates
-            )], $event->getContext());
+            $this->customerRepository->upsert([[
+                'id' => $customer->getId(),
+                'versionId' => $customer->getVersionId(),
+                ...$customerUpdates,
+            ]], $event->getContext());
         }
 
         if ($defaultBillingAddress && count($defaultBillingAddressUpdates)) {
-            $this->addressRepository->upsert([array_merge(
-                [
-                    'id' => $defaultBillingAddress->getId(),
-                ],
-                $defaultBillingAddressUpdates
-            )], $event->getContext());
+            $this->addressRepository->upsert([[
+                'id' => $defaultBillingAddress->getId(),
+                ...$defaultBillingAddressUpdates,
+            ]], $event->getContext());
         }
 
         if ($orderBillingAddressUpdates !== []) {
-            $this->orderAddressRepository->upsert([array_merge(
-                [
-                    'id' => $orderBillingAddress->getId(),
-                    'versionId' => $orderBillingAddress->getVersionId(),
-                ],
-                $orderBillingAddressUpdates
-            )], $event->getContext());
+            $this->orderAddressRepository->upsert([[
+                'id' => $orderBillingAddress->getId(),
+                'versionId' => $orderBillingAddress->getVersionId(),
+                ...$orderBillingAddressUpdates,
+            ]], $event->getContext());
         }
     }
 }

@@ -18,10 +18,9 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 class BankAccountHolderHelper
 {
     /**
-     * @param OrderEntity|SalesChannelContext $baseData
      * @return string[]
      */
-    public static function getAvailableNames($baseData): array
+    public static function getAvailableNames(OrderEntity|SalesChannelContext $baseData): array
     {
         if ($baseData instanceof SalesChannelContext) {
             $address = $baseData->getCustomer()->getDefaultBillingAddress();
@@ -35,10 +34,10 @@ class BankAccountHolderHelper
 
         $names = [];
         if (!empty($address->getCompany())) {
-            $names[] = trim($address->getCompany());
+            $names[] = trim((string) $address->getCompany());
         }
 
-        $names[] = trim($address->getFirstName()) . ' ' . trim($address->getLastName());
+        $names[] = trim((string) $address->getFirstName()) . ' ' . trim((string) $address->getLastName());
 
         return $names;
     }

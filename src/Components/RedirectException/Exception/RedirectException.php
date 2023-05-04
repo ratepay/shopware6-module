@@ -16,15 +16,12 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class RedirectException extends Exception
 {
-    private RedirectResponse $redirectResponse;
-
     public function __construct(
-        RedirectResponse $redirectResponse,
+        private readonly RedirectResponse $redirectResponse,
         string $message = '',
         int $code = 0,
         Exception $previousException = null
     ) {
-        $this->redirectResponse = $redirectResponse;
         parent::__construct($message, $code, $previousException);
     }
 

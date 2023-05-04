@@ -29,17 +29,10 @@ class ProfileSearchService implements ProfileSearchInterface
 {
     protected Context $context;
 
-    private EntityRepository $repository;
-
-    private EventDispatcherInterface $eventDispatcher;
-
     public function __construct(
-        EventDispatcherInterface $eventDispatcher,
-        EntityRepository $repository
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly EntityRepository $repository
     ) {
-        $this->repository = $repository;
-        $this->eventDispatcher = $eventDispatcher;
-
         $this->context = Context::createDefaultContext();
     }
 

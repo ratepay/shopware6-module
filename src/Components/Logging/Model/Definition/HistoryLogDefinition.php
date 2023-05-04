@@ -30,7 +30,7 @@ class HistoryLogDefinition extends EntityDefinition
     /**
      * @var string
      */
-    public const ENTITY_NAME = 'ratepay_order_history';
+    final public const ENTITY_NAME = 'ratepay_order_history';
 
     public function getEntityName(): string
     {

@@ -25,14 +25,10 @@ use Symfony\Component\Validator\ConstraintViolationList;
 
 class CheckoutValidationSubscriber implements EventSubscriberInterface
 {
-    private LockService $lockService;
-
-    private RequestStack $requestStack;
-
-    public function __construct(RequestStack $requestStack, LockService $lockService)
-    {
-        $this->requestStack = $requestStack;
-        $this->lockService = $lockService;
+    public function __construct(
+        private readonly RequestStack $requestStack,
+        private readonly LockService $lockService
+    ) {
     }
 
     public static function getSubscribedEvents(): array
@@ -54,7 +50,7 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
         $paymentMethod = $salesChannelContext->getPaymentMethod();
         $paymentHandlerIdentifier = $paymentMethod->getHandlerIdentifier();
 
-        if (strpos($paymentHandlerIdentifier, 'RpayPayments') !== false && $salesChannelContext->getCustomer()) {
+        if (str_contains($paymentHandlerIdentifier, 'RpayPayments') && $salesChannelContext->getCustomer()) {
             $isPaymentMethodLocked = $this->lockService->isPaymentLocked(
                 $paymentMethod->getId(),
                 $salesChannelContext->getCustomer()->getId(),

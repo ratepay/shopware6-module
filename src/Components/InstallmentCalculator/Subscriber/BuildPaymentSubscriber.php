@@ -35,11 +35,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class BuildPaymentSubscriber implements EventSubscriberInterface
 {
-    private InstallmentService $installmentService;
-
-    public function __construct(InstallmentService $installmentService)
-    {
-        $this->installmentService = $installmentService;
+    public function __construct(
+        private readonly InstallmentService $installmentService
+    ) {
     }
 
     public static function getSubscribedEvents(): array
@@ -78,16 +76,11 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
             }
 
             $paymentType = $requestedInstallment->get('paymentType');
-            switch ($paymentType) {
-                case 'DIRECT-DEBIT':
-                    $paymentFirstDay = PaymentFirstday::DIRECT_DEBIT;
-                    break;
-                case 'BANK-TRANSFER':
-                    $paymentFirstDay = PaymentFirstday::BANK_TRANSFER;
-                    break;
-                default:
-                    throw new InvalidArgumentException('invalid paymentType');
-            }
+            $paymentFirstDay = match ($paymentType) {
+                'DIRECT-DEBIT' => PaymentFirstday::DIRECT_DEBIT,
+                'BANK-TRANSFER' => PaymentFirstday::BANK_TRANSFER,
+                default => throw new InvalidArgumentException('invalid paymentType'),
+            };
 
             $paymentObject
                 ->setAmount($plan['totalAmount'])

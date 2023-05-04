@@ -30,7 +30,7 @@ return static function (RectorConfig $rectorConfig): void {
         SetList::TYPE_DECLARATION,
         SetList::PSR_4,
         SetList::CODING_STYLE,
-        LevelSetList::UP_TO_PHP_74,
+        LevelSetList::UP_TO_PHP_81,
     ]);
 
     $rectorConfig->ruleWithConfiguration(ConsistentPregDelimiterRector::class, [

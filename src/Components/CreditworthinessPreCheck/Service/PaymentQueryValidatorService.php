@@ -28,18 +28,12 @@ class PaymentQueryValidatorService
     /**
      * @var string
      */
-    public const CODE_METHOD_NOT_AVAILABLE = 'RP_METHOD_NOT_AVAILABLE';
-
-    private PaymentQueryService $paymentQueryService;
-
-    private ConfigService $configService;
+    final public const CODE_METHOD_NOT_AVAILABLE = 'RP_METHOD_NOT_AVAILABLE';
 
     public function __construct(
-        PaymentQueryService $paymentQueryService,
-        ConfigService $configService
+        private readonly PaymentQueryService $paymentQueryService,
+        private readonly ConfigService $configService
     ) {
-        $this->paymentQueryService = $paymentQueryService;
-        $this->configService = $configService;
     }
 
     /**

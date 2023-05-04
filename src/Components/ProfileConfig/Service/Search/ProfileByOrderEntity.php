@@ -17,11 +17,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 
 class ProfileByOrderEntity implements ProfileSearchInterface
 {
-    private ProfileSearchService $searchService;
-
-    public function __construct(ProfileSearchService $searchService)
-    {
-        $this->searchService = $searchService;
+    public function __construct(
+        private readonly ProfileSearchService $searchService
+    ) {
     }
 
     public function createSearchObject(OrderEntity $order): ProfileConfigSearch

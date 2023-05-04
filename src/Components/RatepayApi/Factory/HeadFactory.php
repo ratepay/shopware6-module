@@ -28,18 +28,12 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 class HeadFactory extends AbstractFactory
 {
-    private string $shopwareVersion;
-
-    private string $pluginVersion;
-
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
-        string $shopwareVersion,
-        string $pluginVersion
+        private readonly string $shopwareVersion,
+        private readonly string $pluginVersion
     ) {
         parent::__construct($eventDispatcher);
-        $this->shopwareVersion = $shopwareVersion;
-        $this->pluginVersion = $pluginVersion;
     }
 
     protected function _getData(AbstractRequestData $requestData): ?object

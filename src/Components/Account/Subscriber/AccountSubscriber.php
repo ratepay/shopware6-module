@@ -40,39 +40,14 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class AccountSubscriber implements EventSubscriberInterface
 {
-    protected ExtensionService $extensionService;
-
-    private DataValidator $dataValidator;
-
-    /**
-     * @var EntityRepository
-     * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
-     * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
-     * After Shopware has removed the decorator, we can replace this by a normal definition
-     * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
-     */
-    private object $paymentMethodRepository;
-
-    private PaymentHandlerRegistry $paymentHandlerRegistry;
-
-    private EntityRepository $orderRepository;
-
-    private EventDispatcherInterface $eventDispatcher;
-
     public function __construct(
-        ExtensionService $extensionService,
-        PaymentHandlerRegistry $paymentHandlerRegistry,
-        object $paymentMethodRepository,
-        EntityRepository $orderRepository,
-        DataValidator $dataValidator,
-        EventDispatcherInterface $eventDispatcher
+        private readonly ExtensionService $extensionService,
+        private readonly PaymentHandlerRegistry $paymentHandlerRegistry,
+        private readonly EntityRepository $paymentMethodRepository,
+        private readonly EntityRepository $orderRepository,
+        private readonly DataValidator $dataValidator,
+        private readonly EventDispatcherInterface $eventDispatcher
     ) {
-        $this->extensionService = $extensionService;
-        $this->dataValidator = $dataValidator;
-        $this->paymentMethodRepository = $paymentMethodRepository;
-        $this->paymentHandlerRegistry = $paymentHandlerRegistry;
-        $this->orderRepository = $orderRepository;
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     public static function getSubscribedEvents(): array

@@ -16,11 +16,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PageSubscriber implements EventSubscriberInterface
 {
-    private string $sessionKey;
-
-    public function __construct(string $sessionKey)
-    {
-        $this->sessionKey = $sessionKey;
+    public function __construct(
+        private readonly string $sessionKey
+    ) {
     }
 
     public static function getSubscribedEvents(): array

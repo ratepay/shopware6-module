@@ -14,7 +14,7 @@ namespace Ratepay\RpayPayments\Components\AdminOrders\Controller;
 use DateTime;
 use Exception;
 use Ratepay\RpayPayments\Components\AdminOrders\Model\RatepayAdminOrderTokenEntity;
-use Shopware\Core\Framework\Adapter\Translation\Translator;
+use Shopware\Core\Framework\Adapter\Translation\AbstractTranslator;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -31,20 +31,11 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class StorefrontController extends AbstractController
 {
-    private EntityRepository $tokenRepository;
-
-    private string $sessionKey;
-
-    private Translator $translator;
-
     public function __construct(
-        EntityRepository $tokenRepository,
-        Translator $translator,
-        string $sessionKey
+        private readonly EntityRepository $tokenRepository,
+        private readonly AbstractTranslator $translator,
+        private readonly string $sessionKey
     ) {
-        $this->tokenRepository = $tokenRepository;
-        $this->sessionKey = $sessionKey;
-        $this->translator = $translator;
     }
 
     /**

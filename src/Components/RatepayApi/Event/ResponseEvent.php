@@ -18,17 +18,11 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class ResponseEvent extends Event
 {
-    private Context $context;
-
-    private RequestBuilder $requestBuilder;
-
-    private AbstractRequestData $requestData;
-
-    public function __construct(Context $context, RequestBuilder $requestBuilder, AbstractRequestData $requestData)
-    {
-        $this->context = $context;
-        $this->requestBuilder = $requestBuilder;
-        $this->requestData = $requestData;
+    public function __construct(
+        private readonly Context $context,
+        private readonly RequestBuilder $requestBuilder,
+        private readonly AbstractRequestData $requestData
+    ) {
     }
 
     public function getContext(): Context

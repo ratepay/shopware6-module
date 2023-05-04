@@ -11,17 +11,15 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\Logging\Subscriber;
 
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\RequestBuilderFailedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class RequestBuilderFailedSubscriber implements EventSubscriberInterface
 {
-    protected Logger $logger;
-
-    public function __construct(Logger $fileLogger)
-    {
-        $this->logger = $fileLogger;
+    public function __construct(
+        private readonly LoggerInterface $fileLogger
+    ) {
     }
 
     public static function getSubscribedEvents(): array
@@ -35,7 +33,7 @@ class RequestBuilderFailedSubscriber implements EventSubscriberInterface
     {
         // $requestData = $event->getRequestData();
         $exception = $event->getException();
-        $this->logger->error('RequestBuilder failed', [
+        $this->fileLogger->error('RequestBuilder failed', [
             'message' => $exception->getMessage(),
             'trace' => $exception->getTraceAsString(),
         ]);

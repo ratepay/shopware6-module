@@ -22,24 +22,12 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class PaymentMethodRoute extends AbstractPaymentMethodRoute
 {
-    private AbstractPaymentMethodRoute $innerService;
-
-    private PaymentFilterService $paymentFilterService;
-
-    private RequestStack $requestStack;
-
-    private EntityRepository $orderRepository;
-
     public function __construct(
-        AbstractPaymentMethodRoute $innerService,
-        PaymentFilterService $paymentFilterService,
-        RequestStack $requestStack,
-        EntityRepository $orderRepository
+        private readonly AbstractPaymentMethodRoute $innerService,
+        private readonly PaymentFilterService $paymentFilterService,
+        private readonly RequestStack $requestStack,
+        private readonly EntityRepository $orderRepository
     ) {
-        $this->innerService = $innerService;
-        $this->paymentFilterService = $paymentFilterService;
-        $this->requestStack = $requestStack;
-        $this->orderRepository = $orderRepository;
     }
 
     public function getDecorated(): AbstractPaymentMethodRoute

@@ -18,17 +18,15 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 abstract class AbstractFactory
 {
-    protected EventDispatcherInterface $eventDispatcher;
-
-    public function __construct(EventDispatcherInterface $eventDispatcher)
-    {
-        $this->eventDispatcher = $eventDispatcher;
+    public function __construct(
+        protected EventDispatcherInterface $eventDispatcher
+    ) {
     }
 
     final public function getData(AbstractRequestData $requestData): ?object
     {
         if (!$this->isSupported($requestData)) {
-            throw new InvalidArgumentException(get_class($requestData) . ' is no supported by ' . self::class);
+            throw new InvalidArgumentException($requestData::class . ' is no supported by ' . self::class);
         }
 
         $data = $this->_getData($requestData);

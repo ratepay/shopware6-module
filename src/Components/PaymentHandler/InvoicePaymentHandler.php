@@ -16,7 +16,7 @@ class InvoicePaymentHandler extends AbstractPaymentHandler
     /**
      * @var string
      */
-    public const RATEPAY_METHOD = 'INVOICE';
+    final public const RATEPAY_METHOD = 'INVOICE';
 
     public static function getRatepayPaymentMethodName(): string
     {

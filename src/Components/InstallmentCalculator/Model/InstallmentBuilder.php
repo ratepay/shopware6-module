@@ -16,19 +16,12 @@ use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntit
 
 class InstallmentBuilder extends \RatePAY\Frontend\InstallmentBuilder
 {
-    private ProfileConfigEntity $profileConfig;
-
-    private ProfileConfigMethodEntity $methodConfig;
-
     public function __construct(
-        ProfileConfigEntity $profileConfig,
-        ProfileConfigMethodEntity $methodConfig,
+        private readonly ProfileConfigEntity $profileConfig,
+        private readonly ProfileConfigMethodEntity $methodConfig,
         string $language = 'DE',
         string $country = 'DE'
     ) {
-        $this->profileConfig = $profileConfig;
-        $this->methodConfig = $methodConfig;
-
         parent::__construct(
             $profileConfig->isSandbox(),
             $profileConfig->getProfileId(),

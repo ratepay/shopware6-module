@@ -31,20 +31,11 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class DeviceFingerprintSubscriber implements EventSubscriberInterface
 {
-    protected DfpServiceInterface $dfpService;
-
-    private RequestStack $requestStack;
-
-    private ConfigService $configService;
-
     public function __construct(
-        DfpServiceInterface $dfpService,
-        ConfigService $configService,
-        RequestStack $requestStack
+        private readonly DfpServiceInterface $dfpService,
+        private readonly ConfigService $configService,
+        private readonly RequestStack $requestStack
     ) {
-        $this->dfpService = $dfpService;
-        $this->requestStack = $requestStack;
-        $this->configService = $configService;
     }
 
     public static function getSubscribedEvents(): array

@@ -23,67 +23,67 @@ class ProfileConfigEntity extends Entity
     /**
      * @var string
      */
-    public const FIELD_ID = 'id';
+    final public const FIELD_ID = 'id';
 
     /**
      * @var string
      */
-    public const FIELD_PROFILE_ID = 'profileId';
+    final public const FIELD_PROFILE_ID = 'profileId';
 
     /**
      * @var string
      */
-    public const FIELD_SECURITY_CODE = 'securityCode';
+    final public const FIELD_SECURITY_CODE = 'securityCode';
 
     /**
      * @var string
      */
-    public const FIELD_SANDBOX = 'sandbox';
+    final public const FIELD_SANDBOX = 'sandbox';
 
     /**
      * @var string
      */
-    public const FIELD_ONLY_ADMIN_ORDERS = 'onlyAdminOrders';
+    final public const FIELD_ONLY_ADMIN_ORDERS = 'onlyAdminOrders';
 
     /**
      * @var string
      */
-    public const FIELD_SALES_CHANNEL = 'salesChannel';
+    final public const FIELD_SALES_CHANNEL = 'salesChannel';
 
     /**
      * @var string
      */
-    public const FIELD_SALES_CHANNEL_ID = 'salesChannelId';
+    final public const FIELD_SALES_CHANNEL_ID = 'salesChannelId';
 
     /**
      * @var string
      */
-    public const FIELD_COUNTRY_CODE_BILLING = 'countryCodeBilling';
+    final public const FIELD_COUNTRY_CODE_BILLING = 'countryCodeBilling';
 
     /**
      * @var string
      */
-    public const FIELD_COUNTRY_CODE_SHIPPING = 'countryCodeDelivery';
+    final public const FIELD_COUNTRY_CODE_SHIPPING = 'countryCodeDelivery';
 
     /**
      * @var string
      */
-    public const FIELD_CURRENCY = 'currency';
+    final public const FIELD_CURRENCY = 'currency';
 
     /**
      * @var string
      */
-    public const FIELD_STATUS = 'status';
+    final public const FIELD_STATUS = 'status';
 
     /**
      * @var string
      */
-    public const FIELD_STATUS_MESSAGE = 'statusMessage';
+    final public const FIELD_STATUS_MESSAGE = 'statusMessage';
 
     /**
      * @var string
      */
-    public const FIELD_PAYMENT_METHOD_CONFIGS = 'paymentMethodConfigs';
+    final public const FIELD_PAYMENT_METHOD_CONFIGS = 'paymentMethodConfigs';
 
     protected string $profileId;
 

@@ -26,12 +26,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PreventOrderDeletion implements EventSubscriberInterface
 {
-    private EntityRepository $ratepayOrderLineItemDataRepository;
-
     public function __construct(
-        EntityRepository $ratepayOrderLineItemDataRepository
+        private readonly EntityRepository $ratepayOrderLineItemDataRepository
     ) {
-        $this->ratepayOrderLineItemDataRepository = $ratepayOrderLineItemDataRepository;
     }
 
     public static function getSubscribedEvents(): array

@@ -29,22 +29,13 @@ use Shopware\Core\Framework\Uuid\Uuid;
 class ProfileConfigResponseConverter
 {
     /**
-     * @var EntityRepository
-     * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
-     * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
-     * After Shopware has removed the decorator, we can replace this by a normal definition
-     * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
-     */
-    private object $paymentMethodRepository;
-
-    /**
      * @var PaymentMethodEntity[]|null
      */
     private ?array $paymentMethods = null;
 
-    public function __construct(object $paymentMethodRepository)
-    {
-        $this->paymentMethodRepository = $paymentMethodRepository;
+    public function __construct(
+        private readonly EntityRepository $paymentMethodRepository
+    ) {
     }
 
     /**
@@ -63,9 +54,9 @@ class ProfileConfigResponseConverter
             $profileConfigData[ProfileConfigEntity::FIELD_STATUS_MESSAGE] = 'The profile is disabled. Please contact your account manager.';
         } else {
             $profileConfigData[ProfileConfigEntity::FIELD_STATUS] = true;
-            $profileConfigData[ProfileConfigEntity::FIELD_COUNTRY_CODE_BILLING] = explode(',', $responseData['merchantConfig']['country-code-billing']);
-            $profileConfigData[ProfileConfigEntity::FIELD_COUNTRY_CODE_SHIPPING] = explode(',', $responseData['merchantConfig']['country-code-delivery']);
-            $profileConfigData[ProfileConfigEntity::FIELD_CURRENCY] = explode(',', $responseData['merchantConfig']['currency']);
+            $profileConfigData[ProfileConfigEntity::FIELD_COUNTRY_CODE_BILLING] = explode(',', (string) $responseData['merchantConfig']['country-code-billing']);
+            $profileConfigData[ProfileConfigEntity::FIELD_COUNTRY_CODE_SHIPPING] = explode(',', (string) $responseData['merchantConfig']['country-code-delivery']);
+            $profileConfigData[ProfileConfigEntity::FIELD_CURRENCY] = explode(',', (string) $responseData['merchantConfig']['currency']);
 
             $methodConfigs = [];
             $installmentConfigs = [];
@@ -74,7 +65,7 @@ class ProfileConfigResponseConverter
 
             /** @var PaymentMethodEntity $paymentMethod */
             foreach ($paymentMethods as $paymentMethod) {
-                $arrayKey = strtolower(constant($paymentMethod->getHandlerIdentifier() . '::RATEPAY_METHOD'));
+                $arrayKey = strtolower((string) constant($paymentMethod->getHandlerIdentifier() . '::RATEPAY_METHOD'));
 
                 if (!isset($responseData['merchantConfig']['activation-status-' . $arrayKey]) ||
                     (((int) $responseData['merchantConfig']['activation-status-' . $arrayKey]) === 1)) {
@@ -110,10 +101,10 @@ class ProfileConfigResponseConverter
                     ProfileConfigMethodEntity::FIELD_ALLOW_DIFFERENT_ADDRESSES => $responseData['merchantConfig']['delivery-address-' . $arrayKey] === 'yes',
                 ];
                 if ($arrayKey === 'installment') {
-                    $paymentFirstDay = explode(',', $responseData['installmentConfig']['valid-payment-firstdays']);
+                    $paymentFirstDay = explode(',', (string) $responseData['installmentConfig']['valid-payment-firstdays']);
                     $installmentConfigs[] = [
                         ProfileConfigMethodInstallmentEntity::FIELD_ID => $id,
-                        ProfileConfigMethodInstallmentEntity::FIELD_ALLOWED_MONTHS => array_map('intval', explode(',', $responseData['installmentConfig']['month-allowed'])),
+                        ProfileConfigMethodInstallmentEntity::FIELD_ALLOWED_MONTHS => array_map('intval', explode(',', (string) $responseData['installmentConfig']['month-allowed'])),
                         ProfileConfigMethodInstallmentEntity::FIELD_IS_BANKTRANSFER_ALLOWED => in_array(PaymentFirstday::BANK_TRANSFER, $paymentFirstDay, false),
                         ProfileConfigMethodInstallmentEntity::FIELD_IS_DEBIT_ALLOWED => in_array(PaymentFirstday::DIRECT_DEBIT, $paymentFirstDay, false),
                         ProfileConfigMethodInstallmentEntity::FIELD_RATE_MIN => (float) $responseData['installmentConfig']['rate-min-normal'],

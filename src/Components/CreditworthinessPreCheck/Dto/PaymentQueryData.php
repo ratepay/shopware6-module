@@ -24,38 +24,20 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class PaymentQueryData extends AbstractRequestData implements OperationDataWithBasket, CheckoutOperationInterface
 {
-    private DataBag $requestDataBag;
-
-    private SalesChannelContext $salesChannelContext;
-
     /**
      * @var LineItem[]
      */
     private array $items = [];
 
-    private ?string $transactionId;
-
-    private Cart $cart;
-
-    private bool $sendDiscountAsCartItem;
-
-    private bool $sendShippingCostsAsCartItem;
-
     public function __construct(
-        SalesChannelContext $salesChannelContext,
-        Cart $cart,
-        DataBag $requestDataBag,
-        string $transactionId,
-        bool $sendDiscountAsCartItem = false,
-        bool $sendShippingCostsAsCartItem = false
+        private readonly SalesChannelContext $salesChannelContext,
+        private readonly Cart $cart,
+        private readonly DataBag $requestDataBag,
+        private readonly ?string $transactionId,
+        private readonly bool $sendDiscountAsCartItem = false,
+        private readonly bool $sendShippingCostsAsCartItem = false
     ) {
         parent::__construct($salesChannelContext->getContext());
-        $this->requestDataBag = $requestDataBag;
-        $this->salesChannelContext = $salesChannelContext;
-        $this->cart = $cart;
-        $this->transactionId = $transactionId;
-        $this->sendDiscountAsCartItem = $sendDiscountAsCartItem;
-        $this->sendShippingCostsAsCartItem = $sendShippingCostsAsCartItem;
     }
 
     public function getItems(): array

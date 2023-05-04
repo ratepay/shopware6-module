@@ -25,16 +25,10 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class CheckoutValidationSubscriber implements EventSubscriberInterface
 {
-    private RequestStack $requestStack;
-
-    private PaymentHandlerRegistry $paymentHandlerRegistry;
-
     public function __construct(
-        RequestStack $requestStack,
-        PaymentHandlerRegistry $paymentHandlerRegistry
+        private readonly RequestStack $requestStack,
+        private readonly PaymentHandlerRegistry $paymentHandlerRegistry
     ) {
-        $this->requestStack = $requestStack;
-        $this->paymentHandlerRegistry = $paymentHandlerRegistry;
     }
 
     public static function getSubscribedEvents(): array
@@ -56,7 +50,7 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
         $paymentMethod = $salesChannelContext->getPaymentMethod();
         $paymentHandlerIdentifier = $paymentMethod->getHandlerIdentifier();
 
-        if (strpos($paymentHandlerIdentifier, 'RpayPayments') !== false) {
+        if (str_contains($paymentHandlerIdentifier, 'RpayPayments')) {
             /** @var AbstractPaymentHandler $paymentHandler */
             $paymentHandler = $this->paymentHandlerRegistry->getPaymentMethodHandler($paymentMethod->getId());
 

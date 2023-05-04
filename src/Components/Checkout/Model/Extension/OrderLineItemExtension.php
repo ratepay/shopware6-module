@@ -23,7 +23,7 @@ class OrderLineItemExtension extends EntityExtension
     /**
      * @var string
      */
-    public const EXTENSION_NAME = 'ratepayData';
+    final public const EXTENSION_NAME = 'ratepayData';
 
     public function extendFields(FieldCollection $collection): void
     {

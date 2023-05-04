@@ -36,11 +36,11 @@
         }
     },
     "require": {
-        "php": "^7.4 || ^8.0",
+        "php": "^8.1",
         "ratepay/php-library": "^1.8",
-        "shopware/core": "^6.4.11",
-        "shopware/administration": "^6.4.11",
-        "shopware/storefront": "^6.4.11",
+        "shopware/core": "^6.5.0",
+        "shopware/administration": "^6.5.0",
+        "shopware/storefront": "^6.5.0",
         "ext-simplexml": "*",
         "ext-json": "*"
     },

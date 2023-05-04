@@ -22,23 +22,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
 
 class LockService
 {
-    private EntityRepository $paymentLockRepository;
-
-    /**
-     * @var EntityRepository
-     * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
-     * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
-     * After Shopware has removed the decorator, we can replace this by a normal definition
-     * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
-     */
-    private object $paymentMethodRepository;
-
     public function __construct(
-        object $paymentMethodRepository,
-        EntityRepository $paymentLockRepository
+        private readonly EntityRepository $paymentMethodRepository,
+        private readonly EntityRepository $paymentLockRepository
     ) {
-        $this->paymentMethodRepository = $paymentMethodRepository;
-        $this->paymentLockRepository = $paymentLockRepository;
     }
 
     /**

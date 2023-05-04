@@ -22,11 +22,9 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class ConfigService
 {
-    private SystemConfigService $systemConfigService;
-
-    public function __construct(SystemConfigService $systemConfigService)
-    {
-        $this->systemConfigService = $systemConfigService;
+    public function __construct(
+        private readonly SystemConfigService $systemConfigService
+    ) {
     }
 
     public function getDeviceFingerprintSnippetId(): string

@@ -29,7 +29,7 @@ class ProfileConfigMethodInstallmentDefinition extends EntityDefinition
     /**
      * @var string
      */
-    public const ENTITY_NAME = 'ratepay_profile_config_method_installment';
+    final public const ENTITY_NAME = 'ratepay_profile_config_method_installment';
 
     public function getEntityName(): string
     {

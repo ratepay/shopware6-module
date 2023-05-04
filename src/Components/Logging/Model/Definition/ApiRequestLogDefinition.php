@@ -29,7 +29,7 @@ class ApiRequestLogDefinition extends EntityDefinition
     /**
      * @var string
      */
-    public const ENTITY_NAME = 'ratepay_api_log';
+    final public const ENTITY_NAME = 'ratepay_api_log';
 
     public function getEntityName(): string
     {

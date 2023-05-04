@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\Logging\Service;
 
 use Exception;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Ratepay\RpayPayments\Components\Logging\Model\HistoryLogEntity;
 use Shopware\Core\Framework\Api\Context\AdminApiSource;
 use Shopware\Core\Framework\Context;
@@ -22,20 +22,11 @@ use Shopware\Core\System\User\UserEntity;
 
 class HistoryLogger
 {
-    protected EntityRepository $logRepository;
-
-    protected EntityRepository $userRepository;
-
-    protected Logger $logger;
-
     public function __construct(
-        EntityRepository $logRepository,
-        EntityRepository $userRepository,
-        Logger $logger
+        private readonly EntityRepository $logRepository,
+        private readonly EntityRepository $userRepository,
+        private readonly LoggerInterface $logger
     ) {
-        $this->logRepository = $logRepository;
-        $this->userRepository = $userRepository;
-        $this->logger = $logger;
     }
 
     public function logHistory(

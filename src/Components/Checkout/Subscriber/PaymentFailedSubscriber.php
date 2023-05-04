@@ -26,12 +26,9 @@ use Symfony\Component\HttpFoundation\Session\Session;
 
 class PaymentFailedSubscriber implements EventSubscriberInterface
 {
-    private EntityRepository $ratepayApiLogRepository;
-
     public function __construct(
-        EntityRepository $ratepayApiLogRepository
+        private readonly EntityRepository $ratepayApiLogRepository
     ) {
-        $this->ratepayApiLogRepository = $ratepayApiLogRepository;
     }
 
     public static function getSubscribedEvents(): array
@@ -70,7 +67,7 @@ class PaymentFailedSubscriber implements EventSubscriberInterface
                     PaymentRequestService::CALL_PAYMENT_REQUEST,
                     $logEntry->getResponse()
                 );
-            } catch (Exception $exception) {
+            } catch (Exception) {
                 // response can not be converted.
                 return;
             }

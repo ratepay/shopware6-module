@@ -22,32 +22,32 @@ class RatepayOrderLineItemDataEntity extends Entity
     /**
      * @var string
      */
-    public const FIELD_ID = 'id';
+    final public const FIELD_ID = 'id';
 
     /**
      * @var string
      */
-    public const FIELD_ORDER_LINE_ITEM_ID = 'orderLineItemId';
+    final public const FIELD_ORDER_LINE_ITEM_ID = 'orderLineItemId';
 
     /**
      * @var string
      */
-    public const FIELD_ORDER_LINE_ITEM_VERSION_ID = 'orderLineItemVersionId';
+    final public const FIELD_ORDER_LINE_ITEM_VERSION_ID = 'orderLineItemVersionId';
 
     /**
      * @var string
      */
-    public const FIELD_ORDER_LINE_ITEM = 'orderLineItem';
+    final public const FIELD_ORDER_LINE_ITEM = 'orderLineItem';
 
     /**
      * @var string
      */
-    public const FIELD_POSITION_ID = 'positionId';
+    final public const FIELD_POSITION_ID = 'positionId';
 
     /**
      * @var string
      */
-    public const FIELD_POSITION = 'position';
+    final public const FIELD_POSITION = 'position';
 
     protected string $orderLineItemId;
 

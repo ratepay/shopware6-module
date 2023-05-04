@@ -155,10 +155,7 @@ class ShoppingBasketFactory extends AbstractFactory
         }
     }
 
-    /**
-     * @param LineItem|OrderLineItemEntity $item
-     */
-    protected function shouldSubmitItemAsCartItem(OperationDataWithBasket $requestData, $item, float $price): bool
+    protected function shouldSubmitItemAsCartItem(OperationDataWithBasket $requestData, LineItem|OrderLineItemEntity $item, float $price): bool
     {
         if ($price > 0 || !in_array($item->getType(), [LineItem::CREDIT_LINE_ITEM_TYPE, LineItem::PROMOTION_LINE_ITEM_TYPE], true)) {
             return true;
@@ -184,7 +181,7 @@ class ShoppingBasketFactory extends AbstractFactory
             return $requestData->getCart()->getPrice()->getTaxStatus();
         }
 
-        throw new BadMethodCallException(get_class($requestData) . ' is not implemented yet');
+        throw new BadMethodCallException($requestData::class . ' is not implemented yet');
     }
 
     private function getLineItemUnitPrice(string $taxStatus, CalculatedPrice $price, int $qty): float

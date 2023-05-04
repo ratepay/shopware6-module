@@ -21,14 +21,10 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentSuccessfulSubscriber implements EventSubscriberInterface
 {
-    private StateMachineRegistry $stateMachineRegistry;
-
-    private ConfigService $configService;
-
-    public function __construct(StateMachineRegistry $stateMachineRegistry, ConfigService $configService)
-    {
-        $this->stateMachineRegistry = $stateMachineRegistry;
-        $this->configService = $configService;
+    public function __construct(
+        private readonly StateMachineRegistry $stateMachineRegistry,
+        private readonly ConfigService $configService
+    ) {
     }
 
     public static function getSubscribedEvents(): array

@@ -40,34 +40,24 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ProductPanel extends AbstractController
 {
-    private EntityRepository $orderRepository;
-
-    private PaymentCreditService $creditService;
-
     /**
      * @var AbstractModifyRequest[]
      */
     private array $requestServicesByOperation = [];
 
-    private LineItemFactory $lineItemFactory;
-
     public function __construct(
-        EntityRepository $orderRepository,
+        private readonly EntityRepository $orderRepository,
         PaymentDeliverService $paymentDeliverService,
         PaymentReturnService $paymentReturnService,
         PaymentCancelService $paymentCancelService,
-        PaymentCreditService $creditService,
-        LineItemFactory $lineItemFactory
+        private readonly PaymentCreditService $creditService,
+        private readonly LineItemFactory $lineItemFactory
     ) {
-        $this->orderRepository = $orderRepository;
-        $this->creditService = $creditService;
-
         $this->requestServicesByOperation = [
             OrderOperationData::OPERATION_DELIVER => $paymentDeliverService,
             OrderOperationData::OPERATION_CANCEL => $paymentCancelService,
             OrderOperationData::OPERATION_RETURN => $paymentReturnService,
         ];
-        $this->lineItemFactory = $lineItemFactory;
     }
 
     /**

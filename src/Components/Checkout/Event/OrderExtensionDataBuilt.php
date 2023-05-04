@@ -15,17 +15,11 @@ use Shopware\Core\Checkout\Order\OrderEntity;
 
 class OrderExtensionDataBuilt
 {
-    private OrderEntity $orderEntity;
-
-    private PaymentRequestData $paymentRequestData;
-
-    private array $data;
-
-    public function __construct(OrderEntity $orderEntity, PaymentRequestData $paymentRequestData, array $data)
-    {
-        $this->orderEntity = $orderEntity;
-        $this->paymentRequestData = $paymentRequestData;
-        $this->data = $data;
+    public function __construct(
+        private readonly OrderEntity $orderEntity,
+        private readonly PaymentRequestData $paymentRequestData,
+        private array $data
+    ) {
     }
 
     public function getOrder(): OrderEntity

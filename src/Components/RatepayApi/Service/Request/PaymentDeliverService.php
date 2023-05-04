@@ -27,42 +27,39 @@ class PaymentDeliverService extends AbstractModifyRequest
     /**
      * @var string
      */
-    public const EVENT_SUCCESSFUL = self::class . parent::EVENT_SUCCESSFUL;
+    final public const EVENT_SUCCESSFUL = self::class . parent::EVENT_SUCCESSFUL;
 
     /**
      * @var string
      */
-    public const EVENT_FAILED = self::class . parent::EVENT_FAILED;
+    final public const EVENT_FAILED = self::class . parent::EVENT_FAILED;
 
     /**
      * @var string
      */
-    public const EVENT_BUILD_HEAD = self::class . parent::EVENT_BUILD_HEAD;
+    final public const EVENT_BUILD_HEAD = self::class . parent::EVENT_BUILD_HEAD;
 
     /**
      * @var string
      */
-    public const EVENT_BUILD_CONTENT = self::class . parent::EVENT_BUILD_CONTENT;
+    final public const EVENT_BUILD_CONTENT = self::class . parent::EVENT_BUILD_CONTENT;
 
     /**
      * @var string
      */
-    public const EVENT_INIT_REQUEST = self::class . parent::EVENT_INIT_REQUEST;
+    final public const EVENT_INIT_REQUEST = self::class . parent::EVENT_INIT_REQUEST;
 
     protected string $_operation = self::CALL_DELIVER;
-
-    private InvoiceFactory $invoiceFactory;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         HeadFactory $headFactory,
         EntityRepository $profileConfigRepository,
         ShoppingBasketFactory $shoppingBasketFactory,
-        InvoiceFactory $invoiceFactory,
+        private readonly InvoiceFactory $invoiceFactory,
         ExternalFactory $externalFactory
     ) {
         parent::__construct($eventDispatcher, $headFactory, $profileConfigRepository, $shoppingBasketFactory, $externalFactory);
-        $this->invoiceFactory = $invoiceFactory;
     }
 
     protected function getRequestContent(AbstractRequestData $requestData): ?Content

@@ -46,34 +46,16 @@ class ExtensionService
     /**
      * @var string
      */
-    public const PAYMENT_PAGE_EXTENSION_NAME = 'ratepay';
-
-    private EntityRepository $orderExtensionRepository;
-
-    private EntityRepository $lineItemExtensionRepository;
-
-    private TransactionIdService $transactionIdService;
-
-    private EventDispatcherInterface $eventDispatcher;
-
-    private ProfileBySalesChannelContext $profileBySalesChannelContext;
-
-    private ProfileByOrderEntity $profileByOrderEntity;
+    final public const PAYMENT_PAGE_EXTENSION_NAME = 'ratepay';
 
     public function __construct(
-        EntityRepository $orderExtensionRepository,
-        EntityRepository $lineItemExtensionRepository,
-        TransactionIdService $transactionIdService,
-        EventDispatcherInterface $eventDispatcher,
-        ProfileBySalesChannelContext $profileBySalesChannelContext,
-        ProfileByOrderEntity $profileByOrderEntity
+        private readonly EntityRepository $orderExtensionRepository,
+        private readonly EntityRepository $lineItemExtensionRepository,
+        private readonly TransactionIdService $transactionIdService,
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly ProfileBySalesChannelContext $profileBySalesChannelContext,
+        private readonly ProfileByOrderEntity $profileByOrderEntity
     ) {
-        $this->orderExtensionRepository = $orderExtensionRepository;
-        $this->lineItemExtensionRepository = $lineItemExtensionRepository;
-        $this->transactionIdService = $transactionIdService;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->profileBySalesChannelContext = $profileBySalesChannelContext;
-        $this->profileByOrderEntity = $profileByOrderEntity;
     }
 
     public function createLineItemExtensionEntities(
@@ -194,7 +176,7 @@ class ExtensionService
         $extension->offsetSet('accountHolders', $accountHolders ?? null);
         $extension->offsetSet(
             'paymentMethod',
-            strtolower(constant($paymentMethod->getHandlerIdentifier() . '::RATEPAY_METHOD'))
+            strtolower((string) constant($paymentMethod->getHandlerIdentifier() . '::RATEPAY_METHOD'))
         );
 
         if (!MethodHelper::isInstallmentMethod($paymentMethod->getHandlerIdentifier())) {

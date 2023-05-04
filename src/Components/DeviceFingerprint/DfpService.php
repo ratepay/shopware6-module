@@ -29,25 +29,18 @@ use Symfony\Component\HttpFoundation\Request;
 
 class DfpService implements DfpServiceInterface
 {
-    private ConfigService $configService;
-
-    private EntityRepository $orderCustomerRepository;
-
     public function __construct(
-        ConfigService $configService,
-        EntityRepository $orderCustomerRepository
+        private readonly ConfigService $configService,
+        private readonly EntityRepository $orderCustomerRepository
     ) {
-        $this->configService = $configService;
-        $this->orderCustomerRepository = $orderCustomerRepository;
     }
 
     /**
      * generates the dfp-id based on sales-channel-context or order-entity.
      * provide the user-agent via header or a request variable `userAgent` to generate a more unique device-identifier
      * the request-variable is prioritized
-     * @inheritDoc
      */
-    public function generatedDfpId(Request $request, $baseData): ?string
+    public function generatedDfpId(Request $request, OrderEntity|SalesChannelContext $baseData): ?string
     {
         if (!$this->isDfpRequired($baseData)) {
             return null;
@@ -76,15 +69,15 @@ class DfpService implements DfpServiceInterface
         return $prefix . substr($generatedId, strlen($prefix));
     }
 
-    public function isDfpIdValid($baseData, string $dfpId = null): bool
+    public function isDfpIdValid(OrderEntity|SalesChannelContext $baseData, string $dfpId = null): bool
     {
         $prefix = $this->getDfpPrefix($baseData);
 
         // verify if the prefix is at the beginning of the id
-        return substr($dfpId, 0, strlen($prefix)) === $prefix;
+        return str_starts_with($dfpId, $prefix);
     }
 
-    public function getDfpSnippet(Request $request, $baseData): ?string
+    public function getDfpSnippet(Request $request, OrderEntity|SalesChannelContext $baseData): ?string
     {
         if ($id = $this->generatedDfpId($request, $baseData)) {
             $dfpHelper = new DeviceFingerprint($this->configService->getDeviceFingerprintSnippetId());
@@ -94,7 +87,7 @@ class DfpService implements DfpServiceInterface
         return null;
     }
 
-    public function isDfpRequired($object): bool
+    public function isDfpRequired(OrderEntity|SalesChannelContext $object): bool
     {
         return true;
     }
@@ -103,19 +96,18 @@ class DfpService implements DfpServiceInterface
      * generates a unique prefix for the current cart.
      * we add this prefix to the beginning of the dfp-id to make sure we can validate it when using a headless application
      * if the client does not provide a User-Agent header, the client have to provide a dfp-id via request
-     * @param SalesChannelContext|OrderEntity $object
      */
-    private function getDfpPrefix($object): string
+    private function getDfpPrefix(SalesChannelContext|OrderEntity $object): string
     {
         if ($object instanceof SalesChannelContext) {
-            $identifier = md5($object->getToken());
+            $identifier = md5((string) $object->getToken());
         } elseif ($object instanceof OrderEntity) {
             // order payment has been failed, and we have to reuse the token.
             // the validation of the token will successfully, because in this special case the prefix got not
             // appended to the generated token, cause the generated token is just the same token as from the oder
-            $identifier = $this->getOrderDeviceToken($object) ?? md5($object->getId());
+            $identifier = $this->getOrderDeviceToken($object) ?? md5((string) $object->getId());
         } else {
-            throw new RuntimeException(sprintf('DFP: object of type %s was not expected', get_class($object)));
+            throw new RuntimeException(sprintf('DFP: object of type %s was not expected', $object::class));
         }
 
         return substr($identifier, 0, 5);

@@ -30,26 +30,14 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
      * @decrecated use PaymentQueryValidatorService::CODE_METHOD_NOT_AVAILABLE
      * @var string
      */
-    public const CODE_METHOD_NOT_AVAILABLE = PaymentQueryValidatorService::CODE_METHOD_NOT_AVAILABLE;
-
-    private RequestStack $requestStack;
-
-    private CartService $cartService;
-
-    private DataValidator $dataValidator;
-
-    private PaymentQueryValidatorService $validatorService;
+    final public const CODE_METHOD_NOT_AVAILABLE = PaymentQueryValidatorService::CODE_METHOD_NOT_AVAILABLE;
 
     public function __construct(
-        RequestStack $requestStack,
-        DataValidator $dataValidator,
-        CartService $cartService,
-        PaymentQueryValidatorService $validatorService
+        private readonly RequestStack $requestStack,
+        private readonly DataValidator $dataValidator,
+        private readonly CartService $cartService,
+        private readonly PaymentQueryValidatorService $validatorService
     ) {
-        $this->requestStack = $requestStack;
-        $this->cartService = $cartService;
-        $this->dataValidator = $dataValidator;
-        $this->validatorService = $validatorService;
     }
 
     public static function getSubscribedEvents(): array
@@ -70,7 +58,7 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
         $context = $this->getContextFromRequest($request);
         $paymentHandlerIdentifier = $context->getPaymentMethod()->getHandlerIdentifier();
 
-        if (strpos($paymentHandlerIdentifier, 'RpayPayments') !== false) {
+        if (str_contains($paymentHandlerIdentifier, 'RpayPayments')) {
             $ratepayData = RequestHelper::getArray($request, 'ratepay', []);
             // we must validate the data BEFORE we send the request to the gateway.
             // this is not the good way, but we do not have another possibility.

@@ -17,14 +17,10 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class RequestBuilderFailedEvent extends Event
 {
-    protected Exception $exception;
-
-    private AbstractRequestData $requestData;
-
-    public function __construct(Exception $exception, AbstractRequestData $requestData)
-    {
-        $this->exception = $exception;
-        $this->requestData = $requestData;
+    public function __construct(
+        private readonly Exception $exception,
+        private readonly AbstractRequestData $requestData
+    ) {
     }
 
     public function getException(): Exception

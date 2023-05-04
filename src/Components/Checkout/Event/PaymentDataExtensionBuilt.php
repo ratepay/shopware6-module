@@ -17,17 +17,11 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class PaymentDataExtensionBuilt extends Event
 {
-    private ArrayStruct $extension;
-
-    private SalesChannelContext $salesChannelContext;
-
-    private ?OrderEntity $orderEntity;
-
-    public function __construct(ArrayStruct $extension, SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null)
-    {
-        $this->extension = $extension;
-        $this->salesChannelContext = $salesChannelContext;
-        $this->orderEntity = $orderEntity;
+    public function __construct(
+        private readonly ArrayStruct $extension,
+        private readonly SalesChannelContext $salesChannelContext,
+        private readonly ?OrderEntity $orderEntity = null
+    ) {
     }
 
     public function getExtension(): ArrayStruct

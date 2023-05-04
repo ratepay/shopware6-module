@@ -30,20 +30,11 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class TokenController extends AbstractController
 {
-    private EntityRepository $tokenRepository;
-
-    private EntityRepository $salesChannelDomainRepository;
-
-    private RouterInterface $router;
-
     public function __construct(
-        EntityRepository $tokenRepository,
-        EntityRepository $salesChannelDomainRepository,
-        Router $router
+        private readonly EntityRepository $tokenRepository,
+        private readonly EntityRepository $salesChannelDomainRepository,
+        private readonly Router $router
     ) {
-        $this->tokenRepository = $tokenRepository;
-        $this->salesChannelDomainRepository = $salesChannelDomainRepository;
-        $this->router = $router;
     }
 
     /**

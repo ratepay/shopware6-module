@@ -29,16 +29,10 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class RedirectExceptionListener implements EventSubscriberInterface
 {
-    private ContainerInterface $container;
-
-    private OrderTransactionStateHandler $orderTransactionStateHandler;
-
     public function __construct(
-        ContainerInterface $container,
-        OrderTransactionStateHandler $orderTransactionStateHandler
+        private readonly ContainerInterface $container,
+        private readonly OrderTransactionStateHandler $orderTransactionStateHandler
     ) {
-        $this->container = $container;
-        $this->orderTransactionStateHandler = $orderTransactionStateHandler;
     }
 
     public static function getSubscribedEvents(): array

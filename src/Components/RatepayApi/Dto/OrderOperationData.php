@@ -29,53 +29,46 @@ class OrderOperationData extends AbstractRequestData implements OperationDataWit
     /**
      * @var string
      */
-    public const OPERATION_REQUEST = 'request';
+    final public const OPERATION_REQUEST = 'request';
 
     /**
      * @var string
      */
-    public const OPERATION_DELIVER = 'deliver';
+    final public const OPERATION_DELIVER = 'deliver';
 
     /**
      * @var string
      */
-    public const OPERATION_CANCEL = 'cancel';
+    final public const OPERATION_CANCEL = 'cancel';
 
     /**
      * @var string
      */
-    public const OPERATION_RETURN = 'return';
+    final public const OPERATION_RETURN = 'return';
 
     /**
      * @var string
      */
-    public const OPERATION_ADD = 'add';
+    final public const OPERATION_ADD = 'add';
 
     /**
      * @var string
      */
-    public const ITEM_ID_SHIPPING = 'shipping';
-
-    protected OrderEntity $order;
-
-    /**
-     * @var array<int, string>|null
-     */
-    protected ?array $items;
+    final public const ITEM_ID_SHIPPING = 'shipping';
 
     protected ?OrderTransactionEntity $transaction;
 
-    protected string $operation;
-
     protected bool $updateStock;
 
-    public function __construct(Context $context, OrderEntity $order, string $operation, ?array $items = null, bool $updateStock = true)
-    {
+    public function __construct(
+        Context $context,
+        protected readonly OrderEntity $order,
+        protected readonly string $operation,
+        protected ?array $items = null,
+        bool $updateStock = true
+    ) {
         parent::__construct($context);
-        $this->order = $order;
         $this->transaction = $order->getTransactions() instanceof OrderTransactionCollection ? $order->getTransactions()->last() : null;
-        $this->items = $items;
-        $this->operation = $operation;
         $this->updateStock = $items === null ? false : $updateStock;
     }
 
@@ -157,15 +150,11 @@ class OrderOperationData extends AbstractRequestData implements OperationDataWit
     private function getMaxQuantityForOperation(RatepayPositionEntity $position, int $ordered): int
     {
         $maxValues = LineItemUtil::addMaxActionValues($position, $ordered);
-        switch ($this->operation) {
-            case self::OPERATION_DELIVER:
-                return $maxValues['maxDelivery'];
-            case self::OPERATION_CANCEL:
-                return $maxValues['maxCancel'];
-            case self::OPERATION_RETURN:
-                return $maxValues['maxReturn'];
-            default:
-                throw new RuntimeException('the operation ' . $this->operation . '` is not supported for automatic delivery');
-        }
+        return match ($this->operation) {
+            self::OPERATION_DELIVER => $maxValues['maxDelivery'],
+            self::OPERATION_CANCEL => $maxValues['maxCancel'],
+            self::OPERATION_RETURN => $maxValues['maxReturn'],
+            default => throw new RuntimeException('the operation ' . $this->operation . '` is not supported for automatic delivery'),
+        };
     }
 }

@@ -21,24 +21,12 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class PaymentUpdateRequestBagValidatedEvent extends Event implements ShopwareEvent
 {
-    private OrderEntity $orderEntity;
-
-    private RequestDataBag $requestDataBag;
-
-    private SalesChannelContext $salesChannelContext;
-
-    private AbstractPaymentHandler $paymentHandler;
-
     public function __construct(
-        OrderEntity $orderEntity,
-        AbstractPaymentHandler $paymentHandler,
-        RequestDataBag $requestDataBag,
-        SalesChannelContext $salesChannelContext
+        private readonly OrderEntity $orderEntity,
+        private readonly AbstractPaymentHandler $paymentHandler,
+        private readonly RequestDataBag $requestDataBag,
+        private readonly SalesChannelContext $salesChannelContext
     ) {
-        $this->orderEntity = $orderEntity;
-        $this->paymentHandler = $paymentHandler;
-        $this->requestDataBag = $requestDataBag;
-        $this->salesChannelContext = $salesChannelContext;
     }
 
     public function getOrderEntity(): OrderEntity

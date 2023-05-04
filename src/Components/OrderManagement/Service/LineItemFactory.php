@@ -26,22 +26,13 @@ use Shopware\Core\Framework\Uuid\Uuid;
 
 class LineItemFactory
 {
-    private OrderConverter $orderConverter;
-
-    private Calculator $calculator;
-
     public function __construct(
-        OrderConverter $orderConverter,
-        Calculator $calculator
+        private readonly OrderConverter $orderConverter,
+        private readonly Calculator $calculator
     ) {
-        $this->orderConverter = $orderConverter;
-        $this->calculator = $calculator;
     }
 
-    /**
-     * @param float|string $taxRuleIdOrTaxRate
-     */
-    public function createLineItem(OrderEntity $orderEntity, string $label, float $grossAmount, $taxRuleIdOrTaxRate, Context $context): LineItem
+    public function createLineItem(OrderEntity $orderEntity, string $label, float $grossAmount, float|string $taxRuleIdOrTaxRate, Context $context): LineItem
     {
         $salesChannelContext = $this->orderConverter->assembleSalesChannelContext($orderEntity, $context);
 

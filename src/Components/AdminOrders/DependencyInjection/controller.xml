@@ -18,6 +18,7 @@
 
         <service id="Ratepay\RpayPayments\Components\AdminOrders\Controller\StorefrontController" >
             <argument key="$sessionKey">%ratepay.admin.storefront-login.token%</argument>
+            <argument key="$translator" type="service" id="Shopware\Core\Framework\Adapter\Translation\Translator"/>
             <call method="setContainer">
                 <argument id="service_container" type="service"/>
             </call>

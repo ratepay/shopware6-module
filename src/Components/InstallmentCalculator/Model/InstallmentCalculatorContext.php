@@ -21,21 +21,14 @@ class InstallmentCalculatorContext
     /**
      * @var string
      */
-    public const CALCULATION_TYPE_TIME = 'time';
+    final public const CALCULATION_TYPE_TIME = 'time';
 
     /**
      * @var string
      */
-    public const CALCULATION_TYPE_RATE = 'rate';
+    final public const CALCULATION_TYPE_RATE = 'rate';
 
-    private SalesChannelContext $salesChannelContext;
-
-    private string $calculationType;
-
-    /**
-     * @var int|float|null
-     */
-    private $calculationValue;
+    private float|int|null $calculationValue = null;
 
     private ?float $totalAmount = null;
 
@@ -54,17 +47,11 @@ class InstallmentCalculatorContext
 
     private ?CountryEntity $billingCountry = null;
 
-    /**
-     * @param int|float|null $calculationValue
-     */
     public function __construct(
-        SalesChannelContext $salesChannelContext,
-        string $calculationType,
-        $calculationValue = null
+        private SalesChannelContext $salesChannelContext,
+        private string $calculationType,
+        string|float|int|null $calculationValue = null
     ) {
-        $this->salesChannelContext = $salesChannelContext;
-        $this->calculationType = $calculationType;
-
         if ($this->calculationType === self::CALCULATION_TYPE_RATE) {
             $this->calculationValue = (float) $calculationValue;
         } elseif ($this->calculationType === self::CALCULATION_TYPE_TIME) {
@@ -94,18 +81,12 @@ class InstallmentCalculatorContext
         return $this;
     }
 
-    /**
-     * @return float|int
-     */
-    public function getCalculationValue()
+    public function getCalculationValue(): float|int
     {
         return $this->calculationValue ?? 1;
     }
 
-    /**
-     * @param float|int|null $calculationValue
-     */
-    public function setCalculationValue($calculationValue): self
+    public function setCalculationValue(float|int|null $calculationValue): self
     {
         $this->calculationValue = $calculationValue;
         return $this;

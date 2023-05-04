@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\Logging\Subscriber;
 
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use RatePAY\Model\Response\PaymentRequest;
 use Ratepay\RpayPayments\Components\Logging\Service\ApiLogger;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
@@ -21,14 +21,10 @@ use Throwable;
 
 class RequestSubscriber implements EventSubscriberInterface
 {
-    protected ApiLogger $apiLogger;
-
-    private Logger $fileLogger;
-
-    public function __construct(ApiLogger $apiLogger, Logger $fileLogger)
-    {
-        $this->apiLogger = $apiLogger;
-        $this->fileLogger = $fileLogger;
+    public function __construct(
+        private readonly ApiLogger $apiLogger,
+        private readonly LoggerInterface $fileLogger
+    ) {
     }
 
     public static function getSubscribedEvents(): array
@@ -46,7 +42,7 @@ class RequestSubscriber implements EventSubscriberInterface
             $exception = $exception->getPrevious() ?? $exception;
             $message = $exception->getMessage();
         } elseif ($event->getResponse() instanceof PaymentRequest) {
-            $message = $event->getResponse()->getReasonMessage();
+            $message = (string) $event->getResponse()->getReasonMessage();
         }
 
         $this->fileLogger->error($message ?? 'Unknown error', [

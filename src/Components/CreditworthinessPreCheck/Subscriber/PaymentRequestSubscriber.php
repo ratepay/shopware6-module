@@ -22,11 +22,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentRequestSubscriber implements EventSubscriberInterface
 {
-    private TransactionIdService $transactionIdService;
-
-    public function __construct(TransactionIdService $transactionIdService)
-    {
-        $this->transactionIdService = $transactionIdService;
+    public function __construct(
+        private readonly TransactionIdService $transactionIdService
+    ) {
     }
 
     public static function getSubscribedEvents(): array

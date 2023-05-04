@@ -26,24 +26,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AccountSubscriber implements EventSubscriberInterface
 {
-    private PaymentQueryService $paymentQueryService;
-
-    private OrderConverter $orderConverter;
-
-    private TranslatorInterface $translator;
-
-    private ConfigService $configService;
-
     public function __construct(
-        TranslatorInterface $translator,
-        PaymentQueryService $paymentQueryService,
-        OrderConverter $orderConverter,
-        ConfigService $configService
+        private readonly TranslatorInterface $translator,
+        private readonly PaymentQueryService $paymentQueryService,
+        private readonly OrderConverter $orderConverter,
+        private readonly ConfigService $configService
     ) {
-        $this->translator = $translator;
-        $this->paymentQueryService = $paymentQueryService;
-        $this->orderConverter = $orderConverter;
-        $this->configService = $configService;
     }
 
     public static function getSubscribedEvents(): array

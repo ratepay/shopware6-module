@@ -20,18 +20,15 @@ use Throwable;
 
 class PaymentFailedEvent extends AbstractPaymentEvent
 {
-    private ?Throwable $exception;
-
     public function __construct(
         OrderEntity $order,
         SyncPaymentTransactionStruct $transaction,
         RequestDataBag $requestDataBag,
         SalesChannelContext $salesChannelContext,
         PaymentRequest $response = null,
-        Throwable $exception = null
+        private readonly ?Throwable $exception = null
     ) {
         parent::__construct($order, $transaction, $requestDataBag, $salesChannelContext, $response);
-        $this->exception = $exception;
     }
 
     public function getException(): ?Throwable

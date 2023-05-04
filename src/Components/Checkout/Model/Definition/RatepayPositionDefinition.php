@@ -25,7 +25,7 @@ class RatepayPositionDefinition extends EntityDefinition
     /**
      * @var string
      */
-    public const ENTITY_NAME = 'ratepay_position';
+    final public const ENTITY_NAME = 'ratepay_position';
 
     public function getEntityName(): string
     {

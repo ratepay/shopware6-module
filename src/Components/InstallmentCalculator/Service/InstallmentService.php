@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Service;
 
 use Exception;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use RatePAY\Exception\RequestException;
 use RatePAY\ModelBuilder;
 use Ratepay\RpayPayments\Components\Checkout\Event\RatepayPaymentFilterEvent;
@@ -43,65 +43,19 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class InstallmentService
 {
-    /**
-     * @deprecated
-     * @var string
-     */
-    public const CALCULATION_TYPE_TIME = InstallmentCalculatorContext::CALCULATION_TYPE_TIME;
-
-    /**
-     * @deprecated
-     * @var string
-     */
-    public const CALCULATION_TYPE_RATE = InstallmentCalculatorContext::CALCULATION_TYPE_RATE;
-
-    private CartService $cartService;
-
-    private EntityRepository $languageRepository;
-
-    private TransactionIdService $transactionIdService;
-
-    private EventDispatcherInterface $eventDispatcher;
-
-    /**
-     * @var EntityRepository
-     * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
-     * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
-     * After Shopware has removed the decorator, we can replace this by a normal definition
-     * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
-     */
-    private object $paymentMethodRepository;
-
-    private Logger $logger;
-
-    private ProfileSearchService $profileSearchService;
-
-    private ProfileByOrderEntity $profileByOrderEntity;
-
-    private ProfileBySalesChannelContext $profileBySalesChannelContext;
-
     private array $_translationCache = [];
 
     public function __construct(
-        CartService $cartService,
-        EntityRepository $languageRepository,
-        ProfileSearchService $profileSearchService,
-        ProfileByOrderEntity $profileByOrderEntity,
-        ProfileBySalesChannelContext $profileBySalesChannelContext,
-        TransactionIdService $transactionIdService,
-        EventDispatcherInterface $eventDispatcher,
-        object $paymentMethodRepository,
-        Logger $logger
+        private readonly CartService $cartService,
+        private readonly EntityRepository $languageRepository,
+        private readonly ProfileSearchService $profileSearchService,
+        private readonly ProfileByOrderEntity $profileByOrderEntity,
+        private readonly ProfileBySalesChannelContext $profileBySalesChannelContext,
+        private readonly TransactionIdService $transactionIdService,
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly EntityRepository $paymentMethodRepository,
+        private readonly LoggerInterface $logger
     ) {
-        $this->cartService = $cartService;
-        $this->languageRepository = $languageRepository;
-        $this->transactionIdService = $transactionIdService;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->paymentMethodRepository = $paymentMethodRepository;
-        $this->logger = $logger;
-        $this->profileByOrderEntity = $profileByOrderEntity;
-        $this->profileBySalesChannelContext = $profileBySalesChannelContext;
-        $this->profileSearchService = $profileSearchService;
     }
 
     public function getInstallmentPlanData(InstallmentCalculatorContext $context): array
@@ -180,7 +134,7 @@ class InstallmentService
         $data['rp_allowedMonths'] = array_unique($data['rp_allowedMonths']);
         sort($data['rp_allowedMonths']);
 
-        $data['defaults']['type'] = self::CALCULATION_TYPE_TIME;
+        $data['defaults']['type'] = InstallmentCalculatorContext::CALCULATION_TYPE_TIME;
         $data['defaults']['value'] = $data['rp_allowedMonths'][0];
 
         return $data;
@@ -263,7 +217,7 @@ class InstallmentService
                 $salesChannelContext->getContext()
             )->first();
 
-            $languageCode = strtoupper(explode('-', $language->getLocale()->getCode())[0]);
+            $languageCode = strtoupper(explode('-', (string) $language->getLocale()->getCode())[0]);
             $translations = (new LanguageService($languageCode))->getArray();
 
             $this->_translationCache[$langId] = $translations;
@@ -341,7 +295,7 @@ class InstallmentService
                 continue;
             }
 
-            if (($context->getCalculationType() === self::CALCULATION_TYPE_TIME) && !in_array((int) $context->getCalculationValue(), $paymentMethodConfig->getInstallmentConfig()->getAllowedMonths(), true)) {
+            if (($context->getCalculationType() === InstallmentCalculatorContext::CALCULATION_TYPE_TIME) && !in_array((int) $context->getCalculationValue(), $paymentMethodConfig->getInstallmentConfig()->getAllowedMonths(), true)) {
                 // filter the zero percent installment configs for the allowed months
                 continue;
             }

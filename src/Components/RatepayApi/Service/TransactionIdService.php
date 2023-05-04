@@ -31,27 +31,18 @@ class TransactionIdService
     /**
      * @var string
      */
-    public const PREFIX_CART = 'cart-';
+    final public const PREFIX_CART = 'cart-';
 
     /**
      * @var string
      */
-    public const PREFIX_ORDER = 'order-';
-
-    private EntityRepository $transactionIdRepository;
-
-    private PaymentInitService $paymentInitService;
-
-    private EntityRepository $profileRepository;
+    final public const PREFIX_ORDER = 'order-';
 
     public function __construct(
-        EntityRepository $transactionIdRepository,
-        EntityRepository $profileRepository,
-        PaymentInitService $paymentInitService
+        private readonly EntityRepository $transactionIdRepository,
+        private readonly EntityRepository $profileRepository,
+        private readonly PaymentInitService $paymentInitService
     ) {
-        $this->transactionIdRepository = $transactionIdRepository;
-        $this->paymentInitService = $paymentInitService;
-        $this->profileRepository = $profileRepository;
     }
 
     public function getStoredTransactionId(SalesChannelContext $salesChannelContext, string $prefix = ''): ?TransactionIdEntity
@@ -64,7 +55,7 @@ class TransactionIdService
      * @throws ProfileNotFoundException
      * @throws TransactionIdFetchFailedException
      */
-    public function getTransactionId(SalesChannelContext $salesChannelContext, string $prefix = '', $profileConfigId = null): string
+    public function getTransactionId(SalesChannelContext $salesChannelContext, string $prefix = '', ProfileConfigEntity|null|string $profileConfigId = null): string
     {
         if ($profileConfigId instanceof ProfileConfigEntity) {
             $profileConfig = $profileConfigId;

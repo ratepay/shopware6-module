@@ -21,72 +21,72 @@ class ApiRequestLogEntity extends Entity
     /**
      * @var string
      */
-    public const FIELD_ID = 'id';
+    final public const FIELD_ID = 'id';
 
     /**
      * @var string
      */
-    public const FIELD_VERSION = 'version';
+    final public const FIELD_VERSION = 'version';
 
     /**
      * @var string
      */
-    public const FIELD_OPERATION = 'operation';
+    final public const FIELD_OPERATION = 'operation';
 
     /**
      * @var string
      */
-    public const FIELD_SUB_OPERATION = 'subOperation';
+    final public const FIELD_SUB_OPERATION = 'subOperation';
 
     /**
      * @var string
      */
-    public const FIELD_RESULT_CODE = 'resultCode';
+    final public const FIELD_RESULT_CODE = 'resultCode';
 
     /**
      * @var string
      */
-    public const FIELD_RESULT_TEXT = 'resultText';
+    final public const FIELD_RESULT_TEXT = 'resultText';
 
     /**
      * @var string
      */
-    public const FIELD_STATUS_CODE = 'statusCode';
+    final public const FIELD_STATUS_CODE = 'statusCode';
 
     /**
      * @var string
      */
-    public const FIELD_STATUS_TEXT = 'statusText';
+    final public const FIELD_STATUS_TEXT = 'statusText';
 
     /**
      * @var string
      */
-    public const FIELD_REASON_CODE = 'reasonCode';
+    final public const FIELD_REASON_CODE = 'reasonCode';
 
     /**
      * @var string
      */
-    public const FIELD_REASON_TEXT = 'reasonText';
+    final public const FIELD_REASON_TEXT = 'reasonText';
 
     /**
      * @var string
      */
-    public const FIELD_REQUEST = 'request';
+    final public const FIELD_REQUEST = 'request';
 
     /**
      * @var string
      */
-    public const FIELD_RESPONSE = 'response';
+    final public const FIELD_RESPONSE = 'response';
 
     /**
      * @var string
      */
-    public const FIELD_ADDITIONAL_DATA = 'additionalData';
+    final public const FIELD_ADDITIONAL_DATA = 'additionalData';
 
     /**
      * @var string
      */
-    public const FIELD_CREATED_AT = 'createdAt';
+    final public const FIELD_CREATED_AT = 'createdAt';
 
     protected string $version;
 

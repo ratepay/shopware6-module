@@ -16,14 +16,10 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class BuildEvent extends Event
 {
-    private AbstractRequestData $requestData;
-
-    private ?object $buildData;
-
-    public function __construct(AbstractRequestData $requestData, ?object $buildData = null)
-    {
-        $this->requestData = $requestData;
-        $this->buildData = $buildData;
+    public function __construct(
+        private readonly AbstractRequestData $requestData,
+        private readonly ?object $buildData = null
+    ) {
     }
 
     public function getRequestData(): AbstractRequestData

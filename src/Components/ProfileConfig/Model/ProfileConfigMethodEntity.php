@@ -22,57 +22,57 @@ class ProfileConfigMethodEntity extends Entity
     /**
      * @var string
      */
-    public const FIELD_ID = 'id';
+    final public const FIELD_ID = 'id';
 
     /**
      * @var string
      */
-    public const FIELD_PROFILE = 'profile';
+    final public const FIELD_PROFILE = 'profile';
 
     /**
      * @var string
      */
-    public const FIELD_PROFILE_ID = 'profileId';
+    final public const FIELD_PROFILE_ID = 'profileId';
 
     /**
      * @var string
      */
-    public const FIELD_PAYMENT_METHOD = 'paymentMethod';
+    final public const FIELD_PAYMENT_METHOD = 'paymentMethod';
 
     /**
      * @var string
      */
-    public const FIELD_PAYMENT_METHOD_ID = 'paymentMethodId';
+    final public const FIELD_PAYMENT_METHOD_ID = 'paymentMethodId';
 
     /**
      * @var string
      */
-    public const FIELD_LIMIT_MIN = 'limitMin';
+    final public const FIELD_LIMIT_MIN = 'limitMin';
 
     /**
      * @var string
      */
-    public const FIELD_LIMIT_MAX = 'limitMax';
+    final public const FIELD_LIMIT_MAX = 'limitMax';
 
     /**
      * @var string
      */
-    public const FIELD_LIMIT_MAX_B2B = 'limitMaxB2b';
+    final public const FIELD_LIMIT_MAX_B2B = 'limitMaxB2b';
 
     /**
      * @var string
      */
-    public const FIELD_ALLOW_DIFFERENT_ADDRESSES = 'allowDifferentAddresses';
+    final public const FIELD_ALLOW_DIFFERENT_ADDRESSES = 'allowDifferentAddresses';
 
     /**
      * @var string
      */
-    public const FIELD_ALLOW_B2B = 'allowB2b';
+    final public const FIELD_ALLOW_B2B = 'allowB2b';
 
     /**
      * @var string
      */
-    public const FIELD_INSTALLMENT_CONFIG = 'installmentConfig';
+    final public const FIELD_INSTALLMENT_CONFIG = 'installmentConfig';
 
     protected ?PaymentMethodEntity $paymentMethod = null;
 

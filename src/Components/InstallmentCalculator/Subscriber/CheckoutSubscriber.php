@@ -21,16 +21,10 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutSubscriber implements EventSubscriberInterface
 {
-    private InstallmentService $installmentService;
-
-    private CartService $cartService;
-
     public function __construct(
-        InstallmentService $installmentService,
-        CartService $cartService
+        private readonly InstallmentService $installmentService,
+        private readonly CartService $cartService
     ) {
-        $this->installmentService = $installmentService;
-        $this->cartService = $cartService;
     }
 
     public static function getSubscribedEvents(): array

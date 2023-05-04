@@ -28,7 +28,7 @@ class RatepayOrderLineItemDataDefinition extends EntityDefinition
     /**
      * @var string
      */
-    public const ENTITY_NAME = 'ratepay_order_line_item_data';
+    final public const ENTITY_NAME = 'ratepay_order_line_item_data';
 
     public function getEntityName(): string
     {

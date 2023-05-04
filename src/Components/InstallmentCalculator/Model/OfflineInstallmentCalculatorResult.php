@@ -12,24 +12,12 @@ namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Model;
 
 class OfflineInstallmentCalculatorResult
 {
-    private InstallmentBuilder $builder;
-
-    private InstallmentCalculatorContext $context;
-
-    private float $monthCount;
-
-    private float $monthlyRate;
-
     public function __construct(
-        InstallmentCalculatorContext $context,
-        InstallmentBuilder $builder,
-        float $monthCount,
-        float $monthlyRate
+        private readonly InstallmentCalculatorContext $context,
+        private readonly InstallmentBuilder $builder,
+        private readonly float $monthCount,
+        private readonly float $monthlyRate
     ) {
-        $this->context = $context;
-        $this->builder = $builder;
-        $this->monthCount = $monthCount;
-        $this->monthlyRate = $monthlyRate;
     }
 
     public function getContext(): InstallmentCalculatorContext

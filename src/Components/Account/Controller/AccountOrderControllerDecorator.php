@@ -30,20 +30,11 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class AccountOrderControllerDecorator
 {
-    private AccountOrderController $innerService;
-
-    private EntityRepository $orderRepository;
-
-    private RouterInterface $router;
-
     public function __construct(
-        AccountOrderController $innerService,
-        EntityRepository $orderRepository,
-        RouterInterface $router
+        private readonly AccountOrderController $innerService,
+        private readonly EntityRepository $orderRepository,
+        private readonly RouterInterface $router
     ) {
-        $this->innerService = $innerService;
-        $this->orderRepository = $orderRepository;
-        $this->router = $router;
     }
 
     public function updateOrder(string $orderId, Request $request, SalesChannelContext $context): Response

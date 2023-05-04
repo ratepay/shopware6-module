@@ -28,16 +28,10 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class InstallmentRoute
 {
-    private InstallmentService $installmentService;
-
-    private EntityRepository $orderRepository;
-
     public function __construct(
-        InstallmentService $installmentService,
-        EntityRepository $orderRepository
+        private readonly InstallmentService $installmentService,
+        private readonly EntityRepository $orderRepository
     ) {
-        $this->installmentService = $installmentService;
-        $this->orderRepository = $orderRepository;
     }
 
     /**
@@ -64,7 +58,7 @@ class InstallmentRoute
             $vars = $this->installmentService->getInstallmentPlanTwigVars($calcContext);
 
             return new InstallmentCalculationResponse($vars);
-        } catch (ProfileNotFoundException $profileNotFoundException) {
+        } catch (ProfileNotFoundException) {
             throw new ProfileNotFoundHttpException();
         }
     }

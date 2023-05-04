@@ -25,15 +25,10 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class DistinctValues extends AbstractController
 {
-    private Connection $connection;
-
-    private DefinitionInstanceRegistry $definitionRegistry;
-
-    public function __construct(Connection $connection, DefinitionInstanceRegistry $definitionRegistry)
-    {
-        $this->connection = $connection;
-
-        $this->definitionRegistry = $definitionRegistry;
+    public function __construct(
+        private readonly Connection $connection,
+        private readonly DefinitionInstanceRegistry $definitionRegistry
+    ) {
     }
 
     /**
@@ -77,7 +72,7 @@ class DistinctValues extends AbstractController
 
             $results[] = [
                 'name' => $field,
-                'options' => $qb->execute()->fetchFirstColumn(),
+                'options' => $qb->executeQuery()->fetchFirstColumn(),
             ];
         }
 

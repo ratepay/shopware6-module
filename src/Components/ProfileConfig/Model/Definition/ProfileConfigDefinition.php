@@ -32,7 +32,7 @@ class ProfileConfigDefinition extends EntityDefinition
     /**
      * @var string
      */
-    public const ENTITY_NAME = 'ratepay_profile_config';
+    final public const ENTITY_NAME = 'ratepay_profile_config';
 
     public function getEntityName(): string
     {

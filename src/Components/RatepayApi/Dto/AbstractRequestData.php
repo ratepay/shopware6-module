@@ -16,13 +16,11 @@ use Shopware\Core\Framework\Context;
 
 abstract class AbstractRequestData
 {
-    protected Context $context;
-
     protected ?ProfileConfigEntity $profileConfig = null;
 
-    public function __construct(Context $context)
-    {
-        $this->context = $context;
+    public function __construct(
+        private readonly Context $context
+    ) {
     }
 
     public function getContext(): Context

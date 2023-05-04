@@ -24,11 +24,9 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ProfileConfigController extends AbstractController
 {
-    private ProfileConfigManagement $profileManagement;
-
-    public function __construct(ProfileConfigManagement $profileManagement)
-    {
-        $this->profileManagement = $profileManagement;
+    public function __construct(
+        private readonly ProfileConfigManagement $profileManagement
+    ) {
     }
 
     /**

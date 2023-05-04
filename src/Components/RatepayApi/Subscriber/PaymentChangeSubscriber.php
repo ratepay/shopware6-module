@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\RatepayApi\Subscriber;
 
 use Exception;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
@@ -39,40 +39,16 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentChangeSubscriber implements EventSubscriberInterface
 {
-    private EntityRepository $productRepository;
-
-    private EntityRepository $orderRepository;
-
-    private Logger $logger;
-
-    private HistoryLogger $historyLogger;
-
-    private RecalculationService $recalculationService;
-
-    private EventDispatcherInterface $eventDispatcher;
-
-    private EntityRepository $ratepayPositionRepository;
-
-    private ExtensionService $extensionService;
-
     public function __construct(
-        EventDispatcherInterface $eventDispatcher,
-        EntityRepository $productRepository,
-        EntityRepository $orderRepository,
-        EntityRepository $ratepayPositionRepository,
-        ExtensionService $extensionService,
-        RecalculationService $recalculationService,
-        Logger $logger,
-        HistoryLogger $historyLogger
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly EntityRepository $productRepository,
+        private readonly EntityRepository $orderRepository,
+        private readonly EntityRepository $ratepayPositionRepository,
+        private readonly ExtensionService $extensionService,
+        private readonly RecalculationService $recalculationService,
+        private readonly LoggerInterface $logger,
+        private readonly HistoryLogger $historyLogger
     ) {
-        $this->eventDispatcher = $eventDispatcher;
-        $this->productRepository = $productRepository;
-        $this->orderRepository = $orderRepository;
-        $this->recalculationService = $recalculationService;
-        $this->logger = $logger;
-        $this->historyLogger = $historyLogger;
-        $this->ratepayPositionRepository = $ratepayPositionRepository;
-        $this->extensionService = $extensionService;
     }
 
     public static function getSubscribedEvents(): array

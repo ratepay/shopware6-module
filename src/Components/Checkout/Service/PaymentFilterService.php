@@ -27,20 +27,11 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class PaymentFilterService
 {
-    private EventDispatcherInterface $eventDispatcher;
-
-    private ProfileByOrderEntity $profileByOrderEntity;
-
-    private ProfileBySalesChannelContext $profileBySalesChannelContext;
-
     public function __construct(
-        EventDispatcherInterface $eventDispatcher,
-        ProfileByOrderEntity $profileByOrderEntity,
-        ProfileBySalesChannelContext $profileBySalesChannelContext
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly ProfileByOrderEntity $profileByOrderEntity,
+        private readonly ProfileBySalesChannelContext $profileBySalesChannelContext
     ) {
-        $this->eventDispatcher = $eventDispatcher;
-        $this->profileByOrderEntity = $profileByOrderEntity;
-        $this->profileBySalesChannelContext = $profileBySalesChannelContext;
     }
 
     public function filterPaymentMethods(PaymentMethodCollection $paymentMethodCollection, SalesChannelContext $salesChannelContext, OrderEntity $order = null): PaymentMethodCollection

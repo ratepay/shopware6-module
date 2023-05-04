@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\Logging\Service;
 
 use Exception;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\Logging\Model\ApiRequestLogEntity;
@@ -23,20 +23,11 @@ use SimpleXMLElement;
 
 class ApiLogger
 {
-    protected EntityRepository $logRepository;
-
-    protected Logger $logger;
-
-    private string $pluginVersion;
-
     public function __construct(
-        EntityRepository $logRepository,
-        Logger $logger,
-        string $pluginVersion
+        private readonly EntityRepository $logRepository,
+        private readonly LoggerInterface $logger,
+        private readonly string $pluginVersion
     ) {
-        $this->logRepository = $logRepository;
-        $this->logger = $logger;
-        $this->pluginVersion = $pluginVersion;
     }
 
     public function logRequest(RequestDoneEvent $requestDoneEvent): void

@@ -18,37 +18,19 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class PaymentRequestData extends OrderOperationData implements CheckoutOperationInterface
 {
-    private DataBag $requestDataBag;
-
-    private SalesChannelContext $salesChannelContext;
-
-    private ?string $ratepayTransactionId;
-
-    private bool $sendDiscountAsCartItem;
-
-    private bool $sendShippingCostsAsCartItem;
-
     public function __construct(
-        SalesChannelContext $salesChannelContext,
+        private readonly SalesChannelContext $salesChannelContext,
         OrderEntity $order,
         OrderTransactionEntity $transaction,
-        DataBag $requestDataBag,
-        string $ratepayTransactionId = null,
-        bool $sendDiscountAsCartItem = false,
-        bool $sendShippingCostsAsCartItem = false
+        private readonly DataBag $requestDataBag,
+        private ?string $ratepayTransactionId = null,
+        private readonly bool $sendDiscountAsCartItem = false,
+        private readonly bool $sendShippingCostsAsCartItem = false
     ) {
         parent::__construct($salesChannelContext->getContext(), $order, self::OPERATION_REQUEST, null, false);
         $this->transaction = $transaction;
-        $this->requestDataBag = $requestDataBag;
-        $this->salesChannelContext = $salesChannelContext;
-        $this->ratepayTransactionId = $ratepayTransactionId;
-        $this->sendDiscountAsCartItem = $sendDiscountAsCartItem;
-        $this->sendShippingCostsAsCartItem = $sendShippingCostsAsCartItem;
     }
 
-    /**
-     * @return array<int, string>
-     */
     public function getItems(): array
     {
         if ($this->items) {

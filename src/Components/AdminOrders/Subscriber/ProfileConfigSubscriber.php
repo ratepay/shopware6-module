@@ -19,14 +19,10 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class ProfileConfigSubscriber implements EventSubscriberInterface
 {
-    private RequestStack $requestStack;
-
-    private string $sessionKey;
-
-    public function __construct(RequestStack $requestStack, string $sessionKey)
-    {
-        $this->requestStack = $requestStack;
-        $this->sessionKey = $sessionKey;
+    public function __construct(
+        private readonly RequestStack $requestStack,
+        private readonly string $sessionKey
+    ) {
     }
 
     public static function getSubscribedEvents(): array

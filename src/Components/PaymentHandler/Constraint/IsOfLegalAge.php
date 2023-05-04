@@ -18,12 +18,12 @@ class IsOfLegalAge extends LessThanOrEqual
     /**
      * @var int
      */
-    public const LEGAL_AGE = 18;
+    final public const LEGAL_AGE = 18;
 
     /**
      * @var string
      */
-    public const TOO_YOUNG_ERROR_NAME = 'RP_AGE_TO_YOUNG';
+    final public const TOO_YOUNG_ERROR_NAME = 'RP_AGE_TO_YOUNG';
 
     /**
      * @var array<string, string>

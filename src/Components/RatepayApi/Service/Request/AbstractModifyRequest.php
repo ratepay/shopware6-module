@@ -34,23 +34,14 @@ abstract class AbstractModifyRequest extends AbstractRequest
 
     protected EntityRepository $orderRepository;
 
-    private ShoppingBasketFactory $shoppingBasketFactory;
-
-    private EntityRepository $profileConfigRepository;
-
-    private ExternalFactory $externalFactory;
-
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         HeadFactory $headFactory,
-        EntityRepository $profileConfigRepository,
-        ShoppingBasketFactory $shoppingBasketFactory,
-        ExternalFactory $externalFactory
+        private readonly EntityRepository $profileConfigRepository,
+        private readonly ShoppingBasketFactory $shoppingBasketFactory,
+        private readonly ExternalFactory $externalFactory
     ) {
         parent::__construct($eventDispatcher, $headFactory);
-        $this->shoppingBasketFactory = $shoppingBasketFactory;
-        $this->profileConfigRepository = $profileConfigRepository;
-        $this->externalFactory = $externalFactory;
     }
 
     protected function getProfileConfig(AbstractRequestData $requestData): ?ProfileConfigEntity

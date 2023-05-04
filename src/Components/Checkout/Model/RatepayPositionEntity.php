@@ -21,22 +21,22 @@ class RatepayPositionEntity extends Entity
     /**
      * @var string
      */
-    public const FIELD_ID = 'id';
+    final public const FIELD_ID = 'id';
 
     /**
      * @var string
      */
-    public const FIELD_CANCELED = 'canceled';
+    final public const FIELD_CANCELED = 'canceled';
 
     /**
      * @var string
      */
-    public const FIELD_RETURNED = 'returned';
+    final public const FIELD_RETURNED = 'returned';
 
     /**
      * @var string
      */
-    public const FIELD_DELIVERED = 'delivered';
+    final public const FIELD_DELIVERED = 'delivered';
 
     protected int $canceled = 0;
 

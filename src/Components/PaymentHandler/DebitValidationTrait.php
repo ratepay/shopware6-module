@@ -25,10 +25,9 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 trait DebitValidationTrait
 {
     /**
-     * @param OrderEntity|SalesChannelContext $baseData
      * @return array{bankData: DataValidationDefinition}
      */
-    public function getDebitConstraints(DataBag $requestDataBag, $baseData): array
+    public function getDebitConstraints(DataBag $requestDataBag, OrderEntity|SalesChannelContext $baseData): array
     {
         $bankData = new DataValidationDefinition();
         $bankData->add('accountHolder', new BankAccountHolderNotBlank(), new BankAccountHolderChoice(

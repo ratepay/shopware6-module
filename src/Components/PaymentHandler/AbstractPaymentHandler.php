@@ -48,34 +48,16 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
     /**
      * @var string
      */
-    public const ERROR_SNIPPET_VIOLATION_PREFIX = 'VIOLATION::';
-
-    private PaymentRequestService $paymentRequestService;
-
-    private EntityRepository $orderRepository;
-
-    private EventDispatcherInterface $eventDispatcher;
-
-    private ConfigService $configService;
-
-    private EntityRepository $profileRepository;
-
-    private RequestStack $requestStack;
+    final public const ERROR_SNIPPET_VIOLATION_PREFIX = 'VIOLATION::';
 
     public function __construct(
-        EntityRepository $orderRepository,
-        EntityRepository $profileRepository,
-        PaymentRequestService $paymentRequestService,
-        EventDispatcherInterface $eventDispatcher,
-        ConfigService $configService,
-        RequestStack $requestStack
+        private readonly EntityRepository $orderRepository,
+        private readonly EntityRepository $profileRepository,
+        private readonly PaymentRequestService $paymentRequestService,
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly ConfigService $configService,
+        private readonly RequestStack $requestStack
     ) {
-        $this->orderRepository = $orderRepository;
-        $this->paymentRequestService = $paymentRequestService;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->configService = $configService;
-        $this->profileRepository = $profileRepository;
-        $this->requestStack = $requestStack;
     }
 
     abstract public static function getRatepayPaymentMethodName(): string;
@@ -180,7 +162,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
             $birthday = $baseData->getOrderCustomer()->getCustomer()->getBirthday();
             $isCompany = !empty($baseData->getAddresses()->get($baseData->getBillingAddressId())->getCompany());
         } else {
-            throw new InvalidArgumentException('please provide a ' . SalesChannelContext::class . ' or an ' . OrderEntity::class . '. You provided a ' . get_class($baseData) . ' object');
+            throw new InvalidArgumentException('please provide a ' . SalesChannelContext::class . ' or an ' . OrderEntity::class . '. You provided a ' . $baseData::class . ' object');
         }
 
         if ($ratepayData->get('birthday') || (!$birthday instanceof DateTimeInterface && $isCompany === false)) {

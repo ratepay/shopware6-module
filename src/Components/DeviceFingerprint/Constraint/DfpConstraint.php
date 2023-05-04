@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\DeviceFingerprint\Constraint;
 
 use Ratepay\RpayPayments\Components\DeviceFingerprint\DfpServiceInterface;
-use RuntimeException;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\Validator\Constraint;
@@ -21,7 +20,7 @@ class DfpConstraint extends Constraint
     /**
      * @var string
      */
-    public const ERROR_CODE = 'd8afee2c-7ad7-44e2-aec8-3d8d6a2eadb9';
+    final public const ERROR_CODE = 'd8afee2c-7ad7-44e2-aec8-3d8d6a2eadb9';
 
     /**
      * @var string[]
@@ -30,29 +29,11 @@ class DfpConstraint extends Constraint
         self::ERROR_CODE => 'RP_INVALID_DFP',
     ];
 
-    private DfpServiceInterface $dfpService;
-
-    /**
-     * @var OrderEntity|SalesChannelContext
-     * @noinspection PhpDocFieldTypeMismatchInspection
-     */
-    private object $object;
-
-    /**
-     * @param SalesChannelContext|OrderEntity $object
-     * @noinspection PhpDocSignatureInspection
-     */
-    public function __construct(DfpServiceInterface $dfpService, object $object)
-    {
+    public function __construct(
+        private readonly DfpServiceInterface $dfpService,
+        private readonly OrderEntity|SalesChannelContext $object
+    ) {
         parent::__construct();
-        $this->dfpService = $dfpService;
-
-        /** @phpstan-ignore-next-line */
-        if (!$object instanceof SalesChannelContext && !$object instanceof OrderEntity) {
-            throw new RuntimeException('$object should be on of OrderEntity or SalesChannelContext');
-        }
-
-        $this->object = $object;
     }
 
     public function getDfpService(): DfpServiceInterface
@@ -60,10 +41,7 @@ class DfpConstraint extends Constraint
         return $this->dfpService;
     }
 
-    /**
-     * @return OrderEntity|SalesChannelContext
-     */
-    public function getObject(): object
+    public function getObject(): OrderEntity|SalesChannelContext
     {
         return $this->object;
     }

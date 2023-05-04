@@ -21,52 +21,52 @@ class ProfileConfigMethodInstallmentEntity extends Entity
     /**
      * @var string
      */
-    public const PAYMENT_TYPE_DIRECT_DEBIT = 'DIRECT-DEBIT';
+    final public const PAYMENT_TYPE_DIRECT_DEBIT = 'DIRECT-DEBIT';
 
     /**
      * @var string
      */
-    public const PAYMENT_TYPE_BANK_TRANSFER = 'BANK-TRANSFER';
+    final public const PAYMENT_TYPE_BANK_TRANSFER = 'BANK-TRANSFER';
 
     /**
      * @var string
      */
-    public const FIELD_ID = 'id';
+    final public const FIELD_ID = 'id';
 
     /**
      * @var string
      */
-    public const FIELD_ALLOWED_MONTHS = 'allowedMonths';
+    final public const FIELD_ALLOWED_MONTHS = 'allowedMonths';
 
     /**
      * @var string
      */
-    public const FIELD_IS_BANKTRANSFER_ALLOWED = 'isBankTransferAllowed';
+    final public const FIELD_IS_BANKTRANSFER_ALLOWED = 'isBankTransferAllowed';
 
     /**
      * @var string
      */
-    public const FIELD_IS_DEBIT_ALLOWED = 'isDebitAllowed';
+    final public const FIELD_IS_DEBIT_ALLOWED = 'isDebitAllowed';
 
     /**
      * @var string
      */
-    public const FIELD_RATE_MIN = 'rateMin';
+    final public const FIELD_RATE_MIN = 'rateMin';
 
     /**
      * @var string
      */
-    public const FIELD_DEFAULT_PAYMENT_TYPE = 'defaultPaymentType';
+    final public const FIELD_DEFAULT_PAYMENT_TYPE = 'defaultPaymentType';
 
     /**
      * @var string
      */
-    public const FIELD_DEFAULT_INTEREST_RATE = 'defaultInterestRate';
+    final public const FIELD_DEFAULT_INTEREST_RATE = 'defaultInterestRate';
 
     /**
      * @var string
      */
-    public const FIELD_SERVICE_CHARGE = 'serviceCharge';
+    final public const FIELD_SERVICE_CHARGE = 'serviceCharge';
 
     /**
      * @var int[]

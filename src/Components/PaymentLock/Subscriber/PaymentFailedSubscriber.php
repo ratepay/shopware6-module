@@ -23,13 +23,11 @@ class PaymentFailedSubscriber implements EventSubscriberInterface
     /**
      * @var int[]
      */
-    public const ERROR_CODES = [703, 720, 721];
+    final public const ERROR_CODES = [703, 720, 721];
 
-    private LockService $lockService;
-
-    public function __construct(LockService $lockService)
-    {
-        $this->lockService = $lockService;
+    public function __construct(
+        private readonly LockService $lockService
+    ) {
     }
 
     public static function getSubscribedEvents(): array

@@ -23,7 +23,7 @@ class InstallmentPaymentHandler extends AbstractPaymentHandler
     /**
      * @var string
      */
-    public const RATEPAY_METHOD = 'INSTALLMENT';
+    final public const RATEPAY_METHOD = 'INSTALLMENT';
 
     /**
      * @return DataValidationDefinition[]

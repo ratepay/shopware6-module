@@ -31,7 +31,7 @@ class RatepayAdminOrderTokenDefinition extends EntityDefinition
     /**
      * @var string
      */
-    public const ENTITY_NAME = 'ratepay_admin_order_token';
+    final public const ENTITY_NAME = 'ratepay_admin_order_token';
 
     public function getEntityName(): string
     {

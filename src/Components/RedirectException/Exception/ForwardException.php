@@ -15,20 +15,15 @@ use Exception;
 
 class ForwardException extends Exception
 {
-    private string $route;
-
-    private array $routeParams;
-
-    private array $queryParams;
-
     private ?string $customerMessage = null;
 
-    public function __construct(string $route, array $routeParams = [], array $query = [], Exception $exception = null)
-    {
+    public function __construct(
+        private readonly string $route,
+        private readonly array $routeParams = [],
+        private readonly array $queryParams = [],
+        Exception $exception = null
+    ) {
         parent::__construct('', 0, $exception);
-        $this->route = $route;
-        $this->routeParams = $routeParams;
-        $this->queryParams = $query;
     }
 
     public function getRoute(): string

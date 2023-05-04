@@ -24,11 +24,9 @@ use Symfony\Component\Validator\ConstraintViolationList;
 
 class CheckoutValidationSubscriber implements EventSubscriberInterface
 {
-    private RequestStack $requestStack;
-
-    public function __construct(RequestStack $requestStack)
-    {
-        $this->requestStack = $requestStack;
+    public function __construct(
+        private readonly RequestStack $requestStack
+    ) {
     }
 
     public static function getSubscribedEvents(): array
@@ -49,7 +47,7 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
         $context = $this->getContextFromRequest($request);
         $paymentHandlerIdentifier = $context->getPaymentMethod()->getHandlerIdentifier();
 
-        if (strpos($paymentHandlerIdentifier, 'RpayPayments') !== false) {
+        if (str_contains($paymentHandlerIdentifier, 'RpayPayments')) {
             $ratepayData = RequestHelper::getArray($request, 'ratepay');
             $billingMd5 = $ratepayData['validation']['billing_address_md5'] ?? null;
             $shippingMd5 = $ratepayData['validation']['shipping_address_md5'] ?? null;

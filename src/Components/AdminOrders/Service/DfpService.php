@@ -11,40 +11,36 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\AdminOrders\Service;
 
 use Ratepay\RpayPayments\Components\DeviceFingerprint\DfpServiceInterface;
+use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class DfpService implements DfpServiceInterface
 {
-    private DfpServiceInterface $decorated;
-
-    private string $sessionKey;
-
-    private RequestStack $requestStack;
-
-    public function __construct(DfpServiceInterface $decorated, RequestStack $requestStack, string $sessionKey)
-    {
-        $this->decorated = $decorated;
-        $this->requestStack = $requestStack;
-        $this->sessionKey = $sessionKey;
+    public function __construct(
+        private readonly DfpServiceInterface $decorated,
+        private readonly RequestStack $requestStack,
+        private readonly string $sessionKey
+    ) {
     }
 
-    public function generatedDfpId(Request $request, $baseData): ?string
+    public function generatedDfpId(Request $request, OrderEntity|SalesChannelContext $baseData): ?string
     {
         return $this->decorated->generatedDfpId($request, $baseData);
     }
 
-    public function getDfpSnippet(Request $request, $baseData): ?string
+    public function getDfpSnippet(Request $request, OrderEntity|SalesChannelContext $baseData): ?string
     {
         return $this->decorated->getDfpSnippet($request, $baseData);
     }
 
-    public function isDfpIdValid($baseData, string $dfpId = null): bool
+    public function isDfpIdValid(OrderEntity|SalesChannelContext $baseData, string $dfpId = null): bool
     {
         return $this->decorated->isDfpIdValid($baseData, $dfpId);
     }
 
-    public function isDfpRequired($object): bool
+    public function isDfpRequired(OrderEntity|SalesChannelContext $object): bool
     {
         $session = $this->requestStack->getMainRequest()->getSession();
         if ($session->get($this->sessionKey)) {
