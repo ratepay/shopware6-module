@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments;
 
-use Exception;
-use RatePAY\RequestBuilder;
 use Ratepay\RpayPayments\Bootstrap\AbstractBootstrap;
 use Ratepay\RpayPayments\Bootstrap\Database;
 use Ratepay\RpayPayments\Bootstrap\PaymentMethods;
@@ -26,7 +24,6 @@ use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
-use Shopware\Core\Kernel;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
@@ -113,18 +110,9 @@ class RpayPayments extends Plugin
         }
     }
 
-    public function boot(): void
+    public function executeComposerCommands(): bool
     {
-        parent::boot();
-        if (!class_exists(RequestBuilder::class)) {
-            $autoloaderPath = dirname(__DIR__) . '/vendor/autoload.php';
-            if (file_exists($autoloaderPath)) {
-                /** @noinspection PhpIncludeInspection */
-                require_once $autoloaderPath;
-            } else {
-                throw new Exception('Missing Ratepay dependencies! Please run `composer require ratepay/shopware6-module` in project directory');
-            }
-        }
+        return true;
     }
 
     public function build(ContainerBuilder $containerBuilder): void
