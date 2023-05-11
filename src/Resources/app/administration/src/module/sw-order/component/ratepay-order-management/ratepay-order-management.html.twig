@@ -137,7 +137,7 @@
             <sw-text-field :value="addDebit.data.name" v-model="addDebit.data.name"></sw-text-field>
             <label v-if="order.taxStatus == 'net'">{{ $t('ratepay.orderManagement.modal.addDebit.label.amountNet') }}</label>
             <label v-if="order.taxStatus == 'gross'">{{ $t('ratepay.orderManagement.modal.addDebit.label.amountGross') }}</label>
-            <sw-number-field class="rp-price-field" v-model="addDebit.data.amount"></sw-number-field>
+            <sw-number-field class="rp-price-field" v-model="addDebit.data.amount" min="0.01" allowEmpty="false"></sw-number-field>
             <label>{{ $t('ratepay.orderManagement.modal.addDebit.label.tax') }}</label>
             <sw-field type="select"
                       name="sw-field--product-taxId"
@@ -169,10 +169,10 @@
               @modal-close="onCloseCreditModal">
         <template>
             <label>{{ $t('ratepay.orderManagement.modal.addCredit.label.name') }}</label>
-            <sw-text-field :value="addCredit.data.name" v-model="addCredit.data.name"/>
+            <sw-text-field :value="addCredit.data.name" v-model="addCredit.data.name"></sw-text-field>
             <label v-if="order.taxStatus == 'net'">{{ $t('ratepay.orderManagement.modal.addCredit.label.amountNet') }}</label>
             <label v-if="order.taxStatus == 'gross'">{{ $t('ratepay.orderManagement.modal.addCredit.label.amountGross') }}</label>
-            <sw-number-field class="rp-price-field" v-model="addCredit.data.amount"/>
+            <sw-number-field class="rp-price-field" v-model="addCredit.data.amount" min="0.01" allowEmpty="false"></sw-number-field>
             <label>{{ $t('ratepay.orderManagement.modal.addCredit.label.tax') }}</label>
             <sw-field type="select"
                       name="sw-field--product-taxId"

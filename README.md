@@ -34,6 +34,10 @@
 
 ## Changelog
 
+### Unreleased
+
+* RATESWSX-270: fix fatal error if admin enter a debit/credit of zero
+
 ### Version 6.0.0 - Released on 2023-05-11
 
 * rebuilt assets for Shopware 6.5
