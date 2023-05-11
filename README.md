@@ -4,7 +4,7 @@
 | Module             | Ratepay Payment Plugin for Shopware 6             |
 |--------------------|---------------------------------------------------|
 | Author             | Interlutions GmbH                                 |
-| Shop Version       | `6.3.0.2 to 6.4.18.x`                             |
+| Shop Version       | `6.3.0.2 to 6.4.20.x`                             |
 | Link               | http://www.ratepay.com                            |
 | Mail               | integration@ratepay.com                           |
 | Full Documentation | https://ratepay.gitbook.io/shopware6/             |
@@ -34,11 +34,21 @@
 
 ## Changelog
 
-### Version 4.2.1 - Released 2023-02-02
+### Version 5.0.0 - Released on 2023-05-11
+
+* added Shopware 6.5 compatibility.
+
+**Please note:**
+This release-version is not installable in Shopware 6.5.
+It contains a few improvements, which are also required for Shopware 6.5.
+This release will likely be the last release for Shopware versions below 6.5.
+If you want to upgrade to Shopware 6.5 you have to use the Plugin version 6.0.0.
+
+### Version 4.2.1 - Released on 2023-02-02
 
 * RATESWSX-261 - fixed: reloading profile-config (compatibility > 6.4.14.0)
 
-### Version 4.2.0 - Released 2022-07-21
+### Version 4.2.0 - Released on 2022-07-21
 
 * RATESWSX-249 - fixed: remove usage of deprecated EntityRepositoryInterface
 * RATESWSX-248 - fixed: phonenumber can not be changed if the phone number got an initial validation error
