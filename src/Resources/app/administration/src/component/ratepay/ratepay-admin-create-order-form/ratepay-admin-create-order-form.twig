@@ -12,7 +12,7 @@
         <option v-for="salesChannel in salesChannels"
                 :value="salesChannel.id"
                 :selected="salesChannel.id === selectedSalesChannelId">
-            {{ salesChannel.name }}
+            {{ salesChannel.translated.name }}
         </option>
     </sw-select-field>
 
