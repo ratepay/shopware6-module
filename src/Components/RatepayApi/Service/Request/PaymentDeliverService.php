@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 
 use RatePAY\Model\Request\SubModel\Content;
+use RatePAY\Model\Request\SubModel\Content\Invoicing;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\ExternalFactory;
@@ -68,7 +69,7 @@ class PaymentDeliverService extends AbstractModifyRequest
     {
         /** @var OrderOperationData $requestData */
         $content = parent::getRequestContent($requestData);
-        if (($invoicing = $this->invoiceFactory->getData($requestData)) !== null) {
+        if (($invoicing = $this->invoiceFactory->getData($requestData)) instanceof Invoicing) {
             $content->setInvoicing($invoicing);
         }
 
