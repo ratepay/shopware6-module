@@ -112,7 +112,7 @@ class InstallmentService
         $installmentBuilders = $this->getInstallmentBuilders($context);
 
         if ($installmentBuilders === []) {
-            throw new Exception('No installment builder where found');
+            throw new Exception('No installment builder was found');
         }
 
         $data = [];
@@ -145,7 +145,7 @@ class InstallmentService
         $installmentBuilders = $this->getInstallmentBuilders($context);
 
         if ($installmentBuilders === []) {
-            throw new Exception('No installment builder where found');
+            throw new Exception('No installment builder was found');
         }
 
         /** @var array{0: InstallmentBuilder, 1: int|float}|array{} $amountBuilders */
