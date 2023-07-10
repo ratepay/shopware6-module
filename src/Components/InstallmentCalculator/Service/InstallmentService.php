@@ -11,11 +11,12 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Service;
 
-use Exception;
+use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use RatePAY\Exception\RequestException;
 use RatePAY\ModelBuilder;
 use Ratepay\RpayPayments\Components\Checkout\Event\RatepayPaymentFilterEvent;
+use Ratepay\RpayPayments\Components\InstallmentCalculator\Exception\InstallmentCalculationException;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentBuilder;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentCalculatorContext;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\OfflineInstallmentCalculatorResult;
@@ -30,12 +31,13 @@ use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileBySalesC
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileSearchService;
 use Ratepay\RpayPayments\Components\RatepayApi\Exception\TransactionIdFetchFailedException;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService;
+use Ratepay\RpayPayments\Util\MethodHelper;
 use Ratepay\RpayPayments\Util\PaymentFirstday;
 use RatePAY\Service\LanguageService;
 use RatePAY\Service\OfflineInstallmentCalculation;
-use RuntimeException;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -100,11 +102,11 @@ class InstallmentService
                     'profile_id' => $matchedBuilder->getProfileConfig()->getProfileId(),
                 ]);
 
-                throw $requestException;
+                throw new InstallmentCalculationException($requestException->getMessage(), [], $requestException);
             }
         }
 
-        throw new RuntimeException('We were not able to calculate the installment rate.');
+        throw new InstallmentCalculationException();
     }
 
     public function getInstallmentCalculatorData(InstallmentCalculatorContext $context): array
@@ -112,7 +114,7 @@ class InstallmentService
         $installmentBuilders = $this->getInstallmentBuilders($context);
 
         if ($installmentBuilders === []) {
-            throw new Exception('No installment builder was found');
+            throw new InstallmentCalculationException('Please verify if the payment method is available.');
         }
 
         $data = [];
@@ -145,7 +147,7 @@ class InstallmentService
         $installmentBuilders = $this->getInstallmentBuilders($context);
 
         if ($installmentBuilders === []) {
-            throw new Exception('No installment builder was found');
+            throw new InstallmentCalculationException('Please verify if the payment method is available.');
         }
 
         /** @var array{0: InstallmentBuilder, 1: int|float}|array{} $amountBuilders */
@@ -255,7 +257,7 @@ class InstallmentService
     protected function getInstallmentBuilders(InstallmentCalculatorContext $context): array
     {
         if (!$context->getPaymentMethodId()) {
-            throw new RuntimeException('please set payment method');
+            throw new InvalidArgumentException('please set payment method');
         }
 
         $salesChannelContext = $context->getSalesChannelContext();
@@ -276,9 +278,10 @@ class InstallmentService
         }
 
         // load payment method for RatepayPaymentFilterEvent
+        /** @var PaymentMethodEntity|null $paymentMethod */
         $paymentMethod = $this->paymentMethodRepository->search(new Criteria([$context->getPaymentMethodId()]), $shopwareContext)->first();
-        if (!$paymentMethod) {
-            throw new RuntimeException('Payment method ' . $context->getPaymentMethodId() . ' does not exist');
+        if (!$paymentMethod || !MethodHelper::isInstallmentMethod($paymentMethod->getHandlerIdentifier())) {
+            throw new InstallmentCalculationException('Please check if the payment method does exist and is a Ratepay installment method.');
         }
 
         $installmentBuilders = [];
