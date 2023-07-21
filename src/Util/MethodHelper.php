@@ -16,6 +16,7 @@ use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\InvoicePaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\PrepaymentPaymentHandler;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 
 class MethodHelper
@@ -36,7 +37,10 @@ class MethodHelper
      */
     public static function isRatepayOrder(OrderEntity $order): bool
     {
-        $transaction = $order->getTransactions()->last();
+        $transactions = $order->getTransactions();
+        $transactions->sort(static fn (OrderTransactionEntity $a, OrderTransactionEntity $b): int => $a->getCreatedAt()->getTimestamp() <=> $b->getCreatedAt()->getTimestamp());
+
+        $transaction = $transactions->last();
 
         return $transaction &&
             $transaction->getPaymentMethod() &&

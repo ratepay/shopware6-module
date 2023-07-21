@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\Account\Controller;
 
+use Exception;
 use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Util\MethodHelper;
@@ -33,7 +34,8 @@ class AccountOrderControllerDecorator
     public function __construct(
         private readonly AccountOrderController $innerService,
         private readonly EntityRepository $orderRepository,
-        private readonly RouterInterface $router
+        private readonly RouterInterface $router,
+        private readonly EntityRepository $ratepayDataRepository
     ) {
     }
 
@@ -44,20 +46,42 @@ class AccountOrderControllerDecorator
         $order = $this->orderRepository->search($orderCriteria, $context->getContext())->first();
         /** @var RatepayOrderDataEntity|null $ratepayData */
         $ratepayData = $order ? $order->getExtension(OrderExtension::EXTENSION_NAME) : null;
-        if ($ratepayData && MethodHelper::isRatepayOrder($order) && $ratepayData->isSuccessful()) {
-            // You can't change the payment if it is a ratepay order
-            return new RedirectResponse($this->router->generate('frontend.account.edit-order.page', [
-                'orderId' => $orderId,
-            ]));
+        if ($ratepayData && MethodHelper::isRatepayOrder($order)) {
+            if ($ratepayData->isSuccessful()) {
+                // You can't change the payment if it is a sucessful ratepay order
+                return new RedirectResponse($this->router->generate('frontend.account.edit-order.page', [
+                    'orderId' => $orderId,
+                ]));
+            }
+
+            $this->addRatepayValidationErrors($request);
         }
 
-        $this->addRatepayValidationErrors($request);
-        return $this->innerService->updateOrder($orderId, $request, $context);
+        $return = $this->innerService->updateOrder($orderId, $request, $context);
+
+        // check again, if the order is now NOT a ratepay order.
+        // if the order has been failed, the customer can switch between the payment methods.
+        // after the updateOrder the payment method may not the same as before.
+        $order = $this->orderRepository->search($orderCriteria, $context->getContext())->first();
+        if ($ratepayData && !MethodHelper::isRatepayOrder($order)) {
+            try {
+                $event = $this->ratepayDataRepository->delete([[
+                    RatepayOrderDataEntity::FIELD_ID => $ratepayData->getId(),
+                ]], $context->getContext());
+            } catch (Exception) {
+                // catch any exception but not handle it.
+                // we won't break behaviour of third-party payment methods if deletion fails.
+                // it is not so bad if we keep the ratepay-data in the database.
+            }
+        }
+
+        return $return;
     }
 
     public function editOrder(string $orderId, Request $request, SalesChannelContext $context): Response
     {
         $this->addRatepayValidationErrors($request);
+
         return $this->innerService->editOrder($orderId, $request, $context);
     }
 

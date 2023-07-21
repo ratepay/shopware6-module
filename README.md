@@ -37,6 +37,7 @@
 ### Unreleased
 
 * RATESWSX-270: fix fatal error if admin enter a debit/credit of zero
+* RATESWSX-279: remove ratepay data for updated non-Ratepay-payment-method (e.g. if Ratepay-payment failed)
 
 ### Version 6.0.0 - Released on 2023-05-11
 

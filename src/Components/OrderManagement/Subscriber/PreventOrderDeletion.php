@@ -13,10 +13,12 @@ namespace Ratepay\RpayPayments\Components\OrderManagement\Subscriber;
 
 use Ratepay\RpayPayments\Components\Checkout\Model\Definition\RatepayOrderDataDefinition;
 use Ratepay\RpayPayments\Components\Checkout\Model\Definition\RatepayOrderLineItemDataDefinition;
+use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
 use Ratepay\RpayPayments\Components\OrderManagement\Exception\OrderLineItemDeleteRestrictionException;
 use Ratepay\RpayPayments\Components\OrderManagement\Exception\RatepayOrderDataDeleteRestrictionException;
 use Ratepay\RpayPayments\Components\OrderManagement\Exception\RatepayOrderLineItemsDataDeleteRestrictionException;
+use Ratepay\RpayPayments\Util\MethodHelper;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\BeforeDeleteEvent;
@@ -27,6 +29,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class PreventOrderDeletion implements EventSubscriberInterface
 {
     public function __construct(
+        private readonly EntityRepository $ratepayOrderDataRepository,
         private readonly EntityRepository $ratepayOrderLineItemDataRepository
     ) {
     }
@@ -46,12 +49,25 @@ class PreventOrderDeletion implements EventSubscriberInterface
 
     private function preventDeleteOrder(BeforeDeleteEvent $event): void
     {
+        // TODO maybe this can be removed in the future. Shopware has implemented FRAMEWORK__DELETE_RESTRICTED exception
+        // which rejects the delete if order got deleted and the ratepay data still exist.
+
         // we do not check if the order has a ratepay data, cause the deletion is already prevent by restriction
         // check of shopware.
         // in the past we did a validation if the order has a ratepay-data, but after using the BeforeDeleteEvent it is
         // not required/possible anymore to throw an exception before the restriction check has been executed
-        if ($event->getIds(RatepayOrderDataDefinition::ENTITY_NAME) !== []) {
-            throw new RatepayOrderDataDeleteRestrictionException();
+        $ids = $event->getIds(RatepayOrderDataDefinition::ENTITY_NAME);
+        if ($ids !== []) {
+            $criteria = new Criteria($ids);
+            $criteria->addAssociation('order.transactions');
+
+            $ratepayOrderDataList = $this->ratepayOrderDataRepository->search($criteria, $event->getContext());
+            /** @var RatepayOrderDataEntity $ratepayOrderData */
+            foreach ($ratepayOrderDataList->getElements() as $ratepayOrderData) {
+                if (MethodHelper::isRatepayOrder($ratepayOrderData->getOrder())) {
+                    throw new RatepayOrderDataDeleteRestrictionException();
+                }
+            }
         }
     }
 

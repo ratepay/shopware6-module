@@ -16,6 +16,7 @@
 
         <service id="Ratepay\RpayPayments\Components\OrderManagement\Subscriber\PreventOrderDeletion">
             <argument type="service" key="$ratepayOrderLineItemDataRepository" id="ratepay_order_line_item_data.repository" />
+            <argument type="service" key="$ratepayOrderDataRepository" id="ratepay_order_data.repository" />
             <tag name="kernel.event_subscriber"/>
         </service>
 
