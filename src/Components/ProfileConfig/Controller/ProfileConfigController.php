@@ -30,7 +30,7 @@ class ProfileConfigController extends AbstractController
     }
 
     /**
-     * @Route("/reload-config/", name="ratepay.profile.config.reload", methods={"POST"})
+     * @Route("/reload-config", name="ratepay.profile.config.reload", methods={"POST"})
      */
     public function reloadProfileConfiguration(Request $request): JsonResponse
     {

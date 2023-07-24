@@ -30,7 +30,7 @@ export default class ProfileConfigApiService extends ApiService {
      */
     reloadConfig(id) {
         return this.httpClient
-            .post(this.getApiBasePath() + '/reload-config/',
+            .post(this.getApiBasePath() + '/reload-config',
                 {
                     id: id
                 },
