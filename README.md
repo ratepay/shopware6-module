@@ -34,6 +34,10 @@
 
 ## Changelog
 
+### Unreleased
+
+* RATESWSX-279: remove ratepay data for updated non-Ratepay-payment-method (e.g. if Ratepay-payment failed)
+
 ### Version 5.0.0 - Released on 2023-05-11
 
 * added Shopware 6.5 compatibility.
