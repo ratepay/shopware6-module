@@ -7,8 +7,8 @@
 | Shop Version       | `6.3.0.2 to 6.5.x.x`                              |
 | Link               | http://www.ratepay.com                            |
 | Mail               | integration@ratepay.com                           |
-| Full Documentation | https://docs.ratepay.com/docs/developer/shop_modules/shopware/shopware_6/ratepay_payment_plugin_for_shopware_6/  |
-| Legal Disclaimer   | https://docs.ratepay.com/docs/developer/shop_modules/overview/ |
+| [Full Documentation ](https://docs.ratepay.com/docs/developer/shop_modules/shopware/shopware_6/ratepay_payment_plugin_for_shopware_6/)|
+| [Legal Disclaimer](https://docs.ratepay.com/docs/developer/shop_modules/overview/) | 
 
 ## Installation via Shopware Store
 
