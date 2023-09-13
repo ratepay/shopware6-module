@@ -38,7 +38,7 @@ class IsOfLegalAge extends LessThanOrEqual
      */
     protected static $errorNames = self::ERROR_NAMES;
 
-    public function __construct(mixed $options = null)
+    public function __construct($options = null)
     {
         $options ??= [];
         $options['value'] = sprintf('-%d years', self::LEGAL_AGE);
