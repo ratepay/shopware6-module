@@ -64,5 +64,11 @@
         ],
         "release": "shopware-cli extension zip . --disable-git --release",
         "build": "shopware-cli extension build ."
-    }
+    },
+	"require-dev": {
+		"phpstan/phpstan": "^1.10",
+		"phpunit/phpunit": "^9.6",
+		"rector/rector": "^0.17.7",
+		"symplify/easy-coding-standard": "^12.0"
+	}
 }
