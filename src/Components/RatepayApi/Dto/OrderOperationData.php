@@ -59,7 +59,7 @@ class OrderOperationData extends AbstractRequestData implements OperationDataWit
     protected OrderEntity $order;
 
     /**
-     * @var array<int, string>|null
+     * @var array<string, int>|null
      */
     protected ?array $items;
 
@@ -87,8 +87,8 @@ class OrderOperationData extends AbstractRequestData implements OperationDataWit
 
         $items = [];
         foreach ($this->order->getLineItems() as $lineItem) {
-            /** @var RatepayOrderLineItemDataEntity $extension */
-            if ($extension = $lineItem->getExtension(OrderLineItemExtension::EXTENSION_NAME)) {
+            $extension = $lineItem->getExtension(OrderLineItemExtension::EXTENSION_NAME);
+            if ($extension instanceof RatepayOrderLineItemDataEntity) {
                 $quantity = $this->getMaxQuantityForOperation($extension->getPosition(), $lineItem->getQuantity());
                 if ($quantity > 0) {
                     $items[$lineItem->getId()] = $quantity;

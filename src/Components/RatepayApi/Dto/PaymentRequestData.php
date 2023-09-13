@@ -47,7 +47,7 @@ class PaymentRequestData extends OrderOperationData implements CheckoutOperation
     }
 
     /**
-     * @return array<int, string>
+     * @return array<string, int>
      */
     public function getItems(): array
     {

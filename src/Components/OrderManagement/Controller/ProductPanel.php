@@ -83,8 +83,8 @@ class ProductPanel extends AbstractController
         if ($order instanceof OrderEntity) {
             $items = [];
             foreach ($order->getLineItems() as $lineItem) {
-                /** @var RatepayOrderLineItemDataEntity $extension */
-                if ($extension = $lineItem->getExtension(OrderLineItemExtension::EXTENSION_NAME)) {
+                $extension = $lineItem->getExtension(OrderLineItemExtension::EXTENSION_NAME);
+                if ($extension instanceof RatepayOrderLineItemDataEntity) {
                     $items[$lineItem->getId()] = [
                         'id' => $lineItem->getId(),
                         'name' => $lineItem->getLabel(),
@@ -199,7 +199,8 @@ class ProductPanel extends AbstractController
             if ($items === []) {
                 return $this->json([
                     'success' => false,
-                    'message' => 'Please provide at least on item', // todo translation - should we translate it?
+                    'message' => 'Please provide at least on item',
+                    // todo translation - should we translate it?
                 ], 200); // todo is this status OK ?
             }
 
