@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Dto;
 
+use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
@@ -102,7 +103,7 @@ class PaymentRequestData extends OrderOperationData implements CheckoutOperation
         return $this->getOrder()->getTransactions()->last()->getPaymentMethodId();
     }
 
-    public function getCustomer()
+    public function getCustomer(): CustomerEntity
     {
         return $this->getOrder()->getOrderCustomer()->getCustomer();
     }

@@ -16,6 +16,7 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->skip([
         \Rector\Php74\Rector\LNumber\AddLiteralSeparatorToNumberRector::class,
         \Rector\CodeQuality\Rector\Ternary\SwitchNegatedTernaryRector::class,
+        \Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector::class,
     ]);
 
     $rectorConfig->rule(InlineConstructorDefaultToPropertyRector::class);
