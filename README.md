@@ -8,7 +8,7 @@
 | Link               | http://www.ratepay.com                            |
 | Mail               | integration@ratepay.com                           |
 | Full Documentation | [click here](https://docs.ratepay.com/docs/developer/shop_modules/shopware/shopware_6/ratepay_payment_plugin_for_shopware_6/)|
-| Legal Disclaimer   | [click here](https://docs.ratepay.com/docs/developer/shop_modules/overview/)| 
+| Legal Disclaimer   | [click here](https://docs.ratepay.com/docs/developer/shop_modules/overview/)|
 
 ## Installation via Shopware Store
 
@@ -32,12 +32,27 @@
 2. Click Settings > System > Plugins the Ratepay Payment Extension is now listed in My Plugins
 3. Choose Installation and after this activate the module
 
+## Feature flags
+
+You can modify the module's behavior and activate or deactivate features by toggling feature flags.
+
+Enable the flags in the module configuration.
+
+Please utilize the feature flags judiciously, only if you are well-versed in their operation.
+
+Here is a list with the feature flags:
+
+| Flag-ID            | Description                                                                             |
+|--------------------|-----------------------------------------------------------------------------------------|
+
+
 ## Changelog
 
 ### Unreleased
 
 * RATESWSX-270: fix fatal error if admin enter a debit/credit of zero
 * RATESWSX-279: remove ratepay data for updated non-Ratepay-payment-method (e.g. if Ratepay-payment failed)
+* RATESWSX-80: add functionality of feature flags
 
 ### Version 6.0.0 - Released on 2023-05-11
 

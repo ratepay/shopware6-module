@@ -14,6 +14,7 @@ namespace Ratepay\RpayPayments;
 use Ratepay\RpayPayments\Bootstrap\AbstractBootstrap;
 use Ratepay\RpayPayments\Bootstrap\Database;
 use Ratepay\RpayPayments\Bootstrap\PaymentMethods;
+use Ratepay\RpayPayments\Components\FeatureFlags\Util\FeatureFlagService;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -24,6 +25,7 @@ use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
+use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
@@ -137,6 +139,13 @@ class RpayPayments extends Plugin
         }
 
         $containerBuilder->addCompilerPass(new PluginVersionCompilerPass(__DIR__ . '/../'));
+    }
+
+    public function boot(): void
+    {
+        parent::boot();
+
+        FeatureFlagService::loadFeatureFlags($this->container->get(SystemConfigService::class)->get('RpayPayments.config.featureFlags'));
     }
 
     /**

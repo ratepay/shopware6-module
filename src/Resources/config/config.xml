@@ -233,6 +233,14 @@
             <label>Send shipping costs as cart items</label>
             <label lang="de-DE">Übertrage Versandkosten als Warenkorbpositionen</label>
         </input-field>
+
+        <input-field type="textarea">
+            <name>featureFlags</name>
+            <label>Feature Flags</label>
+            <label lang="de-DE">Feature Flags</label>
+            <helpText>Have a look into the README.md file of the plugin for a list of all flags. Please use them with care.</helpText>
+            <helpText lang="de-DE">In der README.md Datei sind alle Feature-Flags aufgelistet. Diese Funktion sollte nur mit Vorsicht genutzt werden.</helpText>
+        </input-field>
     </card>
 
 </config>
