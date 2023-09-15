@@ -32,12 +32,27 @@
 2. Click Settings > System > Plugins the Ratepay Payment Extension is now listed in My Plugins
 3. Choose Installation and after this activate the module
 
+## Feature flags
+
+You can modify the module's behavior and activate or deactivate features by toggling feature flags.
+
+Enable the flags in the module configuration.
+
+Please utilize the feature flags judiciously, only if you are well-versed in their operation.
+
+Here is a list with the feature flags:
+
+| Flag-ID            | Description                                                                             |
+|--------------------|-----------------------------------------------------------------------------------------|
+
+
 ## Changelog
 
 ### Unreleased
 
 * RATESWSX-270: fix fatal error if admin enter a debit/credit of zero
 * RATESWSX-279: remove ratepay data for updated non-Ratepay-payment-method (e.g. if Ratepay-payment failed)
+* RATESWSX-280: add functionality of feature flags
 
 ### Version 6.0.0 - Released on 2023-05-11
 
