@@ -42,9 +42,9 @@ Please utilize the feature flags judiciously, only if you are well-versed in the
 
 Here is a list with the feature flags:
 
-| Flag-ID            | Description                                                                             |
-|--------------------|-----------------------------------------------------------------------------------------|
-
+| Flag-ID     | Description                                                                             |
+|-------------|-----------------------------------------------------------------------------------------|
+| FF-BLOCK-PR | if enabled, no payment queries got executed. instead a payment exception got simulated. |
 
 ## Changelog
 
