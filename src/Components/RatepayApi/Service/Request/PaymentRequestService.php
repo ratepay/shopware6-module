@@ -15,6 +15,7 @@ use Exception;
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
 use RatePAY\RequestBuilder;
+use Ratepay\RpayPayments\Components\FeatureFlags\Util\FeatureFlagService;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileByOrderEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileSearchService;
@@ -118,5 +119,10 @@ class PaymentRequestService extends AbstractRequest
     protected function supportsRequestData(AbstractRequestData $requestData): bool
     {
         return $requestData instanceof PaymentRequestData;
+    }
+
+    protected function isRequestBlockedByFeatureFlag(AbstractRequestData $requestData): bool
+    {
+        return FeatureFlagService::isFlagEnabled('FF-BLOCK-PR');
     }
 }

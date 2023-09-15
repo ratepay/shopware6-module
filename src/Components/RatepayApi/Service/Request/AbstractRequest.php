@@ -13,6 +13,7 @@ namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 
 use InvalidArgumentException;
 use RatePAY\Exception\ExceptionAbstract;
+use RatePAY\Exception\RequestException;
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
 use RatePAY\RequestBuilder;
@@ -116,6 +117,9 @@ abstract class AbstractRequest
         $content = $this->_getRequestContent($requestData);
 
         try {
+            if ($this->isRequestBlockedByFeatureFlag($requestData)) {
+                throw new RequestException('Request has been blocked by feature flag.');
+            }
             $requestBuilder = new RequestBuilder($requestData->getProfileConfig()->isSandbox());
             $requestBuilder = $requestBuilder->__call('call' . $this->_operation, $content instanceof Content ? [$head, $content] : [$head]);
             if ($this->_subType) {
@@ -190,5 +194,10 @@ abstract class AbstractRequest
         $event = $this->eventDispatcher->dispatch(new BuildEvent($requestData, $content), static::class . self::EVENT_BUILD_CONTENT);
 
         return $event->getBuildData();
+    }
+
+    protected function isRequestBlockedByFeatureFlag(AbstractRequestData $requestData): bool
+    {
+        return false;
     }
 }
