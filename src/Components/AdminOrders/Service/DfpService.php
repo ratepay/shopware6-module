@@ -27,17 +27,17 @@ class DfpService implements DfpServiceInterface
 
     public function generatedDfpId(Request $request, OrderEntity|SalesChannelContext $baseData): ?string
     {
-        return $this->decorated->generatedDfpId($request, $baseData);
+        return $this->isDfpRequired($baseData) ? $this->decorated->generatedDfpId($request, $baseData) : null;
     }
 
     public function getDfpSnippet(Request $request, OrderEntity|SalesChannelContext $baseData): ?string
     {
-        return $this->decorated->getDfpSnippet($request, $baseData);
+        return $this->isDfpRequired($baseData) ? $this->decorated->getDfpSnippet($request, $baseData) : null;
     }
 
     public function isDfpIdValid(OrderEntity|SalesChannelContext $baseData, string $dfpId = null): bool
     {
-        return $this->decorated->isDfpIdValid($baseData, $dfpId);
+        return !$this->isDfpRequired($baseData) || $this->decorated->isDfpIdValid($baseData, $dfpId);
     }
 
     public function isDfpRequired(OrderEntity|SalesChannelContext $object): bool
