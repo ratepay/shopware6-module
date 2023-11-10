@@ -50,6 +50,8 @@ Here is a list with the feature flags:
 
 ### Unreleased
 
+### Version 6.1.0 - Released on 2023-11-10
+
 * RATESWSX-270: fix fatal error if admin enter a debit/credit of zero
 * RATESWSX-279: remove ratepay data for updated non-Ratepay-payment-method (e.g. if Ratepay-payment failed)
 * RATESWSX-280: add functionality of feature flags
