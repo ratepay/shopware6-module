@@ -32,7 +32,7 @@ class InvoiceFactory extends AbstractFactory
         $order = $requestData->getOrder();
         $documents = $order->getDocuments()->filter(static fn (DocumentEntity $documentEntity): bool => $documentEntity->getDocumentType()->getTechnicalName() === 'invoice');
 
-        if ($invoice = $documents->first()) {
+        if (($invoice = $documents->first()) instanceof DocumentEntity) {
             $dateObject = $invoice->getCreatedAt();
             $currentDate = $dateObject->format('Y-m-d');
             $currentTime = $dateObject->format('H:i:s');

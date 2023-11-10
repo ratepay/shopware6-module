@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\ProfileConfig\Service\Search;
 
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Dto\ProfileConfigSearch;
 use Ratepay\RpayPayments\Components\ProfileConfig\Util\AddressUtil;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -29,7 +30,7 @@ class ProfileByOrderEntity implements ProfileSearchInterface
         $shippingAddress = $shippingAddressId ? $order->getAddresses()->get($shippingAddressId) : $billingAddress;
 
         return (new ProfileConfigSearch())
-            ->setPaymentMethodId(($transaction = $order->getTransactions()->last()) ? $transaction->getPaymentMethodId() : null)
+            ->setPaymentMethodId((($transaction = $order->getTransactions()->last()) instanceof OrderTransactionEntity) ? $transaction->getPaymentMethodId() : null)
             ->setBillingCountryCode($billingAddress->getCountry()->getIso())
             ->setShippingCountryCode($shippingAddress->getCountry()->getIso())
             ->setSalesChannelId($order->getSalesChannelId())

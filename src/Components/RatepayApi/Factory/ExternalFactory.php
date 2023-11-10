@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 
+use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;
 use RatePAY\Model\Request\SubModel\Head\External;
 use RatePAY\Model\Request\SubModel\Head\External\Tracking;
 use RatePAY\Model\Request\SubModel\Head\External\Tracking\Id;
@@ -41,7 +42,7 @@ class ExternalFactory extends AbstractFactory
 
         if ($requestData->getOperation() === OrderOperationData::OPERATION_DELIVER) {
             $delivery = $order->getDeliveries()->first();
-            if ($delivery) {
+            if ($delivery instanceof OrderDeliveryEntity) {
                 $tracking = new Tracking();
                 foreach ($delivery->getTrackingCodes() as $trackingCode) {
                     $id = new Id();

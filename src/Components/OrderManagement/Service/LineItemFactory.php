@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\OrderManagement\Service;
 
+use Shopware\Core\System\Tax\Aggregate\TaxRule\TaxRuleEntity;
 use Ratepay\RpayPayments\Components\OrderManagement\Exception\TaxRuleNotFoundException;
 use Shopware\Core\Checkout\Cart\Calculator;
 use Shopware\Core\Checkout\Cart\CartBehavior;
@@ -40,7 +41,7 @@ class LineItemFactory
             $taxRate = $taxRuleIdOrTaxRate;
         } else {
             $taxRule = $salesChannelContext->getTaxRules()->get($taxRuleIdOrTaxRate)->getRules()->first();
-            if ($taxRule === null) {
+            if (!$taxRule instanceof TaxRuleEntity) {
                 throw new TaxRuleNotFoundException();
             }
 

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Service;
 
+use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use RatePAY\Model\Response\PaymentInit;
 use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
@@ -63,7 +64,7 @@ class TransactionIdService
             $profileConfig = $this->profileRepository->search(new Criteria([$profileConfigId]), Context::createDefaultContext())->first();
         }
 
-        if ($profileConfig === null) {
+        if (!$profileConfig instanceof Entity) {
             throw new ProfileNotFoundException();
         }
 

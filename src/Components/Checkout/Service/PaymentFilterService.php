@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\Checkout\Service;
 
+use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Ratepay\RpayPayments\Components\Checkout\Event\RatepayPaymentFilterEvent;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\Collection\ProfileConfigMethodCollection;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
@@ -57,7 +58,7 @@ class PaymentFilterService
                 $searchService->createSearchObject($order ?? $salesChannelContext)->setPaymentMethodId($paymentMethod->getId())
             )->first();
 
-            if ($profileConfig === null) {
+            if (!$profileConfig instanceof Entity) {
                 // no profile config for this sales channel has been found
                 return false;
             }

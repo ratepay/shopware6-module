@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\PaymentHandler;
 
+use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use DateTimeInterface;
 use InvalidArgumentException;
 use RatePAY\Model\Response\PaymentRequest;
@@ -87,7 +88,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
 
             if ($ratepayData->has('profile_uuid')) {
                 $profile = $this->profileRepository->search(new Criteria([$ratepayData->get('profile_uuid')]), Context::createDefaultContext())->first();
-                if (!$profile) {
+                if (!$profile instanceof Entity) {
                     throw new ProfileNotFoundException();
                 }
 

@@ -120,6 +120,7 @@ abstract class AbstractRequest
             if ($this->isRequestBlockedByFeatureFlag($requestData)) {
                 throw new RequestException('Request has been blocked by feature flag.');
             }
+
             $requestBuilder = new RequestBuilder($requestData->getProfileConfig()->isSandbox());
             $requestBuilder = $requestBuilder->__call('call' . $this->_operation, $content instanceof Content ? [$head, $content] : [$head]);
             if ($this->_subType) {

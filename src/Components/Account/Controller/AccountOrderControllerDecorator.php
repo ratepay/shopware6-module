@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\Account\Controller;
 
+use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Exception;
 use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
@@ -45,7 +46,7 @@ class AccountOrderControllerDecorator
             ->addAssociation('transactions.paymentMethod');
         $order = $this->orderRepository->search($orderCriteria, $context->getContext())->first();
         /** @var RatepayOrderDataEntity|null $ratepayData */
-        $ratepayData = $order ? $order->getExtension(OrderExtension::EXTENSION_NAME) : null;
+        $ratepayData = $order instanceof Entity ? $order->getExtension(OrderExtension::EXTENSION_NAME) : null;
         if ($ratepayData && MethodHelper::isRatepayOrder($order)) {
             if ($ratepayData->isSuccessful()) {
                 // You can't change the payment if it is a sucessful ratepay order

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\Checkout\Service;
 
+use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use DateTime;
 use Ratepay\RpayPayments\Components\Checkout\Event\OrderExtensionDataBuilt;
 use Ratepay\RpayPayments\Components\Checkout\Event\PaymentDataExtensionBuilt;
@@ -148,7 +149,7 @@ class ExtensionService
             $searchService->createSearchObject($order ?? $salesChannelContext)->setPaymentMethodId($paymentMethod->getId())
         )->first();
 
-        if ($profileConfig === null) {
+        if (!$profileConfig instanceof Entity) {
             // should never occur
             throw new ProfileNotFoundException();
         }

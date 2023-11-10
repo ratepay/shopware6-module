@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 
+use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
 use BadMethodCallException;
 use InvalidArgumentException;
 use RatePAY\Model\Request\SubModel\Content\ShoppingBasket;
@@ -168,7 +169,7 @@ class ShoppingBasketFactory extends AbstractFactory
     {
         $tax = $calculatedPrice->getCalculatedTaxes()->first();
 
-        return $tax ? $tax->getTaxRate() : 0;
+        return $tax instanceof CalculatedTax ? $tax->getTaxRate() : 0;
     }
 
     private function getTaxStatus(OperationDataWithBasket $requestData): string
