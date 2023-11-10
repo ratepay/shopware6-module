@@ -7,6 +7,22 @@
             "ratepay_api_log": "Search in Ratepay API-Logs"
         }
     },
+    "sw-profile": {
+        "tabSearchPreferences": {
+            "modules": {
+                "ratepay_api_log": {
+                    "transactionId": "Transaction-ID",
+                    "descriptor": "Descriptor",
+                    "orderNumber": "Ordernumber",
+                    "firstname": "Firstname",
+                    "lastname": "Lastname",
+                    "mail": "Mail Address",
+                    "operation": "Operation",
+                    "response": "Response"
+                }
+            }
+        }
+    },
     "ratepay": {
         "apiLog": {
             "componentTitle": "Ratepay API-Logs",
