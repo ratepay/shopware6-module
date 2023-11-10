@@ -54,6 +54,7 @@ Here is a list with the feature flags:
 * RATESWSX-279: remove ratepay data for updated non-Ratepay-payment-method (e.g. if Ratepay-payment failed)
 * RATESWSX-280: add functionality of feature flags
 * RATESWSX-283: admin: add translation for user-profile search preferences
+* RATESWSX-289: dfp: prevent output of token for admin users
 
 ### Version 6.0.0 - Released on 2023-05-11
 
