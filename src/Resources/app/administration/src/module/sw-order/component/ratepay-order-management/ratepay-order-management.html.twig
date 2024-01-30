@@ -66,7 +66,7 @@
                     :key="loading.list">
 
                     <template #column-quantity slot-scope="{ item }">
-                        <sw-select-field v-if="item.position.maxDelivery > 0" v-model="item.processDeliveryCancel" value="0">
+                        <sw-select-field v-if="item.position.maxDelivery > 0" v-model:value="item.processDeliveryCancel" value="0">
                             <option value="0">0</option>
                             <option v-for="n in item.position.maxDelivery">{{ n }}</option>
                         </sw-select-field>
@@ -117,7 +117,7 @@
                     :key="loading.list"
                 >
                     <template #column-quantity slot-scope="{ item }">
-                        <sw-select-field v-if="item.position.maxReturn > 0" v-model="item.processReturn" value="0">
+                        <sw-select-field v-if="item.position.maxReturn > 0" v-model:value="item.processReturn" value="0">
                             <option value="0">0</option>
                             <option v-for="n in item.position.maxReturn">{{ n }}</option>
                         </sw-select-field>
@@ -134,16 +134,15 @@
               @modal-close="onCloseDebitModal">
         <template>
             <label>{{ $t('ratepay.orderManagement.modal.addDebit.label.name') }}</label>
-            <sw-text-field :value="addDebit.data.name" v-model="addDebit.data.name"></sw-text-field>
+            <sw-text-field v-model:value="addDebit.data.name"></sw-text-field>
             <label v-if="order.taxStatus == 'net'">{{ $t('ratepay.orderManagement.modal.addDebit.label.amountNet') }}</label>
             <label v-if="order.taxStatus == 'gross'">{{ $t('ratepay.orderManagement.modal.addDebit.label.amountGross') }}</label>
-            <sw-number-field class="rp-price-field" v-model="addDebit.data.amount" min="0.01" allowEmpty="false"></sw-number-field>
+            <sw-number-field class="rp-price-field" v-model:value="addDebit.data.amount" min="0.01" allowEmpty="false"></sw-number-field>
             <label>{{ $t('ratepay.orderManagement.modal.addDebit.label.tax') }}</label>
-            <sw-field type="select"
-                      name="sw-field--product-taxId"
+            <sw-select-field name="sw-field--product-taxId"
                       :placeholder="$tc('ratepay.orderManagement.modal.addDebit.placeholder.tax')"
                       validation="required"
-                      v-model="addDebit.data.taxId"
+                      v-model:value="addDebit.data.taxId"
                       @change="updateDebitTax">
                 <option v-for="tax in taxes"
                         :key="tax.id"
@@ -151,7 +150,7 @@
                         :selected="addDebit.data.taxId === tax.id">
                     {{ getTaxLabel(tax) }}
                 </option>
-            </sw-field>
+            </sw-select-field>
         </template>
         <template #modal-footer>
             <sw-button-process
@@ -169,16 +168,15 @@
               @modal-close="onCloseCreditModal">
         <template>
             <label>{{ $t('ratepay.orderManagement.modal.addCredit.label.name') }}</label>
-            <sw-text-field :value="addCredit.data.name" v-model="addCredit.data.name"></sw-text-field>
+            <sw-text-field v-model:value="addCredit.data.name"></sw-text-field>
             <label v-if="order.taxStatus == 'net'">{{ $t('ratepay.orderManagement.modal.addCredit.label.amountNet') }}</label>
             <label v-if="order.taxStatus == 'gross'">{{ $t('ratepay.orderManagement.modal.addCredit.label.amountGross') }}</label>
-            <sw-number-field class="rp-price-field" v-model="addCredit.data.amount" min="0.01" allowEmpty="false"></sw-number-field>
+            <sw-number-field class="rp-price-field" v-model:value="addCredit.data.amount" min="0.01" allowEmpty="false"></sw-number-field>
             <label>{{ $t('ratepay.orderManagement.modal.addCredit.label.tax') }}</label>
-            <sw-field type="select"
-                      name="sw-field--product-taxId"
+            <sw-select-field name="sw-field--product-taxId"
                       :placeholder="$tc('ratepay.orderManagement.modal.addCredit.placeholder.tax')"
                       validation="required"
-                      v-model="addCredit.data.taxId"
+                      v-model:value="addCredit.data.taxId"
                       @change="updateCreditTax">
                 <option v-for="tax in taxes"
                         :key="tax.id"
@@ -186,7 +184,7 @@
                         :selected="addDebit.data.taxId === tax.id">
                     {{ getTaxLabel(tax) }}
                 </option>
-            </sw-field>
+            </sw-select-field>
         </template>
         <template #modal-footer>
             <sw-button-process

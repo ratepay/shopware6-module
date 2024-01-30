@@ -5,7 +5,7 @@
   ~ file that was distributed with this source code.
 #}
 <div>
-    <sw-select-field v-model="selectedSalesChannelId"
+    <sw-select-field v-model:value="selectedSalesChannelId"
                      :label="$tc('ratepay.admin.create-order.modal.labels.salesChannel')"
                      @change="selectSalesChannel">
         <option>{{ $t('ratepay.admin.create-order.modal.please-select') }}</option>
@@ -17,7 +17,7 @@
     </sw-select-field>
 
 
-    <sw-select-field v-model="selectedSalesChannelDomainId"
+    <sw-select-field v-model:value="selectedSalesChannelDomainId"
                      :label="$tc('ratepay.admin.create-order.modal.labels.salesChannelDomain')"
                      v-if="selectedSalesChannelId">
         <option>{{ $t('ratepay.admin.create-order.modal.please-select') }}</option>
