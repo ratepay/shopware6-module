@@ -58,7 +58,7 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
         $context = $this->getContextFromRequest($request);
         $paymentHandlerIdentifier = $context->getPaymentMethod()->getHandlerIdentifier();
 
-        if (str_contains($paymentHandlerIdentifier, 'RpayPayments')) {
+        if (str_contains((string) $paymentHandlerIdentifier, 'RpayPayments')) {
             $ratepayData = RequestHelper::getArray($request, 'ratepay', []);
             // we must validate the data BEFORE we send the request to the gateway.
             // this is not the good way, but we do not have another possibility.

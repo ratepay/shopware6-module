@@ -164,6 +164,11 @@ abstract class AbstractRequest
     {
     }
 
+    protected function isRequestBlockedByFeatureFlag(AbstractRequestData $requestData): bool
+    {
+        return false;
+    }
+
     private function _getRequestHead(AbstractRequestData $requestData): Head
     {
         $head = $this->getRequestHead($requestData);
@@ -195,10 +200,5 @@ abstract class AbstractRequest
         $event = $this->eventDispatcher->dispatch(new BuildEvent($requestData, $content), static::class . self::EVENT_BUILD_CONTENT);
 
         return $event->getBuildData();
-    }
-
-    protected function isRequestBlockedByFeatureFlag(AbstractRequestData $requestData): bool
-    {
-        return false;
     }
 }

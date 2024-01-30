@@ -80,8 +80,8 @@ class ProductPanel extends AbstractController
         if ($order instanceof OrderEntity) {
             $items = [];
             foreach ($order->getLineItems() as $lineItem) {
-                /** @var RatepayOrderLineItemDataEntity $extension */
-                if ($extension = $lineItem->getExtension(OrderLineItemExtension::EXTENSION_NAME)) {
+                $extension = $lineItem->getExtension(OrderLineItemExtension::EXTENSION_NAME);
+                if ($extension instanceof RatepayOrderLineItemDataEntity) {
                     $items[$lineItem->getId()] = [
                         'id' => $lineItem->getId(),
                         'name' => $lineItem->getLabel(),

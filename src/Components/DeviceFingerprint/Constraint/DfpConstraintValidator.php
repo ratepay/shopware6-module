@@ -16,10 +16,9 @@ use Symfony\Component\Validator\ConstraintValidator;
 class DfpConstraintValidator extends ConstraintValidator
 {
     /**
-     * @param mixed $value
      * @param DfpConstraint $constraint
      */
-    public function validate($value, Constraint $constraint): void
+    public function validate(mixed $value, Constraint $constraint): void
     {
         if (!$constraint->getDfpService()->isDfpIdValid($constraint->getObject(), $value)) {
             $this->context->buildViolation('Provided DFP Token is not valid.')

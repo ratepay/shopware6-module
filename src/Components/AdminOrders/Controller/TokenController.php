@@ -61,7 +61,7 @@ class TokenController extends AbstractController
             ],
         ], $context);
 
-        $urlInfo = parse_url($saleChannelDomain->getUrl());
+        $urlInfo = parse_url((string) $saleChannelDomain->getUrl());
         $routerContext = $this->router->getContext();
         $routerContext
             ->setScheme($urlInfo['scheme'])

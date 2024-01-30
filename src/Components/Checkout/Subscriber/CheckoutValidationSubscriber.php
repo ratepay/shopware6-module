@@ -50,7 +50,7 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
         $paymentMethod = $salesChannelContext->getPaymentMethod();
         $paymentHandlerIdentifier = $paymentMethod->getHandlerIdentifier();
 
-        if (str_contains($paymentHandlerIdentifier, 'RpayPayments')) {
+        if (str_contains((string) $paymentHandlerIdentifier, 'RpayPayments')) {
             /** @var AbstractPaymentHandler $paymentHandler */
             $paymentHandler = $this->paymentHandlerRegistry->getPaymentMethodHandler($paymentMethod->getId());
 

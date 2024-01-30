@@ -88,7 +88,7 @@ class CustomerFactory extends AbstractFactory
             ->setSalutation($salutationEntity->getDisplayName())
             ->setFirstName($billingAddress->getFirstName())
             ->setLastName($billingAddress->getLastName())
-            ->setLanguage(strtolower(explode('-', $this->getLocale($requestData)->getCode())[0]))
+            ->setLanguage(strtolower(explode('-', (string) $this->getLocale($requestData)->getCode())[0]))
             ->setIpAddress($requestData->getCustomer()->getRemoteAddress())
             ->setAddresses(
                 (new Addresses())

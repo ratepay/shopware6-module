@@ -11,11 +11,11 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\Account\Controller;
 
-use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Exception;
 use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Util\MethodHelper;
+use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;

@@ -10,9 +10,9 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\ProfileConfig\Service\Search;
 
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Dto\ProfileConfigSearch;
 use Ratepay\RpayPayments\Components\ProfileConfig\Util\AddressUtil;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 
@@ -26,8 +26,8 @@ class ProfileByOrderEntity implements ProfileSearchInterface
     public function createSearchObject(OrderEntity $order): ProfileConfigSearch
     {
         $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
-        $shippingAddressId = $order->getDeliveries()->first()->getShippingOrderAddressId();
-        $shippingAddress = $shippingAddressId ? $order->getAddresses()->get($shippingAddressId) : $billingAddress;
+        $shippingAddressId = $order->getDeliveries()->first()?->getShippingOrderAddressId();
+        $shippingAddress = $shippingAddressId !== null ? $order->getAddresses()->get($shippingAddressId) : $billingAddress;
 
         return (new ProfileConfigSearch())
             ->setPaymentMethodId((($transaction = $order->getTransactions()->last()) instanceof OrderTransactionEntity) ? $transaction->getPaymentMethodId() : null)

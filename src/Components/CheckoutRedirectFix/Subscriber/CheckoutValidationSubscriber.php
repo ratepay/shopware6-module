@@ -47,7 +47,7 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
         $context = $this->getContextFromRequest($request);
         $paymentHandlerIdentifier = $context->getPaymentMethod()->getHandlerIdentifier();
 
-        if (str_contains($paymentHandlerIdentifier, 'RpayPayments')) {
+        if (str_contains((string) $paymentHandlerIdentifier, 'RpayPayments')) {
             $ratepayData = RequestHelper::getArray($request, 'ratepay');
             $billingMd5 = $ratepayData['validation']['billing_address_md5'] ?? null;
             $shippingMd5 = $ratepayData['validation']['shipping_address_md5'] ?? null;

@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\OrderManagement\Service;
 
-use Shopware\Core\System\Tax\Aggregate\TaxRule\TaxRuleEntity;
 use Ratepay\RpayPayments\Components\OrderManagement\Exception\TaxRuleNotFoundException;
 use Shopware\Core\Checkout\Cart\Calculator;
 use Shopware\Core\Checkout\Cart\CartBehavior;
@@ -24,6 +23,7 @@ use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRuleCollection;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\Tax\Aggregate\TaxRule\TaxRuleEntity;
 
 class LineItemFactory
 {
