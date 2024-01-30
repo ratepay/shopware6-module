@@ -17,12 +17,12 @@
         </template>
     {% endblock %}
 
-    <template slot="smart-bar-header">
+    <template #smart-bar-header>
         <h2>{{ $t('ratepay.apiLog.componentTitle') }}</h2>
     </template>
 
     {% block ratepayapilog_list_smart_bar_actions %}
-        <template slot="smart-bar-actions">
+        <template #smart-bar-actions>
             <sw-button-process variant="primary"
                                @click="getList"
                                :isLoading="isLoading"
@@ -33,7 +33,7 @@
         </template>
     {% endblock %}
 
-    <template slot="content">
+    <template #content>
         {% block ratepay_api_log_list_content %}
             <sw-entity-listing
                 v-if="entities"
@@ -44,7 +44,7 @@
                 :showActions="true"
                 :identifier="'ratepay-api-log-list'">
 
-                <template slot="column-createdAt" slot-scope="{ item }">
+                <template #column-createdAt slot-scope="{ item }">
                     {{ dateFilter(item.createdAt, { hour: '2-digit', minute: '2-digit' }) }}
                 </template>
 

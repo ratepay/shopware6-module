@@ -7,7 +7,7 @@
 
 {% block ratepay_profile_config_detail %}
     <sw-page class="ratepay-profile-config-detail">
-        <template slot="smart-bar-actions">
+        <template #smart-bar-actions>
             <sw-button :routerLink="{ name: 'ratepay.profile.config.list' }">
                 {{ $t('ratepay.profileConfig.page.detail.cancelButtonText') }}
             </sw-button>
@@ -33,7 +33,7 @@
             </sw-button-process>
         </template>
 
-        <template slot="content">
+        <template #content>
             <sw-card-view>
                 <sw-card v-if="entity" :isLoading="isLoading">
                     <sw-field v-on:change="lockReloadButton" :label="$t('ratepay.profileConfig.global.labels.profile_id')" v-model="entity.profileId" required></sw-field>

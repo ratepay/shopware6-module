@@ -8,19 +8,19 @@
 {% block ratepay_profile_config_list %}
 <sw-page class="ratepay-profile-config-list">
 
-    <template slot="smart-bar-header">
+    <template #smart-bar-header>
         <h2>{{ $t('ratepay.profileConfig.componentTitle') }}</h2>
     </template>
 
     {% block ratepay_profile_config_list_smart_bar_actions %}
-        <template slot="smart-bar-actions">
+        <template #smart-bar-actions>
             <sw-button variant="primary" :routerLink="{ name: 'ratepay.profile.config.create' }">
                 {{ $t('ratepay.profileConfig.page.list.createButton') }}
             </sw-button>
         </template>
     {% endblock %}
 
-    <template slot="content">
+    <template #content>
         {% block ratepay_profile_config_list_content %}
             <sw-entity-listing
                 v-if="entities"
@@ -31,24 +31,24 @@
                 :identifier="'ratepay-profile-config-list'"
                 detailRoute="ratepay.profile.config.detail">
 
-                <template slot="column-status" slot-scope="{ item }">
+                <template #column-status slot-scope="{ item }">
                     <sw-color-badge color="red" v-if="item.status === false" ></sw-color-badge>
                     <span v-if="item.status === false">&nbsp;&nbsp;{{ $t('ratepay.profileConfig.global.labels.inactive') }}</span>
                     <sw-color-badge color="green" v-if="item.status === true"></sw-color-badge>
                     <span v-if="item.status === true">&nbsp;&nbsp;{{ $t('ratepay.profileConfig.global.labels.active') }}</span>
                 </template>
 
-                <template slot="column-onlyAdminOrders" slot-scope="{ item }">
+                <template #column-onlyAdminOrders slot-scope="{ item }">
                     <span v-if="item.onlyAdminOrders">{{ $t('global.default.yes') }}</span>
                     <span v-if="!item.onlyAdminOrders">{{ $t('global.default.no') }}</span>
                 </template>
 
-                <template slot="column-sandbox" slot-scope="{ item }">
+                <template #column-sandbox slot-scope="{ item }">
                     <span v-if="item.sandbox">{{ $t('global.default.yes') }}</span>
                     <span v-if="!item.sandbox">{{ $t('global.default.no') }}</span>
                 </template>
 
-                <template slot="column-salesChannel" slot-scope="{ item }">
+                <template #column-salesChannel slot-scope="{ item }">
                     {{ item.salesChannel.name }}
                 </template>
             </sw-entity-listing>

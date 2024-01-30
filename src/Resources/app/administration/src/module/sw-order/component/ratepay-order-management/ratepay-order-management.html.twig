@@ -7,7 +7,7 @@
 
 <sw-card :title="$tc('ratepay.orderManagement.title')" class="ratepay-article-panel" positionIdentifier="ratepay-order-management-card">
     <sw-tabs defaultItem="shippingCancel" positionIdentifier="ratepay-order-management">
-        <template slot="default" slot-scope="{ active }">
+        <template #default slot-scope="{ active }">
             <sw-tabs-item :activeTab="active" name="shippingCancel">
                 {{ $t('ratepay.orderManagement.tab.shippingCancel') }}
             </sw-tabs-item>
@@ -16,7 +16,7 @@
             </sw-tabs-item>
         </template>
 
-        <template slot="content" slot-scope="{ active }">
+        <template #content slot-scope="{ active }">
             <template v-if="active === 'shippingCancel'">
                 <div class="button-group">
                     <sw-button-group>
@@ -65,7 +65,7 @@
                     :showSettings="false"
                     :key="loading.list">
 
-                    <template slot="column-quantity" slot-scope="{ item }">
+                    <template #column-quantity slot-scope="{ item }">
                         <sw-select-field v-if="item.position.maxDelivery > 0" v-model="item.processDeliveryCancel" value="0">
                             <option value="0">0</option>
                             <option v-for="n in item.position.maxDelivery">{{ n }}</option>
@@ -73,10 +73,10 @@
                         <span v-if="item.position.maxDelivery == 0">0</span>
                     </template>
 
-                    <template slot="column-unitPrice" slot-scope="{ item }">
+                    <template #column-unitPrice slot-scope="{ item }">
                         {{ currencyFilter(item.unitPrice, order.currency.translated.shortName) }}
                     </template>
-                    <template slot="column-totalPrice" slot-scope="{ item }">
+                    <template #column-totalPrice slot-scope="{ item }">
                         {{ currencyFilter(item.totalPrice, order.currency.translated.shortName) }}
                     </template>
 
@@ -116,7 +116,7 @@
                     :showSettings="false"
                     :key="loading.list"
                 >
-                    <template slot="column-quantity" slot-scope="{ item }">
+                    <template #column-quantity slot-scope="{ item }">
                         <sw-select-field v-if="item.position.maxReturn > 0" v-model="item.processReturn" value="0">
                             <option value="0">0</option>
                             <option v-for="n in item.position.maxReturn">{{ n }}</option>
@@ -153,7 +153,7 @@
                 </option>
             </sw-field>
         </template>
-        <template slot="modal-footer">
+        <template #modal-footer>
             <sw-button-process
                 class="sw-button--small"
                 :isLoading="loading.addDebit"
@@ -188,7 +188,7 @@
                 </option>
             </sw-field>
         </template>
-        <template slot="modal-footer">
+        <template #modal-footer>
             <sw-button-process
                 class="sw-button--small"
                 :isLoading="loading.addCredit"
