@@ -27,8 +27,13 @@ use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Config\Loader\DelegatingLoader;
+use Symfony\Component\Config\Loader\LoaderResolver;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\DirectoryLoader;
+use Symfony\Component\DependencyInjection\Loader\GlobFileLoader;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class RpayPayments extends Plugin
 {
@@ -139,6 +144,15 @@ class RpayPayments extends Plugin
         }
 
         $containerBuilder->addCompilerPass(new PluginVersionCompilerPass(__DIR__ . '/../'));
+
+        $locator = new FileLocator('Resources/config');
+        $resolver = new LoaderResolver([
+            new YamlFileLoader($containerBuilder, $locator),
+            new GlobFileLoader($containerBuilder, $locator),
+            new DirectoryLoader($containerBuilder, $locator),
+        ]);
+        (new DelegatingLoader($resolver))
+            ->load(\rtrim((string) $this->getPath(), '/') . '/Resources/config' . '/{packages}/*.yaml', 'glob');
     }
 
     public function boot(): void

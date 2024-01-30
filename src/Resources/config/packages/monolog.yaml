@@ -1,0 +1,9 @@
+monolog:
+    channels: ['ratepay']
+
+    handlers:
+        myPluginLogHandler:
+            type: rotating_file
+            path: "%kernel.logs_dir%/ratepay_%kernel.environment%.log"
+            level: error
+            channels: [ "ratepay"]

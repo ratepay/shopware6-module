@@ -15,7 +15,7 @@
         <service id="Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService" autowire="true">
             <argument key="$languageRepository" id="language.repository" type="service"/>
             <argument key="$paymentMethodRepository" id="payment_method.repository" type="service"/>
-            <argument key="$logger" id="ratepay.logger" type="service"/>
+            <argument key="$logger" id="monolog.logger.ratepay" type="service"/>
         </service>
 
     </services>

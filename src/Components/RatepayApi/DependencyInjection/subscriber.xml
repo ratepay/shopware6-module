@@ -18,7 +18,7 @@
         <service id="Ratepay\RpayPayments\Components\RatepayApi\Subscriber\PaymentChangeSubscriber" autowire="true">
             <bind key="$ratepayPositionRepository" id="ratepay_position.repository" type="service" />
             <argument key="$orderRepository" id="order.repository" type="service"/>
-            <argument key="$logger" id="ratepay.logger" type="service"/>
+            <argument key="$logger" id="monolog.logger.ratepay" type="service"/>
             <argument key="$productRepository" id="product.repository" type="service"/>
         </service>
 

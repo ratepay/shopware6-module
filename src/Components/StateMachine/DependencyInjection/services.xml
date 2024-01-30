@@ -21,7 +21,7 @@
         <service id="Ratepay\RpayPayments\Components\StateMachine\Subscriber\TransitionSubscriber" autowire="true">
             <argument key="$orderRepository" id="order.repository" type="service" />
             <argument key="$orderDeliveryRepository" id="order_delivery.repository" type="service" />
-            <argument key="$logger" id="ratepay.logger" type="service" />
+            <argument key="$logger" id="monolog.logger.ratepay" type="service" />
         </service>
     </services>
 </container>

@@ -19,7 +19,7 @@
         <service id="Ratepay\RpayPayments\Components\InstallmentCalculator\Subscriber\BuildPaymentSubscriber"/>
         <service id="Ratepay\RpayPayments\Components\InstallmentCalculator\Subscriber\CheckoutSubscriber"/>
         <service id="Ratepay\RpayPayments\Components\InstallmentCalculator\Subscriber\ProductPageSubscriber">
-            <argument key="$logger" id="ratepay.logger" type="service"/>
+            <argument key="$logger" id="monolog.logger.ratepay" type="service"/>
             <argument key="$countryRepository" id="country.repository" type="service"/>
         </service>
 

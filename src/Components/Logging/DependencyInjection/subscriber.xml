@@ -12,7 +12,7 @@
 
     <services>
         <defaults autowire="true">
-            <bind key="$fileLogger" id="ratepay.logger" type="service"/>
+            <bind key="$fileLogger" id="monolog.logger.ratepay" type="service"/>
             <tag name="kernel.event_subscriber"/>
         </defaults>
 
