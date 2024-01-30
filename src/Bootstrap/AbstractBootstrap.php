@@ -15,13 +15,10 @@ use Monolog\Logger;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\PluginEntity;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-abstract class AbstractBootstrap implements ContainerAwareInterface
+abstract class AbstractBootstrap
 {
-    use ContainerAwareTrait;
-
     protected InstallContext $installContext;
 
     protected Context $defaultContext;
@@ -29,6 +26,8 @@ abstract class AbstractBootstrap implements ContainerAwareInterface
     protected Logger $logger;
 
     protected PluginEntity $plugin;
+
+    protected ContainerInterface $container;
 
     final public function __construct()
     {
@@ -102,6 +101,11 @@ abstract class AbstractBootstrap implements ContainerAwareInterface
 
     public function postInstall(): void
     {
+    }
+
+    final public function setContainer(ContainerInterface $container): void
+    {
+        $this->container = $container;
     }
 
     final protected function getPluginPath(): string
