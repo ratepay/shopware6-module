@@ -136,7 +136,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
                 $session->getFlashBag()->add(StorefrontController::DANGER, $ratepayException->getMessage());
             }
 
-            throw new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $ratepayException->getMessage());
+            throw new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $ratepayException->getMessage(), $ratepayException);
         }
     }
 

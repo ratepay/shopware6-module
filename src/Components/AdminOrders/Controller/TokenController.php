@@ -25,9 +25,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 
-/**
- * @Route("/api/ratepay/admin-order", defaults={"_routeScope"={"administration"}})
- */
+#[Route(path: '/api/ratepay/admin-order', defaults: [
+    '_routeScope' => ['administration'],
+])]
 class TokenController extends AbstractController
 {
     public function __construct(
@@ -37,9 +37,7 @@ class TokenController extends AbstractController
     ) {
     }
 
-    /**
-     * @Route("/login-token", name="ratepay.admin.admin-orders.token", methods={"POST"})
-     */
+    #[Route(path: '/login-token', name: 'ratepay.admin.admin-orders.token', methods: ['POST'])]
     public function login(Request $request): Response
     {
         $context = Context::createDefaultContext();

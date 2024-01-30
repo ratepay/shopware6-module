@@ -23,9 +23,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route(defaults={"_routeScope"={"store-api"}})
- */
+#[Route(path: '/store-api/ratepay/installment', defaults: [
+    '_routeScope' => ['store-api'],
+])]
 class InstallmentRoute
 {
     public function __construct(
@@ -34,9 +34,11 @@ class InstallmentRoute
     ) {
     }
 
-    /**
-     * @Route(path="/store-api/ratepay/installment/calculate/{orderId}", methods={"GET"}, name="store-api.checkout.ratepay.installment.calculate", defaults={"_loginRequired"=true, "_loginRequiredAllowGuest"=true})
-     */
+    #[Route(path: '/calculate/{orderId}', name: 'store-api.checkout.ratepay.installment.calculate', defaults: [
+        'XmlHttpRequest' => true,
+        '_loginRequired' => true,
+        '_loginRequiredAllowGuest' => true,
+    ], methods: ['GET'])]
     public function calculateInstallment(Request $request, SalesChannelContext $salesChannelContext, ?string $orderId = null): InstallmentCalculationResponse
     {
         $type = $request->query->get('type');

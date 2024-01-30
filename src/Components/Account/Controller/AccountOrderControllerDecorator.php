@@ -27,9 +27,9 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 
-/**
- * @Route(defaults={"_routeScope"={"storefront"}})
- */
+#[Route(defaults: [
+    '_routeScope' => ['storefront'],
+])]
 class AccountOrderControllerDecorator
 {
     public function __construct(

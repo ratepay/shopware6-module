@@ -41,9 +41,9 @@ use Symfony\Component\Validator\Constraints\GreaterThan;
 use Symfony\Component\Validator\Constraints\LessThan;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-/**
- * @Route("/api/ratepay/order-management", defaults={"_routeScope"={"administration"}})
- */
+#[Route(path: '/api/ratepay/order-management', defaults: [
+    '_routeScope' => ['administration'],
+])]
 class ProductPanel extends AbstractController
 {
     /**
@@ -67,9 +67,7 @@ class ProductPanel extends AbstractController
         ];
     }
 
-    /**
-     * @Route("/load/{orderId}", name="ratepay.order_management.product_panel.load", methods={"GET"})
-     */
+    #[Route(path: '/load/{orderId}', name: 'ratepay.order_management.product_panel.load', methods: ['GET'])]
     public function load(string $orderId, Context $context): JsonResponse
     {
         $criteria = new Criteria([$orderId]);
@@ -120,33 +118,25 @@ class ProductPanel extends AbstractController
         ], 400);
     }
 
-    /**
-     * @Route("/deliver/{orderId}", name="ratepay.order_management.product_panel.deliver", methods={"POST"})
-     */
+    #[Route(path: '/deliver/{orderId}', name: 'ratepay.order_management.product_panel.deliver', methods: ['POST'])]
     public function deliver(string $orderId, Request $request, Context $context): JsonResponse
     {
         return $this->processModify($request, $context, OrderOperationData::OPERATION_DELIVER, $orderId);
     }
 
-    /**
-     * @Route("/cancel/{orderId}", name="ratepay.order_management.product_panel.cancel", methods={"POST"})
-     */
+    #[Route(path: '/cancel/{orderId}', name: 'ratepay.order_management.product_panel.cancel', methods: ['POST'])]
     public function cancel(string $orderId, Request $request, Context $context): JsonResponse
     {
         return $this->processModify($request, $context, OrderOperationData::OPERATION_CANCEL, $orderId);
     }
 
-    /**
-     * @Route("/return/{orderId}", name="ratepay.order_management.product_panel.return", methods={"POST"})
-     */
+    #[Route(path: '/return/{orderId}', name: 'ratepay.order_management.product_panel.return', methods: ['POST'])]
     public function return(string $orderId, Request $request, Context $context): JsonResponse
     {
         return $this->processModify($request, $context, OrderOperationData::OPERATION_RETURN, $orderId);
     }
 
-    /**
-     * @Route("/addItem/{orderId}", name="ratepay.order_management.product_panel.add_item", methods={"POST"})
-     */
+    #[Route(path: '/addItem/{orderId}', name: 'ratepay.order_management.product_panel.add_item', methods: ['POST'])]
     public function addItem(string $orderId, Request $request, Context $context): JsonResponse
     {
         $order = $this->fetchOrder($context, $orderId);

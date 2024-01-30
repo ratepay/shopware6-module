@@ -20,9 +20,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/api/ratepay", defaults={"_routeScope"={"administration"}})
- */
+#[Route(path: '/api/ratepay', defaults: [
+    '_routeScope' => ['administration'],
+])]
 class DistinctValues extends AbstractController
 {
     public function __construct(
@@ -31,9 +31,7 @@ class DistinctValues extends AbstractController
     ) {
     }
 
-    /**
-     * @Route("/api-log/distinct-values/{fields}", name="ratepay.admin.api-log.distinct-values", methods={"GET"})
-     */
+    #[Route(path: '/api-log/distinct-values/{fields}', name: 'ratepay.admin.api-log.distinct-values', methods: ['GET'])]
     public function distinctValues(string $fields = ''): Response
     {
         $allowedFields = [

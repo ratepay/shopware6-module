@@ -19,9 +19,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/api/ratepay/profile-configuration", defaults={"_routeScope"={"administration"}})
- */
+#[Route(path: '/api/ratepay/profile-configuration', defaults: [
+    '_routeScope' => ['administration'],
+])]
 class ProfileConfigController extends AbstractController
 {
     public function __construct(
@@ -29,9 +29,7 @@ class ProfileConfigController extends AbstractController
     ) {
     }
 
-    /**
-     * @Route("/reload-config", name="ratepay.profile.config.reload", methods={"POST"})
-     */
+    #[Route(path: '/reload-config', name: 'ratepay.profile.config.reload', methods: ['POST'])]
     public function reloadProfileConfiguration(Request $request): JsonResponse
     {
         if ($id = $request->request->get('id')) {

@@ -18,9 +18,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route(path="/ratepay/installment", defaults={"_routeScope"={"storefront"}})
- */
+#[Route(path: '/ratepay/installment', defaults: [
+    '_routeScope' => ['storefront'],
+])]
 class InstallmentController extends StorefrontController
 {
     public function __construct(
@@ -28,9 +28,11 @@ class InstallmentController extends StorefrontController
     ) {
     }
 
-    /**
-     * @Route(path="/calculate/{orderId}", methods={"GET"}, name="ratepay.storefront.installment.calculate", defaults={"XmlHttpRequest"=true, "_loginRequired"=true, "_loginRequiredAllowGuest"=true})
-     */
+    #[Route(path: '/calculate/{orderId}', name: 'ratepay.storefront.installment.calculate', defaults: [
+        'XmlHttpRequest' => true,
+        '_loginRequired' => true,
+        '_loginRequiredAllowGuest' => true,
+    ], methods: ['GET'])]
     public function calculateInstallment(Request $request, SalesChannelContext $salesChannelContext, ?string $orderId = null): Response
     {
         $vars = $this->installmentRoute->calculateInstallment($request, $salesChannelContext, $orderId);
