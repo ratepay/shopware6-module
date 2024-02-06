@@ -15,6 +15,7 @@ Component.extend('ratepay-profile-config-create', 'ratepay-profile-config-detail
             // shopware issue: fix bug that no false values will be submitted
             this.entity.onlyAdminOrders = false;
             this.entity.sandbox = false;
+            this.isLoading.page = false;
 
             return Promise.resolve(this.entity);
         },

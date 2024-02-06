@@ -31,8 +31,15 @@ Component.register('ratepay-profile-config-detail', {
     data() {
         return {
             entity: null,
-            isLoading: false,
-            processSuccess: false,
+            isLoading: {
+                page: true,
+                save: false,
+                reloadConfig: false,
+            },
+            processSuccessState: {
+                save: false,
+                reloadConfig: false,
+            },
             repository: null,
             disabledReloadButton: this.entity === null,
             currentTab: 'general'
@@ -54,6 +61,7 @@ Component.register('ratepay-profile-config-detail', {
         lockReloadButton() {
             this.disabledReloadButton = true;
         },
+
         loadEntity() {
             let entityCriteria = new Criteria();
             entityCriteria.addAssociation('paymentMethodConfigs.paymentMethod');
@@ -61,16 +69,13 @@ Component.register('ratepay-profile-config-detail', {
             entityCriteria.setIds([this.$route.params.id]);
             return this.repository.search(entityCriteria, Shopware.Context.api)
                 .then((entity) => {
-                    return new Promise((resolve, reject) => {
-                        // when this field get updated, the component will be reload
-                        this.entity = entity.first();
-                        resolve(this.entity)
-                    });
+                    this.entity = entity.first();
+                    this.isLoading.page = false;
                 });
         },
 
         onClickSave() {
-            this.isLoading = true;
+            this._lockButtons(true);
 
             this.repository
                 .save(this.entity, Shopware.Context.api)
@@ -80,16 +85,26 @@ Component.register('ratepay-profile-config-detail', {
                         title: this.$tc('ratepay.profileConfig.messages.save.success'),
                         message: this.$tc('ratepay.profileConfig.messages.save.success')
                     });
-                    this.isLoading = false;
+
+                    this._lockButtons(false, true);
                     this.processSuccess = true;
                 })
                 .catch((exception) => {
-                    this.isLoading = false;
+                    this._lockButtons(false);
                     this.createNotificationError({
                         title: this.$t('ratepay.profileConfig.messages.save.error.title'),
                         message: exception
                     });
                 });
+        },
+
+        _lockButtons(state, processState = undefined) {
+            this.isLoading.save = state;
+            this.isLoading.reloadConfig = state;
+            if (processState !== undefined) {
+                this.processSuccessState.save = processState;
+                this.processSuccessState.reloadConfig = processState;
+            }
         },
 
         async onClickSaveAfter() {
@@ -98,13 +113,14 @@ Component.register('ratepay-profile-config-detail', {
         },
 
         saveFinish() {
-            this.disabledReloadButton = false;
-            this.processSuccess = false;
+            this.processSuccessState.save = processState;
+            this.processSuccessState.reloadConfig = processState;
         },
 
         onClickReloadConfig() {
-            return this.profileConfigApiService.reloadConfig(this.entity.id).then((response) => {
-                this.loadEntity();
+            this.isLoading.reloadConfig = true;
+            return this.profileConfigApiService.reloadConfig(this.entity.id).then(async (response) => {
+                await this.loadEntity();
                 for (let [profileId, message] of Object.entries(response.success)) {
                     this.createNotificationSuccess({
                         title: profileId,
@@ -118,9 +134,8 @@ Component.register('ratepay-profile-config-detail', {
                     });
                 }
                 this.$forceUpdate();
-                return new Promise((resolve, reject) => {
-                    resolve()
-                });
+                this.isLoading.reloadConfig = false;
+                this.processSuccessState.reloadConfig = true;
             });
         },
 

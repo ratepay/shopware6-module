@@ -13,10 +13,9 @@
             </sw-button>
 
             <sw-button-process
-                :is-loading="isLoading"
-                :process-success="processSuccess"
+                :is-loading="isLoading.save"
                 variant="primary"
-                @process-finish="saveFinish"
+                v-model:process-success="processSuccessState.save"
                 @click="onClickSave">
                 {{ $t('ratepay.profileConfig.page.detail.saveButtonText') }}
             </sw-button-process>
@@ -24,8 +23,8 @@
             <sw-button-process
                 v-if="entity && entity.isNew() === false && entity.status"
                 :key="entity.status"
-                :is-loading="isLoading"
-                :process-success="processSuccess"
+                :is-loading="isLoading.reloadConfig"
+                v-model:process-success="processSuccessState.reloadConfig"
                 variant="primary"
                 :disabled="disabledReloadButton"
                 @click="onClickReloadConfig">
@@ -35,7 +34,7 @@
 
         <template #content>
             <sw-card-view>
-                <sw-card v-if="entity" :is-loading="isLoading" position-identifier="ratepay-profile-edit">
+                <sw-card v-if="entity" :is-loading="isLoading.page || isLoading.save" position-identifier="ratepay-profile-edit">
                     <sw-text-field @update:value="lockReloadButton" :label="$t('ratepay.profileConfig.global.labels.profile_id')" v-model:value="entity.profileId" required></sw-text-field>
                     <sw-password-field type="password" @change="lockReloadButton" :label="$t('ratepay.profileConfig.global.labels.security_code')" v-model:value="entity.securityCode" required></sw-password-field>
                     <sw-switch-field @update:value="lockReloadButton" :label="$t('ratepay.profileConfig.global.labels.sandbox')" v-model:value="entity.sandbox"></sw-switch-field>
@@ -53,7 +52,7 @@
 
                 </sw-card>
 
-                <sw-card v-if="entity && entity.status" :is-loading="isLoading" position-identifier="ratepay-profile-details">
+                <sw-card v-if="entity && entity.status" :is-loading="isLoading.page || isLoading.save" position-identifier="ratepay-profile-details">
                     <sw-tabs default-item="general" position-identifier="ratepay-profile-details-tabs">
                         <template #default="{ active }">
                             <sw-tabs-item :active-tab="active" name="general">
