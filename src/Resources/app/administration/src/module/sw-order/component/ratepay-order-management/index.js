@@ -267,6 +267,9 @@ Component.register('ratepay-order-management', {
                         this.$emit('reload-entity-data');
                         this.initDebit();
                     });
+                    this.addDebit.data.name = null;
+                    this.addDebit.data.amount = null;
+                    this.addDebit.data.taxId = null;
                 })
                 .catch((response) => {
                     this.loading.addDebit = false;
@@ -293,6 +296,9 @@ Component.register('ratepay-order-management', {
                         this.$emit('reload-entity-data');
                         this.initCredit();
                     });
+                    this.addCredit.data.name = null;
+                    this.addCredit.data.amount = null;
+                    this.addCredit.data.taxId = null;
                 })
                 .catch((response) => {
                     this.loading.addCredit = false;
