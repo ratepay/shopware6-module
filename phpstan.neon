@@ -9,6 +9,10 @@ parameters:
         - '#generic class Shopware\\Core\\Framework\\Struct\\ArrayStruct does not specify its types#'
         - '#generic class Shopware\\Core\\Framework\\Struct\\ArrayStruct but does not specify its types#'
 
+        # NEXT-29041 - Shopware issue: https://github.com/shopware/shopware/blob/v6.6.0.0-rc2/phpstan.neon.dist#L221
+        - '#.* generic class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityRepository.*not specify its types: TEntityCollection#'
+        - '#\(\) should return .*\|null but returns Shopware\\Core\\Framework\\DataAbstractionLayer\\Entity\|null#'
+        - '#\(\) should return .* but returns Shopware\\Core\\Framework\\DataAbstractionLayer\\Entity#'
     reportUnmatchedIgnoredErrors: false
     tipsOfTheDay: false
     bootstrapFiles:

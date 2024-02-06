@@ -22,7 +22,6 @@ use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
-use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -58,7 +57,7 @@ class PaymentFilterService
                 $searchService->createSearchObject($order ?? $salesChannelContext)->setPaymentMethodId($paymentMethod->getId())
             )->first();
 
-            if (!$profileConfig instanceof Entity) {
+            if ($profileConfig === null) {
                 // no profile config for this sales channel has been found
                 return false;
             }

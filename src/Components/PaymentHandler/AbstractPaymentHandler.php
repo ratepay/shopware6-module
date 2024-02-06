@@ -23,6 +23,7 @@ use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\ValidationDefinitionCollectEvent;
 use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
+use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileSearchService;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
 use Ratepay\RpayPayments\Exception\RatepayException;
@@ -34,7 +35,6 @@ use Shopware\Core\Checkout\Payment\PaymentException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -52,11 +52,11 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
 
     public function __construct(
         private readonly EntityRepository $orderRepository,
-        private readonly EntityRepository $profileRepository,
         private readonly PaymentRequestService $paymentRequestService,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly ConfigService $configService,
-        private readonly RequestStack $requestStack
+        private readonly RequestStack $requestStack,
+        private readonly ProfileSearchService $profileSearchService
     ) {
     }
 
@@ -88,7 +88,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
             );
 
             if ($ratepayData->has('profile_uuid')) {
-                $profile = $this->profileRepository->search(new Criteria([$ratepayData->get('profile_uuid')]), Context::createDefaultContext())->first();
+                $profile = $this->profileSearchService->getProfileConfigById($ratepayData->get('profile_uuid'));
                 if (!$profile instanceof Entity) {
                     throw new ProfileNotFoundException();
                 }

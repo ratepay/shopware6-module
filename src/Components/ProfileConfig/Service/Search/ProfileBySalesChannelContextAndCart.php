@@ -11,11 +11,11 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\ProfileConfig\Service\Search;
 
 use Ratepay\RpayPayments\Components\ProfileConfig\Dto\ProfileConfigSearch;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\Collection\ProfileConfigCollection;
 use Ratepay\RpayPayments\Components\ProfileConfig\Util\AddressUtil;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class ProfileBySalesChannelContextAndCart implements ProfileSearchInterface
@@ -45,7 +45,7 @@ class ProfileBySalesChannelContextAndCart implements ProfileSearchInterface
             ->setTotalAmount($cart->getPrice()->getTotalPrice());
     }
 
-    public function search(ProfileConfigSearch $profileConfigSearch): EntitySearchResult
+    public function search(ProfileConfigSearch $profileConfigSearch): ProfileConfigCollection
     {
         return $this->searchService->search($profileConfigSearch);
     }

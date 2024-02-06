@@ -175,8 +175,8 @@ class RpayPayments extends Plugin
 
         /** @var EntityRepository $pluginRepository */
         $pluginRepository = $this->container->get('plugin.repository');
-        $plugins = $pluginRepository->search((new Criteria())->addFilter(new EqualsFilter('baseClass', static::class)), Context::createDefaultContext());
-        $plugin = $plugins->first();
+        /** @var Plugin\PluginEntity $plugin */
+        $plugin = $pluginRepository->search((new Criteria())->addFilter(new EqualsFilter('baseClass', static::class)), Context::createDefaultContext())->first();
         // $logger = new FileLogger($this->container->getParameter('kernel.logs_dir'));
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->setInstallContext($context);

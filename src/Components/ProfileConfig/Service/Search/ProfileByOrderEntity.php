@@ -11,10 +11,10 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\ProfileConfig\Service\Search;
 
 use Ratepay\RpayPayments\Components\ProfileConfig\Dto\ProfileConfigSearch;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\Collection\ProfileConfigCollection;
 use Ratepay\RpayPayments\Components\ProfileConfig\Util\AddressUtil;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 
 class ProfileByOrderEntity implements ProfileSearchInterface
 {
@@ -40,7 +40,7 @@ class ProfileByOrderEntity implements ProfileSearchInterface
             ->setTotalAmount($order->getPrice()->getTotalPrice());
     }
 
-    public function search(ProfileConfigSearch $profileConfigSearch): EntitySearchResult
+    public function search(ProfileConfigSearch $profileConfigSearch): ProfileConfigCollection
     {
         return $this->searchService->search($profileConfigSearch);
     }

@@ -31,6 +31,7 @@ use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Order\RecalculationService;
 use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Content\Product\ProductEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -137,6 +138,7 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
             $this->orderRepository->merge($versionId, $context);
         });
 
+        /** @var OrderEntity $reloadedOrder */
         $reloadedOrder = $this->orderRepository->search(
             CriteriaHelper::getCriteriaForOrder($requestData->getOrder()->getId()),
             $event->getContext()

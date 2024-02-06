@@ -22,7 +22,6 @@ use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 
 class ProfileConfigManagement
@@ -43,7 +42,7 @@ class ProfileConfigManagement
      * @param string[] $ids
      * @throws RatepayException
      */
-    public function refreshProfileConfigs(array $ids): EntitySearchResult
+    public function refreshProfileConfigs(array $ids): ProfileConfigCollection
     {
         /** @var ProfileConfigCollection|ProfileConfigEntity[] $profileConfigs */
         $profileConfigs = $this->repository->search(new Criteria($ids), $this->context);
@@ -73,7 +72,7 @@ class ProfileConfigManagement
             }
         }
 
-        return $this->repository->search(CriteriaHelper::getCriteriaForProfileConfig($ids), $this->context);
+        return $this->repository->search(CriteriaHelper::getCriteriaForProfileConfig($ids), $this->context)->getEntities();
     }
 
     protected function deleteMethodConfigsForProfile(ProfileConfigEntity $profileConfig): void

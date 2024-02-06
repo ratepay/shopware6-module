@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\ProfileConfig\Controller;
 
 use Exception;
-use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\ProfileConfigManagement;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -39,8 +38,7 @@ class ProfileConfigController extends AbstractController
                     'error' => [],
                     'success' => [],
                 ];
-                /** @var ProfileConfigEntity $config */
-                foreach ($configs->getEntities() as $config) {
+                foreach ($configs->getElements() as $config) {
                     $response[$config->getStatus() ? 'success' : 'error'][$config->getProfileId()] = $config->getStatusMessage();
                 }
 

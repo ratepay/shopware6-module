@@ -69,6 +69,7 @@ class AccountSubscriber implements EventSubscriberInterface
             // You can't change the payment if it is a ratepay order
             $page->setPaymentChangeable(false);
         } else {
+            /** @var OrderEntity $order */
             $order = $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($order->getId()), $event->getContext())->first();
             // Payment change is allowed, prepare ratepay payment data if a ratepay payment method is selected
             $paymentMethod = $event->getSalesChannelContext()->getPaymentMethod();

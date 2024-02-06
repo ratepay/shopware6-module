@@ -38,6 +38,7 @@ use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -211,6 +212,7 @@ class InstallmentService
         if (!isset($this->_translationCache[$langId])) {
             $languageCriteria = new Criteria([$salesChannelContext->getContext()->getLanguageId()]);
             $languageCriteria->addAssociation('locale');
+            /** @var LanguageEntity|null $language */
             $language = $this->languageRepository->search(
                 $languageCriteria,
                 $salesChannelContext->getContext()

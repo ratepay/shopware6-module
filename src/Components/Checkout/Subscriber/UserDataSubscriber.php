@@ -14,6 +14,7 @@ namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
 use DateTime;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\BeforePaymentEvent;
 use RuntimeException;
+use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -43,6 +44,7 @@ class UserDataSubscriber implements EventSubscriberInterface
         $order = $paymentRequestData->getOrder();
 
         $customer = $order->getOrderCustomer()->getCustomer();
+        /** @var CustomerAddressEntity|null $defaultBillingAddress */
         $defaultBillingAddress = $customer instanceof CustomerEntity ? $this->addressRepository->search(new Criteria([$customer->getDefaultBillingAddressId()]), $paymentRequestData->getContext())->first() : null;
         $orderBillingAddress = $order->getAddresses()->get($order->getBillingAddressId());
         $dataBag = $paymentRequestData->getRequestDataBag();

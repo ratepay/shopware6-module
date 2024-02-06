@@ -15,6 +15,7 @@ use Exception;
 use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
 use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Util\MethodHelper;
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -44,7 +45,10 @@ class AccountOrderControllerDecorator
     {
         $orderCriteria = (new Criteria([$orderId]))
             ->addAssociation('transactions.paymentMethod');
+
+        /** @var OrderEntity|null $order */
         $order = $this->orderRepository->search($orderCriteria, $context->getContext())->first();
+
         /** @var RatepayOrderDataEntity|null $ratepayData */
         $ratepayData = $order instanceof Entity ? $order->getExtension(OrderExtension::EXTENSION_NAME) : null;
         if ($ratepayData && MethodHelper::isRatepayOrder($order)) {
@@ -63,6 +67,7 @@ class AccountOrderControllerDecorator
         // check again, if the order is now NOT a ratepay order.
         // if the order has been failed, the customer can switch between the payment methods.
         // after the updateOrder the payment method may not the same as before.
+        /** @var OrderEntity $order */
         $order = $this->orderRepository->search($orderCriteria, $context->getContext())->first();
         if ($ratepayData && !MethodHelper::isRatepayOrder($order)) {
             try {

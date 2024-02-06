@@ -12,12 +12,12 @@ namespace Ratepay\RpayPayments\Components\ProfileConfig\Service\Search;
 
 use Ratepay\RpayPayments\Components\ProfileConfig\Dto\ProfileConfigSearch;
 use Ratepay\RpayPayments\Components\ProfileConfig\Event\CreateProfileConfigCriteriaEvent;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\Collection\ProfileConfigCollection;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\AndFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -36,10 +36,7 @@ class ProfileSearchService implements ProfileSearchInterface
         $this->context = Context::createDefaultContext();
     }
 
-    /**
-     * @return EntitySearchResult<ProfileConfigEntity>
-     */
-    public function search(ProfileConfigSearch $profileConfigSearch): EntitySearchResult
+    public function search(ProfileConfigSearch $profileConfigSearch): ProfileConfigCollection
     {
         $criteria = new Criteria();
         $criteria->addAssociation(ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS);
@@ -135,8 +132,7 @@ class ProfileSearchService implements ProfileSearchInterface
         //        TODO implement
         //        $this->eventDispatcher->dispatch(new CreateProfileConfigCriteriaEvent($criteria, $profileConfigSearch, $this->context));
 
-        /* @phpstan-ignore-next-line */
-        return $this->repository->search($criteria, $this->context);
+        return $this->repository->search($criteria, $this->context)->getEntities();
     }
 
     public function getProfileConfigById(?string $profileConfigId): ?ProfileConfigEntity

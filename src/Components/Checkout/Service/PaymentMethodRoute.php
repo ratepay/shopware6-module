@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\Checkout\Service;
 
 use Ratepay\RpayPayments\Util\CriteriaHelper;
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\SalesChannel\AbstractPaymentMethodRoute;
 use Shopware\Core\Checkout\Payment\SalesChannel\PaymentMethodRouteResponse;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -49,13 +50,14 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
         $orderId = $currentRequest->get('orderId');
         $order = null;
         if ($orderId) {
+            /** @var OrderEntity|null $order */
             $order = $this->orderRepository->search(
                 CriteriaHelper::getCriteriaForOrder($orderId),
                 $salesChannelContext->getContext()
             )->first();
         }
 
-        if ($order || $request->query->getBoolean('onlyAvailable', false)) {
+        if ($order !== null || $request->query->getBoolean('onlyAvailable', false)) {
             $paymentMethods = $this->paymentFilterService->filterPaymentMethods(
                 $response->getPaymentMethods(),
                 $salesChannelContext,

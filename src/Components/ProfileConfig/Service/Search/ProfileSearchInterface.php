@@ -11,9 +11,9 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\ProfileConfig\Service\Search;
 
 use Ratepay\RpayPayments\Components\ProfileConfig\Dto\ProfileConfigSearch;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
+use Ratepay\RpayPayments\Components\ProfileConfig\Model\Collection\ProfileConfigCollection;
 
 interface ProfileSearchInterface
 {
-    public function search(ProfileConfigSearch $profileConfigSearch): EntitySearchResult;
+    public function search(ProfileConfigSearch $profileConfigSearch): ProfileConfigCollection;
 }
