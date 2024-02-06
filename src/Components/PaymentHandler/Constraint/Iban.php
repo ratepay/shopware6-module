@@ -28,15 +28,18 @@ class Iban extends \Symfony\Component\Validator\Constraints\Iban
     ];
 
     /**
-     * @var string
-     */
-    public $message = AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . 'RP_MISSING_IBAN';
-
-    /**
      * @var string[]
      * @deprecated since Symfony 6.1, use const ERROR_NAMES instead
      */
     protected static $errorNames = self::ERROR_NAMES;
+
+    public function __construct(?array $options = null, ?string $message = null, ?array $groups = null, mixed $payload = null)
+    {
+        // we do override the property to avoid backward compatibility (type declaration is missing in lower symfony versions)
+        $this->message = AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . 'RP_MISSING_IBAN';
+
+        parent::__construct($options, $message, $groups, $payload);
+    }
 
     public function validatedBy(): string
     {

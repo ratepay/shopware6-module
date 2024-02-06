@@ -27,26 +27,6 @@ class BankAccountHolderChoice extends Choice
     ];
 
     /**
-     * @var string
-     */
-    public $message = AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . 'RP_INVALID_BANK_ACCOUNT_HOLDER';
-
-    /**
-     * @var string
-     */
-    public $multipleMessage = AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . 'RP_INVALID_BANK_ACCOUNT_HOLDER';
-
-    /**
-     * @var string
-     */
-    public $minMessage = AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . 'RP_INVALID_BANK_ACCOUNT_HOLDER';
-
-    /**
-     * @var string
-     */
-    public $maxMessage = AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . 'RP_INVALID_BANK_ACCOUNT_HOLDER';
-
-    /**
      * @var string[]
      * @deprecated since Symfony 6.1, use const ERROR_NAMES instead
      */
@@ -54,6 +34,12 @@ class BankAccountHolderChoice extends Choice
 
     public function __construct(array $choices)
     {
+        // we do override the property to avoid backward compatibility (type declaration is missing in lower symfony versions)
+        $this->message = AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . 'RP_INVALID_BANK_ACCOUNT_HOLDER';
+        $this->multipleMessage = AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . 'RP_INVALID_BANK_ACCOUNT_HOLDER';
+        $this->minMessage = AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . 'RP_INVALID_BANK_ACCOUNT_HOLDER';
+        $this->maxMessage = AbstractPaymentHandler::ERROR_SNIPPET_VIOLATION_PREFIX . 'RP_INVALID_BANK_ACCOUNT_HOLDER';
+
         parent::__construct([
             'min' => 1,
             'max' => 1,
