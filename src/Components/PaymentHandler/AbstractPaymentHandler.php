@@ -30,7 +30,7 @@ use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
-use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
+use Shopware\Core\Checkout\Payment\PaymentException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -71,7 +71,10 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
         $order = $this->getOrderWithAssociations($transaction->getOrder(), $salesChannelContext->getContext());
 
         if (!$order instanceof OrderEntity || $ratepayData->count() === 0) {
-            throw new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'unknown error during payment');
+            throw PaymentException::syncProcessInterrupted(
+                $transaction->getOrderTransaction()->getId(),
+                'unknown error during payment'
+            );
         }
 
         try {
@@ -134,7 +137,11 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
                 $session->getFlashBag()->add(StorefrontController::DANGER, $ratepayException->getMessage());
             }
 
-            throw new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $ratepayException->getMessage(), $ratepayException);
+            throw PaymentException::syncProcessInterrupted(
+                $transaction->getOrderTransaction()->getId(),
+                $ratepayException->getMessage(),
+                $ratepayException
+            );
         }
     }
 
