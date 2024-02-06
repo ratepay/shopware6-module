@@ -25,8 +25,6 @@ use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundExcep
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileByOrderEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileBySalesChannelContext;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
-use Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService;
-use Ratepay\RpayPayments\Util\MethodHelper;
 use Ratepay\RpayPayments\Util\RequestHelper;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
@@ -52,7 +50,6 @@ class ExtensionService
     public function __construct(
         private readonly EntityRepository $orderExtensionRepository,
         private readonly EntityRepository $lineItemExtensionRepository,
-        private readonly TransactionIdService $transactionIdService,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly ProfileBySalesChannelContext $profileBySalesChannelContext,
         private readonly ProfileByOrderEntity $profileByOrderEntity
@@ -179,18 +176,6 @@ class ExtensionService
             'paymentMethod',
             strtolower((string) constant($paymentMethod->getHandlerIdentifier() . '::RATEPAY_METHOD'))
         );
-
-        if (!MethodHelper::isInstallmentMethod($paymentMethod->getHandlerIdentifier())) {
-            // only set transaction ID for payment methods which are not an installment.
-            // for installment, we generate a new transaction ID when the runtime has been selected.
-            // this transaction ID will be sent to the storefront separately.
-            $transactionId = $this->transactionIdService->getTransactionId(
-                $salesChannelContext,
-                $order instanceof OrderEntity ? TransactionIdService::PREFIX_ORDER . $order->getId() . '-' : TransactionIdService::PREFIX_CART,
-                $profileConfig
-            );
-            $extension->offsetSet('transactionId', $transactionId);
-        }
 
         if ($httpRequest instanceof Request) {
             // add user entered values again, so that the user have not to reenter his values

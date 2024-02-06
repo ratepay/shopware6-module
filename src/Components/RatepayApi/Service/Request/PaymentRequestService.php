@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 
-use Exception;
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
 use RatePAY\RequestBuilder;
@@ -73,14 +72,6 @@ class PaymentRequestService extends AbstractRequest
         parent::__construct($eventDispatcher, $headFactory);
     }
 
-    protected function initRequest(AbstractRequestData $requestData): void
-    {
-        /** @var PaymentRequestData $requestData */
-        if ($requestData->getRatepayTransactionId() === null) {
-            throw new Exception('no transaction id given'); // TODO add exception
-        }
-    }
-
     protected function getRequestContent(AbstractRequestData $requestData): ?Content
     {
         /** @var PaymentRequestData $requestData */
@@ -95,9 +86,6 @@ class PaymentRequestService extends AbstractRequest
         /** @var PaymentRequestData $requestData */
         $head = parent::getRequestHead($requestData);
         $head->setExternal($this->externalFactory->getData($requestData));
-        if ($requestData->getRatepayTransactionId() !== null) {
-            $head->setTransactionId($requestData->getRatepayTransactionId());
-        }
 
         return $head;
     }

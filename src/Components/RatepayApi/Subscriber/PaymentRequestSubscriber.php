@@ -17,13 +17,11 @@ use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\ResponseEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
-use Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentRequestSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly TransactionIdService $transactionIdService,
         private readonly ExtensionService $extensionService
     ) {
     }
@@ -41,8 +39,6 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
         /** @var PaymentRequestData $requestData */
         $requestData = $requestEvent->getRequestData();
 
-        $this->transactionIdService->deleteTransactionId($requestData->getRatepayTransactionId(), $requestData->getContext());
-
         /** @var PaymentRequest $responseModel */
         $responseModel = $requestEvent->getRequestBuilder()->getResponse();
 
@@ -59,8 +55,6 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
         /** @var PaymentRequestData $requestData */
         $requestData = $requestEvent->getRequestData();
 
-        $this->transactionIdService->deleteTransactionId($requestData->getRatepayTransactionId(), $requestData->getContext());
-
         /** @var PaymentRequest $responseModel */
         $responseModel = $requestEvent->getRequestBuilder()->getResponse();
 
@@ -69,7 +63,7 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
         $lineItems = [];
         foreach (array_keys($requestData->getItems()) as $id) {
             if ($id !== OrderOperationData::ITEM_ID_SHIPPING) {
-                // shipping will written into the order-extension
+                // shipping will be written into the order-extension
                 $lineItems[] = $orderItems->get($id);
             }
         }

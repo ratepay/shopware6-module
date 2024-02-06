@@ -21,7 +21,7 @@ class InstallmentCalculationResponse extends StoreApiResponse
     protected $object;
 
     /**
-     * @param array{translations: array, plan: array, transactionId: string} $data
+     * @param array{translations: array, plan: array} $data
      */
     public function __construct(array $data)
     {
@@ -36,10 +36,5 @@ class InstallmentCalculationResponse extends StoreApiResponse
     public function getPlan(): array
     {
         return $this->object->get('plan');
-    }
-
-    public function getTransactionId(): string
-    {
-        return $this->object->get('transactionId');
     }
 }

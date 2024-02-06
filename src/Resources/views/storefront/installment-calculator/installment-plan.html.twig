@@ -1,5 +1,5 @@
 {#
-  ~ Copyright (c) 2020 Ratepay GmbH
+  ~ Copyright (c) Ratepay GmbH
   ~
   ~ For the full copyright and license information, please view the LICENSE
   ~ file that was distributed with this source code.
@@ -9,7 +9,6 @@
     Expect installments, with all payment methods, the transaction ID has been already provided to the frontend.
     We need the set the transaction ID after the runtime has been selected.
 #}
-{% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/common/transaction-id.html.twig' with {'transactionId': ratepay.installment.transactionId } %}
 <input type="hidden" name="ratepay[profile_uuid]" value="{{ ratepay.installment.plan.profileUuid }}" form="confirmOrderForm" />
 <input type="hidden" name="ratepay[installment][hash]" id="rp-calculation-hash" value="{{ ratepay.installment.plan.hash }}" form="confirmOrderForm" />
 

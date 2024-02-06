@@ -24,7 +24,6 @@ class PaymentRequestData extends OrderOperationData implements CheckoutOperation
         OrderEntity $order,
         OrderTransactionEntity $transaction,
         private readonly DataBag $requestDataBag,
-        private ?string $ratepayTransactionId = null,
         private readonly bool $sendDiscountAsCartItem = false,
         private readonly bool $sendShippingCostsAsCartItem = false
     ) {
@@ -58,16 +57,6 @@ class PaymentRequestData extends OrderOperationData implements CheckoutOperation
     public function getSalesChannelContext(): SalesChannelContext
     {
         return $this->salesChannelContext;
-    }
-
-    public function getRatepayTransactionId(): ?string
-    {
-        return $this->ratepayTransactionId;
-    }
-
-    public function setRatepayTransactionId(string $ratepayTransactionId = null): void
-    {
-        $this->ratepayTransactionId = $ratepayTransactionId;
     }
 
     public function isSendDiscountAsCartItem(): bool

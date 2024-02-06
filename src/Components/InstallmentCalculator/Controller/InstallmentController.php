@@ -42,7 +42,6 @@ class InstallmentController extends StorefrontController
                 'installment' => [
                     'plan' => $vars->getPlan(),
                     'translations' => $vars->getTranslations(),
-                    'transactionId' => $vars->getTransactionId(),
                 ],
                 'accountHolders' => BankAccountHolderHelper::getAvailableNames($salesChannelContext),
             ],

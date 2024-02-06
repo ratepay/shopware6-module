@@ -42,7 +42,6 @@ use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterface
 {
@@ -81,7 +80,6 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
                 $order,
                 $transaction->getOrderTransaction(),
                 $dataBag,
-                $ratepayData->get('transactionId'),
                 $this->configService->isSendDiscountsAsCartItem(),
                 $this->configService->isSendShippingCostsAsCartItem()
             );
@@ -145,13 +143,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
      */
     public function getValidationDefinitions(DataBag $requestDataBag, $baseData): array
     {
-        $validations = [
-            'transactionId' => [
-                new NotBlank([
-                    'message' => 'Unknown error.',
-                ]),
-            ],
-        ];
+        $validations = [];
 
         /** @var DataBag $ratepayData */
         $ratepayData = $requestDataBag->get('ratepay');

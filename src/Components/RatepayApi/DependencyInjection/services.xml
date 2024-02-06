@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <!--
-  ~ Copyright (c) 2020 Ratepay GmbH
+  ~ Copyright (c) Ratepay GmbH
   ~
   ~ For the full copyright and license information, please view the LICENSE
   ~ file that was distributed with this source code.
@@ -16,9 +16,5 @@
     </imports>
 
     <services>
-        <service id="Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService" autowire="true">
-            <argument id="ratepay_transaction_id_temp.repository" type="service"/>
-            <argument id="ratepay_profile_config.repository" type="service"/>
-        </service>
     </services>
 </container>

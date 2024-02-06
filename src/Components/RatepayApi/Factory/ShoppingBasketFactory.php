@@ -18,7 +18,6 @@ use RatePAY\Model\Request\SubModel\Content\ShoppingBasket\Discount;
 use RatePAY\Model\Request\SubModel\Content\ShoppingBasket\Items;
 use RatePAY\Model\Request\SubModel\Content\ShoppingBasket\Items\Item;
 use RatePAY\Model\Request\SubModel\Content\ShoppingBasket\Shipping;
-use Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Dto\PaymentQueryData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OperationDataWithBasket;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
@@ -31,7 +30,7 @@ use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 
 /**
- * @method ShoppingBasket getData(PaymentRequestData|PaymentQueryData|OrderOperationData $requestData)
+ * @method ShoppingBasket getData(PaymentRequestData|OrderOperationData $requestData)
  */
 class ShoppingBasketFactory extends AbstractFactory
 {
@@ -176,10 +175,6 @@ class ShoppingBasketFactory extends AbstractFactory
     {
         if ($requestData instanceof OrderOperationData) {
             return $requestData->getOrder()->getTaxStatus();
-        }
-
-        if ($requestData instanceof PaymentQueryData) {
-            return $requestData->getCart()->getPrice()->getTaxStatus();
         }
 
         throw new BadMethodCallException($requestData::class . ' is not implemented yet');

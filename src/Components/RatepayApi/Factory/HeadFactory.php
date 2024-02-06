@@ -58,9 +58,10 @@ class HeadFactory extends AbstractFactory
                     ->setSecuritycode($requestData->getProfileConfig()->getSecurityCode())
             );
 
-        if ($requestData instanceof PaymentRequestData && $requestData->getRatepayTransactionId()) {
-            $head->setTransactionId($requestData->getRatepayTransactionId());
-        } elseif ($requestData instanceof OrderOperationData && $requestData->getTransaction()) {
+        if ($requestData instanceof OrderOperationData
+            && !$requestData instanceof PaymentRequestData
+            && $requestData->getTransaction()
+        ) {
             /** @var RatepayOrderDataEntity $orderExtension */
             $orderExtension = $requestData->getOrder()->getExtension(OrderExtension::EXTENSION_NAME);
             $head->setTransactionId($orderExtension->getTransactionId());

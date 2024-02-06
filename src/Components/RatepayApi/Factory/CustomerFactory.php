@@ -19,7 +19,6 @@ use RatePAY\Model\Request\SubModel\Content\Customer\Addresses\Address;
 use RatePAY\Model\Request\SubModel\Content\Customer\BankAccount;
 use RatePAY\Model\Request\SubModel\Content\Customer\Contacts;
 use RatePAY\Model\Request\SubModel\Content\Customer\Contacts\Phone;
-use Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Dto\PaymentQueryData;
 use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\CheckoutOperationInterface;
@@ -68,9 +67,6 @@ class CustomerFactory extends AbstractFactory
             $order = $requestData->getOrder();
             $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
             $shippingAddress = $order->getDeliveries()->first()->getShippingOrderAddress();
-        } elseif ($requestData instanceof PaymentQueryData) {
-            $billingAddress = $customerEntity->getActiveBillingAddress();
-            $shippingAddress = $customerEntity->getActiveShippingAddress();
         } else {
             throw new RuntimeException(sprintf('%s is not supported by %s', $requestData::class, self::class));
         }
@@ -195,10 +191,6 @@ class CustomerFactory extends AbstractFactory
     {
         if ($requestData instanceof PaymentRequestData) {
             $languageId = $requestData->getOrder()->getLanguageId();
-        }
-
-        if ($requestData instanceof PaymentQueryData) {
-            $languageId = $requestData->getSalesChannelContext()->getSalesChannel()->getLanguageId();
         }
 
         /** @noinspection PhpUndefinedVariableInspection */

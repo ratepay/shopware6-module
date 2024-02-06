@@ -29,8 +29,6 @@ use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodInsta
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileByOrderEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileBySalesChannelContext;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileSearchService;
-use Ratepay\RpayPayments\Components\RatepayApi\Exception\TransactionIdFetchFailedException;
-use Ratepay\RpayPayments\Components\RatepayApi\Service\TransactionIdService;
 use Ratepay\RpayPayments\Util\MethodHelper;
 use Ratepay\RpayPayments\Util\PaymentFirstday;
 use RatePAY\Service\LanguageService;
@@ -53,7 +51,6 @@ class InstallmentService
         private readonly ProfileSearchService $profileSearchService,
         private readonly ProfileByOrderEntity $profileByOrderEntity,
         private readonly ProfileBySalesChannelContext $profileBySalesChannelContext,
-        private readonly TransactionIdService $transactionIdService,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly EntityRepository $paymentMethodRepository,
         private readonly LoggerInterface $logger
@@ -229,25 +226,16 @@ class InstallmentService
     }
 
     /**
-     * @return array{translations: array, plan: array, transactionId: string}
+     * @return array{translations: array, plan: array}
      * @throws ProfileNotFoundException
-     * @throws RequestException
-     * @throws TransactionIdFetchFailedException
      */
     public function getInstallmentPlanTwigVars(InstallmentCalculatorContext $context): array
     {
         $installmentPlan = $this->getInstallmentPlanData($context);
 
-        $transactionId = $this->transactionIdService->getTransactionId(
-            $context->getSalesChannelContext(),
-            $context->getOrder() instanceof OrderEntity ? TransactionIdService::PREFIX_ORDER . $context->getOrder()->getId() : TransactionIdService::PREFIX_CART,
-            $installmentPlan['profileUuid']
-        );
-
         return [
             'translations' => $this->getTranslations($context->getSalesChannelContext()),
             'plan' => $installmentPlan,
-            'transactionId' => $transactionId,
         ];
     }
 

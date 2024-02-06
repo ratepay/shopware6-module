@@ -1,13 +1,9 @@
 {#
-  ~ Copyright (c) 2020 Ratepay GmbH
+  ~ Copyright (c) Ratepay GmbH
   ~
   ~ For the full copyright and license information, please view the LICENSE
   ~ file that was distributed with this source code.
 #}
-
-{% if page.extensions.ratepay.transactionId %}
-    {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/common/transaction-id.html.twig' with {'transactionId': page.extensions.ratepay.transactionId} %}
-{% endif %}
 
 {% if page.extensions.ratepay.validation %}
     <input type="hidden" name="ratepay[validation][billing_address_md5]" value="{{ page.extensions.ratepay.validation.billing_address_md5 }}" form="confirmOrderForm"/>
