@@ -179,7 +179,7 @@ Component.register('ratepay-api-log-list', {
             }];
         },
 
-        defaultCriteria() {
+        apiLogCriteria() {
             const defaultCriteria = new Criteria();
 
             if (this.isValidTerm(this.term)) {
@@ -246,7 +246,13 @@ Component.register('ratepay-api-log-list', {
     watch: {
         $route() {
             this.initalLogId = this.$route.query.logId !== undefined ? this.$route.query.logId.trim() : null;
-        }
+        },
+        apiLogCriteria: {
+            handler() {
+                this.getList()
+            },
+            deep: true,
+        },
     },
 
     methods: {
@@ -261,7 +267,7 @@ Component.register('ratepay-api-log-list', {
             this.isLoading = true;
             let criteria = await Shopware.Service('filterService').mergeWithStoredFilters(
                 this.storeKey,
-                this.defaultCriteria
+                this.apiLogCriteria
             );
 
             if (this.isValidTerm(this.term)) {
