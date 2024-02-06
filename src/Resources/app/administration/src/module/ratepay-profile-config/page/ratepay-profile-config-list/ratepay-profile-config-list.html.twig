@@ -31,24 +31,24 @@
                 :identifier="'ratepay-profile-config-list'"
                 detailRoute="ratepay.profile.config.detail">
 
-                <template #column-status slot-scope="{ item }">
+                <template #column-status="{ item }">
                     <sw-color-badge color="red" v-if="item.status === false" ></sw-color-badge>
                     <span v-if="item.status === false">&nbsp;&nbsp;{{ $t('ratepay.profileConfig.global.labels.inactive') }}</span>
                     <sw-color-badge color="green" v-if="item.status === true"></sw-color-badge>
                     <span v-if="item.status === true">&nbsp;&nbsp;{{ $t('ratepay.profileConfig.global.labels.active') }}</span>
                 </template>
 
-                <template #column-onlyAdminOrders slot-scope="{ item }">
+                <template #column-onlyAdminOrders="{ item }">
                     <span v-if="item.onlyAdminOrders">{{ $t('global.default.yes') }}</span>
                     <span v-if="!item.onlyAdminOrders">{{ $t('global.default.no') }}</span>
                 </template>
 
-                <template #column-sandbox slot-scope="{ item }">
+                <template #column-sandbox="{ item }">
                     <span v-if="item.sandbox">{{ $t('global.default.yes') }}</span>
                     <span v-if="!item.sandbox">{{ $t('global.default.no') }}</span>
                 </template>
 
-                <template #column-salesChannel slot-scope="{ item }">
+                <template #column-salesChannel="{ item }">
                     {{ item.salesChannel.name }}
                 </template>
             </sw-entity-listing>

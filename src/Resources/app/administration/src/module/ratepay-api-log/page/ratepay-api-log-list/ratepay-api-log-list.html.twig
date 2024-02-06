@@ -44,7 +44,7 @@
                 :showActions="true"
                 :identifier="'ratepay-api-log-list'">
 
-                <template #column-createdAt slot-scope="{ item }">
+                <template #column-createdAt="{ item }">
                     {{ dateFilter(item.createdAt, { hour: '2-digit', minute: '2-digit' }) }}
                 </template>
 

@@ -19,7 +19,7 @@
                 :allowInlineEdit="false"
                 :compactMode="true">
 
-                <template #column-createdAt slot-scope="{ item }">
+                <template #column-createdAt="{ item }">
                     {{ dateFilter(item.createdAt, { hour: '2-digit', minute: '2-digit' }) }}
                 </template>
 
