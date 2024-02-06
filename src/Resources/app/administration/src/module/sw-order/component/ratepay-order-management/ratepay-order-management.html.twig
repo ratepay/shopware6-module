@@ -5,13 +5,13 @@
   ~ file that was distributed with this source code.
 #}
 
-<sw-card :title="$tc('ratepay.orderManagement.title')" class="ratepay-article-panel" positionIdentifier="ratepay-order-management-card">
-    <sw-tabs defaultItem="shippingCancel" positionIdentifier="ratepay-order-management">
+<sw-card :title="$tc('ratepay.orderManagement.title')" class="ratepay-article-panel" position-identifier="ratepay-order-management-card">
+    <sw-tabs default-item="shippingCancel" position-identifier="ratepay-order-management">
         <template #default="{ active }">
-            <sw-tabs-item :activeTab="active" name="shippingCancel">
+            <sw-tabs-item :active-tab="active" name="shippingCancel">
                 {{ $t('ratepay.orderManagement.tab.shippingCancel') }}
             </sw-tabs-item>
-            <sw-tabs-item :activeTab="active" name="rtn">
+            <sw-tabs-item :active-tab="active" name="rtn">
                 {{ $t('ratepay.orderManagement.tab.return') }}
             </sw-tabs-item>
         </template>
@@ -23,27 +23,27 @@
                         <sw-button
                             class="sw-button--small"
                             @click="onClickResetSelections"
-                            :isLoading="loading.reload">
+                            :is-loading="loading.reload">
                             {{ $t('ratepay.orderManagement.action.setZero') }}
                         </sw-button>
                         <sw-button-process
                             class="sw-button--small"
-                            :isLoading="loading.deliver"
-                            :processSuccess="processSuccess"
+                            :is-loading="loading.deliver"
+                            :process-success="processSuccess"
                             @click="onClickButtonDeliver">
                             {{ $t('ratepay.orderManagement.action.deliverSelection') }}
                         </sw-button-process>
                         <sw-button-process
                             class="sw-button--small"
-                            :isLoading="loading.cancel"
-                            :processSuccess="processSuccess"
+                            :is-loading="loading.cancel"
+                            :process-success="processSuccess"
                             @click="onClickButtonCancel(false)">
                             {{ $t('ratepay.orderManagement.action.cancelSelection') }}
                         </sw-button-process>
                         <sw-button-process
                             class="sw-button--small"
-                            :isLoading="loading.cancelWithStock"
-                            :processSuccess="processSuccess"
+                            :is-loading="loading.cancelWithStock"
+                            :process-success="processSuccess"
                             @click="onClickButtonCancel(true)">
                             {{ $t('ratepay.orderManagement.action.cancelSelectionWithStock') }}
                         </sw-button-process>
@@ -58,11 +58,11 @@
                 </div>
 
                 <sw-data-grid
-                    :dataSource="items"
+                    :data-source="items"
                     :columns="columns"
-                    :showSelection="false"
-                    :showActions="false"
-                    :showSettings="false"
+                    :show-selection="false"
+                    :show-actions="false"
+                    :show-aettings="false"
                     :key="loading.list">
 
                     <template #column-quantity="{ item }">
@@ -89,31 +89,31 @@
                         <sw-button
                             class="sw-button--small"
                             @click="onClickResetSelections"
-                            :isLoading="loading.reload">
+                            :is-loading="loading.reload">
                             {{ $t('ratepay.orderManagement.action.setZero') }}
                         </sw-button>
                         <sw-button-process
                             class="sw-button--small"
-                            :isLoading="loading.rtn"
-                            :processSuccess="processSuccess"
+                            :is-loading="loading.rtn"
+                            :process-success="processSuccess"
                             @click="onClickButtonReturn(false)">
                             {{ $t('ratepay.orderManagement.action.returnSelection') }}
                         </sw-button-process>
                         <sw-button-process
                             class="sw-button--small"
-                            :isLoading="loading.rtnWithStock"
-                            :processSuccess="processSuccess"
+                            :is-loading="loading.rtnWithStock"
+                            :process-success="processSuccess"
                             @click="onClickButtonReturn(true)">
                             {{ $t('ratepay.orderManagement.action.returnSelectionWithStock') }}
                         </sw-button-process>
                     </sw-button-group>
                 </div>
                 <sw-data-grid
-                    :dataSource="items"
+                    :data-source="items"
                     :columns="columns"
-                    :showSelection="false"
-                    :showActions="false"
-                    :showSettings="false"
+                    :show-selection="false"
+                    :show-actions="false"
+                    :show-settings="false"
                     :key="loading.list"
                 >
                     <template #column-quantity="{ item }">
@@ -137,7 +137,7 @@
             <sw-text-field v-model:value="addDebit.data.name"></sw-text-field>
             <label v-if="order.taxStatus == 'net'">{{ $t('ratepay.orderManagement.modal.addDebit.label.amountNet') }}</label>
             <label v-if="order.taxStatus == 'gross'">{{ $t('ratepay.orderManagement.modal.addDebit.label.amountGross') }}</label>
-            <sw-number-field class="rp-price-field" v-model:value="addDebit.data.amount" min="0.01" allowEmpty="false"></sw-number-field>
+            <sw-number-field class="rp-price-field" v-model:value="addDebit.data.amount" min="0.01" allow-empty="false"></sw-number-field>
             <label>{{ $t('ratepay.orderManagement.modal.addDebit.label.tax') }}</label>
             <sw-select-field name="sw-field--product-taxId"
                       :placeholder="$tc('ratepay.orderManagement.modal.addDebit.placeholder.tax')"
@@ -155,8 +155,8 @@
         <template #modal-footer>
             <sw-button-process
                 class="sw-button--small"
-                :isLoading="loading.addDebit"
-                :processSuccess="processSuccess"
+                :is-loading="loading.addDebit"
+                :process-success="processSuccess"
                 @click="onClickButtonAddDebit">
                 {{ $t('ratepay.orderManagement.action.addDebit') }}
             </sw-button-process>
@@ -171,7 +171,7 @@
             <sw-text-field v-model:value="addCredit.data.name"></sw-text-field>
             <label v-if="order.taxStatus == 'net'">{{ $t('ratepay.orderManagement.modal.addCredit.label.amountNet') }}</label>
             <label v-if="order.taxStatus == 'gross'">{{ $t('ratepay.orderManagement.modal.addCredit.label.amountGross') }}</label>
-            <sw-number-field class="rp-price-field" v-model:value="addCredit.data.amount" min="0.01" allowEmpty="false"></sw-number-field>
+            <sw-number-field class="rp-price-field" v-model:value="addCredit.data.amount" min="0.01" allow-empty="false"></sw-number-field>
             <label>{{ $t('ratepay.orderManagement.modal.addCredit.label.tax') }}</label>
             <sw-select-field name="sw-field--product-taxId"
                       :placeholder="$tc('ratepay.orderManagement.modal.addCredit.placeholder.tax')"
@@ -189,8 +189,8 @@
         <template #modal-footer>
             <sw-button-process
                 class="sw-button--small"
-                :isLoading="loading.addCredit"
-                :processSuccess="processSuccess"
+                :is-loading="loading.addCredit"
+                :process-success="processSuccess"
                 @click="onClickButtonAddCredit">
                 {{ $t('ratepay.orderManagement.action.addCredit') }}
             </sw-button-process>

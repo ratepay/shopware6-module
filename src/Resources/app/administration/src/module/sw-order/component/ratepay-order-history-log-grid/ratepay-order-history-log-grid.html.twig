@@ -5,19 +5,19 @@
   ~ file that was distributed with this source code.
 #}
 
-<sw-card :title="$tc('ratepay.order-log-history.detailBase.ratepayHistoryPanelTitle')" positionIdentifier="ratepay-order-log-history">
+<sw-card :title="$tc('ratepay.order-log-history.detailBase.ratepayHistoryPanelTitle')" position-identifier="ratepay-order-log-history">
         <sw-container slot="grid" type="row">
             <sw-entity-listing
                 :items="entities"
                 :repository="repository"
                 :columns="columns"
-                :fullPage="false"
-                :showSettings="false"
-                :showSelection="false"
-                :showActions="false"
-                :allowColumnEdit="false"
-                :allowInlineEdit="false"
-                :compactMode="true">
+                :full-page="false"
+                :show-settings="false"
+                :show-selection="false"
+                :show-actions="false"
+                :allow-column-edit="false"
+                :allow-inline-edit="false"
+                :compact-mode="true">
 
                 <template #column-createdAt="{ item }">
                     {{ dateFilter(item.createdAt, { hour: '2-digit', minute: '2-digit' }) }}

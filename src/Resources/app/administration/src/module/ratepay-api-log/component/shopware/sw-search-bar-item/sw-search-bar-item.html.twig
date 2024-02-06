@@ -9,7 +9,7 @@
             {% block sw_search_bar_item_ratepay_api_log_label %}
                 <span class="sw-search-bar-item__label ratepay-api-log-search-result">
                     <div>
-                        <sw-highlight-text v-bind:searchTerm="searchTerm"
+                        <sw-highlight-text v-bind:search-term="searchTerm"
                                            v-bind:text="item.additionalData.transactionId">
                         </sw-highlight-text>
                         <span>({{ item.operation }})</span>

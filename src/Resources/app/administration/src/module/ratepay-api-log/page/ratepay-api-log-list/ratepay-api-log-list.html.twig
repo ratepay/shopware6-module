@@ -10,8 +10,8 @@
 
     {% block ratepay_api_log_list_search_bar %}
         <template #search-bar>
-            <sw-search-bar initialSearchType="ratepay_api_log"
-                           :initialSearch="term"
+            <sw-search-bar initial-search-type="ratepay_api_log"
+                           :initial-search="term"
                            @search="onSearch">
             </sw-search-bar>
         </template>
@@ -25,8 +25,8 @@
         <template #smart-bar-actions>
             <sw-button-process variant="primary"
                                @click="getList"
-                               :isLoading="isLoading"
-                               :processSuccess="isLoaded"
+                               :is-loading="isLoading"
+                               :process-success="isLoaded"
                                @process-finish="isLoaded = false">
                 {{ $t('ratepay.apiLog.page.list.reload') }}
             </sw-button-process>
@@ -39,9 +39,9 @@
                 v-if="entities"
                 :items="entities"
                 :repository="repository"
-                :showSelection="false"
+                :show-selection="false"
                 :columns="columns"
-                :showActions="true"
+                :show-actions="true"
                 :identifier="'ratepay-api-log-list'">
 
                 <template #column-createdAt="{ item }">

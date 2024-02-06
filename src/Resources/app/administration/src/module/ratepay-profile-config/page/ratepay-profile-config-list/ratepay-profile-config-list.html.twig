@@ -14,7 +14,7 @@
 
     {% block ratepay_profile_config_list_smart_bar_actions %}
         <template #smart-bar-actions>
-            <sw-button variant="primary" :routerLink="{ name: 'ratepay.profile.config.create' }">
+            <sw-button variant="primary" :router-link="{ name: 'ratepay.profile.config.create' }">
                 {{ $t('ratepay.profileConfig.page.list.createButton') }}
             </sw-button>
         </template>
@@ -26,10 +26,10 @@
                 v-if="entities"
                 :items="entities"
                 :repository="repository"
-                :showSelection="false"
+                :show-selection="false"
                 :columns="columns"
                 :identifier="'ratepay-profile-config-list'"
-                detailRoute="ratepay.profile.config.detail">
+                detail-route="ratepay.profile.config.detail">
 
                 <template #column-status="{ item }">
                     <sw-color-badge color="red" v-if="item.status === false" ></sw-color-badge>
