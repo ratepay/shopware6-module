@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Ratepay GmbH
+ * Copyright (c) Ratepay GmbH
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -47,12 +47,7 @@ Component.register('ratepay-profile-config-detail', {
 
     created() {
         this.repository = this.repositoryFactory.create('ratepay_profile_config');
-        let prom = this.loadEntity();
-        if (this.$route.params.reloadConfig) {
-            prom.then(() => {
-                this.onClickReloadConfig()
-            });
-        }
+        this.loadEntity().then(() => (this.$route.query.reloadConfig && this.onClickReloadConfig()));
     },
 
     methods: {
@@ -79,24 +74,27 @@ Component.register('ratepay-profile-config-detail', {
 
             this.repository
                 .save(this.entity, Shopware.Context.api)
-                .then(() => {
-                    this.loadEntity();
-
-                    this.onClickReloadConfig();
+                .then(async () => {
+                    await this.onClickSaveAfter();
                     this.createNotificationSuccess({
                         title: this.$tc('ratepay.profileConfig.messages.save.success'),
                         message: this.$tc('ratepay.profileConfig.messages.save.success')
                     });
-
                     this.isLoading = false;
                     this.processSuccess = true;
-                }).catch((exception) => {
+                })
+                .catch((exception) => {
                     this.isLoading = false;
                     this.createNotificationError({
                         title: this.$t('ratepay.profileConfig.messages.save.error.title'),
                         message: exception
                     });
-            });
+                });
+        },
+
+        async onClickSaveAfter() {
+            await this.loadEntity();
+            await this.onClickReloadConfig();
         },
 
         saveFinish() {
