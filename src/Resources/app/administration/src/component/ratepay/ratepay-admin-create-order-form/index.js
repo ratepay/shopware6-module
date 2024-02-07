@@ -26,7 +26,6 @@ Component.register('ratepay-admin-create-order-form', {
         return {
             loading: false,
             salesChannels: null,
-            salesChannelDomains: null,
 
             selectedSalesChannelId: null,
             selectedSalesChannelDomainId: null,
@@ -56,25 +55,18 @@ Component.register('ratepay-admin-create-order-form', {
             });
     },
 
-    methods: {
-        selectSalesChannel() {
-            let criteria = new Criteria();
-            criteria.addFilter(Criteria.equals('salesChannelId', this.selectedSalesChannelId));
-
-            this.loading = true;
-            this.salesChannelDomainRepository
-                .search(criteria, Shopware.Context.api)
-                .then((result) => {
-                    this.salesChannelDomains = result;
-                });
+    computed: {
+        salesChannelDomains() {
+            return this.selectedSalesChannelId ? this.salesChannels.get(this.selectedSalesChannelId)?.domains ?? [] : [];
         },
+    },
 
+    methods: {
         navigateToFrontend() {
             this.ratepayAdminOrderLoginTokenService.requestTokenUrl(
                 this.selectedSalesChannelId,
                 this.selectedSalesChannelDomainId
             ).then((response) => {
-                console.log(arguments);
                 window.open(response.url);
             });
         }

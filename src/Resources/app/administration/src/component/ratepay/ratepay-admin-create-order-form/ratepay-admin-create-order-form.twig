@@ -7,11 +7,11 @@
 <div>
     <sw-select-field v-model:value="selectedSalesChannelId"
                      :label="$tc('ratepay.admin.create-order.modal.labels.salesChannel')"
-                     @change="selectSalesChannel">
+                     @update:value="selectedSalesChannelDomainId = null">
         <option>{{ $t('ratepay.admin.create-order.modal.please-select') }}</option>
         <option v-for="salesChannel in salesChannels"
                 :value="salesChannel.id"
-                :selected="salesChannel.id === selectedSalesChannelId">
+                :selected="salesChannel === selectedSalesChannelId">
             {{ salesChannel.translated.name }}
         </option>
     </sw-select-field>
@@ -19,7 +19,7 @@
 
     <sw-select-field v-model:value="selectedSalesChannelDomainId"
                      :label="$tc('ratepay.admin.create-order.modal.labels.salesChannelDomain')"
-                     v-if="selectedSalesChannelId">
+                     v-if="salesChannelDomains.length">
         <option>{{ $t('ratepay.admin.create-order.modal.please-select') }}</option>
         <option v-for="salesChannelDomain in salesChannelDomains"
                 :value="salesChannelDomain.id"
@@ -28,7 +28,7 @@
         </option>
     </sw-select-field>
 
-    <sw-button @click="navigateToFrontend" class="sw-button--primary">
+    <sw-button @click="navigateToFrontend" class="sw-button--primary" v-if="selectedSalesChannelDomainId">
         {{ $t('ratepay.admin.create-order.modal.start-session') }}
     </sw-button>
 </div>
