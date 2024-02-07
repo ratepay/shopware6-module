@@ -29,7 +29,7 @@ use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\Routing\Exception\InvalidRequestParameterException;
+use Shopware\Core\Framework\Routing\RoutingException;
 use Shopware\Core\Framework\Validation\DataValidationDefinition;
 use Shopware\Core\Framework\Validation\DataValidator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -181,7 +181,7 @@ class ProductPanel extends AbstractController
         if ($order instanceof OrderEntity) {
             $params = $request->request->all();
             if (!isset($params['items']) || !is_array($params['items'])) {
-                throw new InvalidRequestParameterException('items');
+                throw RoutingException::invalidRequestParameter('items');
             }
 
             $items = [];
