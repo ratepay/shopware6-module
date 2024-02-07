@@ -1,0 +1,35 @@
+on:
+    workflow_dispatch:
+    push:
+        branches:
+            - '*'
+            - '*/*'
+
+permissions:
+    contents: read
+
+jobs:
+    build:
+        name: Build installable packages
+        runs-on: ubuntu-latest
+
+        steps:
+            -   uses: actions/checkout@v3
+
+            -   uses: actions/setup-go@v4
+
+            -   name: Install shopware-cli
+                uses: FriendsOfShopware/shopware-cli-action@v1
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            -   uses: actions/setup-node@v3
+                with:
+                    node-version: '18'
+
+            -   run: shopware-cli extension zip . --disable-git --release
+
+            -   uses: actions/upload-artifact@v3
+                with:
+                    name: Module bundles
+                    path: "*.zip"

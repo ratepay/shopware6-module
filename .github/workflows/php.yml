@@ -1,0 +1,101 @@
+on:
+    push:
+        branches:
+            - '*'
+            - 'task/*'
+
+env:
+    MODULE_NAME: RpayPayments
+    MODULE_DIR: custom/plugins/RpayPayments
+    COMPOSER_NAME: ratepay/shopware6-module
+
+permissions:
+    contents: read
+
+jobs:
+    lint:
+        name: Lint (Shopware ${{ matrix.shopware-version }}, PHP ${{ matrix.php-version }} on ${{ matrix.operating-system }})
+        runs-on: 'ubuntu-latest'
+        strategy:
+            matrix:
+                php-version: [ '8.1', '8.2' ]
+                shopware-version: [ 'v6.5.0.0', 'v6.5.1.0', 'v6.5.2.0', 'v6.5.3.0', 'v6.5.4.0', 'v6.5.5.0', 'v6.5.6.0', 'v6.5.7.0', '6.6.x-dev' ]
+                include:
+                    -   php-version: "8.3"
+                        mysql-versions: "8.0"
+                        shopware-version: "6.6.x-dev"
+                exclude:
+                    -   php-version: "8.1"
+                        shopware-version: "6.6.x-dev"
+            fail-fast: false
+            max-parallel: 10
+        steps:
+
+            -   name: Install PHP
+                uses: shivammathur/setup-php@master
+                with:
+                    php-version: ${{ matrix.php-version }}
+                    extensions: mbstring, xdebug, curl, dom, fileinfo, gd, iconv, intl, json, xml, mbstring, pdo, phar, zip, sodium, pdo_mysql
+                    tools: composer:2.2
+
+            -   name: "Check PHP Version"
+                run: php -v
+
+            -   name: "Check Composer Version"
+                run: composer -V
+
+            -   name: "Check PHP Extensions"
+                run: php -m
+
+            -   name: "checkout Shopware"
+                uses: actions/checkout@v3
+                with:
+                    repository: shopware/production
+                    ref: ${{ matrix.shopware-version == '6.6.x-dev' && 'v6.6.0.0-rc2' || matrix.shopware-version }}
+
+            -   name: "Checkout ${{ env.COMPOSER_NAME }}"
+                uses: actions/checkout@v3
+                with:
+                    path: ${{ env.MODULE_DIR }}
+
+            -   name: "Get composer cache directory"
+                id: composer-cache
+                run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+            -   name: "Cache Composer dependencies"
+                uses: actions/cache@v3
+                with:
+                    path: ${{ steps.composer-cache.outputs.dir }}
+                    key: ${{ matrix.operating-system }}-${{ matrix.php-version }}-${{ matrix.shopware-version }}-${{ hashFiles('**/composer.lock') }}
+
+            -   name: "Install Shopware dependencies"
+                # Install Shopware with --no-dev to prevent that dev-tools of the module got in conflict with the tools of shopware
+                run: |
+                    composer req shopware/core:${{ matrix.shopware-version }} shopware/administration:* shopware/storefront:* --no-update
+                    composer remove shopware/elasticsearch --no-update
+                    composer install
+
+            -   name: "Install ${{ env.COMPOSER_NAME }}"
+                run: |
+                    composer config prefer-stable true
+                    composer config minimum-stability dev
+                    composer config repositories.local-plugins '{ "type": "path", "url": "custom/plugins/*", "options": { "symlink": true } }'
+                    composer req ${{ env.COMPOSER_NAME }} --no-scripts
+
+            -   name: "Install DEV-Tools"
+                working-directory: ${{ env.MODULE_DIR }}
+                run: |
+                    composer remove shopware/* --no-update
+                    composer install
+
+            -   name: "Run PHPStan"
+                working-directory: ${{ env.MODULE_DIR }}
+                run: ./vendor/bin/phpstan analyse --autoload-file ../../../vendor/autoload.php
+
+            -   name: "Check Code style (easy-coding-style)"
+                working-directory: ${{ env.MODULE_DIR }}
+                run: ./vendor/bin/ecs
+
+            -   name: "Check Code style (rector)"
+                working-directory: ${{ env.MODULE_DIR }}
+                run: ./vendor/bin/rector process --dry-run --autoload-file ../../../vendor/autoload.php
