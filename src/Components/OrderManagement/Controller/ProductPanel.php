@@ -25,10 +25,12 @@ use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentCreditServ
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentDeliverService;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentReturnService;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
+use RuntimeException;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Routing\Exception\InvalidRequestParameterException;
 use Shopware\Core\Framework\Routing\RoutingException;
 use Shopware\Core\Framework\Validation\DataValidationDefinition;
 use Shopware\Core\Framework\Validation\DataValidator;
@@ -181,7 +183,15 @@ class ProductPanel extends AbstractController
         if ($order instanceof OrderEntity) {
             $params = $request->request->all();
             if (!isset($params['items']) || !is_array($params['items'])) {
-                throw RoutingException::invalidRequestParameter('items');
+                if (class_exists(RoutingException::class) && method_exists(RoutingException::class, 'invalidRequestParameter')) {
+                    throw RoutingException::invalidRequestParameter('items');
+                } elseif (class_exists(InvalidRequestParameterException::class)) {
+                    // required for shopware == 6.5.0.0
+                    throw new InvalidRequestParameterException('items');
+                }
+
+                // should never occur - just to be safe
+                throw new RuntimeException('Invalid request parameter: items');
             }
 
             $items = [];

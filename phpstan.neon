@@ -9,6 +9,11 @@ parameters:
         - '#generic class Shopware\\Core\\Framework\\Struct\\ArrayStruct does not specify its types#'
         - '#generic class Shopware\\Core\\Framework\\Struct\\ArrayStruct but does not specify its types#'
 
+        # ignored errors for backward compatibility (SW 6.5.3)
+        - '#Call to method getOrderTransactionId\(\) on an unknown class Shopware\\Core\\Checkout\\Payment\\Exception\\SyncPaymentProcessException#'
+        - '#Call to function method_exists\(\) with .*Shopware\\\\Core\\\\Framework\\\\Routing\\\\RoutingException.* and .* will always evaluate to false#'
+        - '#Call to method getOrderTransactionId\(\) on an unknown class Shopware\\Core\\Checkout\\Payment\\PaymentException#'
+
         # NEXT-29041 - Shopware issue: https://github.com/shopware/shopware/blob/v6.6.0.0-rc2/phpstan.neon.dist#L221
         - '#.* generic class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityRepository.*not specify its types: TEntityCollection#'
         - '#\(\) should return .*\|null but returns Shopware\\Core\\Framework\\DataAbstractionLayer\\Entity\|null#'

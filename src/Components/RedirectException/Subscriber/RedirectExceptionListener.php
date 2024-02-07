@@ -14,6 +14,7 @@ namespace Ratepay\RpayPayments\Components\RedirectException\Subscriber;
 use Ratepay\RpayPayments\Components\RedirectException\Exception\ForwardException;
 use Ratepay\RpayPayments\Components\RedirectException\Exception\RedirectException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
+use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Checkout\Payment\PaymentException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Routing\RequestTransformerInterface;
@@ -47,7 +48,10 @@ class RedirectExceptionListener implements EventSubscriberInterface
         $throwable = $event->getThrowable();
 
         $prevThrowable = $throwable->getPrevious();
-        if ($prevThrowable instanceof PaymentException) {
+        if ((class_exists(PaymentException::class) && $prevThrowable instanceof PaymentException)
+            || (class_exists(SyncPaymentProcessException::class) && $prevThrowable instanceof SyncPaymentProcessException)
+        ) {
+            // SyncPaymentProcessException and class_exists checks are required for sw <= 6.5.3 compatibility
             // set the transaction to failed. Without this, the customer will not be able to try a repayment.
             $this->orderTransactionStateHandler->fail($prevThrowable->getOrderTransactionId(), Context::createDefaultContext());
         }
