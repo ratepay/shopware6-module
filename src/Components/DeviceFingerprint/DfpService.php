@@ -74,7 +74,7 @@ class DfpService implements DfpServiceInterface
         $prefix = $this->getDfpPrefix($baseData);
 
         // verify if the prefix is at the beginning of the id
-        return str_starts_with($dfpId, $prefix);
+        return str_starts_with((string) $dfpId, $prefix);
     }
 
     public function getDfpSnippet(Request $request, OrderEntity|SalesChannelContext $baseData): ?string

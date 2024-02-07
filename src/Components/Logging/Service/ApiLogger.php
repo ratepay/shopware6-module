@@ -78,7 +78,7 @@ class ApiLogger
 
         // remove sensitive data
         foreach (['securitycode', 'owner', 'iban'] as $key) {
-            $requestXml = preg_replace(sprintf('/<%s>(.*)<\/%s>/', $key, $key), sprintf('<%s>xxxxxxxx</%s>', $key, $key), $requestXml);
+            $requestXml = preg_replace(sprintf('/<%s>(.*)<\/%s>/', $key, $key), sprintf('<%s>xxxxxxxx</%s>', $key, $key), (string) $requestXml);
         }
 
         $reasonNode = $requestBuilder->getResponseXmlElement()->head->processing->reason;
