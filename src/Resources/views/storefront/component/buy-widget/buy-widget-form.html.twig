@@ -1,0 +1,11 @@
+{% sw_extends '@Storefront/storefront/component/buy-widget/buy-widget-form.html.twig' %}
+
+{% block buy_widget_buy_form_inner %}
+    {% if page.extensions.ratepayInstallment %}
+        {% block page_product_detail_buy_form_installment_details %}
+            {% sw_include '@RatepayPaments/storefront/installment-calculator/quick-info.html.twig' with {quickInfo: page.extensions.ratepayInstallment} %}
+        {% endblock %}
+    {% endif %}
+
+    {{ parent() }}
+{% endblock %}
