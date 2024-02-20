@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
-  ~ Copyright (c) 2020 Ratepay GmbH
+  ~ Copyright (c) Ratepay GmbH
   ~
   ~ For the full copyright and license information, please view the LICENSE
   ~ file that was distributed with this source code.
@@ -29,6 +29,19 @@
             <argument type="service" id="request_stack"/>
             <argument type="service" id="order.repository"/>
             <argument type="service" id="payment_method.repository"/>
+        </service>
+
+        <service id="Ratepay\RpayPayments\Components\Checkout\Service\DataValidationService" />
+
+        <service id="Ratepay\RpayPayments\Components\Checkout\SalesChannel\CartOrderRoute" public="true"
+                 decorates="Shopware\Core\Checkout\Cart\SalesChannel\CartOrderRoute">
+            <argument key="$innerService" type="service" id=".inner" />
+        </service>
+
+        <service id="Ratepay\RpayPayments\Components\Checkout\SalesChannel\HandlePaymentMethodRoute" public="true"
+                 decorates="Shopware\Core\Checkout\Payment\SalesChannel\HandlePaymentMethodRoute">
+            <argument key="$innerService" type="service" id=".inner" />
+            <argument key="$orderRepository" type="service" id="order.repository" />
         </service>
 
     </services>

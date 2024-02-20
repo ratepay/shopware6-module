@@ -1,0 +1,47 @@
+{
+    "openapi": "3.0.0",
+    "info": {},
+    "paths": {
+        "/ratepay/payment-data/{orderId}": {
+            "get": {
+                "tags": [
+                    "Ratepay"
+                ],
+                "summary": "fetches payment information required for Ratepay payments for cart or order. The Ratepay method has to be selected before.",
+                "operationId": "ratepayFetchPaymentData",
+                "parameters": [
+                    {
+                        "name": "orderId",
+                        "in": "path",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^[0-9a-f]{32}$"
+                        },
+                        "description": "Provide a order-id if you want to fetch the payment-data for an order."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "returns payment-data object",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RatepayMethodData"
+                                }
+                            }
+                        }
+                    },
+                    "412": {
+                        "description": "there is no Ratepay profile available which can handle this payment. This will also occur if no ratepay payment method is selected."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    }
+                ]
+            }
+        }
+    }
+}

@@ -11,12 +11,9 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
 
-use Ratepay\RpayPayments\Components\PaymentHandler\AbstractPaymentHandler;
-use Ratepay\RpayPayments\Util\DataValidationHelper;
-use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PaymentHandlerRegistry;
+use Ratepay\RpayPayments\Components\Checkout\Service\DataValidationService;
 use Shopware\Core\Framework\Validation\BuildValidationEvent;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
-use Shopware\Core\Framework\Validation\DataValidationDefinition;
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -27,7 +24,7 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private readonly RequestStack $requestStack,
-        private readonly PaymentHandlerRegistry $paymentHandlerRegistry
+        private readonly DataValidationService $dataValidationService
     ) {
     }
 
@@ -47,19 +44,8 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
         }
 
         $salesChannelContext = $this->getSalesContextFromRequest($request);
-        $paymentMethod = $salesChannelContext->getPaymentMethod();
-        $paymentHandlerIdentifier = $paymentMethod->getHandlerIdentifier();
 
-        if (str_contains((string) $paymentHandlerIdentifier, 'RpayPayments')) {
-            /** @var AbstractPaymentHandler $paymentHandler */
-            $paymentHandler = $this->paymentHandlerRegistry->getPaymentMethodHandler($paymentMethod->getId());
-
-            $validationDefinitions = $paymentHandler->getValidationDefinitions(new RequestDataBag($request->request->all()), $salesChannelContext);
-
-            $definitions = new DataValidationDefinition();
-            DataValidationHelper::addSubConstraints($definitions, $validationDefinitions);
-            $event->getDefinition()->addSub('ratepay', $definitions);
-        }
+        $this->dataValidationService->validatePaymentData(new RequestDataBag($request->request->all()), $salesChannelContext);
     }
 
     private function getSalesContextFromRequest(Request $request): SalesChannelContext

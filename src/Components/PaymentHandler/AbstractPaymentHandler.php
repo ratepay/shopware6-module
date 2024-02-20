@@ -42,6 +42,7 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Throwable;
@@ -148,8 +149,10 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
     {
         $validations = [];
 
+        /** @var DataBag $_requestDataBag */
+        $_requestDataBag = $requestDataBag->get('paymentDetails', $requestDataBag); // data from pwa
         /** @var DataBag $ratepayData */
-        $ratepayData = $requestDataBag->get('ratepay');
+        $ratepayData = $_requestDataBag->get('ratepay', new ParameterBag());
 
         if ($baseData instanceof SalesChannelContext) {
             $birthday = $baseData->getCustomer()->getBirthday();

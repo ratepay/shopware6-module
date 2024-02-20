@@ -12,7 +12,7 @@
 
     <services>
 
-        <defaults>
+        <defaults autowire="true">
             <tag name="kernel.event_subscriber"/>
         </defaults>
 
@@ -21,8 +21,7 @@
         </service>
 
         <service id="Ratepay\RpayPayments\Components\Checkout\Subscriber\CheckoutValidationSubscriber">
-            <argument type="service" id="request_stack"/>
-            <argument type="service" id="Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PaymentHandlerRegistry"/>
+            <argument key="$requestStack" type="service" id="request_stack"/>
         </service>
 
         <service id="Ratepay\RpayPayments\Components\Checkout\Subscriber\PaymentFailedSubscriber">
