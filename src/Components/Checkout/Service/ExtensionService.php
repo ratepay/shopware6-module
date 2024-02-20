@@ -181,7 +181,7 @@ class ExtensionService
 
         if ($httpRequest instanceof Request) {
             // add user entered values again, so that the user have not to reenter his values
-            foreach (RequestHelper::getArray($httpRequest, 'ratepay') ?: [] as $key => $value) {
+            foreach (RequestHelper::getArray($httpRequest, RequestHelper::RATEPAY_DATA_KEY) ?: [] as $key => $value) {
                 if ($key === 'birthday' && is_array($value)) {
                     $value = (new DateTime())->setDate((int) $value['year'], (int) $value['month'], (int) $value['day']);
                 }

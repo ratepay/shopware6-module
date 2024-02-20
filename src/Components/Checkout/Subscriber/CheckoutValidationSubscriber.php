@@ -13,7 +13,7 @@ namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
 
 use Ratepay\RpayPayments\Components\Checkout\Service\DataValidationService;
 use Shopware\Core\Framework\Validation\BuildValidationEvent;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -45,7 +45,7 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
 
         $salesChannelContext = $this->getSalesContextFromRequest($request);
 
-        $this->dataValidationService->validatePaymentData(new RequestDataBag($request->request->all()), $salesChannelContext);
+        $this->dataValidationService->validatePaymentData(new DataBag($request->request->all()), $salesChannelContext);
     }
 
     private function getSalesContextFromRequest(Request $request): SalesChannelContext

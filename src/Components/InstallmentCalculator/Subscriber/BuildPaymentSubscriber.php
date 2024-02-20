@@ -28,6 +28,7 @@ use Ratepay\RpayPayments\Components\RatepayApi\Factory\PaymentFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
 use Ratepay\RpayPayments\Util\MethodHelper;
 use Ratepay\RpayPayments\Util\PaymentFirstday;
+use Ratepay\RpayPayments\Util\RequestHelper;
 use RuntimeException;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
@@ -57,8 +58,11 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
             /** @var Payment $paymentObject */
             $paymentObject = $event->getBuildData();
 
+            /** @var DataBag $requestDataBag */ // should be never null, because it is already validated
+            $requestDataBag = RequestHelper::getRatepayData($requestData->getRequestDataBag());
+
             /** @var DataBag $requestedInstallment */
-            $requestedInstallment = $requestData->getRequestDataBag()->get('ratepay')->get('installment');
+            $requestedInstallment = $requestDataBag->get('installment');
 
             $calcContext = new InstallmentCalculatorContext(
                 $requestData->getSalesChannelContext(),

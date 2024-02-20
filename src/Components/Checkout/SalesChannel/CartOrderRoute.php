@@ -13,6 +13,7 @@ namespace Ratepay\RpayPayments\Components\Checkout\SalesChannel;
 
 use Ratepay\RpayPayments\Components\Checkout\Service\DataValidationService;
 use Ratepay\RpayPayments\Components\PaymentHandler\AbstractPaymentHandler;
+use Ratepay\RpayPayments\Util\RequestHelper;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\SalesChannel\AbstractCartOrderRoute;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartOrderRouteResponse;
@@ -39,7 +40,7 @@ class CartOrderRoute extends AbstractCartOrderRoute
         // this validation is optional. The validation will be also processed during handling the payment.
 
         $paymentHandler = $context->getPaymentMethod()->getHandlerIdentifier();
-        if (is_subclass_of($paymentHandler, AbstractPaymentHandler::class) && $data->has('ratepay')) {
+        if (is_subclass_of($paymentHandler, AbstractPaymentHandler::class) && $data->has(RequestHelper::RATEPAY_DATA_KEY)) {
             $this->validatorService->validatePaymentData($data, $context);
         }
 

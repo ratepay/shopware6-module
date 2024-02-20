@@ -18,8 +18,8 @@ use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\SalesChannel\AbstractHandlePaymentMethodRoute;
 use Shopware\Core\Checkout\Payment\SalesChannel\HandlePaymentMethodRouteResponse;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 
 class HandlePaymentMethodRoute extends AbstractHandlePaymentMethodRoute
@@ -57,7 +57,7 @@ class HandlePaymentMethodRoute extends AbstractHandlePaymentMethodRoute
         }
 
         if ($paymentHandlerIdentifier !== null && is_subclass_of($paymentHandlerIdentifier, AbstractPaymentHandler::class)) {
-            $this->dataValidationService->validatePaymentData(new ParameterBag($request->request->all()), $order ?? $context);
+            $this->dataValidationService->validatePaymentData(new DataBag($request->request->all()), $order ?? $context);
         }
 
         return $this->innerService->load($request, $context);

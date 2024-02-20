@@ -26,7 +26,7 @@ class DebitPaymentHandler extends AbstractPaymentHandler
     {
         return array_merge(
             parent::getValidationDefinitions($requestDataBag, $baseData),
-            $this->getDebitConstraints($requestDataBag, $baseData)
+            $this->getDebitConstraints($baseData)
         );
     }
 

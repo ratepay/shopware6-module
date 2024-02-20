@@ -24,6 +24,7 @@ use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\BuildEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
+use Ratepay\RpayPayments\Util\RequestHelper;
 use Shopware\Storefront\Event\RouteRequest\OrderRouteRequestEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -56,7 +57,7 @@ class DeviceFingerprintSubscriber implements EventSubscriberInterface
         /** @var Head $head */
         $head = $buildEvent->getBuildData();
 
-        $ratepayData = $requestData->getRequestDataBag()->get('ratepay');
+        $ratepayData = RequestHelper::getRatepayData($requestData->getRequestDataBag());
 
         if ($token = $ratepayData->get('deviceIdentToken') ?? null) {
             $head->setCustomerDevice((new CustomerDevice())->setDeviceToken($token));
@@ -92,7 +93,7 @@ class DeviceFingerprintSubscriber implements EventSubscriberInterface
     public function addDfpTokenToOrder(OrderExtensionDataBuilt $event): void
     {
         $requestDataBag = $event->getPaymentRequestData()->getRequestDataBag();
-        $ratepayData = $requestDataBag->get('ratepay');
+        $ratepayData = RequestHelper::getRatepayData($requestDataBag);
 
         $data = $event->getData();
         $data[RatepayOrderDataEntity::FIELD_ADDITIONAL_DATA]['deviceIdentToken'] = $ratepayData->get('deviceIdentToken');

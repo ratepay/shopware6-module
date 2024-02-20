@@ -13,6 +13,7 @@ namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
 
 use DateTime;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\BeforePaymentEvent;
+use Ratepay\RpayPayments\Util\RequestHelper;
 use RuntimeException;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
@@ -54,7 +55,7 @@ class UserDataSubscriber implements EventSubscriberInterface
             throw new RuntimeException('user data can not be saved. Unknown error.');
         }
 
-        $ratepayData = $dataBag->get('ratepay');
+        $ratepayData = RequestHelper::getRatepayData($dataBag);
         if (!$ratepayData instanceof RequestDataBag) {
             return;
         }

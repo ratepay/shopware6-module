@@ -90,10 +90,10 @@ class AccountSubscriber implements EventSubscriberInterface
 
     public function onHandlePaymentMethodRouteRequest(HandlePaymentMethodRouteRequestEvent $event): void
     {
-        if ($event->getStorefrontRequest()->request->has('ratepay')) {
+        if ($event->getStorefrontRequest()->request->has(RequestHelper::RATEPAY_DATA_KEY)) {
             $event->getStoreApiRequest()->request->set(
-                'ratepay',
-                RequestHelper::getArrayBag($event->getStorefrontRequest(), 'ratepay')->all()
+                RequestHelper::RATEPAY_DATA_KEY,
+                RequestHelper::getArrayBag($event->getStorefrontRequest(), RequestHelper::RATEPAY_DATA_KEY)->all()
             );
         }
     }
@@ -127,14 +127,14 @@ class AccountSubscriber implements EventSubscriberInterface
 
         // we must validate the ratepay data on our own. to prevent errors with other extensions, we will only validate ratepay-data.
         $requestData = new DataBag($event->getStorefrontRequest()->request->all());
-        $ratepayData = $requestData->get('ratepay');
+        $ratepayData = RequestHelper::getRatepayData($requestData);
 
         $validationDefinitions = $paymentHandler->getValidationDefinitions($requestData, $orderEntity);
         $definition = new DataValidationDefinition();
-        $definition->addSub('ratepay', DataValidationHelper::addSubConstraints(new DataValidationDefinition(), $validationDefinitions));
+        $definition->addSub(RequestHelper::RATEPAY_DATA_KEY, DataValidationHelper::addSubConstraints(new DataValidationDefinition(), $validationDefinitions));
         try {
             $this->dataValidator->validate([
-                'ratepay' => $ratepayData->all(),
+                RequestHelper::RATEPAY_DATA_KEY => $ratepayData->all(),
             ], $definition);
         } catch (ConstraintViolationException $constraintViolationException) {
             throw new ForwardException('frontend.account.edit-order.page', [
@@ -148,7 +148,7 @@ class AccountSubscriber implements EventSubscriberInterface
             $orderEntity,
             $paymentHandler,
             new RequestDataBag([
-                'ratepay' => $ratepayData,
+                RequestHelper::RATEPAY_DATA_KEY => $ratepayData,
             ]),
             $event->getSalesChannelContext()
         ));

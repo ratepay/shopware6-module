@@ -28,6 +28,7 @@ use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
 use Ratepay\RpayPayments\Exception\RatepayException;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
+use Ratepay\RpayPayments\Util\RequestHelper;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
@@ -68,9 +69,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
 
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
-        $dataBag = $dataBag->get('paymentDetails', $dataBag); // data from pwa
-        /** @var DataBag $ratepayData */
-        $ratepayData = $dataBag->get('ratepay', new DataBag([]));
+        $ratepayData = RequestHelper::getRatepayData($dataBag) ?: new ParameterBag();
 
         $order = $this->getOrderWithAssociations($transaction->getOrder(), $salesChannelContext->getContext());
 
@@ -149,10 +148,8 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
     {
         $validations = [];
 
-        /** @var DataBag $_requestDataBag */
-        $_requestDataBag = $requestDataBag->get('paymentDetails', $requestDataBag); // data from pwa
         /** @var DataBag $ratepayData */
-        $ratepayData = $_requestDataBag->get('ratepay', new ParameterBag());
+        $ratepayData = RequestHelper::getRatepayData($requestDataBag) ?: new ParameterBag();
 
         if ($baseData instanceof SalesChannelContext) {
             $birthday = $baseData->getCustomer()->getBirthday();

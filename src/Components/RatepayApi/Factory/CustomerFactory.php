@@ -23,6 +23,7 @@ use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\CheckoutOperationInterface;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
+use Ratepay\RpayPayments\Util\RequestHelper;
 use RuntimeException;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
@@ -59,8 +60,7 @@ class CustomerFactory extends AbstractFactory
     {
         /** @var CheckoutOperationInterface $requestData */
         /** @var DataBag $requestDataBag */
-        $requestDataBag = $requestData->getRequestDataBag();
-        $requestDataBag = $requestDataBag->get('ratepay', new DataBag());
+        $requestDataBag = RequestHelper::getRatepayData($requestData->getRequestDataBag()) ?: new DataBag();
 
         $customerEntity = $requestData->getCustomer();
         if ($requestData instanceof PaymentRequestData) {

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\PaymentHandler;
 
+use Ratepay\RpayPayments\Util\RequestHelper;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataValidationDefinition;
 use Symfony\Component\Validator\Constraints\Choice;
@@ -58,10 +59,11 @@ class InstallmentPaymentHandler extends AbstractPaymentHandler
         );
 
         /** @var DataBag $ratepayData */
-        $ratepayData = $requestDataBag->get('ratepay');
+        $ratepayData = RequestHelper::getRatepayData($requestDataBag);
+
         $installmentData = $ratepayData->get('installment');
         if ($installmentData->get('paymentType') && $installmentData->get('paymentType') === 'DIRECT-DEBIT') {
-            $validations = array_merge($validations, $this->getDebitConstraints($requestDataBag, $baseData));
+            $validations = array_merge($validations, $this->getDebitConstraints($baseData));
         }
 
         $validations['installment'] = $installment;
