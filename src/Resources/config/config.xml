@@ -32,7 +32,7 @@
     <!-- waiting for this: https://issues.shopware.com/issues/NEXT-7670 -->
     <card>
         <title>Transactionstatus after order completion</title>
-        <title lang="de-DE">Transkationsstatus nach Bestellabsschluss</title>
+        <title lang="de-DE">Transaktionsstatus nach Bestellabsschluss</title>
         <input-field type="single-select">
             <name>paymentStatusPrepayment</name>
             <options>
