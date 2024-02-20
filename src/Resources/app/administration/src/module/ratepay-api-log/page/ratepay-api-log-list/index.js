@@ -90,6 +90,11 @@ Component.register('ratepay-api-log-list', {
     },
 
     computed: {
+
+        dateFilter() {
+            return Shopware.Filter.getByName('date');
+        },
+
         columns() {
             return [{
                 property: 'createdAt',

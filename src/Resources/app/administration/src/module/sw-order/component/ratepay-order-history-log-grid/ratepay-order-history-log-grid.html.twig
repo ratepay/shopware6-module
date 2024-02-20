@@ -1,12 +1,11 @@
 {#
-  ~ Copyright (c) 2020 Ratepay GmbH
+  ~ Copyright (c) Ratepay GmbH
   ~
   ~ For the full copyright and license information, please view the LICENSE
   ~ file that was distributed with this source code.
 #}
 
 <sw-card :title="$tc('ratepay.order-log-history.detailBase.ratepayHistoryPanelTitle')" positionIdentifier="ratepay-order-log-history">
-
         <sw-container slot="grid" type="row">
             <sw-entity-listing
                 :items="entities"
@@ -21,12 +20,9 @@
                 :compactMode="true">
 
                 <template slot="column-createdAt" slot-scope="{ item }">
-                    {{ item.createdAt| date({hour: '2-digit', minute: '2-digit'}) }}
+                    {{ dateFilter(item.createdAt, { hour: '2-digit', minute: '2-digit' }) }}
                 </template>
 
             </sw-entity-listing>
-
-
         </sw-container>
-
 </sw-card>

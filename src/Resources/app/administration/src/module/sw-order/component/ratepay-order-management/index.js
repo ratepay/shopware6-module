@@ -68,6 +68,10 @@ Component.register('ratepay-order-management', {
     },
 
     computed: {
+        currencyFilter() {
+            return Shopware.Filter.getByName('currency');
+        },
+
         columns() {
             return [
                 {

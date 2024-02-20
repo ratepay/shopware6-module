@@ -1,7 +1,8 @@
 import './icon.scss';
+import template from './template.html.twig'
 
-const { Component } = Shopware;
+const {Component} = Shopware;
 
 Component.register('ratepay-plugin-icon', {
-    template: '<img class="ratepay-plugin-icon" :src="\'rpaypayments/plugin.png\' | asset">'
+    template: template
 });

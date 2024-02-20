@@ -1,5 +1,5 @@
 {#
-  ~ Copyright (c) 2020 Ratepay GmbH
+  ~ Copyright (c) Ratepay GmbH
   ~
   ~ For the full copyright and license information, please view the LICENSE
   ~ file that was distributed with this source code.
@@ -74,10 +74,10 @@
                     </template>
 
                     <template slot="column-unitPrice" slot-scope="{ item }">
-                        {{ item.unitPrice | currency(order.currency.translated.shortName) }}
+                        {{ currencyFilter(item.unitPrice, order.currency.translated.shortName) }}
                     </template>
                     <template slot="column-totalPrice" slot-scope="{ item }">
-                        {{ item.totalPrice | currency(order.currency.translated.shortName) }}
+                        {{ currencyFilter(item.totalPrice, order.currency.translated.shortName) }}
                     </template>
 
                 </sw-data-grid>

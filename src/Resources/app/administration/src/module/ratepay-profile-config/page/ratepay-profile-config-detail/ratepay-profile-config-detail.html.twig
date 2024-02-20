@@ -86,7 +86,7 @@
                                     </tr>
                                     <tr>
                                         <th>{{ $t('ratepay.profileConfig.page.tabs.general.table.label.updatedAt') }}</th>
-                                        <td>{{ entity.updatedAt|date({hour: '2-digit', minute: '2-digit'}) }}</td>
+                                        <td>{{ dateFilter(entity.updatedAt, {hour: '2-digit', minute: '2-digit'}) }}</td>
                                     </tr>
                                     </tbody>
                                 </table>

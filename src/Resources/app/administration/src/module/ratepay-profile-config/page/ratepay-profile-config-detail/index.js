@@ -39,6 +39,12 @@ Component.register('ratepay-profile-config-detail', {
         };
     },
 
+    computed: {
+        dateFilter() {
+            return Shopware.Filter.getByName('date');
+        },
+    },
+
     created() {
         this.repository = this.repositoryFactory.create('ratepay_profile_config');
         let prom = this.loadEntity();

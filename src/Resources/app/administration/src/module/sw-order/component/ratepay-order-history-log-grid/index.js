@@ -27,6 +27,10 @@ Component.register('ratepay-order-history-log-grid', {
     },
 
     computed: {
+        dateFilter() {
+            return Shopware.Filter.getByName('date');
+        },
+
         columns() {
             return [
                 {
