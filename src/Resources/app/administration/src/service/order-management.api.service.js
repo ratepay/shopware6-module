@@ -19,15 +19,18 @@ export default class OrderManagementApiService extends ApiService {
      * @param {LoginService} loginService
      */
     constructor(httpClient, loginService) {
-        super(httpClient, loginService, 'ratepay/order-management');
+        super(httpClient, loginService, '_action');
         this.httpClient = httpClient;
         this.loginService = loginService;
         this.name = 'ratepayOrderManagementService';
     }
+    _getPath(orderId, action) {
+        return this.getApiBasePath() + '/order/' + orderId + '/ratepay/' + action;
+    }
 
     load(orderId) {
         return this.httpClient
-            .get(this.getApiBasePath() + '/load/' + orderId,
+            .get(this._getPath(orderId, 'info'),
                 {
                     headers: this.getBasicHeaders()
                 }
@@ -37,7 +40,7 @@ export default class OrderManagementApiService extends ApiService {
 
     doAction(action, orderId, items, updateStock) {
         return this.httpClient
-            .post(this.getApiBasePath() + '/' + action + '/' + orderId,
+            .post(this._getPath(orderId, action),
                 {
                     items: items,
                     updateStock: typeof updateStock == 'boolean' ? updateStock : null
@@ -50,7 +53,7 @@ export default class OrderManagementApiService extends ApiService {
 
     addItem(orderId, name, grossAmount, taxId) {
         return this.httpClient
-            .post(this.getApiBasePath() + '/addItem/' + orderId,
+            .post(this._getPath(orderId, 'addItem'),
                 {
                     name,
                     grossAmount,

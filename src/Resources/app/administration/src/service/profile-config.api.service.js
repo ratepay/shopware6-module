@@ -19,7 +19,7 @@ export default class ProfileConfigApiService extends ApiService {
      * @param {LoginService} loginService
      */
     constructor(httpClient, loginService) {
-        super(httpClient, loginService, 'ratepay/profile-configuration');
+        super(httpClient, loginService, '_action/ratepay/profile-configuration');
         this.httpClient = httpClient;
         this.loginService = loginService;
         this.name = 'ratepayConfigService';

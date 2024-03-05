@@ -121,21 +121,32 @@ Component.register('ratepay-profile-config-detail', {
             this.isLoading.reloadConfig = true;
             return this.profileConfigApiService.reloadConfig(this.entity.id).then(async (response) => {
                 await this.loadEntity();
-                for (let [profileId, message] of Object.entries(response.success)) {
+                if (response?.error) {
+                    for (let [profileId, message] of Object.entries(response.error)) {
+                        this.createNotificationError({
+                            title: profileId,
+                            message: message
+                        });
+                    }
+                } else {
                     this.createNotificationSuccess({
-                        title: profileId,
+                        title: this.entity.profileId,
                         message: this.$tc('ratepay.profileConfig.messages.reload.success')
-                    });
-                }
-                for (let [profileId, message] of Object.entries(response.error)) {
-                    this.createNotificationError({
-                        title: profileId,
-                        message: message
                     });
                 }
                 this.$forceUpdate();
                 this.isLoading.reloadConfig = false;
                 this.processSuccessState.reloadConfig = true;
+            }).catch((error) => {
+                console.error(error);
+                if (error.response?.data?.success === false) {
+                    this.createNotificationError({
+                        title: this.entity.profileId,
+                        message: error.response?.data?.message
+                    });
+                } else {
+
+                }
             });
         },
 

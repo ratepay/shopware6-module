@@ -180,16 +180,16 @@ Component.register('ratepay-order-management', {
             this.loading.deliver = true;
             this.orderManagementService
                 .doAction('deliver', this.order.id, this.getProcessShippingCancelData())
-                .then(response => {
-                    this.showMessage(response, 'deliver');
+                .then(() => {
+                    this.showMessage(null, 'deliver');
                     this.loadList().then(() => {
                         this.loading.deliver = false;
                         this.$emit('reload-entity-data');
                     });
                 })
-                .catch((response) => {
+                .catch((error) => {
                     this.loading.deliver = false;
-                    this.showMessage(response, 'deliver');
+                    this.showMessage(error, 'deliver');
                 });
         },
         onClickButtonCancel(updateStock) {
@@ -200,18 +200,18 @@ Component.register('ratepay-order-management', {
             }
             this.orderManagementService
                 .doAction('cancel', this.order.id, this.getProcessShippingCancelData(), updateStock)
-                .then(response => {
-                    this.showMessage(response, 'cancel');
+                .then(() => {
+                    this.showMessage(null, 'cancel');
                     this.loadList().then(() => {
                         this.loading.cancel = false;
                         this.loading.cancelWithStock = false;
                         this.$emit('reload-entity-data');
                     });
                 })
-                .catch((response) => {
+                .catch((error) => {
                     this.loading.cancel = false;
                     this.loading.cancelWithStock = false;
-                    this.showMessage(response, 'cancel');
+                    this.showMessage(error, 'cancel');
                 });
         },
         onClickButtonReturn(updateStock) {
@@ -221,20 +221,19 @@ Component.register('ratepay-order-management', {
                 this.loading.rtnWithStock = true;
             }
             this.orderManagementService
-                .doAction('return', this.order.id, this.getProcessReturnData(), updateStock)
-                .then(response => {
-                    this.showMessage(response, 'return');
+                .doAction('refund', this.order.id, this.getProcessReturnData(), updateStock)
+                .then(() => {
+                    this.showMessage(null, 'return');
                     this.loadList().then(() => {
                         this.loading.rtn = false;
                         this.loading.rtnWithStock = false;
                         this.$emit('reload-entity-data');
-
                     });
                 })
-                .catch((response) => {
+                .catch((error) => {
                     this.loading.rtn = false;
                     this.loading.rtnWithStock = false;
-                    this.showMessage(response, 'return');
+                    this.showMessage(error, 'return');
                 });
         },
         onClickResetSelections() {
@@ -259,8 +258,8 @@ Component.register('ratepay-order-management', {
                     this.addDebit.data.name,
                     this.addDebit.data.amount,
                     this.addDebit.data.taxId
-                ).then(response => {
-                    this.showMessage(response, 'addDebit');
+                ).then(() => {
+                    this.showMessage(null, 'addDebit');
                     this.loadList().then(() => {
                         this.onCloseDebitModal();
                         this.loading.addDebit = false;
@@ -271,9 +270,9 @@ Component.register('ratepay-order-management', {
                     this.addDebit.data.amount = null;
                     this.addDebit.data.taxId = null;
                 })
-                .catch((response) => {
+                .catch((error) => {
                     this.loading.addDebit = false;
-                    this.showMessage(response, 'addDebit');
+                    this.showMessage(error, 'addDebit');
                 });
         },
         onClickButtonAddCredit() {
@@ -288,8 +287,8 @@ Component.register('ratepay-order-management', {
                     this.addCredit.data.name,
                     this.addCredit.data.amount * -1,
                     this.addCredit.data.taxId
-                ).then(response => {
-                    this.showMessage(response, 'addCredit');
+                ).then(() => {
+                    this.showMessage(null, 'addCredit');
                     this.loadList().then(() => {
                         this.onCloseCreditModal();
                         this.loading.addCredit = false;
@@ -300,64 +299,61 @@ Component.register('ratepay-order-management', {
                     this.addCredit.data.amount = null;
                     this.addCredit.data.taxId = null;
                 })
-                .catch((response) => {
+                .catch((error) => {
                     this.loading.addCredit = false;
-                    this.showMessage(response, 'addCredit');
+                    this.showMessage(error, 'addCredit');
                 });
         },
         validateCreditDebit(creditDebit) {
             if (!creditDebit.taxId) {
-                this.showMessage({
-                    success: false,
-                    message: this.$tc('ratepay.orderManagement.messages.creditDebitValidation.missingTax')
-                });
+                this.showMessage(this.$tc('ratepay.orderManagement.messages.creditDebitValidation.missingTax'));
                 return false;
             }
 
             if (!creditDebit.name) {
-                this.showMessage({
-                    success: false,
-                    message: this.$tc('ratepay.orderManagement.messages.creditDebitValidation.missingName')
-                });
+                this.showMessage(this.$tc('ratepay.orderManagement.messages.creditDebitValidation.missingName'));
                 return false;
             }
 
             if (creditDebit.amount <= 0) {
-                this.showMessage({
-                    success: false,
-                    message: this.$tc('ratepay.orderManagement.messages.creditDebitValidation.amountTooLow')
-                });
+                this.showMessage(this.$tc('ratepay.orderManagement.messages.creditDebitValidation.amountTooLow'));
                 return false;
             }
 
             return true;
         },
 
-        showMessage(response, type) {
-            if (response.success) {
+        showMessage(error, type) {
+            if(error === null && typeof type === 'string') {
                 this.createNotificationSuccess({
                     title: this.$tc('ratepay.orderManagement.messages.successTitle'),
                     message: this.$tc('ratepay.orderManagement.messages.' + type + '.success')
                 });
-            } else {
-                response = response.response ? response.response : response;
-                if (response.data && response.data.errors) {
-                    response.data.errors.forEach((error, i) => {
-                        let message = error.detail;
-                        if (this.$te('ratepay.errors.' + error.code)) {
-                            message = this.$tc('ratepay.errors.' + error.code)
-                        }
-                        this.createNotificationError({
-                            title: error.title ?? this.$tc('ratepay.orderManagement.messages.failedTitle'),
-                            message: message
-                        });
-                    });
-                } else {
+                return;
+            }
+
+            if (typeof error === 'string') {
+                this.createNotificationError({
+                    title: this.$tc('ratepay.orderManagement.messages.failedTitle'),
+                    message: error
+                });
+                return;
+            }
+
+            const response = error.response;
+            if (response?.data?.errors) {
+                response.data.errors.forEach((error, i) => {
+                    let message = error.detail;
+                    if (this.$te('ratepay.errors.' + error.code)) {
+                        message = this.$tc('ratepay.errors.' + error.code)
+                    }
                     this.createNotificationError({
-                        title: this.$tc('ratepay.orderManagement.messages.failedTitle'),
-                        message: response.message
+                        title: error.title ?? this.$tc('ratepay.orderManagement.messages.failedTitle'),
+                        message: message
                     });
-                }
+                });
+            } else {
+                this.showMessage(response?.data?.message ?? error.message ?? this.$tc('ratepay.orderManagement.messages.failedTitle'))
             }
         },
         getProcessShippingCancelData() {

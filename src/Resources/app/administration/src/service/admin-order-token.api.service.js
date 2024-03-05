@@ -19,16 +19,15 @@ export default class AdminOrderLoginTokenApiService extends ApiService {
      * @param {LoginService} loginService
      */
     constructor(httpClient, loginService) {
-        super(httpClient, loginService, 'ratepay/admin-order');
+        super(httpClient, loginService, '_action/ratepay/admin-order');
         this.httpClient = httpClient;
         this.loginService = loginService;
         this.name = 'RatepayAdminOrderTokenAService';
     }
 
-
     requestTokenUrl(salesChannelId, salesChannelDomainId) {
         return this.httpClient
-            .post(this.getApiBasePath() + '/login-token',
+            .post(this.getApiBasePath() + '/create-storefront-url',
                 {
                     salesChannelId: salesChannelId,
                     salesChannelDomainId: salesChannelDomainId

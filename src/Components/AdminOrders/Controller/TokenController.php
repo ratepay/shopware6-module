@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 
-#[Route(path: '/api/ratepay/admin-order', defaults: [
+#[Route(path: '/api/_action/ratepay/admin-order', defaults: [
     '_routeScope' => ['administration'],
 ])]
 class TokenController extends AbstractController
@@ -37,7 +37,7 @@ class TokenController extends AbstractController
     ) {
     }
 
-    #[Route(path: '/login-token', name: 'ratepay.admin.admin-orders.token', methods: ['POST'])]
+    #[Route(path: '/create-storefront-url', name: 'ratepay.admin.admin-orders.token', methods: ['POST'])]
     public function login(Request $request): Response
     {
         $context = Context::createDefaultContext();
@@ -50,12 +50,14 @@ class TokenController extends AbstractController
         }
 
         $token = Uuid::randomHex();
+        $expiresDate = (new DateTime())->modify('+30 min');
+
         $this->tokenRepository->upsert([
             [
                 RatepayAdminOrderTokenEntity::FIELD_TOKEN => $token,
                 RatepayAdminOrderTokenEntity::FIELD_SALES_CHANNEL_ID => $salesChannelId,
                 RatepayAdminOrderTokenEntity::FIELD_SALES_CHANNEL_DOMAIN_ID => $salesChannelDomainId,
-                RatepayAdminOrderTokenEntity::FIELD_VAlID_UNTIL => (new DateTime())->modify('+30 min'),
+                RatepayAdminOrderTokenEntity::FIELD_VAlID_UNTIL => $expiresDate,
             ],
         ], $context);
 
@@ -76,6 +78,7 @@ class TokenController extends AbstractController
         return $this->json([
             'success' => true,
             'url' => $storefrontUrl,
+            'expires_at' => $expiresDate->getTimestamp(),
         ]);
     }
 }

@@ -37,15 +37,19 @@ use Shopware\Core\Framework\Validation\DataValidator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\AtLeastOneOf;
 use Symfony\Component\Validator\Constraints\GreaterThan;
 use Symfony\Component\Validator\Constraints\LessThan;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-#[Route(path: '/api/ratepay/order-management', defaults: [
-    '_routeScope' => ['administration'],
-])]
+#[Route(
+    path: '/api/_action/order/{orderId}/ratepay/',
+    defaults: [
+        '_routeScope' => ['administration'],
+    ]
+)]
 class ProductPanel extends AbstractController
 {
     /**
@@ -69,7 +73,7 @@ class ProductPanel extends AbstractController
         ];
     }
 
-    #[Route(path: '/load/{orderId}', name: 'ratepay.order_management.product_panel.load', methods: ['GET'])]
+    #[Route(path: 'info', name: 'ratepay.order_management.product_panel.load', methods: ['GET'])]
     public function load(string $orderId, Context $context): JsonResponse
     {
         $criteria = new Criteria([$orderId]);
@@ -110,36 +114,36 @@ class ProductPanel extends AbstractController
 
             return $this->json([
                 'success' => true,
-                'data' => $items,
+                'data' => array_values($items),
             ], 200);
         }
 
         return $this->json([
             'success' => false,
             'message' => 'Order not found',
-        ], 400);
+        ], 404);
     }
 
-    #[Route(path: '/deliver/{orderId}', name: 'ratepay.order_management.product_panel.deliver', methods: ['POST'])]
-    public function deliver(string $orderId, Request $request, Context $context): JsonResponse
+    #[Route(path: 'deliver', name: 'ratepay.order_management.product_panel.deliver', methods: ['POST'])]
+    public function deliver(string $orderId, Request $request, Context $context): Response
     {
         return $this->processModify($request, $context, OrderOperationData::OPERATION_DELIVER, $orderId);
     }
 
-    #[Route(path: '/cancel/{orderId}', name: 'ratepay.order_management.product_panel.cancel', methods: ['POST'])]
-    public function cancel(string $orderId, Request $request, Context $context): JsonResponse
+    #[Route(path: 'cancel', name: 'ratepay.order_management.product_panel.cancel', methods: ['POST'])]
+    public function cancel(string $orderId, Request $request, Context $context): Response
     {
         return $this->processModify($request, $context, OrderOperationData::OPERATION_CANCEL, $orderId);
     }
 
-    #[Route(path: '/return/{orderId}', name: 'ratepay.order_management.product_panel.return', methods: ['POST'])]
-    public function return(string $orderId, Request $request, Context $context): JsonResponse
+    #[Route(path: 'refund', name: 'ratepay.order_management.product_panel.return', methods: ['POST'])]
+    public function return(string $orderId, Request $request, Context $context): Response
     {
         return $this->processModify($request, $context, OrderOperationData::OPERATION_RETURN, $orderId);
     }
 
-    #[Route(path: '/addItem/{orderId}', name: 'ratepay.order_management.product_panel.add_item', methods: ['POST'])]
-    public function addItem(string $orderId, Request $request, Context $context): JsonResponse
+    #[Route(path: 'addItem', name: 'ratepay.order_management.product_panel.add_item', methods: ['POST'])]
+    public function addItem(string $orderId, Request $request, Context $context): Response
     {
         $order = $this->fetchOrder($context, $orderId);
 
@@ -164,64 +168,66 @@ class ProductPanel extends AbstractController
         );
 
         $response = $this->creditService->doRequest(new AddCreditData($context, $order, [$lineItem]));
-        if ($response->getResponse()->isSuccessful()) {
+        if (!$response->getResponse()->isSuccessful()) {
             return $this->json([
-                'success' => true,
-            ], 200);
+                'success' => false,
+                'message' => $response->getResponse()->getReasonMessage(),
+            ], 500);
         }
 
-        return $this->json([
-            'success' => false,
-            'message' => $response->getResponse()->getReasonMessage(),
-        ], 200);
+        return new Response(null, Response::HTTP_NO_CONTENT);
     }
 
-    protected function processModify(Request $request, Context $context, string $operation, string $orderId): JsonResponse
+    protected function processModify(Request $request, Context $context, string $operation, string $orderId): Response
     {
         $order = $this->fetchOrder($context, $orderId);
 
-        if ($order instanceof OrderEntity) {
-            $params = $request->request->all();
-            if (!isset($params['items']) || !is_array($params['items'])) {
-                if (class_exists(RoutingException::class) && method_exists(RoutingException::class, 'invalidRequestParameter')) {
-                    throw RoutingException::invalidRequestParameter('items');
-                } elseif (class_exists(InvalidRequestParameterException::class)) {
-                    // required for shopware == 6.5.0.0
-                    throw new InvalidRequestParameterException('items');
-                }
-
-                // should never occur - just to be safe
-                throw new RuntimeException('Invalid request parameter: items');
-            }
-
-            $items = [];
-            foreach ($params['items'] as $data) {
-                $items[$data['id']] = (int) $data['quantity'];
-            }
-
-            $items = array_filter($items, static fn ($quantity): bool => $quantity > 0);
-
-            if ($items === []) {
-                return $this->json([
-                    'success' => false,
-                    'message' => 'Please provide at least on item', // todo translation - should we translate it?
-                ], 200); // todo is this status OK ?
-            }
-
-            $response = $this->requestServicesByOperation[$operation]->doRequest(
-                new OrderOperationData($context, $order, $operation, $items, (bool) $request->request->get('updateStock'))
-            );
-
+        if (!$order instanceof OrderEntity) {
             return $this->json([
-                'success' => $response->getResponse()->isSuccessful(),
-                'message' => $response->getResponse()->getReasonMessage(),
-            ], 200);
+                'success' => false,
+                'message' => 'Order not found',
+            ], 400);
         }
 
-        return $this->json([
-            'success' => false,
-            'message' => 'Order not found',
-        ], 400);
+        $params = $request->request->all();
+        if (!isset($params['items']) || !is_array($params['items'])) {
+            if (class_exists(RoutingException::class) && method_exists(RoutingException::class, 'invalidRequestParameter')) {
+                throw RoutingException::invalidRequestParameter('items');
+            } elseif (class_exists(InvalidRequestParameterException::class)) {
+                // required for shopware == 6.5.0.0
+                throw new InvalidRequestParameterException('items');
+            }
+
+            // should never occur - just to be safe
+            throw new RuntimeException('Invalid request parameter: items');
+        }
+
+        $items = [];
+        foreach ($params['items'] as $data) {
+            $items[$data['id']] = (int) $data['quantity'];
+        }
+
+        $items = array_filter($items, static fn ($quantity): bool => $quantity > 0);
+
+        if ($items === []) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Please provide at least on item', // todo translation - should we translate it?
+            ], 400); // todo is this status OK ?
+        }
+
+        $response = $this->requestServicesByOperation[$operation]->doRequest(
+            new OrderOperationData($context, $order, $operation, $items, (bool) $request->request->get('updateStock'))
+        );
+
+        if (!$response->getResponse()->isSuccessful()) {
+            return $this->json([
+                'success' => false,
+                'message' => $response->getResponse()->getReasonMessage(),
+            ], 500);
+        }
+
+        return new Response(null, Response::HTTP_NO_CONTENT);
     }
 
     protected function fetchOrder(Context $context, string $orderId): ?OrderEntity

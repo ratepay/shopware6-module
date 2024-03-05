@@ -1,0 +1,55 @@
+{
+    "openapi": "3.0.0",
+    "info": {},
+    "paths": {},
+    "components": {
+        "schemas": {
+            "ratepayOrderOperationRequestBody": {
+                "type": "object",
+                "properties": {
+                    "items": {
+                        "description": "items to deliver/cancel/return",
+                        "required": true,
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "required": true,
+                                    "description": "identifier of order-line-item. Can be also `shipping` for the shipping item.",
+                                    "pattern": "^([0-9a-f]{32}|shipping)$",
+                                    "example": "a06c753d068c487991d6a833b4133560"
+                                },
+                                "quantity": {
+                                    "type": "number",
+                                    "required": true,
+                                    "description": "identifier of order-line-item. Needs to be `1` if the item is the shipping-item.",
+                                    "example": 1
+                                },
+                                "updateStock":  {
+                                    "type": "boolean",
+                                    "required": false,
+                                    "description": "in case of cancellation or refund, this flag will return the cancelled/returned items back to stock. Will be ignored in case of delivery.",
+                                    "example": true
+                                }
+                            }
+                        },
+                        "type": "array"
+                    }
+                }
+            },
+            "ratepayOrderOperationResponse500": {
+                "properties": {
+                    "status": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "details about the error"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    }
+}

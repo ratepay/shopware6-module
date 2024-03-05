@@ -1,0 +1,102 @@
+{
+    "openapi": "3.0.0",
+    "info": [],
+    "paths": {
+        "\/_action\/ratepay\/profile-configuration\/reload-config": {
+            "post": {
+                "tags": [
+                    "Ratepay"
+                ],
+                "summary": "Reload Ratepay profile configuration.",
+                "description": "fetches the latest configuration for the Ratepay payment methods by profile id. It will automatically enable the profile if it is valid or disable it if it is invalid.",
+                "operationId": "ratepayReloadProfileConfiguration",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application\/json": {
+                            "schema": {
+                                "required": [
+                                    "id"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "description": "UUID of the profile-id in the shopware-system.",
+                                        "type": "string",
+                                        "default": "a06c753d068c487991d6a833b4133560",
+                                        "pattern": "^[0-9a-f]{32}$"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "if the profile has been refreshed successfully"
+                    },
+                    "400": {
+                        "description": "on missing parameters",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "default": false
+                                        },
+                                        "message": {
+                                            "description": "Details about the missing field",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "if profile does not exist",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "default": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "default": "profile does not exist"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "on error during refreshing profile",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "default": false
+                                        },
+                                        "message": {
+                                            "description": "Details about the error",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

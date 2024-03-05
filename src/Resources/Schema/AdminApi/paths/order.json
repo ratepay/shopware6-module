@@ -1,0 +1,72 @@
+{
+    "openapi": "3.0.0",
+    "info": [],
+    "paths": {
+        "\/_action\/ratepay\/admin-order\/create-storefront-url": {
+            "post": {
+                "tags": [
+                    "Ratepay"
+                ],
+                "summary": "Generates a storefront URL through which an order can be created, with a Ratepay profile which is scoped on admin-orders.",
+                "operationId": "ratepayAdminOrderCreateToken",
+                "description": "",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application\/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "salesChannelId": {
+                                        "type": "string",
+                                        "required": true,
+                                        "pattern": "^[0-9a-f]{32}$",
+                                        "description": "Sales-Channel Id for which the token should be created.",
+                                        "example": "a06c753d068c487991d6a833b4133560"
+                                    },
+                                    "salesChannelDomainId": {
+                                        "type": "string",
+                                        "required": true,
+                                        "pattern": "^[0-9a-f]{32}$",
+                                        "description": "Sales-Channel-Domain Id for which the token should be created.",
+                                        "example": "a06c753d068c487991d6a833b4133560"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "the token has been created successfully. Please note: the url is only valid for 30 minutes.",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "default": true
+                                        },
+                                        "url": {
+                                            "type": "string",
+                                            "description": "url to storefront",
+                                            "example": "https://example.com/"
+                                        },
+                                        "expires_at": {
+                                            "type": "number",
+                                            "description": "timestamp indicating when the URL expires.",
+                                            "example": 1710500470
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "sales-channel or sales-channel-domain does not exist"
+                    }
+                }
+            }
+        }
+    }
+}
