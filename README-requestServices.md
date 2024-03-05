@@ -2,10 +2,12 @@
 
 ### General
 
-All requests services are child classes of `\Ratepay\RpayPayments\Components\RatepayApi\Service\Request\AbstractRequest`.
+All requests services are child classes
+of `\Ratepay\RpayPayments\Components\RatepayApi\Service\Request\AbstractRequest`.
 
 You need an instance of the abstract class `\Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData` (in the
-example below we will use the class `PaymentInitData`) as parameter for the `execute`-method of the RequestService class.
+example below we will use the class `PaymentInitData`) as parameter for the `execute`-method of the RequestService
+class.
 
 #### Notes:
 
@@ -24,11 +26,11 @@ extension, will be not visible for the extension.
 
 Use this request to get the profile configuration from the Ratepay gateway.
 
-|||
-|---|---|
-| Service Class    | `\Ratepay\RpayPayments\Components\RatepayApi\Service\Request\ProfileRequestService` |
-| Data Class        | `\Ratepay\RpayPayments\Components\RatepayApi\Dto\ProfileRequestData` |
-| Response Class    | `\RatePAY\Model\Response\ProfileRequest` |
+|                |                                                                                     |
+|----------------|-------------------------------------------------------------------------------------|
+| Service Class  | `\Ratepay\RpayPayments\Components\RatepayApi\Service\Request\ProfileRequestService` |
+| Data Class     | `\Ratepay\RpayPayments\Components\RatepayApi\Dto\ProfileRequestData`                |
+| Response Class | `\RatePAY\Model\Response\ProfileRequest`                                            |
 
 #### Example
 
@@ -51,112 +53,22 @@ if($response->isSuccessful()) {
 
 ```
 
-### PaymentInitService
-
-Use this request to initialize a new payment for a customer.
-
-**Please note** that the transaction ID is related to the profile-id. You can not use it for requests which are made
-with another profile-id.
-
-This request does not need any parameters. (except the profileConfig)
-
-|||
-|---|---|
-| Service Class    | `\Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentInitService` |
-| Data Class        | `\Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentInitData` |
-| Response Class    | `\RatePAY\Model\Response\PaymentInit` |
-
-#### Example
-
-```php
-/** @var \Shopware\Core\Framework\Context $context **/
-/** @var \Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentInitService $requestService **/
-/** @var \Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity $profileConfig **/
-
-$requestData = new \Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentInitData($profileConfig, $context);
-$requestBuilder = $requestService->doRequest($requestData);
-
-/** @var \RatePAY\Model\Response\PaymentInit $response */
-$response = $requestBuilder->getResponse();
-
-if($response->isSuccessful()) {
-    // do something if the request is successful
-    $transactionId = $response->getTransactionId();
-}
-
-```
-
-### PaymentQueryService
-
-Use this request to get the available payment methods for the current cart/customer
-
-You must not load the profile config. It will be loaded automatically.
-
-**Please note:** maybe this request will be removed in a future release (depends on shopware changes).
-
-|||
-|---|---|
-| Service Class    | `\Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Service\Request\PaymentQueryService` |
-| Data Class        | `\Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Dto\PaymentQueryData` |
-| Response Class    | `\RatePAY\Model\Response\PaymentQuery` |
-
-#### Example
-
-```php
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
-
-/** @var \Shopware\Core\System\SalesChannel\SalesChannelContext $salesChannelContext **/
-/** @var \Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Service\Request\PaymentQueryService $requestService **/
-
-// use \Shopware\Core\Checkout\Cart\SalesChannel\CartService::getCart() to the cart of the current context
-/** @var \Shopware\Core\Checkout\Cart\Cart $cart **/
-
-// the parameters differ between b2c and b2b
-$requestDataBag = new RequestDataBag([
-    // required for b2c
-    'birthday' => new RequestDataBag([
-        'year' => '2000',
-        'month' => '1',
-        'day' => '30',
-    ]),
-    // required for b2b
-    'vatId' => 'DE123456789',
-]);
-
-$ratepayTransactionId = '12-3456789123456789';
-
-$requestData = new \Ratepay\RpayPayments\Components\CreditworthinessPreCheck\Dto\PaymentQueryData(
-    $salesChannelContext,
-    $cart,
-    $requestDataBag,
-    $ratepayTransactionId
-);
-$requestBuilder = $requestService->doRequest($requestData);
-
-/** @var \RatePAY\Model\Response\PaymentQuery $response */
-$response = $requestBuilder->getResponse();
-
-if($response->isSuccessful()) {
-    // do something if the request is successful
-    $admittedPaymentMethods = $response->getAdmittedPaymentMethods();
-}
-```
-
 ### PaymentRequestService
 
 Use this request to create a payment for an order.
 
-The subscribers of this request will automatically create the order extension for the entity, so that all follow-up operations can be done.
+The subscribers of this request will automatically create the order extension for the entity, so that all follow-up
+operations can be done.
 
 So you don't have to create any data manually.
 
 You also don't have to load the profile config. It will be loaded automatically.
 
-|||
-|---|---|
-| Service Class    | `\Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentRequestService` |
-| Data Class        | `\Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData` |
-| Response Class    | `\RatePAY\Model\Response\PaymentRequest` |
+|                |                                                                                     |
+|----------------|-------------------------------------------------------------------------------------|
+| Service Class  | `\Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentRequestService` |
+| Data Class     | `\Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData`                |
+| Response Class | `\RatePAY\Model\Response\PaymentRequest`                                            |
 
 #### Example
 
@@ -211,32 +123,37 @@ if($response->isSuccessful()) {
 ```
 
 ### Order item operations (deliver, cancel, return)
-Use these request to mark one or more items (line-items, shipping costs, discounts) of the order as "delivered", "canceled" or "returned"
+
+Use these request to mark one or more items (line-items, shipping costs, discounts) of the order as "delivered",
+"canceled" or "returned"
 
 All request does have the same syntax, and functionalities. So we define it only once in this document.
 
 The examples are for the delivery of items.
 
 #### Deliver
-|||
-|---|---|
-| Service Class     | `\Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentDeliverService` |
-| Data Class        | `\Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData` |
-| Response Class    | `\RatePAY\Model\Response\ConfirmationDeliver` |
+
+|                |                                                                                     |
+|----------------|-------------------------------------------------------------------------------------|
+| Service Class  | `\Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentDeliverService` |
+| Data Class     | `\Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData`                |
+| Response Class | `\RatePAY\Model\Response\ConfirmationDeliver`                                       |
 
 #### Cancel
-|||
-|---|---|
-| Service Class     | `\Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentCancelService` |
-| Data Class        | `\Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData` |
-| Response Class    | `\RatePAY\Model\Response\PaymentChange` |
+
+|                |                                                                                    |
+|----------------|------------------------------------------------------------------------------------|
+| Service Class  | `\Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentCancelService` |
+| Data Class     | `\Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData`               |
+| Response Class | `\RatePAY\Model\Response\PaymentChange`                                            |
 
 #### Return
-|||
-|---|---|
-| Service Class     | `\Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentReturnService` |
-| Data Class        | `\Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData` |
-| Response Class    | `\RatePAY\Model\Response\PaymentChange` |
+
+|                |                                                                                    |
+|----------------|------------------------------------------------------------------------------------|
+| Service Class  | `\Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentReturnService` |
+| Data Class     | `\Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData`               |
+| Response Class | `\RatePAY\Model\Response\PaymentChange`                                            |
 
 #### Example #1
 
@@ -336,13 +253,14 @@ if($response->isSuccessful()) {
 Use this service to add a debit or a credit to the order.
 
 **Please note:** you don't have to add the debit/credit to the order before. it will be added automatically.
-**Please note:** you don't have to deliver the credit/debit item. It is already marked as delivered on the Ratepay gateway.
+**Please note:** you don't have to deliver the credit/debit item. It is already marked as delivered on the Ratepay
+gateway.
 
-|||
-|---|---|
-| Service Class     | `\Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentCreditService` |
-| Data Class        | `\Ratepay\RpayPayments\Components\RatepayApi\Dto\AddCreditData` |
-| Response Class    | `\RatePAY\Model\Response\PaymentChange` |
+|                |                                                                                    |
+|----------------|------------------------------------------------------------------------------------|
+| Service Class  | `\Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentCreditService` |
+| Data Class     | `\Ratepay\RpayPayments\Components\RatepayApi\Dto\AddCreditData`                    |
+| Response Class | `\RatePAY\Model\Response\PaymentChange`                                            |
 
 ## Example
 
