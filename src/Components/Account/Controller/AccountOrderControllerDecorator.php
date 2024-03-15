@@ -21,6 +21,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\AccountOrderController;
+use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,7 +35,10 @@ use Symfony\Component\Routing\RouterInterface;
 class AccountOrderControllerDecorator
 {
     public function __construct(
-        private readonly AccountOrderController $innerService,
+        /**
+         * @var AccountOrderController
+         */
+        private readonly StorefrontController $innerService,
         private readonly EntityRepository $orderRepository,
         private readonly RouterInterface $router,
         private readonly EntityRepository $ratepayDataRepository
@@ -53,7 +57,7 @@ class AccountOrderControllerDecorator
         $ratepayData = $order instanceof Entity ? $order->getExtension(OrderExtension::EXTENSION_NAME) : null;
         if ($ratepayData && MethodHelper::isRatepayOrder($order)) {
             if ($ratepayData->isSuccessful()) {
-                // You can't change the payment if it is a sucessful ratepay order
+                // You can't change the payment if it is a successful ratepay order
                 return new RedirectResponse($this->router->generate('frontend.account.edit-order.page', [
                     'orderId' => $orderId,
                 ]));

@@ -50,6 +50,8 @@ Here is a list with the feature flags:
 
 ### Unreleased
 
++ RATESWSX-296: fix compatibility with third-party PSP
+
 ### Version 6.1.0 - Released on 2023-11-10
 
 * RATESWSX-270: fix fatal error if admin enter a debit/credit of zero
