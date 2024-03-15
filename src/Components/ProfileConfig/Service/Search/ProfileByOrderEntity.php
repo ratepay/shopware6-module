@@ -27,7 +27,7 @@ class ProfileByOrderEntity implements ProfileSearchInterface
     {
         $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
         $shippingAddressId = $order->getDeliveries()->first()?->getShippingOrderAddressId();
-        $shippingAddress = $shippingAddressId !== null ? $order->getAddresses()->get($shippingAddressId) : $billingAddress;
+        $shippingAddress = $shippingAddressId !== null ? $order->getAddresses()->get($shippingAddressId) : $billingAddress; // use billing address as fallback, to make sure that profile will be found.
 
         return (new ProfileConfigSearch())
             ->setPaymentMethodId((($transaction = $order->getTransactions()->last()) instanceof OrderTransactionEntity) ? $transaction->getPaymentMethodId() : null)

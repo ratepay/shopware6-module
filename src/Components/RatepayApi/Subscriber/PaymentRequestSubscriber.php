@@ -29,7 +29,7 @@ class PaymentRequestSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            PaymentRequestService::EVENT_SUCCESSFUL => 'onSuccess',
+            PaymentRequestService::EVENT_SUCCESSFUL => ['onSuccess', 1000],
             PaymentRequestService::EVENT_FAILED => 'onFailure',
         ];
     }

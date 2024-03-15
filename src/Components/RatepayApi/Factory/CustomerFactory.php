@@ -66,7 +66,6 @@ class CustomerFactory extends AbstractFactory
         if ($requestData instanceof PaymentRequestData) {
             $order = $requestData->getOrder();
             $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
-            $shippingAddress = $order->getDeliveries()->first()->getShippingOrderAddress();
         } else {
             throw new RuntimeException(sprintf('%s is not supported by %s', $requestData::class, self::class));
         }
@@ -89,12 +88,15 @@ class CustomerFactory extends AbstractFactory
             ->setAddresses(
                 (new Addresses())
                     ->addAddress($this->getAddressModel($billingAddress, 'BILLING'))
-                    ->addAddress($this->getAddressModel($shippingAddress, 'DELIVERY'))
             )
             ->setContacts(
                 (new Contacts())
                     ->setEmail($customerEntity->getEmail())
             );
+
+        if (($shippingAddress = $order->getDeliveries()->first()?->getShippingOrderAddress()) !== null) {
+            $customer->getAddresses()->addAddress($this->getAddressModel($shippingAddress, 'DELIVERY'));
+        }
 
         $birthday = null;
 

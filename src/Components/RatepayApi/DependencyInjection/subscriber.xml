@@ -22,5 +22,10 @@
             <argument key="$productRepository" id="product.repository" type="service"/>
         </service>
 
+        <service id="Ratepay\RpayPayments\Components\RatepayApi\Subscriber\AutoDeliverySubscriber" autowire="true">
+            <argument key="$logger" id="monolog.logger.ratepay" type="service"/>
+            <argument key="$orderRepository" id="order.repository" type="service"/>
+        </service>
+
     </services>
 </container>

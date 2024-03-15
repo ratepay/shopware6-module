@@ -107,6 +107,13 @@ class ConfigService
         return (bool) ($config['sendShippingCostsAsCartItem'] ?? false);
     }
 
+    public function isAutoDeliveryOfVirtualProductsDisabled(): bool
+    {
+        $config = $this->getPluginConfiguration();
+
+        return (bool) ($config['disableAutoDeliveryOfVirtualProducts'] ?? false);
+    }
+
     protected function getContext(): Context
     {
         return Context::createDefaultContext();

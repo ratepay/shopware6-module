@@ -51,6 +51,8 @@ Here is a list with the feature flags:
 ### Unreleased
 
 + RATESWSX-296: fix compatibility with third-party PSP
++ RATESWSX-297: fix only-virtual-products-orders & add auto-delivery of virtual-products
++ 
 
 ### Version 6.1.0 - Released on 2023-11-10
 

@@ -234,6 +234,13 @@
             <label lang="de-DE">Übertrage Versandkosten als Warenkorbpositionen</label>
         </input-field>
 
+        <input-field type="bool">
+            <name>disableAutoDeliveryOfVirtualProducts</name>
+            <value>0</value>
+            <label>Disable auto-delivery of virtual products</label>
+            <label lang="de-DE">Automatische Versandmeldung von virtuellen Produkten deaktivieren</label>
+        </input-field>
+
         <input-field type="textarea">
             <name>featureFlags</name>
             <label>Feature Flags</label>
