@@ -39,9 +39,6 @@
                     "invoice": {
                         "title": "Rechnung"
                     },
-                    "prepayment": {
-                        "title": "Vorkasse"
-                    },
                     "debit": {
                         "title": "Lastschrift"
                     },

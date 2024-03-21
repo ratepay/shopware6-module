@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\Checkout\Service;
 
 use Ratepay\RpayPayments\Components\Checkout\Event\RatepayPaymentFilterEvent;
+use Ratepay\RpayPayments\Components\PaymentHandler\LegacyPaymentHandler;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\Collection\ProfileConfigMethodCollection;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileByOrderEntity;
@@ -36,6 +37,9 @@ class PaymentFilterService
 
     public function filterPaymentMethods(PaymentMethodCollection $paymentMethodCollection, SalesChannelContext $salesChannelContext, OrderEntity $order = null): PaymentMethodCollection
     {
+        // make sure that not legacy payment methods are in collection.
+        $paymentMethodCollection = $paymentMethodCollection->filter(static fn (PaymentMethodEntity $entity): bool => $entity->getHandlerIdentifier() !== LegacyPaymentHandler::class);
+
         return $paymentMethodCollection->filter(function (PaymentMethodEntity $paymentMethod) use ($salesChannelContext, $order): ?bool {
             if (!MethodHelper::isRatepayMethod($paymentMethod->getHandlerIdentifier())) {
                 // payment method is not a ratepay method - so we won't check it.

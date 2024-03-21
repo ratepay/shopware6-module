@@ -40,9 +40,6 @@
                     "invoice": {
                         "title": "Invoice"
                     },
-                    "prepayment": {
-                        "title": "Prepayment"
-                    },
                     "debit": {
                         "title": "Debit"
                     },

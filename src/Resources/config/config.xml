@@ -34,22 +34,6 @@
         <title>Transactionstatus after order completion</title>
         <title lang="de-DE">Transaktionsstatus nach Bestellabsschluss</title>
         <input-field type="single-select">
-            <name>paymentStatusPrepayment</name>
-            <options>
-                <option><id>fail</id><name>Failed</name><name lang="de-DE">Fehlgeschlagen</name></option>
-                <option><id>authorize</id><name>Authorized</name><name lang="de-DE">Autorisiert</name></option>
-                <option><id>remind</id><name>Reminded</name><name lang="de-DE">Erinnert</name></option>
-                <option><id>do_pay</id><name>In Progress</name><name lang="de-DE">In Bearbeitung</name></option>
-                <option><id>cancel</id><name>Cancelled</name><name lang="de-DE">Abgebrochen</name></option>
-                <option><id>pay</id><name>Paid</name><name lang="de-DE">Bezahlt</name></option>
-                <option><id>pay_partially</id><name>Paid (partially)</name><name lang="de-DE">Teilweise bezahlt</name></option>
-                <option><id>open</id><name>Open</name><name lang="de-DE">Offen</name></option>
-            </options>
-            <defaultValue>open</defaultValue>
-            <label>Prepayment</label>
-            <label lang="de-DE">Vorkasse</label>
-        </input-field>
-        <input-field type="single-select">
             <name>paymentStatusInvoice</name>
             <options>
                 <option><id>fail</id><name>Failed</name><name lang="de-DE">Fehlgeschlagen</name></option>

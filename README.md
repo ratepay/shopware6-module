@@ -52,7 +52,7 @@ Here is a list with the feature flags:
 
 + RATESWSX-296: fix compatibility with third-party PSP
 + RATESWSX-297: fix only-virtual-products-orders & add auto-delivery of virtual-products
-+ 
++ RATESWSX-298: remove payment-method prepayment (Please note: Existing prepayment-orders cannot be processed after updating!)
 
 ### Version 6.1.0 - Released on 2023-11-10
 

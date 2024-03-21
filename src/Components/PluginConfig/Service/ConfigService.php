@@ -15,7 +15,6 @@ use Ratepay\RpayPayments\Components\PaymentHandler\DebitPaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\InvoicePaymentHandler;
-use Ratepay\RpayPayments\Components\PaymentHandler\PrepaymentPaymentHandler;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
@@ -78,8 +77,6 @@ class ConfigService
     {
         $config = $this->getPluginConfiguration();
         switch ($paymentMethod->getHandlerIdentifier()) {
-            case PrepaymentPaymentHandler::class:
-                return $config['paymentStatusPrepayment'] ?? null;
             case InvoicePaymentHandler::class:
                 return $config['paymentStatusInvoice'] ?? null;
             case DebitPaymentHandler::class:

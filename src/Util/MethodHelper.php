@@ -15,7 +15,6 @@ use Ratepay\RpayPayments\Components\PaymentHandler\DebitPaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\InvoicePaymentHandler;
-use Ratepay\RpayPayments\Components\PaymentHandler\PrepaymentPaymentHandler;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 
@@ -28,7 +27,6 @@ class MethodHelper
             InstallmentPaymentHandler::class,
             InstallmentZeroPercentPaymentHandler::class,
             InvoicePaymentHandler::class,
-            PrepaymentPaymentHandler::class,
         ], true);
     }
 

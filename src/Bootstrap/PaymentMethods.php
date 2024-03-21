@@ -16,7 +16,7 @@ use Ratepay\RpayPayments\Components\PaymentHandler\DebitPaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\InvoicePaymentHandler;
-use Ratepay\RpayPayments\Components\PaymentHandler\PrepaymentPaymentHandler;
+use Ratepay\RpayPayments\Components\PaymentHandler\LegacyPaymentHandler;
 use Shopware\Core\Checkout\Payment\PaymentMethodDefinition;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -35,13 +35,6 @@ class PaymentMethods extends AbstractBootstrap
             'description' => 'Kauf auf Rechnung',
             'afterOrderEnabled' => true,
             'technicalName' => 'ratepay_invoice',
-        ],
-        [
-            'handlerIdentifier' => PrepaymentPaymentHandler::class,
-            'name' => 'Ratepay Vorkasse',
-            'description' => 'Kauf per Vorkasse',
-            'afterOrderEnabled' => true,
-            'technicalName' => 'ratepay_prepayment',
         ],
         [
             'handlerIdentifier' => DebitPaymentHandler::class,
@@ -182,6 +175,19 @@ class PaymentMethods extends AbstractBootstrap
                 ]
             );
         }
+
+        // make sure, that legacy payment method got also updated, if they do not have a technical name
+        // required for Shopware Update 6.7.x
+        $this->connection->update(
+            PaymentMethodDefinition::ENTITY_NAME,
+            [
+                $storageNames['technicalName'] => 'ratepay_legacy_' . Uuid::randomHex(),
+            ],
+            [
+                $storageNames['handlerIdentifier'] => LegacyPaymentHandler::class,
+                $storageNames['technicalName'] => null,
+            ]
+        );
     }
 
     private function isFieldTechnicalNameAvailable(): bool
