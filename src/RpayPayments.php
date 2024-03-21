@@ -37,9 +37,9 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class RpayPayments extends Plugin
 {
-    public function install(InstallContext $context): void
+    public function install(InstallContext $installContext): void
     {
-        $bootstrapper = $this->getBootstrapClasses($context);
+        $bootstrapper = $this->getBootstrapClasses($installContext);
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->preInstall();
         }
@@ -47,15 +47,20 @@ class RpayPayments extends Plugin
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->install();
         }
+    }
+
+    public function postInstall(InstallContext $installContext): void
+    {
+        $bootstrapper = $this->getBootstrapClasses($installContext);
 
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->postInstall();
         }
     }
 
-    public function update(UpdateContext $context): void
+    public function update(UpdateContext $updateContext): void
     {
-        $bootstrapper = $this->getBootstrapClasses($context);
+        $bootstrapper = $this->getBootstrapClasses($updateContext);
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->preUpdate();
         }
@@ -63,6 +68,11 @@ class RpayPayments extends Plugin
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->update();
         }
+    }
+
+    public function postUpdate(UpdateContext $updateContext): void
+    {
+        $bootstrapper = $this->getBootstrapClasses($updateContext);
 
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->postUpdate();
