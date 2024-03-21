@@ -16,8 +16,10 @@ use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\InvoicePaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\PrepaymentPaymentHandler;
+use Shopware\Core\Checkout\Payment\PaymentMethodDefinition;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\Field;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 
@@ -63,9 +65,12 @@ class PaymentMethods extends AbstractBootstrap
 
     private ?EntityRepository $paymentRepository = null;
 
+    private PaymentMethodDefinition $paymentMethodDefinition;
+
     public function injectServices(): void
     {
         $this->paymentRepository = $this->container->get('payment_method.repository');
+        $this->paymentMethodDefinition = $this->container->get(PaymentMethodDefinition::class);
     }
 
     public function update(): void
@@ -118,6 +123,10 @@ class PaymentMethods extends AbstractBootstrap
             $paymentMethod['id'] = $paymentEntity->getId();
         }
 
+        if (!$this->isFieldTechnicalNameAvailable()) {
+            unset($paymentMethod['technicalName']);
+        }
+
         $paymentMethod['pluginId'] = $this->plugin->getId();
         $this->paymentRepository->upsert([$paymentMethod], $this->defaultContext);
     }
@@ -136,5 +145,10 @@ class PaymentMethods extends AbstractBootstrap
         ], $paymentEntities->getElements());
 
         $this->paymentRepository->update(array_values($updateData), $this->defaultContext);
+    }
+
+    private function isFieldTechnicalNameAvailable(): bool
+    {
+        return $this->paymentMethodDefinition->getField('technicalName') instanceof Field;
     }
 }
