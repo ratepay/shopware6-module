@@ -12,9 +12,9 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\DeviceFingerprint;
 
 use DateTimeInterface;
-use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Core\Entity\Extension\OrderExtension;
 use Ratepay\RpayPayments\Core\Entity\RatepayOrderDataEntity;
+use Ratepay\RpayPayments\Core\PluginConfigService;
 use RatePAY\Service\DeviceFingerprint;
 use RuntimeException;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
@@ -30,7 +30,7 @@ use Symfony\Component\HttpFoundation\Request;
 class DfpService implements DfpServiceInterface
 {
     public function __construct(
-        private readonly ConfigService $configService,
+        private readonly PluginConfigService $configService,
         private readonly EntityRepository $orderCustomerRepository
     ) {
     }

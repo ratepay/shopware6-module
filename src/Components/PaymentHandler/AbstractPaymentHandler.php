@@ -21,11 +21,11 @@ use Ratepay\RpayPayments\Components\PaymentHandler\Event\BeforePaymentEvent;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\ValidationDefinitionCollectEvent;
-use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileSearchService;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
+use Ratepay\RpayPayments\Core\PluginConfigService;
 use Ratepay\RpayPayments\Exception\RatepayException;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Ratepay\RpayPayments\Util\RequestHelper;
@@ -59,7 +59,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
         private readonly EntityRepository $orderRepository,
         private readonly PaymentRequestService $paymentRequestService,
         private readonly EventDispatcherInterface $eventDispatcher,
-        private readonly ConfigService $configService,
+        private readonly PluginConfigService $configService,
         private readonly RequestStack $requestStack,
         private readonly ProfileSearchService $profileSearchService
     ) {

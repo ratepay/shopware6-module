@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\StateMachine\Subscriber;
 
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
-use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
+use Ratepay\RpayPayments\Core\PluginConfigService;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
@@ -23,7 +23,7 @@ class PaymentSuccessfulSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private readonly StateMachineRegistry $stateMachineRegistry,
-        private readonly ConfigService $configService
+        private readonly PluginConfigService $configService
     ) {
     }
 

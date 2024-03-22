@@ -13,12 +13,12 @@ namespace Ratepay\RpayPayments\Components\RatepayApi\Subscriber;
 
 use Exception;
 use Psr\Log\LoggerInterface;
-use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\ResponseEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentDeliverService;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
+use Ratepay\RpayPayments\Core\PluginConfigService;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Content\Product\State;
@@ -31,7 +31,7 @@ class AutoDeliverySubscriber implements EventSubscriberInterface
         private readonly PaymentDeliverService $deliverService,
         private readonly LoggerInterface $logger,
         private readonly EntityRepository $orderRepository,
-        private readonly ConfigService $configService
+        private readonly PluginConfigService $configService
     ) {
     }
 

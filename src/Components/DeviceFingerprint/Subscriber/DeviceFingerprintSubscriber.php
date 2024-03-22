@@ -18,12 +18,12 @@ use Ratepay\RpayPayments\Components\Checkout\Event\PaymentDataExtensionBuilt;
 use Ratepay\RpayPayments\Components\DeviceFingerprint\Constraint\DfpConstraint;
 use Ratepay\RpayPayments\Components\DeviceFingerprint\DfpServiceInterface;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\ValidationDefinitionCollectEvent;
-use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\BuildEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
 use Ratepay\RpayPayments\Core\Entity\Extension\OrderExtension;
 use Ratepay\RpayPayments\Core\Entity\RatepayOrderDataEntity;
+use Ratepay\RpayPayments\Core\PluginConfigService;
 use Ratepay\RpayPayments\Util\RequestHelper;
 use Shopware\Storefront\Event\RouteRequest\OrderRouteRequestEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -34,7 +34,7 @@ class DeviceFingerprintSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private readonly DfpServiceInterface $dfpService,
-        private readonly ConfigService $configService,
+        private readonly PluginConfigService $configService,
         private readonly RequestStack $requestStack
     ) {
     }

@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RpayPayments\Components\PluginConfig\Service;
+namespace Ratepay\RpayPayments\Core;
 
 use Ratepay\RpayPayments\Components\PaymentHandler\DebitPaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
@@ -19,7 +19,7 @@ use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 
-class ConfigService
+class PluginConfigService
 {
     public function __construct(
         private readonly SystemConfigService $systemConfigService

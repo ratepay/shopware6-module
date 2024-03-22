@@ -19,10 +19,10 @@ use RatePAY\Model\Request\SubModel\Content\Customer\Addresses\Address;
 use RatePAY\Model\Request\SubModel\Content\Customer\BankAccount;
 use RatePAY\Model\Request\SubModel\Content\Customer\Contacts;
 use RatePAY\Model\Request\SubModel\Content\Customer\Contacts\Phone;
-use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\CheckoutOperationInterface;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
+use Ratepay\RpayPayments\Core\PluginConfigService;
 use Ratepay\RpayPayments\Util\RequestHelper;
 use RuntimeException;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
@@ -44,7 +44,7 @@ class CustomerFactory extends AbstractFactory
 {
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
-        private readonly ConfigService $configService,
+        private readonly PluginConfigService $configService,
         private readonly EntityRepository $salutationRepository,
         private readonly EntityRepository $languageRepository
     ) {

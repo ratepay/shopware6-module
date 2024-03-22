@@ -15,4 +15,11 @@
         <import resource="models.xml"/>
     </imports>
 
+    <services>
+        <service id="Ratepay\RpayPayments\Core\PluginConfigService">
+            <argument id="Shopware\Core\System\SystemConfig\SystemConfigService" type="service"/>
+            <argument>%ratepay.shopware_payment.plugin_version%</argument>
+        </service>
+    </services>
+
 </container>
