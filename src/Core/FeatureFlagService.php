@@ -8,7 +8,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RpayPayments\Components\FeatureFlags\Util;
+namespace Ratepay\RpayPayments\Core;
 
 class FeatureFlagService
 {

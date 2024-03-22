@@ -14,7 +14,7 @@ namespace Ratepay\RpayPayments;
 use Ratepay\RpayPayments\Bootstrap\AbstractBootstrap;
 use Ratepay\RpayPayments\Bootstrap\Database;
 use Ratepay\RpayPayments\Bootstrap\PaymentMethods;
-use Ratepay\RpayPayments\Components\FeatureFlags\Util\FeatureFlagService;
+use Ratepay\RpayPayments\Core\FeatureFlagService;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;

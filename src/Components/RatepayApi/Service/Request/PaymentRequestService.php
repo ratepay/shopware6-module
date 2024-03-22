@@ -14,7 +14,6 @@ namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
 use RatePAY\RequestBuilder;
-use Ratepay\RpayPayments\Components\FeatureFlags\Util\FeatureFlagService;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileByOrderEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileSearchService;
@@ -25,6 +24,7 @@ use Ratepay\RpayPayments\Components\RatepayApi\Factory\ExternalFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\PaymentFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
+use Ratepay\RpayPayments\Core\FeatureFlagService;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**

@@ -20,6 +20,9 @@
             <argument id="Shopware\Core\System\SystemConfig\SystemConfigService" type="service"/>
             <argument>%ratepay.shopware_payment.plugin_version%</argument>
         </service>
+
+        <!-- needs to be public, so we can get it in boot in bundle-file -->
+        <service id="Ratepay\RpayPayments\Components\FeatureFlags\Util\FeatureFlagService" autowire="true" public="true"/>
     </services>
 
 </container>
