@@ -26,21 +26,36 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateCollection;
+use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
+use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionEntity;
+use Shopware\Core\System\StateMachine\StateMachineRegistry;
+use Shopware\Core\System\StateMachine\Transition;
 
 class PaymentStatusSubscriberTest extends TestCase
 {
-    private readonly PluginConfigService $configService;
+    /**
+     * @var StateMachineRegistry&MockObject
+     */
+    private StateMachineRegistry $stateMachine; // @phpstan-ignore-line
+
+    /**
+     * @var PluginConfigService&MockObject
+     */
+    private PluginConfigService $configService; // @phpstan-ignore-line
 
     protected function setUp(): void
     {
+        $this->stateMachine = $this->createMock(StateMachineRegistry::class);
         $this->configService = $this->createMock(PluginConfigService::class);
         $this->configService->method('isUpdatePaymentStatusOnOrderItemOperation')->willReturn(true);
     }
 
-    public function testIfConfigCanDisableFunktion()
+    public function testIfConfigCanDisableFunktion(): void
     {
         $configService = $this->createMock(PluginConfigService::class);
         $configService->method('isUpdatePaymentStatusOnOrderItemOperation')->willReturn(false);
@@ -52,10 +67,10 @@ class PaymentStatusSubscriberTest extends TestCase
         ]);
 
         $transactionStateHandler = $this->createTransactionHandlerMock(null);
-        (new PaymentStatusSubscriber($transactionStateHandler, $configService))->onItemsOperationDone($event);
+        (new PaymentStatusSubscriber($this->stateMachine, $transactionStateHandler, $configService))->onItemsOperationDone($event);
     }
 
-    public function testSimpleFullCancel()
+    public function testSimpleFullCancel(): void
     {
         $event = $this->createOrderOperationDoneEvent([
             $this->getLineItem(5, 0, 5, 0),
@@ -64,19 +79,19 @@ class PaymentStatusSubscriberTest extends TestCase
         ]);
 
         $transactionStateHandler = $this->createTransactionHandlerMock('cancel');
-        (new PaymentStatusSubscriber($transactionStateHandler, $this->configService))->onItemsOperationDone($event);
+        (new PaymentStatusSubscriber($this->stateMachine, $transactionStateHandler, $this->configService))->onItemsOperationDone($event);
     }
 
     /**
      * @dataProvider dataProviderPartlyPaid
      */
-    public function testPartlyPayed(array ...$items)
+    public function testPartlyPayed(array ...$items): void
     {
         $that = $this;
-        $event = $this->createOrderOperationDoneEvent(array_map(static fn (array $item) => call_user_func_array([$that, 'getLineItem'], $item), $items));
+        $event = $this->createOrderOperationDoneEvent(array_map(static fn (array $item): mixed => $that->getLineItem(...$item), $items));
 
         $transactionStateHandler = $this->createTransactionHandlerMock('payPartially');
-        (new PaymentStatusSubscriber($transactionStateHandler, $this->configService))->onItemsOperationDone($event);
+        (new PaymentStatusSubscriber($this->stateMachine, $transactionStateHandler, $this->configService))->onItemsOperationDone($event);
     }
 
     public static function dataProviderPartlyPaid(): array
@@ -118,13 +133,12 @@ class PaymentStatusSubscriberTest extends TestCase
     /**
      * @dataProvider dataProviderFullPaid
      */
-    public function testFullPaid(array ...$items)
+    public function testFullPaid(array ...$items): void
     {
         $that = $this;
-        $event = $this->createOrderOperationDoneEvent(array_map(static fn (array $item) => call_user_func_array([$that, 'getLineItem'], $item), $items));
+        $event = $this->createOrderOperationDoneEvent(array_map(static fn (array $item): mixed => $that->getLineItem(...$item), $items));
 
-        $transactionStateHandler = $this->createTransactionHandlerMock('paid');
-        (new PaymentStatusSubscriber($transactionStateHandler, $this->configService))->onItemsOperationDone($event);
+        $this->getPaymentStatusSubscriberForDelivery()->onItemsOperationDone($event);
     }
 
     public static function dataProviderFullPaid(): array
@@ -151,13 +165,13 @@ class PaymentStatusSubscriberTest extends TestCase
     /**
      * @dataProvider dataFullRefunded
      */
-    public function testFullRefunded(array ...$items)
+    public function testFullRefunded(array ...$items): void
     {
         $that = $this;
-        $event = $this->createOrderOperationDoneEvent(array_map(static fn (array $item) => call_user_func_array([$that, 'getLineItem'], $item), $items));
+        $event = $this->createOrderOperationDoneEvent(array_map(static fn (array $item): mixed => $that->getLineItem(...$item), $items));
 
         $transactionStateHandler = $this->createTransactionHandlerMock('refund');
-        (new PaymentStatusSubscriber($transactionStateHandler, $this->configService))->onItemsOperationDone($event);
+        (new PaymentStatusSubscriber($this->stateMachine, $transactionStateHandler, $this->configService))->onItemsOperationDone($event);
     }
 
     public static function dataFullRefunded(): array
@@ -179,13 +193,13 @@ class PaymentStatusSubscriberTest extends TestCase
     /**
      * @dataProvider dataProviderPartlyRefunded
      */
-    public function testPartlyRefunded(array ...$items)
+    public function testPartlyRefunded(array ...$items): void
     {
         $that = $this;
-        $event = $this->createOrderOperationDoneEvent(array_map(static fn (array $item) => call_user_func_array([$that, 'getLineItem'], $item), $items));
+        $event = $this->createOrderOperationDoneEvent(array_map(static fn (array $item): mixed => $that->getLineItem(...$item), $items));
 
         $transactionStateHandler = $this->createTransactionHandlerMock('refundPartially');
-        (new PaymentStatusSubscriber($transactionStateHandler, $this->configService))->onItemsOperationDone($event);
+        (new PaymentStatusSubscriber($this->stateMachine, $transactionStateHandler, $this->configService))->onItemsOperationDone($event);
     }
 
     public static function dataProviderPartlyRefunded(): array
@@ -212,7 +226,7 @@ class PaymentStatusSubscriberTest extends TestCase
     /**
      * @dataProvider dataProviderShipping
      */
-    public function testIfShippingGotHandledCorrectly(int $delivered, int $canceled, int $refunded, string $expectedMethod = null)
+    public function testIfShippingGotHandledCorrectly(int $delivered, int $canceled, int $refunded, string $expectedMethod = null): void
     {
         $event = $this->createOrderOperationDoneEvent([
             $this->getLineItem(5, 0, 5, 0),
@@ -225,8 +239,12 @@ class PaymentStatusSubscriberTest extends TestCase
             RatepayOrderDataEntity::FIELD_SHIPPING_POSITION => $this->createPosition($delivered, $canceled, $refunded),
         ]);
 
-        $transactionStateHandler = $this->createTransactionHandlerMock($expectedMethod);
-        (new PaymentStatusSubscriber($transactionStateHandler, $this->configService))->onItemsOperationDone($event);
+        if ($expectedMethod === 'paid') {
+            $this->getPaymentStatusSubscriberForDelivery()->onItemsOperationDone($event);
+        } else {
+            $transactionStateHandler = $this->createTransactionHandlerMock($expectedMethod);
+            (new PaymentStatusSubscriber($this->stateMachine, $transactionStateHandler, $this->configService))->onItemsOperationDone($event);
+        }
     }
 
     public static function dataProviderShipping(): array
@@ -239,10 +257,7 @@ class PaymentStatusSubscriberTest extends TestCase
         ];
     }
 
-    /**
-     * @depends testFullRefunded
-     */
-    public function testIfNoRatepayItemsGotProcessedCorrectly()
+    public function testIfNoRatepayItemsGotProcessedCorrectly(): void
     {
         $event = $this->createOrderOperationDoneEvent([
             $this->getLineItem(5, 5, 0, 5),
@@ -253,13 +268,13 @@ class PaymentStatusSubscriberTest extends TestCase
         // test if refunded got still called
         $event->getOrderEntity()->getLineItems()->last()->setExtensions([]); // remove position from last item.
         $transactionStateHandler = $this->createTransactionHandlerMock('refund');
-        (new PaymentStatusSubscriber($transactionStateHandler, $this->configService))->onItemsOperationDone($event);
+        (new PaymentStatusSubscriber($this->stateMachine, $transactionStateHandler, $this->configService))->onItemsOperationDone($event);
 
         // test if subscriber does not change the state of the payment.
         // remove all ratepay data from order-line-items
         $event->getOrderEntity()->getLineItems()->map(static fn (OrderLineItemEntity $item) => $item->setExtensions([]));
         $transactionStateHandler = $this->createTransactionHandlerMock(null);
-        (new PaymentStatusSubscriber($transactionStateHandler, $this->configService))->onItemsOperationDone($event);
+        (new PaymentStatusSubscriber($this->stateMachine, $transactionStateHandler, $this->configService))->onItemsOperationDone($event);
     }
 
     private function getLineItem(int $qty, int $delivered, int $canceled, int $refunded): OrderLineItemEntity
@@ -301,27 +316,67 @@ class PaymentStatusSubscriberTest extends TestCase
         ]);
 
         $orderOperationData = new OrderOperationData(Context::createDefaultContext(), $orderEntity, '--', [], false);
+
         return new OrderItemOperationDoneEvent($orderEntity, $orderOperationData, $orderOperationData->getContext());
     }
 
     /**
      * @return OrderTransactionStateHandler&MockObject
      */
-    private function createTransactionHandlerMock(string $expectedMethod = null)
+    private function createTransactionHandlerMock(string $expectedMethod = null): OrderTransactionStateHandler
     {
         $transactionStateHandler = $this->createMock(OrderTransactionStateHandler::class);
 
-        $expectedMethod !== 'cancel' && $transactionStateHandler->expects($this->never())->method('cancel');
+        if ($expectedMethod !== 'cancel') {
+            $transactionStateHandler->expects($this->never())->method('cancel');
+        }
 
-        $expectedMethod !== 'paid' && $transactionStateHandler->expects($this->never())->method('paid');
-        $expectedMethod !== 'payPartially' && $transactionStateHandler->expects($this->never())->method('payPartially');
+        if ($expectedMethod !== 'paid') {
+            $transactionStateHandler->expects($this->never())->method('paid');
+        }
 
-        $expectedMethod !== 'refundPartially' && $transactionStateHandler->expects($this->never())->method('refundPartially');
-        $expectedMethod !== 'refund' && $transactionStateHandler->expects($this->never())->method('refund');
+        if ($expectedMethod !== 'payPartially') {
+            $transactionStateHandler->expects($this->never())->method('payPartially');
+        }
 
-        $expectedMethod !== null && $transactionStateHandler->expects($this->once())->method($expectedMethod);
-        $expectedMethod === null && $transactionStateHandler->expects($this->never())->method($this->anything());
+        if ($expectedMethod !== 'refundPartially') {
+            $transactionStateHandler->expects($this->never())->method('refundPartially');
+        }
+
+        if ($expectedMethod !== 'refund') {
+            $transactionStateHandler->expects($this->never())->method('refund');
+        }
+
+        if ($expectedMethod !== null) {
+            $transactionStateHandler->expects($this->once())->method($expectedMethod);
+        }
+
+        if ($expectedMethod === null) {
+            $transactionStateHandler->expects($this->never())->method($this->anything());
+        }
 
         return $transactionStateHandler;
+    }
+
+    private function getPaymentStatusSubscriberForDelivery(): PaymentStatusSubscriber
+    {
+        $this->stateMachine->method('getAvailableTransitions')->willReturn([
+            (new StateMachineTransitionEntity())->assign([
+                'actionName' => 'pay',
+                'toStateMachineState' => (new StateMachineStateEntity())->assign([
+                    'technicalName' => OrderTransactionStates::STATE_PAID,
+                ]),
+            ]),
+        ]);
+
+        $this->stateMachine->method('transition')->willReturnCallback(static function (Transition $transition, Context $context): StateMachineStateCollection {
+            self::assertEquals('pay', $transition->getTransitionName());
+
+            return new StateMachineStateCollection();
+        });
+
+        $transactionStateHandler = $this->createMock(OrderTransactionStateHandler::class);
+
+        return new PaymentStatusSubscriber($this->stateMachine, $transactionStateHandler, $this->configService);
     }
 }
