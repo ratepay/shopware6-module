@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RpayPayments\Components\OrderManagement\Util;
+namespace Ratepay\RpayPayments\Core\Util;
 
 use Ratepay\RpayPayments\Core\Entity\RatepayPositionEntity;
 

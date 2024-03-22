@@ -186,6 +186,13 @@
             <helpText>Please select a delivery status on which the order should be automatically returned.</helpText>
             <helpText lang="de-DE">Bitte wählen Sie einen Lieferstatus, bei welchem die Bestellung automatisch retourniert wird.</helpText>
         </input-field>
+
+        <input-field type="bool">
+            <name>updatePaymentStatus</name>
+            <label>Update payment status on deliver/cancel/refund order-item</label>
+            <label lang="de-DE">Aktualisiere Zahlungsstatus beim Versenden/Abbrechen/Erstatten von Bestellpositionen</label>
+            <value>0</value>
+        </input-field>
     </card>
 
     <card>

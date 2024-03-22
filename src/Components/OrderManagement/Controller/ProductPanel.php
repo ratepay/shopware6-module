@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\OrderManagement\Controller;
 
 use Ratepay\RpayPayments\Components\OrderManagement\Service\LineItemFactory;
-use Ratepay\RpayPayments\Components\OrderManagement\Util\LineItemUtil;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AddCreditData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\AbstractModifyRequest;
@@ -24,6 +23,7 @@ use Ratepay\RpayPayments\Core\Entity\Extension\OrderExtension;
 use Ratepay\RpayPayments\Core\Entity\Extension\OrderLineItemExtension;
 use Ratepay\RpayPayments\Core\Entity\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Core\Entity\RatepayOrderLineItemDataEntity;
+use Ratepay\RpayPayments\Core\Util\LineItemUtil;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\OrderEntity;

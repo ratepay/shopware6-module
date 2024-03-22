@@ -111,6 +111,13 @@ class PluginConfigService
         return (bool) ($config['disableAutoDeliveryOfVirtualProducts'] ?? false);
     }
 
+    public function isUpdatePaymentStatusOnOrderItemOperation(): bool
+    {
+        $config = $this->getPluginConfiguration();
+
+        return (bool) ($config['updatePaymentStatus'] ?? false);
+    }
+
     protected function getContext(): Context
     {
         return Context::createDefaultContext();

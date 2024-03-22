@@ -2,6 +2,7 @@ parameters:
     level: 6
     paths:
         - src
+        - tests
 
     ignoreErrors:
         - '#with no value type specified in iterable type array#'

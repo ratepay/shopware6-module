@@ -50,6 +50,7 @@ Here is a list with the feature flags:
 
 ### Unreleased
 
+* RATESWSX-271: update payment status on order-item operation
 + RATESWSX-296: fix compatibility with third-party PSP
 + RATESWSX-297: fix only-virtual-products-orders & add auto-delivery of virtual-products
 + RATESWSX-298: remove payment-method prepayment (Please note: Existing prepayment-orders cannot be processed after updating!)

@@ -26,6 +26,7 @@ use Ratepay\RpayPayments\Core\Entity\Extension\OrderExtension;
 use Ratepay\RpayPayments\Core\Entity\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Core\Entity\RatepayOrderLineItemDataEntity;
 use Ratepay\RpayPayments\Core\Entity\RatepayPositionEntity;
+use Ratepay\RpayPayments\Core\Event\OrderItemOperationDoneEvent;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Order\RecalculationService;
@@ -114,6 +115,15 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
         if ($requestData->isUpdateStock()) {
             $this->updateProductStocks($event->getContext(), $requestData);
         }
+
+        /** @var OrderEntity $order */
+        $order = $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($requestData->getOrder()->getId()), $event->getContext())->first();
+
+        $this->eventDispatcher->dispatch(new OrderItemOperationDoneEvent(
+            $order,
+            $requestData,
+            $event->getContext()
+        ));
     }
 
     public function onSuccessAddCredit(ResponseEvent $event): void
@@ -150,6 +160,12 @@ class PaymentChangeSubscriber implements EventSubscriberInterface
             $event->getRequestBuilder(),
             new OrderOperationData($event->getContext(), $reloadedOrder, OrderOperationData::OPERATION_ADD, $newItems, false)
         ), PaymentDeliverService::EVENT_SUCCESSFUL);
+
+        $this->eventDispatcher->dispatch(new OrderItemOperationDoneEvent(
+            $reloadedOrder,
+            $requestData,
+            $event->getContext()
+        ));
     }
 
     /**
