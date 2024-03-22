@@ -38,32 +38,11 @@ class PluginConfigService
         return $this->systemConfigService->get('RpayPayments.config', null) ?: [];
     }
 
-    public function isBidirectionalityEnabled(): bool
+    public function isAutoOperationBasedOnDeliveryStatusEnabled(): bool
     {
         $config = $this->getPluginConfiguration();
 
         return $config['bidirectionalityEnabled'] ?? false;
-    }
-
-    public function getBidirectionalityFullDelivery(): string
-    {
-        $config = $this->getPluginConfiguration();
-
-        return $config['bidirectionalityStatusFullDelivery'] ?? '';
-    }
-
-    public function getBidirectionalityFullCancel(): string
-    {
-        $config = $this->getPluginConfiguration();
-
-        return $config['bidirectionalityStatusFullCancel'] ?? '';
-    }
-
-    public function getBidirectionalityFullReturn(): string
-    {
-        $config = $this->getPluginConfiguration();
-
-        return $config['bidirectionalityStatusFullReturn'] ?? '';
     }
 
     public function getSubmitAdditionalAddress(): string

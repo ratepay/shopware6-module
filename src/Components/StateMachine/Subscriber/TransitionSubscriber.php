@@ -22,7 +22,9 @@ use Ratepay\RpayPayments\Core\Entity\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Core\PluginConfigService;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Ratepay\RpayPayments\Util\MethodHelper;
+use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;
+use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryStates;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -51,7 +53,7 @@ class TransitionSubscriber implements EventSubscriberInterface
 
     public function onTransition(StateMachineTransitionEvent $event): void
     {
-        if ($event->getEntityName() !== 'order_delivery' || !$this->configService->isBidirectionalityEnabled()) {
+        if ($event->getEntityName() !== OrderDeliveryDefinition::ENTITY_NAME || !$this->configService->isAutoOperationBasedOnDeliveryStatusEnabled()) {
             return;
         }
 
@@ -75,15 +77,15 @@ class TransitionSubscriber implements EventSubscriberInterface
         }
 
         switch ($event->getToPlace()->getTechnicalName()) {
-            case $this->configService->getBidirectionalityFullDelivery():
+            case OrderDeliveryStates::STATE_SHIPPED:
                 $operation = OrderOperationData::OPERATION_DELIVER;
                 $service = $this->paymentDeliverService;
                 break;
-            case $this->configService->getBidirectionalityFullCancel():
+            case OrderDeliveryStates::STATE_CANCELLED:
                 $operation = OrderOperationData::OPERATION_CANCEL;
                 $service = $this->paymentCancelService;
                 break;
-            case $this->configService->getBidirectionalityFullReturn():
+            case OrderDeliveryStates::STATE_RETURNED:
                 $operation = OrderOperationData::OPERATION_RETURN;
                 $service = $this->paymentReturnService;
                 break;

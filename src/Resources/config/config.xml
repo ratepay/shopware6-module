@@ -135,56 +135,9 @@
         <title lang="de-DE">Bidirektionalität</title>
         <input-field type="bool">
             <name>bidirectionalityEnabled</name>
-            <label>Enable</label>
-            <label lang="de-DE">Aktivieren</label>
+            <label>Auto-deliver/cancel/refund of order-items based on delivery status</label>
+            <label lang="de-DE">Automatischer Versand/Abbruch/Erstattung der bestellpositionen basierend auf dem Lieferstatus</label>
             <value>0</value>
-        </input-field>
-        <input-field type="single-select">
-            <name>bidirectionalityStatusFullDelivery</name>
-            <options>
-                <option>
-                    <id>shipped</id>
-                    <name>shipped</name>
-                    <name lang="de-DE">Ausgeliefert</name>
-                </option>
-            </options>
-            <defaultValue>shipped</defaultValue>
-            <label>Status for `delivery completed`</label>
-            <label lang="de-DE">Status für Volllieferung</label>
-            <helpText>Please select a delivery status on which the order should be automatically delivered.</helpText>
-            <helpText lang="de-DE">Bitte wählen Sie einen Lieferstatus, bei welchem die Bestellung automatisch ausgeliefert wird.</helpText>
-        </input-field>
-
-        <input-field type="single-select">
-            <name>bidirectionalityStatusFullCancel</name>
-            <options>
-                <option>
-                    <id>cancelled</id>
-                    <name>Cancelled</name>
-                    <name lang="de-DE">Abgebrochen</name>
-                </option>
-            </options>
-            <defaultValue>cancelled</defaultValue>
-            <label>Status for `cancelled`</label>
-            <label lang="de-DE">Status für Vollstornierung</label>
-            <helpText>Please select a delivery status on which the order should be automatically cancelled.</helpText>
-            <helpText lang="de-DE">Bitte wählen Sie einen Lieferstatus, bei welchem die Bestellung automatisch storniert wird.</helpText>
-        </input-field>
-
-        <input-field type="single-select">
-            <name>bidirectionalityStatusFullReturn</name>
-            <options>
-                <option>
-                    <id>returned</id>
-                    <name>returned</name>
-                    <name lang="de-DE">Retourniert</name>
-                </option>
-            </options>
-            <defaultValue>returned</defaultValue>
-            <label>Status for `returned`</label>
-            <label lang="de-DE">Status für Vollretournierung</label>
-            <helpText>Please select a delivery status on which the order should be automatically returned.</helpText>
-            <helpText lang="de-DE">Bitte wählen Sie einen Lieferstatus, bei welchem die Bestellung automatisch retourniert wird.</helpText>
         </input-field>
 
         <input-field type="bool">
