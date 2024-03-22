@@ -28,6 +28,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryStates;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Core\System\StateMachine\Event\StateMachineTransitionEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -94,6 +95,12 @@ class TransitionSubscriber implements EventSubscriberInterface
                 return;
         }
 
+        // we need this to prevent endless recursion if update-delivery-status is enabled.
+        // this should never happen, because shopware can not change the status to the actual status again and so this subscriber should never called again.
+        $event->getContext()->addExtension('ratepay', new ArrayStruct([
+            'onTransition' => true,
+        ]));
+
         $orderOperationData = new OrderOperationData($event->getContext(), $order, $operation, null, false);
         try {
             $response = $service->doRequest($orderOperationData);
@@ -113,5 +120,7 @@ class TransitionSubscriber implements EventSubscriberInterface
                 'itemsToProcess' => $orderOperationData->getItems(),
             ]);
         }
+
+        $event->getContext()->removeExtension('ratepay');
     }
 }

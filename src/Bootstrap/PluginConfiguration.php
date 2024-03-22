@@ -26,6 +26,7 @@ class PluginConfiguration extends AbstractBootstrap
         // we set this in the bootstrap, because we want to prevent that the flag is enabled after a plugin update and configuration save.
         $this->configService->set('RpayPayments.config.bidirectionalityEnabled', true);
         $this->configService->set('RpayPayments.config.updatePaymentStatus', true);
+        $this->configService->set('RpayPayments.config.updateDeliveryStatus', true);
     }
 
     public function update(): void

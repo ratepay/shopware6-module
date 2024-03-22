@@ -15,5 +15,6 @@
         </defaults>
 
         <service id="Ratepay\RpayPayments\Components\StateMachine\Subscriber\PaymentStatusSubscriber"/>
+        <service id="Ratepay\RpayPayments\Components\StateMachine\Subscriber\DeliveryStatusSubscriber"/>
     </services>
 </container>

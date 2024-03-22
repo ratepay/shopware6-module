@@ -146,6 +146,15 @@
             <label lang="de-DE">Aktualisiere Zahlungsstatus beim Versenden/Abbrechen/Erstatten von Bestellpositionen</label>
             <value>0</value>
         </input-field>
+
+        <input-field type="bool">
+            <name>updateDeliveryStatus</name>
+            <label>Update delivery status on deliver/cancel order-item</label>
+            <label lang="de-DE">Aktualisiere Lieferstatus beim Versenden/Abbrechen von Bestellpositionen</label>
+            <helpText>We don't update the delivery status for a refund, as we cannot guarantee whether the refund is for a return or just a refund.</helpText>
+            <helpText lang="de-DE">Wir aktualisieren den Lieferstatus nicht bei einer Erstattung, da wir nicht sicherstellen können, ob es sich bei Erstattung um eine Retoure oder nur eine Erstattung handelt.</helpText>
+            <value>0</value>
+        </input-field>
     </card>
 
     <card>
