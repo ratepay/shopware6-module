@@ -9,9 +9,9 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RpayPayments\Components\Checkout\Model\Extension;
+namespace Ratepay\RpayPayments\Core\Entity\Extension;
 
-use Ratepay\RpayPayments\Components\Checkout\Model\Definition\RatepayOrderLineItemDataDefinition;
+use Ratepay\RpayPayments\Core\Entity\Definition\RatepayOrderLineItemDataDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityExtension;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\RestrictDelete;

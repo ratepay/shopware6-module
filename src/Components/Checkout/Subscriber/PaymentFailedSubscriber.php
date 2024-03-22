@@ -12,11 +12,11 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
 
 use Exception;
-use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
-use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\Logging\Model\ApiRequestLogEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
 use Ratepay\RpayPayments\Components\RatepayApi\Util\ResponseConverter;
+use Ratepay\RpayPayments\Core\Entity\Extension\OrderExtension;
+use Ratepay\RpayPayments\Core\Entity\RatepayOrderDataEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;

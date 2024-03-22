@@ -16,11 +16,11 @@ use RatePAY\Model\Request\SubModel\Head\Credential;
 use RatePAY\Model\Request\SubModel\Head\Meta;
 use RatePAY\Model\Request\SubModel\Head\Meta\Systems;
 use RatePAY\Model\Request\SubModel\Head\Meta\Systems\System;
-use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
-use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
+use Ratepay\RpayPayments\Core\Entity\Extension\OrderExtension;
+use Ratepay\RpayPayments\Core\Entity\RatepayOrderDataEntity;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**

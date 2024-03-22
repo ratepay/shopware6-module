@@ -9,10 +9,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RpayPayments\Components\Checkout\Model\Definition;
+namespace Ratepay\RpayPayments\Core\Entity\Definition;
 
-use Ratepay\RpayPayments\Components\Checkout\Model\Collection\RatepayOrderDataCollection;
-use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
+use Ratepay\RpayPayments\Core\Entity\Collection\RatepayOrderDataCollection;
+use Ratepay\RpayPayments\Core\Entity\RatepayOrderDataEntity;
 use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;

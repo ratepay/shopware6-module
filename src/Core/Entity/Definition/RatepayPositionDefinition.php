@@ -9,10 +9,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RpayPayments\Components\Checkout\Model\Definition;
+namespace Ratepay\RpayPayments\Core\Entity\Definition;
 
-use Ratepay\RpayPayments\Components\Checkout\Model\Collection\RatepayPositionCollection;
-use Ratepay\RpayPayments\Components\Checkout\Model\RatepayPositionEntity;
+use Ratepay\RpayPayments\Core\Entity\Collection\RatepayPositionCollection;
+use Ratepay\RpayPayments\Core\Entity\RatepayPositionEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;

@@ -13,14 +13,14 @@ namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
-use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
-use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\ExternalFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
+use Ratepay\RpayPayments\Core\Entity\Extension\OrderExtension;
+use Ratepay\RpayPayments\Core\Entity\RatepayOrderDataEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;

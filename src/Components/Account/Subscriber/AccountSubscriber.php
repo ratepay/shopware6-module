@@ -12,11 +12,11 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\Account\Subscriber;
 
 use Ratepay\RpayPayments\Components\Account\Event\PaymentUpdateRequestBagValidatedEvent;
-use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
-use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\Checkout\Service\ExtensionService;
 use Ratepay\RpayPayments\Components\PaymentHandler\AbstractPaymentHandler;
 use Ratepay\RpayPayments\Components\RedirectException\Exception\ForwardException;
+use Ratepay\RpayPayments\Core\Entity\Extension\OrderExtension;
+use Ratepay\RpayPayments\Core\Entity\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Ratepay\RpayPayments\Util\DataValidationHelper;
 use Ratepay\RpayPayments\Util\MethodHelper;

@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\OrderManagement\Util;
 
-use Ratepay\RpayPayments\Components\Checkout\Model\RatepayPositionEntity;
+use Ratepay\RpayPayments\Core\Entity\RatepayPositionEntity;
 
 class LineItemUtil
 {

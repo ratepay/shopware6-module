@@ -13,13 +13,13 @@ namespace Ratepay\RpayPayments\Components\StateMachine\Subscriber;
 
 use Exception;
 use Psr\Log\LoggerInterface;
-use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
-use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentCancelService;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentDeliverService;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentReturnService;
+use Ratepay\RpayPayments\Core\Entity\Extension\OrderExtension;
+use Ratepay\RpayPayments\Core\Entity\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Ratepay\RpayPayments\Util\MethodHelper;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;

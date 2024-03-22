@@ -13,11 +13,11 @@ namespace Ratepay\RpayPayments\Components\Logging\Service;
 
 use Exception;
 use Psr\Log\LoggerInterface;
-use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
-use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\Logging\Model\ApiRequestLogEntity;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\RequestDoneEvent;
+use Ratepay\RpayPayments\Core\Entity\Extension\OrderExtension;
+use Ratepay\RpayPayments\Core\Entity\RatepayOrderDataEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use SimpleXMLElement;
 

@@ -12,9 +12,9 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\DeviceFingerprint;
 
 use DateTimeInterface;
-use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
-use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Components\PluginConfig\Service\ConfigService;
+use Ratepay\RpayPayments\Core\Entity\Extension\OrderExtension;
+use Ratepay\RpayPayments\Core\Entity\RatepayOrderDataEntity;
 use RatePAY\Service\DeviceFingerprint;
 use RuntimeException;
 use Shopware\Core\Checkout\Customer\CustomerEntity;

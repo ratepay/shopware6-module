@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\Account\Controller;
 
 use Exception;
-use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
-use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
+use Ratepay\RpayPayments\Core\Entity\Extension\OrderExtension;
+use Ratepay\RpayPayments\Core\Entity\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Util\MethodHelper;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;

@@ -13,10 +13,6 @@ namespace Ratepay\RpayPayments\Components\RatepayApi\Subscriber;
 
 use Exception;
 use Psr\Log\LoggerInterface;
-use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
-use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
-use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
-use Ratepay\RpayPayments\Components\Checkout\Model\RatepayPositionEntity;
 use Ratepay\RpayPayments\Components\Checkout\Service\ExtensionService;
 use Ratepay\RpayPayments\Components\Logging\Service\HistoryLogger;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AddCreditData;
@@ -26,6 +22,10 @@ use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentCancelServ
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentCreditService;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentDeliverService;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentReturnService;
+use Ratepay\RpayPayments\Core\Entity\Extension\OrderExtension;
+use Ratepay\RpayPayments\Core\Entity\RatepayOrderDataEntity;
+use Ratepay\RpayPayments\Core\Entity\RatepayOrderLineItemDataEntity;
+use Ratepay\RpayPayments\Core\Entity\RatepayPositionEntity;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Order\RecalculationService;

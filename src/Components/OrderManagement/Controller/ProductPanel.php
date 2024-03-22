@@ -11,10 +11,6 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\OrderManagement\Controller;
 
-use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
-use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderLineItemExtension;
-use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
-use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
 use Ratepay\RpayPayments\Components\OrderManagement\Service\LineItemFactory;
 use Ratepay\RpayPayments\Components\OrderManagement\Util\LineItemUtil;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AddCreditData;
@@ -24,6 +20,10 @@ use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentCancelServ
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentCreditService;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentDeliverService;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentReturnService;
+use Ratepay\RpayPayments\Core\Entity\Extension\OrderExtension;
+use Ratepay\RpayPayments\Core\Entity\Extension\OrderLineItemExtension;
+use Ratepay\RpayPayments\Core\Entity\RatepayOrderDataEntity;
+use Ratepay\RpayPayments\Core\Entity\RatepayOrderLineItemDataEntity;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\OrderEntity;

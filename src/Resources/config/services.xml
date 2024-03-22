@@ -12,6 +12,7 @@
 
     <imports>
         <import resource="translations.xml"/>
+        <import resource="models.xml"/>
     </imports>
 
 </container>

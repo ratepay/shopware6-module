@@ -11,12 +11,12 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Dto;
 
-use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderExtension;
-use Ratepay\RpayPayments\Components\Checkout\Model\Extension\OrderLineItemExtension;
-use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderDataEntity;
-use Ratepay\RpayPayments\Components\Checkout\Model\RatepayOrderLineItemDataEntity;
-use Ratepay\RpayPayments\Components\Checkout\Model\RatepayPositionEntity;
 use Ratepay\RpayPayments\Components\OrderManagement\Util\LineItemUtil;
+use Ratepay\RpayPayments\Core\Entity\Extension\OrderExtension;
+use Ratepay\RpayPayments\Core\Entity\Extension\OrderLineItemExtension;
+use Ratepay\RpayPayments\Core\Entity\RatepayOrderDataEntity;
+use Ratepay\RpayPayments\Core\Entity\RatepayOrderLineItemDataEntity;
+use Ratepay\RpayPayments\Core\Entity\RatepayPositionEntity;
 use RuntimeException;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
