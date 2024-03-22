@@ -18,10 +18,7 @@ jobs:
 
             -   uses: actions/setup-go@v4
 
-            -   name: Install shopware-cli
-                uses: FriendsOfShopware/shopware-cli-action@v1
-                env:
-                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            -   run: go install github.com/FriendsOfShopware/shopware-cli@latest
 
             -   uses: actions/setup-node@v3
                 with:
