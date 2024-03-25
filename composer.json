@@ -36,8 +36,8 @@
             "en-GB": "https://www.ratepay.com"
         },
         "supportLink": {
-            "de-DE": "https://ratepay.gitbook.io/shopware6/",
-            "en-GB": "https://ratepay.gitbook.io/shopware6/"
+            "de-DE": "https://docs.ratepay.com/docs/developer/shop_modules/shopware/shopware_6/ratepay_payment_plugin_for_shopware_6/",
+            "en-GB": "https://docs.ratepay.com/docs/developer/shop_modules/shopware/shopware_6/ratepay_payment_plugin_for_shopware_6/"
         }
     },
     "require": {
