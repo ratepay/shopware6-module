@@ -136,7 +136,7 @@
         <input-field type="bool">
             <name>bidirectionalityEnabled</name>
             <label>Auto-deliver/cancel/refund of order-items based on delivery status</label>
-            <label lang="de-DE">Automatischer Versand/Abbruch/Erstattung der bestellpositionen basierend auf dem Lieferstatus</label>
+            <label lang="de-DE">Automatischer Versand/Abbruch/Erstattung der Bestellpositionen basierend auf dem Lieferstatus</label>
             <value>0</value>
         </input-field>
 
