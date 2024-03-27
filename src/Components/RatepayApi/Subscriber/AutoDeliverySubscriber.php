@@ -13,11 +13,9 @@ namespace Ratepay\RpayPayments\Components\RatepayApi\Subscriber;
 
 use Exception;
 use Psr\Log\LoggerInterface;
+use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
-use Ratepay\RpayPayments\Components\RatepayApi\Event\ResponseEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentDeliverService;
-use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
 use Ratepay\RpayPayments\Core\PluginConfigService;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -38,19 +36,18 @@ class AutoDeliverySubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            PaymentRequestService::EVENT_SUCCESSFUL => ['onSuccess', 5],
+            PaymentSuccessfulEvent::class => 'onSuccess',
         ];
     }
 
-    public function onSuccess(ResponseEvent $requestEvent): void
+    public function onSuccess(PaymentSuccessfulEvent $event): void
     {
         if ($this->configService->isAutoDeliveryOfVirtualProductsDisabled()) {
             return;
         }
 
-        /** @var PaymentRequestData $requestData */
-        $requestData = $requestEvent->getRequestData();
-        $order = $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($requestData->getOrder()->getId()), $requestData->getContext())->first();
+        // we will reload the order completely to have all extension-data
+        $order = $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($event->getOrder()->getId()), $event->getContext())->first();
 
         if (!$order instanceof OrderEntity) {
             return; // should never occur - just to be safe.
@@ -68,7 +65,7 @@ class AutoDeliverySubscriber implements EventSubscriberInterface
         if ($lineItemsToDeliver !== []) {
             try {
                 $this->deliverService->doRequest(new OrderOperationData(
-                    $requestEvent->getContext(),
+                    $event->getContext(),
                     $order,
                     OrderOperationData::OPERATION_DELIVER,
                     $lineItemsToDeliver,

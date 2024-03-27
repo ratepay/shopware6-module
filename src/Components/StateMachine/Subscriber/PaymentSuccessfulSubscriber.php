@@ -30,7 +30,7 @@ class PaymentSuccessfulSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            PaymentSuccessfulEvent::class => 'changeTransactionState',
+            PaymentSuccessfulEvent::class => ['changeTransactionState', 6000],
         ];
     }
 
