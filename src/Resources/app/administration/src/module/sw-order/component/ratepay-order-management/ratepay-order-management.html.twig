@@ -123,6 +123,13 @@
                         </sw-select-field>
                         <span v-if="item.position.maxReturn == 0">0</span>
                     </template>
+
+                    <template #column-unitPrice="{ item }">
+                        {{ currencyFilter(item.unitPrice, order.currency.translated.shortName) }}
+                    </template>
+                    <template #column-totalPrice="{ item }">
+                        {{ currencyFilter(item.totalPrice, order.currency.translated.shortName) }}
+                    </template>
                 </sw-data-grid>
             </template>
         </template>
