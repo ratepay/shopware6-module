@@ -26,9 +26,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(defaults: [
-    '_routeScope' => ['storefront'],
-])]
+#[Route(
+    path: '/ratepay/admin-session',
+    defaults: [
+        '_routeScope' => ['storefront'],
+    ]
+)]
 class StorefrontController extends AbstractController
 {
     public function __construct(
@@ -38,7 +41,7 @@ class StorefrontController extends AbstractController
     ) {
     }
 
-    #[Route(path: '/ratepay-admin-login/{token}', name: 'ratepay.frontend.admin-login', methods: ['GET'])]
+    #[Route(path: '/login/{token}', name: 'ratepay.frontend.admin-login', methods: ['GET'])]
     public function login(Request $request, SalesChannelContext $context): Response
     {
         $criteria = new Criteria();
@@ -76,7 +79,7 @@ class StorefrontController extends AbstractController
         return $this->redirectToRoute('frontend.home.page');
     }
 
-    #[Route(path: '/logout/', name: 'ratepay.frontend.admin-logout', methods: ['GET'])]
+    #[Route(path: '/logout', name: 'ratepay.frontend.admin-logout', methods: ['GET'])]
     public function logout(Request $request): RedirectResponse
     {
         $request->getSession()->set($this->sessionKey, false);
