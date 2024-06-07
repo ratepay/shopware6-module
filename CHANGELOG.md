@@ -1,6 +1,10 @@
 # Changelog
 
-## Version 7.0.0
+## Version 7.0.1 - Released on 2024-06-07
+
+RATESWSX-303: fix admin-session logout endless redirect & make admin-session urls more unified
+
+## Version 7.0.0 - Released on 2024-04-16
 
 * RATESWSX-271: update payment status on order-item operation
 * RATESWSX-271: remove bidirectional order status configuration
