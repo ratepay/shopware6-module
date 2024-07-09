@@ -24,7 +24,8 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->skip([
         AddLiteralSeparatorToNumberRector::class,
         SwitchNegatedTernaryRector::class,
-        DisallowedEmptyRuleFixerRector::class
+        DisallowedEmptyRuleFixerRector::class,
+        \Rector\Php81\Rector\Array_\FirstClassCallableRector::class,
     ]);
 
     $rectorConfig->rule(InlineConstructorDefaultToPropertyRector::class);
