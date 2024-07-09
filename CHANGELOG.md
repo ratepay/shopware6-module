@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 7.1.1 - Released on 2024-09-19
+
+This release is only for Shopware 6.5 and contains all changes from version 7.1.0
+
 ## Version 7.1.0 - Released on 2024-09-19
 
 * RATESWSX-306: installment: prevent fatal error message in checkout on unreachable gateway
