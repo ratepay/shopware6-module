@@ -12,22 +12,28 @@ namespace Ratepay\RpayPayments\Components\Checkout\SalesChannel;
 
 use Ratepay\RpayPayments\Components\Checkout\Service\DataValidationService;
 use Ratepay\RpayPayments\Components\PaymentHandler\AbstractPaymentHandler;
+use Ratepay\RpayPayments\Core\Entity\Extension\OrderExtension;
+use Ratepay\RpayPayments\Core\Entity\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
+use Ratepay\RpayPayments\Util\MethodHelper;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\SalesChannel\AbstractHandlePaymentMethodRoute;
 use Shopware\Core\Checkout\Payment\SalesChannel\HandlePaymentMethodRouteResponse;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\Request;
+use Throwable;
 
 class HandlePaymentMethodRoute extends AbstractHandlePaymentMethodRoute
 {
     public function __construct(
         private readonly AbstractHandlePaymentMethodRoute $innerService,
         private readonly DataValidationService $dataValidationService,
-        private readonly EntityRepository $orderRepository
+        private readonly EntityRepository $orderRepository,
+        private readonly EntityRepository $ratepayDataRepository
     ) {
     }
 
@@ -44,10 +50,11 @@ class HandlePaymentMethodRoute extends AbstractHandlePaymentMethodRoute
             return $this->innerService->load($request, $context);
         }
 
-        $paymentHandlerIdentifier = null;
-        if ($request->request->getBoolean('updatePayment')) {
-            $orderId = $request->request->get('orderId');
+        $orderId = $request->request->get('orderId');
 
+        $paymentHandlerIdentifier = null;
+        $order = null;
+        if (!empty($orderId)) {
             /** @var OrderEntity|null $order */
             $order = $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($orderId), $context->getContext())->first();
             if ($order instanceof OrderEntity && ($transaction = $order->getTransactions()->last()) instanceof OrderTransactionEntity) {
@@ -61,6 +68,29 @@ class HandlePaymentMethodRoute extends AbstractHandlePaymentMethodRoute
             $this->dataValidationService->validatePaymentData(new DataBag($request->request->all()), $context, $order ?? null);
         }
 
-        return $this->innerService->load($request, $context);
+        $result = $this->innerService->load($request, $context);
+
+        $ratepayData = $order?->getExtension(OrderExtension::EXTENSION_NAME);
+        if ($ratepayData instanceof RatepayOrderDataEntity) {
+            $orderCriteria = (new Criteria([$orderId]))
+                ->addAssociation('transactions.paymentMethod');
+
+            /** @var OrderEntity $order */
+            $order = $this->orderRepository->search($orderCriteria, $context->getContext())->first();
+            if (!MethodHelper::isRatepayOrder($order)) {
+                // if it is not a ratepay order anymore, we delete existing ratepay-data
+                try {
+                    $this->ratepayDataRepository->delete([[
+                        RatepayOrderDataEntity::FIELD_ID => $ratepayData->getId(),
+                    ]], $context->getContext());
+                } catch (Throwable) {
+                    // catch any exception but not handle it.
+                    // we won't break behaviour of third-party payment methods if deletion fails.
+                    // it is not so bad if we keep the ratepay-data in the database.
+                }
+            }
+        }
+
+        return $result;
     }
 }

@@ -42,6 +42,7 @@
                  decorates="Shopware\Core\Checkout\Payment\SalesChannel\HandlePaymentMethodRoute">
             <argument key="$innerService" type="service" id=".inner" />
             <argument key="$orderRepository" type="service" id="order.repository" />
+            <argument key="$ratepayDataRepository" type="service" id="ratepay_order_data.repository" />
         </service>
 
     </services>
