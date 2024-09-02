@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 
 use InvalidArgumentException;
-use RatePAY\Exception\ExceptionAbstract;
 use RatePAY\Exception\RequestException;
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
@@ -28,6 +27,7 @@ use Ratepay\RpayPayments\Components\RatepayApi\Event\ResponseEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\HeadFactory;
 use Ratepay\RpayPayments\Exception\RatepayException;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Throwable;
 
 abstract class AbstractRequest
 {
@@ -113,10 +113,10 @@ abstract class AbstractRequest
 
         $this->_initRequest($requestData);
 
-        $head = $this->_getRequestHead($requestData);
-        $content = $this->_getRequestContent($requestData);
-
         try {
+            $head = $this->_getRequestHead($requestData);
+            $content = $this->_getRequestContent($requestData);
+
             if ($this->isRequestBlockedByFeatureFlag($requestData)) {
                 throw new RequestException('Request has been blocked by feature flag.');
             }
@@ -126,9 +126,9 @@ abstract class AbstractRequest
             if ($this->_subType) {
                 $requestBuilder = $requestBuilder->subtype($this->_subType);
             }
-        } catch (ExceptionAbstract $exception) {
-            $this->eventDispatcher->dispatch(new RequestBuilderFailedEvent($exception, $requestData));
-            throw new RatepayException($exception->getMessage(), $exception->getCode(), $exception);
+        } catch (Throwable $throwable) {
+            $this->eventDispatcher->dispatch(new RequestBuilderFailedEvent($throwable, $requestData));
+            throw new RatepayException($throwable->getMessage(), $throwable->getCode(), $throwable);
         }
 
         $this->eventDispatcher->dispatch(new RequestDoneEvent($requestData, $requestBuilder));
