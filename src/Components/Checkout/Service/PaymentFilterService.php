@@ -35,58 +35,66 @@ class PaymentFilterService
     ) {
     }
 
-    public function filterPaymentMethods(PaymentMethodCollection $paymentMethodCollection, SalesChannelContext $salesChannelContext, OrderEntity $order = null): PaymentMethodCollection
+    public function filterPaymentMethods(PaymentMethodCollection $paymentMethodCollection, SalesChannelContext $salesChannelContext, OrderEntity $order = null): void
     {
-        // make sure that not legacy payment methods are in collection.
-        $paymentMethodCollection = $paymentMethodCollection->filter(static fn (PaymentMethodEntity $entity): bool => $entity->getHandlerIdentifier() !== LegacyPaymentHandler::class);
-
-        return $paymentMethodCollection->filter(function (PaymentMethodEntity $paymentMethod) use ($salesChannelContext, $order): ?bool {
-            if (!MethodHelper::isRatepayMethod($paymentMethod->getHandlerIdentifier())) {
-                // payment method is not a ratepay method - so we won't check it.
-                return true;
+        foreach ($paymentMethodCollection->getElements() as $key => $paymentMethod) {
+            if (!$this->isPaymentMethodAvailable($paymentMethod, $salesChannelContext, $order)) {
+                $paymentMethodCollection->remove($key);
             }
+        }
+    }
 
-            if (!$order instanceof OrderEntity) {
-                $customer = $salesChannelContext->getCustomer();
-                if (!$customer instanceof CustomerEntity ||
-                    !$customer->getActiveBillingAddress() instanceof CustomerAddressEntity ||
-                    !$customer->getActiveShippingAddress() instanceof CustomerAddressEntity
-                ) {
-                    return false;
-                }
-            }
+    private function isPaymentMethodAvailable(PaymentMethodEntity $paymentMethod, SalesChannelContext $salesChannelContext, OrderEntity $order = null): bool
+    {
+        if ($paymentMethod->getHandlerIdentifier() === LegacyPaymentHandler::class) {
+            return false;
+        }
 
-            $searchService = $order instanceof OrderEntity ? $this->profileByOrderEntity : $this->profileBySalesChannelContext;
-            $profileConfig = $searchService->search(
-                $searchService->createSearchObject($order ?? $salesChannelContext)->setPaymentMethodId($paymentMethod->getId()),
-                $salesChannelContext
-            )->first();
+        if (!MethodHelper::isRatepayMethod($paymentMethod->getHandlerIdentifier())) {
+            // payment method is not a ratepay method - so we won't check it.
+            return true;
+        }
 
-            if ($profileConfig === null) {
-                // no profile config for this sales channel has been found
+        if (!$order instanceof OrderEntity) {
+            $customer = $salesChannelContext->getCustomer();
+            if (!$customer instanceof CustomerEntity
+                || !$customer->getActiveBillingAddress() instanceof CustomerAddressEntity
+                || !$customer->getActiveShippingAddress() instanceof CustomerAddressEntity
+            ) {
                 return false;
             }
+        }
 
-            /** @var ProfileConfigMethodCollection $methodConfigs */
-            $methodConfigs = $profileConfig->getPaymentMethodConfigs()->filterByMethod($paymentMethod->getId());
-            $methodConfig = $methodConfigs->first();
+        $searchService = $order instanceof OrderEntity ? $this->profileByOrderEntity : $this->profileBySalesChannelContext;
+        $profileConfig = $searchService->search(
+            $searchService->createSearchObject($order ?? $salesChannelContext)->setPaymentMethodId($paymentMethod->getId()),
+            $salesChannelContext
+        )->first();
 
-            if (!$methodConfig instanceof ProfileConfigMethodEntity) {
-                // no profile method config is found
-                return null;
-            }
+        if ($profileConfig === null) {
+            // no profile config for this sales channel has been found
+            return false;
+        }
 
-            // trigger event to filter the payment methods
-            /** @var RatepayPaymentFilterEvent $filterEvent */
-            $filterEvent = $this->eventDispatcher->dispatch(new RatepayPaymentFilterEvent(
-                $paymentMethod,
-                $profileConfig,
-                $methodConfig,
-                $salesChannelContext,
-                $order
-            ));
+        /** @var ProfileConfigMethodCollection $methodConfigs */
+        $methodConfigs = $profileConfig->getPaymentMethodConfigs()->filterByMethod($paymentMethod->getId());
+        $methodConfig = $methodConfigs->first();
 
-            return $filterEvent->isAvailable();
-        });
+        if (!$methodConfig instanceof ProfileConfigMethodEntity) {
+            // no profile method config is found
+            return false;
+        }
+
+        // trigger event to filter the payment methods
+        /** @var RatepayPaymentFilterEvent $filterEvent */
+        $filterEvent = $this->eventDispatcher->dispatch(new RatepayPaymentFilterEvent(
+            $paymentMethod,
+            $profileConfig,
+            $methodConfig,
+            $salesChannelContext,
+            $order
+        ));
+
+        return $filterEvent->isAvailable();
     }
 }

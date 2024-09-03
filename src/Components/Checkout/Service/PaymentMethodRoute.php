@@ -36,9 +36,9 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
         return $this->innerService;
     }
 
-    public function load(Request $request, SalesChannelContext $salesChannelContext, Criteria $criteria): PaymentMethodRouteResponse
+    public function load(Request $request, SalesChannelContext $context, Criteria $criteria): PaymentMethodRouteResponse
     {
-        $response = $this->innerService->load($request, $salesChannelContext, $criteria);
+        $response = $this->innerService->load($request, $context, $criteria);
 
         $currentRequest = $this->requestStack->getCurrentRequest();
         if (!$currentRequest instanceof Request) {
@@ -53,21 +53,15 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
             /** @var OrderEntity|null $order */
             $order = $this->orderRepository->search(
                 CriteriaHelper::getCriteriaForOrder($orderId),
-                $salesChannelContext->getContext()
+                $context->getContext()
             )->first();
         }
 
-        if ($order !== null || $request->query->getBoolean('onlyAvailable', false)) {
-            $paymentMethods = $this->paymentFilterService->filterPaymentMethods(
-                $response->getPaymentMethods(),
-                $salesChannelContext,
-                $order
-            );
-
-            $criteria->setIds($paymentMethods->getIds());
-
-            return $this->innerService->load($request, $salesChannelContext, $criteria);
-        }
+        $this->paymentFilterService->filterPaymentMethods(
+            $response->getPaymentMethods(),
+            $context,
+            $order
+        );
 
         return $response;
     }
