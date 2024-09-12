@@ -49,16 +49,20 @@ class ProductPageSubscriber implements EventSubscriberInterface
         }
 
         $billingCountyId = $this->getConfig('BillingCountry');
-        $billingCountry = $this->countryRepository->search(new Criteria([$billingCountyId]), $event->getContext())->first();
         $shippingCountyId = $this->getConfig('ShippingCountry');
+        $paymentMethodId = $this->getConfig('PaymentMethod');
+
+        if (!is_string($billingCountyId) || !is_string($shippingCountyId) || !is_string($paymentMethodId)) {
+            return;
+        }
+
+        $billingCountry = $this->countryRepository->search(new Criteria([$billingCountyId]), $event->getContext())->first();
         $shippingCountry = $this->countryRepository->search(new Criteria([$shippingCountyId]), $event->getContext())->first();
         if (!$billingCountry instanceof CountryEntity || !$shippingCountry instanceof CountryEntity) {
             return;
         }
 
         $currency = $event->getSalesChannelContext()->getCurrency();
-
-        $paymentMethodId = $this->getConfig('PaymentMethod');
 
         $product = $event->getPage()->getProduct();
 

@@ -20,6 +20,7 @@ class Database extends AbstractBootstrap
 
     public function injectServices(): void
     {
+        /* @phpstan-ignore-next-line */
         $this->connection = $this->container->get(Connection::class);
     }
 

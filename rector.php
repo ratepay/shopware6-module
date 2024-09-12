@@ -24,6 +24,7 @@ return static function (RectorConfig $rectorConfig): void {
         SwitchNegatedTernaryRector::class,
         DisallowedEmptyRuleFixerRector::class,
         \Rector\Php81\Rector\Array_\FirstClassCallableRector::class,
+        ExplicitBoolCompareRector::class,
     ]);
 
     $rectorConfig->rule(InlineConstructorDefaultToPropertyRector::class);

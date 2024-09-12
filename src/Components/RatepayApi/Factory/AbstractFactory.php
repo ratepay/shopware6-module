@@ -12,10 +12,14 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\RatepayApi\Factory;
 
 use InvalidArgumentException;
+use RatePAY\Model\Request\SubModel\AbstractModel;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\BuildEvent;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * @template ReturnType of AbstractModel|null
+ */
 abstract class AbstractFactory
 {
     public function __construct(
@@ -23,6 +27,9 @@ abstract class AbstractFactory
     ) {
     }
 
+    /**
+     * @return ReturnType
+     */
     final public function getData(AbstractRequestData $requestData): ?object
     {
         if (!$this->isSupported($requestData)) {
@@ -31,8 +38,8 @@ abstract class AbstractFactory
 
         $data = $this->_getData($requestData);
         if ($data !== null) {
-            /** @var BuildEvent $event */
-            $event = $this->eventDispatcher->dispatch(new BuildEvent($requestData, $data), static::class);
+            $event = new BuildEvent($requestData, $data);
+            $this->eventDispatcher->dispatch($event, static::class);
             $data = $event->getBuildData();
         }
 
@@ -41,5 +48,8 @@ abstract class AbstractFactory
 
     abstract protected function isSupported(AbstractRequestData $requestData): bool;
 
+    /**
+     * @return ReturnType
+     */
     abstract protected function _getData(AbstractRequestData $requestData): ?object;
 }

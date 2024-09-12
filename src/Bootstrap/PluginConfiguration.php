@@ -18,6 +18,7 @@ class PluginConfiguration extends AbstractBootstrap
 
     public function injectServices(): void
     {
+        /* @phpstan-ignore-next-line */
         $this->configService = $this->container->get(SystemConfigService::class);
     }
 

@@ -50,7 +50,7 @@ class HandlePaymentMethodRoute extends AbstractHandlePaymentMethodRoute
             return $this->innerService->load($request, $context);
         }
 
-        $orderId = $request->request->get('orderId');
+        $orderId = $request->request->getAlnum('orderId');
 
         $paymentHandlerIdentifier = null;
         $order = null;

@@ -145,7 +145,7 @@ class RpayPayments extends Plugin
         ];
 
         $loader = new XmlFileLoader($containerBuilder, new FileLocator(__DIR__));
-        foreach (array_filter(glob(__DIR__ . '/Components/*'), 'is_dir') as $dir) {
+        foreach (array_filter(array_values(glob(__DIR__ . '/Components/*') ?: []), 'is_dir') as $dir) {
             foreach ($componentContainerFiles as $fileName) {
                 $file = $dir . '/DependencyInjection/' . $fileName;
                 if (file_exists($file)) {
@@ -170,7 +170,12 @@ class RpayPayments extends Plugin
     {
         parent::boot();
 
-        FeatureFlagService::loadFeatureFlags($this->container->get(SystemConfigService::class)->get('RpayPayments.config.featureFlags'));
+        /** @var SystemConfigService $systemConfig */
+        $systemConfig = $this->container->get(SystemConfigService::class);
+        $flags = $systemConfig->get('RpayPayments.config.featureFlags');
+        if (is_string($flags)) {
+            FeatureFlagService::loadFeatureFlags();
+        }
     }
 
     /**

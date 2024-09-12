@@ -50,11 +50,13 @@ class DeviceFingerprintSubscriber implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @param BuildEvent<Head> $buildEvent
+     */
     public function onPaymentRequest(BuildEvent $buildEvent): void
     {
         /** @var PaymentRequestData $requestData */
         $requestData = $buildEvent->getRequestData();
-        /** @var Head $head */
         $head = $buildEvent->getBuildData();
 
         $ratepayData = RequestHelper::getRatepayData($requestData->getRequestDataBag());

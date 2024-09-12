@@ -148,7 +148,7 @@ class InstallmentService
             throw new InstallmentCalculationException('Please verify if the payment method is available.');
         }
 
-        /** @var array{0: InstallmentBuilder, 1: int|float}|array{} $amountBuilders */
+        /** @var array{0: InstallmentBuilder, 1: int|float}[]|array{} $amountBuilders */
         $amountBuilders = [];
 
         foreach ($installmentBuilders as $installmentBuilder) {

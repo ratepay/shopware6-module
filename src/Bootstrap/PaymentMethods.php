@@ -67,8 +67,11 @@ class PaymentMethods extends AbstractBootstrap
 
     public function injectServices(): void
     {
+        /* @phpstan-ignore-next-line */
         $this->paymentRepository = $this->container->get('payment_method.repository');
+        /* @phpstan-ignore-next-line */
         $this->paymentMethodDefinition = $this->container->get(PaymentMethodDefinition::class);
+        /* @phpstan-ignore-next-line */
         $this->connection = $this->container->get(Connection::class);
     }
 

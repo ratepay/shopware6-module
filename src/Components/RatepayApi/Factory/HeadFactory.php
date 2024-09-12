@@ -24,7 +24,7 @@ use Ratepay\RpayPayments\Core\Entity\RatepayOrderDataEntity;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
- * @method Head getData(AbstractRequestData $requestData)
+ * @extends AbstractFactory<Head>
  */
 class HeadFactory extends AbstractFactory
 {

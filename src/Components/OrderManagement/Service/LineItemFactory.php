@@ -56,7 +56,7 @@ class LineItemFactory
             ->setPayload([])
             ->setPriceDefinition(new QuantityPriceDefinition(
                 $grossAmount,
-                new TaxRuleCollection([new TaxRule($taxRate, 100)]),
+                new TaxRuleCollection([new TaxRule((float) $taxRate, 100)]),
                 1
             ));
         $lineItem->addExtension(OrderConverter::ORIGINAL_ID, new IdStruct($lineItem->getId()));

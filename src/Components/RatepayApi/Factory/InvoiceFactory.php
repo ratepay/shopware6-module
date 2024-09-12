@@ -17,7 +17,7 @@ use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Shopware\Core\Checkout\Document\DocumentEntity;
 
 /**
- * @method Invoicing getData(AbstractRequestData $requestData)
+ * @extends AbstractFactory<Invoicing|null>
  */
 class InvoiceFactory extends AbstractFactory
 {

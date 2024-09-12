@@ -35,7 +35,9 @@ class PluginConfigService
 
     public function getPluginConfiguration(): array
     {
-        return $this->systemConfigService->get('RpayPayments.config', null) ?: [];
+        $config = $this->systemConfigService->get('RpayPayments.config', null);
+
+        return is_array($config) ? $config : [];
     }
 
     public function isAutoOperationBasedOnDeliveryStatusEnabled(): bool

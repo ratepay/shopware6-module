@@ -21,7 +21,6 @@ use RatePAY\Model\Request\SubModel\Content\ShoppingBasket\Shipping;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OperationDataWithBasket;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
-use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Exception\EmptyBasketException;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
@@ -30,7 +29,7 @@ use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 
 /**
- * @method ShoppingBasket getData(PaymentRequestData|OrderOperationData $requestData)
+ * @extends AbstractFactory<ShoppingBasket>
  */
 class ShoppingBasketFactory extends AbstractFactory
 {

@@ -11,11 +11,18 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\RatepayApi\Event;
 
+use RatePAY\Model\Request\SubModel\AbstractModel;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Symfony\Contracts\EventDispatcher\Event;
 
+/**
+ * @template T of AbstractModel
+ */
 class BuildEvent extends Event
 {
+    /**
+     * @param T|null $buildData
+     */
     public function __construct(
         private readonly AbstractRequestData $requestData,
         private readonly ?object $buildData = null
@@ -27,6 +34,9 @@ class BuildEvent extends Event
         return $this->requestData;
     }
 
+    /**
+     * @return T|null
+     */
     public function getBuildData(): ?object
     {
         return $this->buildData;

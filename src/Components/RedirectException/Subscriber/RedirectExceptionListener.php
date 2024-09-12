@@ -32,7 +32,9 @@ class RedirectExceptionListener implements EventSubscriberInterface
 {
     public function __construct(
         private readonly ContainerInterface $container,
-        private readonly OrderTransactionStateHandler $orderTransactionStateHandler
+        private readonly OrderTransactionStateHandler $orderTransactionStateHandler,
+        private readonly RequestTransformerInterface $requestTransformer,
+        private readonly HttpKernelInterface $kernel
     ) {
     }
 
@@ -87,7 +89,7 @@ class RedirectExceptionListener implements EventSubscriberInterface
             $router->getContext()->setMethod($method); // reset method
 
             $attributes = array_merge(
-                $this->container->get(RequestTransformerInterface::class)->extractInheritableAttributes($event->getRequest()),
+                $this->requestTransformer->extractInheritableAttributes($event->getRequest()),
                 $route,
                 $throwable->getQueryParams(),
                 [
@@ -96,8 +98,7 @@ class RedirectExceptionListener implements EventSubscriberInterface
             );
             $subRequest = $event->getRequest()->duplicate($route, null, $attributes);
 
-            $response = $this->container->get('http_kernel')
-                ->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
+            $response = $this->kernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
             $event->setResponse($response);
             $event->allowCustomResponseCode();
         }

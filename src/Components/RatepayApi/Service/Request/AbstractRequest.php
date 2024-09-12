@@ -173,8 +173,8 @@ abstract class AbstractRequest
     {
         $head = $this->getRequestHead($requestData);
 
-        /** @var BuildEvent $event */
-        $event = $this->eventDispatcher->dispatch(new BuildEvent($requestData, $head), static::class . self::EVENT_BUILD_HEAD);
+        $event = new BuildEvent($requestData, $head);
+        $this->eventDispatcher->dispatch($event, static::class . self::EVENT_BUILD_HEAD);
 
         return $event->getBuildData();
     }
@@ -196,8 +196,8 @@ abstract class AbstractRequest
     {
         $content = $this->getRequestContent($requestData);
 
-        /** @var BuildEvent $event */
-        $event = $this->eventDispatcher->dispatch(new BuildEvent($requestData, $content), static::class . self::EVENT_BUILD_CONTENT);
+        $event = new BuildEvent($requestData, $content);
+        $this->eventDispatcher->dispatch($event, static::class . self::EVENT_BUILD_CONTENT);
 
         return $event->getBuildData();
     }

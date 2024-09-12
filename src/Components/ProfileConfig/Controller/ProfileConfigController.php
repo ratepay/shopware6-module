@@ -32,7 +32,7 @@ class ProfileConfigController extends AbstractController
     #[Route(path: '/reload-config', name: 'ratepay.profile.config.reload', methods: ['POST'])]
     public function reloadProfileConfiguration(Request $request): Response
     {
-        if ($id = $request->request->get('id')) {
+        if ($id = $request->request->getAlnum('id')) {
             try {
                 $configs = $this->profileManagement->refreshProfileConfigs([$id]);
                 $profileConfig = $configs->get($id);

@@ -38,7 +38,7 @@ use Shopware\Core\System\Salutation\SalutationEntity;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
- * @method Customer getData(CheckoutOperationInterface $requestData)
+ * @extends AbstractFactory<Customer>
  */
 class CustomerFactory extends AbstractFactory
 {
@@ -150,7 +150,7 @@ class CustomerFactory extends AbstractFactory
             }
         }
 
-        if ($requestData instanceof PaymentRequestData && $requestDataBag->has('bankData')) {
+        if ($requestDataBag->has('bankData')) {
             /** @var RequestDataBag $bankData */
             $bankData = $requestDataBag->get('bankData');
             $bankAccount = new BankAccount();

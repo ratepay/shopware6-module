@@ -41,9 +41,8 @@ class InstallmentRoute
     ], methods: ['GET'])]
     public function calculateInstallment(Request $request, SalesChannelContext $salesChannelContext, ?string $orderId = null): InstallmentCalculationResponse
     {
-        $type = $request->query->get('type');
-        $value = (int) $request->query->get('value');
-        $value = $value ?: 1; // RATESWSX-186: fix that no "0" values can be provided
+        $type = $request->query->getAlpha('type');
+        $value = $request->query->getInt('value', 1); // RATESWSX-186: fix that no "0" values can be provided
 
         if ($orderId) {
             $order = $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($orderId), $salesChannelContext->getContext())->first();

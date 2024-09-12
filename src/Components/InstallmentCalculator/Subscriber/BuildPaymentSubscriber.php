@@ -13,6 +13,7 @@ namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Subscriber;
 
 use Exception;
 use InvalidArgumentException;
+use JsonException;
 use RatePAY\Model\Request\SubModel\Content\Payment;
 use RatePAY\Model\Request\SubModel\Content\Payment\InstallmentDetails;
 use RatePAY\Model\Request\SubModel\Content\ShoppingBasket;
@@ -52,6 +53,10 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @param BuildEvent<Payment> $event
+     * @throws JsonException
+     */
     public function buildPayment(BuildEvent $event): void
     {
         /** @var PaymentRequestData $requestData */
@@ -112,6 +117,10 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @param BuildEvent<ShoppingBasket> $event
+     * @return BuildEvent<ShoppingBasket>
+     */
     public function buildShoppingBasket(BuildEvent $event): BuildEvent
     {
         /** @var OrderOperationData $requestData */

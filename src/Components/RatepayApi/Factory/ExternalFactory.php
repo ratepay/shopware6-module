@@ -19,7 +19,7 @@ use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;
 
 /**
- * @method External getData(AbstractRequestData $requestData)
+ * @extends AbstractFactory<External>
  */
 class ExternalFactory extends AbstractFactory
 {
