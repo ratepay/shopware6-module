@@ -34,6 +34,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class TransitionSubscriber implements EventSubscriberInterface
 {
+    public const PREVENT_BIDIRECTIONALITY = 'prevent_bidirectionality';
+
     public function __construct(
         private readonly EntityRepository $orderDeliveryRepository,
         private readonly EntityRepository $orderRepository,
@@ -55,6 +57,12 @@ class TransitionSubscriber implements EventSubscriberInterface
     public function onTransition(StateMachineTransitionEvent $event): void
     {
         if ($event->getEntityName() !== OrderDeliveryDefinition::ENTITY_NAME || !$this->configService->isAutoOperationBasedOnDeliveryStatusEnabled()) {
+            return;
+        }
+
+        /** @var ArrayStruct|null $struct */
+        $struct = $event->getContext()->getExtension('ratepay');
+        if ($struct?->get(self::PREVENT_BIDIRECTIONALITY) === true) {
             return;
         }
 

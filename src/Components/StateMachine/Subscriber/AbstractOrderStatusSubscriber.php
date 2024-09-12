@@ -94,6 +94,10 @@ abstract class AbstractOrderStatusSubscriber implements EventSubscriberInterface
             $canceledItemQty += $position->getCanceled();
         }
 
+        $event->getContext()->addArrayExtension('ratepay', [
+            TransitionSubscriber::PREVENT_BIDIRECTIONALITY => true,
+        ]);
+
         try {
             if ($fullCanceled && $canceledItemQty > 0) {
                 $this->onFullCancel($event);
@@ -108,6 +112,8 @@ abstract class AbstractOrderStatusSubscriber implements EventSubscriberInterface
             }
         } catch (IllegalTransitionException) {
             // do nothing.
+        } finally {
+            $event->getContext()->removeExtension('ratepay');
         }
     }
 

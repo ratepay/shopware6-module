@@ -6,6 +6,7 @@
 * RATESWSX-307: add support for login as (third-party modules and Shopware standard since 6.6.5.x)
 * RATESWSX-308: remove decorated account order controller
 * RATESWSX-309: improve payment filter / fix bug if no payment methods are available 
+* RATESWSX-310: prevent bidirectionality if manual deliver/return/cancel has been processed
 
 ## Version 7.0.1 - Released on 2024-06-07
 
