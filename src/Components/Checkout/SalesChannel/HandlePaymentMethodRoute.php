@@ -48,6 +48,7 @@ class HandlePaymentMethodRoute extends AbstractHandlePaymentMethodRoute
         if ($request->request->getBoolean('updatePayment')) {
             $orderId = $request->request->get('orderId');
 
+            /** @var OrderEntity|null $order */
             $order = $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($orderId), $context->getContext())->first();
             if ($order instanceof OrderEntity && ($transaction = $order->getTransactions()->last()) instanceof OrderTransactionEntity) {
                 $paymentHandlerIdentifier = $transaction->getPaymentMethod()->getHandlerIdentifier();
@@ -57,7 +58,7 @@ class HandlePaymentMethodRoute extends AbstractHandlePaymentMethodRoute
         }
 
         if ($paymentHandlerIdentifier !== null && is_subclass_of($paymentHandlerIdentifier, AbstractPaymentHandler::class)) {
-            $this->dataValidationService->validatePaymentData(new DataBag($request->request->all()), $order ?? $context);
+            $this->dataValidationService->validatePaymentData(new DataBag($request->request->all()), $context, $order ?? null);
         }
 
         return $this->innerService->load($request, $context);

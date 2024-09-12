@@ -20,7 +20,7 @@ class DfpConstraintValidator extends ConstraintValidator
      */
     public function validate(mixed $value, Constraint $constraint): void
     {
-        if (!$constraint->getDfpService()->isDfpIdValid($constraint->getObject(), $value)) {
+        if (!$constraint->getDfpService()->isDfpIdValid($constraint->getSalesChannelContext(), $constraint->getOrderEntity(), $value)) {
             $this->context->buildViolation('Provided DFP Token is not valid.')
                 ->setCode(DfpConstraint::ERROR_CODE)
                 ->addViolation();

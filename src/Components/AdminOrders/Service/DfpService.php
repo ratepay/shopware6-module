@@ -21,32 +21,32 @@ class DfpService implements DfpServiceInterface
     public function __construct(
         private readonly DfpServiceInterface $decorated,
         private readonly RequestStack $requestStack,
-        private readonly string $sessionKey
+        private readonly SessionService $sessionService
     ) {
     }
 
-    public function generatedDfpId(Request $request, OrderEntity|SalesChannelContext $baseData): ?string
+    public function generatedDfpId(Request $request, SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null): ?string
     {
-        return $this->isDfpRequired($baseData) ? $this->decorated->generatedDfpId($request, $baseData) : null;
+        return $this->isDfpRequired($salesChannelContext, $orderEntity) ? $this->decorated->generatedDfpId($request, $salesChannelContext, $orderEntity) : null;
     }
 
-    public function getDfpSnippet(Request $request, OrderEntity|SalesChannelContext $baseData): ?string
+    public function getDfpSnippet(Request $request, SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null): ?string
     {
-        return $this->isDfpRequired($baseData) ? $this->decorated->getDfpSnippet($request, $baseData) : null;
+        return $this->isDfpRequired($salesChannelContext, $orderEntity) ? $this->decorated->getDfpSnippet($request, $salesChannelContext, $orderEntity) : null;
     }
 
-    public function isDfpIdValid(OrderEntity|SalesChannelContext $baseData, string $dfpId = null): bool
+    public function isDfpIdValid(SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null, string $dfpId = null): bool
     {
-        return !$this->isDfpRequired($baseData) || $this->decorated->isDfpIdValid($baseData, $dfpId);
+        return !$this->isDfpRequired($salesChannelContext, $orderEntity) || $this->decorated->isDfpIdValid($salesChannelContext, $orderEntity, $dfpId);
     }
 
-    public function isDfpRequired(OrderEntity|SalesChannelContext $object): bool
+    public function isDfpRequired(SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null): bool
     {
         $session = $this->requestStack->getMainRequest()->getSession();
-        if ($session->get($this->sessionKey)) {
+        if ($this->sessionService->isAdminSession($salesChannelContext, $session)) {
             return false;
         }
 
-        return $this->decorated->isDfpRequired($object);
+        return $this->decorated->isDfpRequired($salesChannelContext, $orderEntity);
     }
 }

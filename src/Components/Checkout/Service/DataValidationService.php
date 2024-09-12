@@ -30,12 +30,12 @@ class DataValidationService
     ) {
     }
 
-    public function validatePaymentData(DataBag $parameterBag, SalesChannelContext|OrderEntity $validationScope): void
+    public function validatePaymentData(DataBag $parameterBag, SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null): void
     {
-        if ($validationScope instanceof OrderEntity) {
-            $paymentMethodId = $validationScope->getTransactions()->last()->getPaymentMethodId();
+        if ($orderEntity instanceof OrderEntity) {
+            $paymentMethodId = $orderEntity->getTransactions()->last()->getPaymentMethodId();
         } else {
-            $paymentMethodId = $validationScope->getPaymentMethod()->getId();
+            $paymentMethodId = $salesChannelContext->getPaymentMethod()->getId();
         }
 
         $paymentHandler = $this->paymentHandlerRegistry->getPaymentMethodHandler($paymentMethodId);
@@ -46,7 +46,7 @@ class DataValidationService
 
         /** @var DataBag $_parameterBag */
         $_parameterBag = $parameterBag->get(RequestHelper::WRAPPER_KEY, $parameterBag); // paymentDetails is using for pwa request
-        $validationDefinitions = $paymentHandler->getValidationDefinitions(new RequestDataBag($_parameterBag->all()), $validationScope);
+        $validationDefinitions = $paymentHandler->getValidationDefinitions(new RequestDataBag($_parameterBag->all()), $salesChannelContext, $orderEntity);
 
         $definitions = new DataValidationDefinition();
         DataValidationHelper::addSubConstraints($definitions, $validationDefinitions);

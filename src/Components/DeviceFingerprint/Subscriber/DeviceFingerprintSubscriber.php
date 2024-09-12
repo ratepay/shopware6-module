@@ -66,27 +66,25 @@ class DeviceFingerprintSubscriber implements EventSubscriberInterface
 
     public function addRatepayTemplateData(PaymentDataExtensionBuilt $event): void
     {
-        $baseData = $event->getOrderEntity() ?? $event->getSalesChannelContext();
-
-        $snippet = $this->dfpService->getDfpSnippet($this->requestStack->getCurrentRequest(), $baseData);
+        $snippet = $this->dfpService->getDfpSnippet($this->requestStack->getCurrentRequest(), $event->getSalesChannelContext(), $event->getOrderEntity());
         if ($snippet) {
             $event->getExtension()->set('dfp', [
                 'snippetId' => $this->configService->getDeviceFingerprintSnippetId(),
                 'html' => $snippet,
-                'deviceIdentToken' => $this->dfpService->generatedDfpId($this->requestStack->getCurrentRequest(), $baseData),
+                'deviceIdentToken' => $this->dfpService->generatedDfpId($this->requestStack->getCurrentRequest(), $event->getSalesChannelContext(), $event->getOrderEntity()),
             ]);
         }
     }
 
     public function addValidationDefinition(ValidationDefinitionCollectEvent $event): void
     {
-        if (!$this->dfpService->isDfpRequired($event->getBaseData())) {
+        if (!$this->dfpService->isDfpRequired($event->getSalesChannelContext(), $event->getOrderEntity())) {
             return;
         }
 
         $event->addDefinition('deviceIdentToken', [
             new NotBlank(),
-            new DfpConstraint($this->dfpService, $event->getBaseData()),
+            new DfpConstraint($this->dfpService, $event->getSalesChannelContext(), $event->getOrderEntity()),
         ]);
     }
 

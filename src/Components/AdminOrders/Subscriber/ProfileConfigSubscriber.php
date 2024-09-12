@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\AdminOrders\Subscriber;
 
+use Ratepay\RpayPayments\Components\AdminOrders\Service\SessionService;
 use Ratepay\RpayPayments\Components\ProfileConfig\Event\CreateProfileConfigCriteriaEvent;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -21,7 +22,7 @@ class ProfileConfigSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private readonly RequestStack $requestStack,
-        private readonly string $sessionKey
+        private readonly SessionService $sessionService
     ) {
     }
 
@@ -34,9 +35,7 @@ class ProfileConfigSubscriber implements EventSubscriberInterface
 
     public function onLoadConfig(CreateProfileConfigCriteriaEvent $event): void
     {
-        $session = $this->requestStack->getMainRequest()->getSession();
-
-        if ($session->get($this->sessionKey) === true) {
+        if ($this->sessionService->isAdminSession($event->getSalesChannelContext(), $this->requestStack->getMainRequest()->getSession())) {
             $event->getCriteria()->addFilter(new EqualsFilter(ProfileConfigEntity::FIELD_ONLY_ADMIN_ORDERS, true));
         } else {
             $event->getCriteria()->addFilter(new EqualsFilter(ProfileConfigEntity::FIELD_ONLY_ADMIN_ORDERS, false));

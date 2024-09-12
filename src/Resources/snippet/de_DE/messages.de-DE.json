@@ -15,7 +15,8 @@
     "ratepay": {
         "storefront": {
             "admin-order": {
-                "notice": "Sie erstellen gerade eine Bestellung im Admin Modus. Ihnen stehen die Ratepay Profile zur Verfügung, die im Admin als 'für Admin-Bestellung' definiert sind. Die anderen Profile sind nicht verfügbar.",
+                "notice": "Sie erstellen gerade eine Bestellung im Admin Modus. Ihnen stehen nur die Ratepay Profile zur Verfügung, die im Admin als 'für Admin-Bestellung' definiert sind. Die anderen Profile sind nicht verfügbar.",
+                "noticeLoggedInAsCustomer": "Um wieder auf die regulären Profile zuzugreifen, loggen Sie sich bitte aus dem Kundenaccount aus.",
                 "close-session": "Sitzung beenden",
                 "session-destroyed": "Die Admin-Sitzung wurde beendet. Sie können nun wieder Bestellungen im normalen Modus erstellen."
             },

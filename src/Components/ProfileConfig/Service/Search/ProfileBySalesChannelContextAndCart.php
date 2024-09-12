@@ -45,8 +45,8 @@ class ProfileBySalesChannelContextAndCart implements ProfileSearchInterface
             ->setTotalAmount($cart->getPrice()->getTotalPrice());
     }
 
-    public function search(ProfileConfigSearch $profileConfigSearch): ProfileConfigCollection
+    public function search(ProfileConfigSearch $profileConfigSearch, SalesChannelContext $salesChannelContext): ProfileConfigCollection
     {
-        return $this->searchService->search($profileConfigSearch);
+        return $this->searchService->search($profileConfigSearch, $salesChannelContext);
     }
 }

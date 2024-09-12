@@ -23,6 +23,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\OrFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ProfileSearchService implements ProfileSearchInterface
@@ -36,7 +37,7 @@ class ProfileSearchService implements ProfileSearchInterface
         $this->context = Context::createDefaultContext();
     }
 
-    public function search(ProfileConfigSearch $profileConfigSearch): ProfileConfigCollection
+    public function search(ProfileConfigSearch $profileConfigSearch, SalesChannelContext $salesChannelContext): ProfileConfigCollection
     {
         $criteria = new Criteria();
         $criteria->addAssociation(ProfileConfigEntity::FIELD_PAYMENT_METHOD_CONFIGS);
@@ -126,7 +127,8 @@ class ProfileSearchService implements ProfileSearchInterface
             $profileConfigSearch->isNeedsAllowDifferentAddress(),
             $profileConfigSearch->isB2b(),
             $profileConfigSearch->getTotalAmount(),
-            $this->context
+            $this->context,
+            $salesChannelContext
         ));
 
         //        TODO implement

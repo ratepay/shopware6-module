@@ -28,7 +28,8 @@ class DfpConstraint extends Constraint
 
     public function __construct(
         private readonly DfpServiceInterface $dfpService,
-        private readonly OrderEntity|SalesChannelContext $object
+        private readonly SalesChannelContext $salesChannelContext,
+        private readonly ?OrderEntity $orderEntity = null
     ) {
         parent::__construct();
     }
@@ -38,8 +39,13 @@ class DfpConstraint extends Constraint
         return $this->dfpService;
     }
 
-    public function getObject(): OrderEntity|SalesChannelContext
+    public function getOrderEntity(): ?OrderEntity
     {
-        return $this->object;
+        return $this->orderEntity;
+    }
+
+    public function getSalesChannelContext(): SalesChannelContext
+    {
+        return $this->salesChannelContext;
     }
 }

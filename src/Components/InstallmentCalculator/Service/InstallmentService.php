@@ -254,12 +254,13 @@ class InstallmentService
         $shopwareContext = $context->getSalesChannelContext()->getContext();
 
         if ($context->getProfileConfigSearch() instanceof ProfileConfigSearch) {
-            $profileConfigs = $this->profileSearchService->search($context->getProfileConfigSearch());
+            $profileConfigs = $this->profileSearchService->search($context->getProfileConfigSearch(), $salesChannelContext);
         } else {
             $searchService = $context->getOrder() instanceof OrderEntity ? $this->profileByOrderEntity : $this->profileBySalesChannelContext;
             $profileConfigs = $searchService->search(
                 $searchService->createSearchObject($context->getOrder() ?? $salesChannelContext)
-                    ->setPaymentMethodId($context->getPaymentMethodId())
+                    ->setPaymentMethodId($context->getPaymentMethodId()),
+                $salesChannelContext
             );
         }
 

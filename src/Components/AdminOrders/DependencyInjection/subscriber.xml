@@ -9,14 +9,9 @@
             <tag name="kernel.event_subscriber"/>
         </defaults>
 
-        <service id="Ratepay\RpayPayments\Components\AdminOrders\Subscriber\ProfileConfigSubscriber">
-            <argument key="$sessionKey">%ratepay.admin.storefront-login.token%</argument>
-        </service>
-
-        <service id="Ratepay\RpayPayments\Components\AdminOrders\Subscriber\PageSubscriber">
-            <argument key="$sessionKey">%ratepay.admin.storefront-login.token%</argument>
-            <tag name="kernel.event_subscriber"/>
-        </service>
+        <service id="Ratepay\RpayPayments\Components\AdminOrders\Subscriber\ProfileConfigSubscriber"/>
+        <service id="Ratepay\RpayPayments\Components\AdminOrders\Subscriber\PageSubscriber"/>
+        <service id="Ratepay\RpayPayments\Components\AdminOrders\Subscriber\LoginSubscriber"/>
 
     </services>
 

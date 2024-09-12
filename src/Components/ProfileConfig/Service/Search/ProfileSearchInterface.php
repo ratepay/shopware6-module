@@ -12,8 +12,9 @@ namespace Ratepay\RpayPayments\Components\ProfileConfig\Service\Search;
 
 use Ratepay\RpayPayments\Components\ProfileConfig\Dto\ProfileConfigSearch;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\Collection\ProfileConfigCollection;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 interface ProfileSearchInterface
 {
-    public function search(ProfileConfigSearch $profileConfigSearch): ProfileConfigCollection;
+    public function search(ProfileConfigSearch $profileConfigSearch, SalesChannelContext $salesChannelContext): ProfileConfigCollection;
 }

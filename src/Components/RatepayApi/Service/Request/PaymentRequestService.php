@@ -14,9 +14,6 @@ namespace Ratepay\RpayPayments\Components\RatepayApi\Service\Request;
 use RatePAY\Model\Request\SubModel\Content;
 use RatePAY\Model\Request\SubModel\Head;
 use RatePAY\RequestBuilder;
-use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
-use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileByOrderEntity;
-use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileSearchService;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AbstractRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\CustomerFactory;
@@ -62,8 +59,6 @@ class PaymentRequestService extends AbstractRequest
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         HeadFactory $headFactory,
-        private readonly ProfileSearchService $profileConfigSearch,
-        private readonly ProfileByOrderEntity $profileConfigOrderSearch,
         private readonly ShoppingBasketFactory $shoppingBasketFactory,
         private readonly CustomerFactory $customerFactory,
         private readonly PaymentFactory $paymentFactory,
@@ -88,20 +83,6 @@ class PaymentRequestService extends AbstractRequest
         $head->setExternal($this->externalFactory->getData($requestData));
 
         return $head;
-    }
-
-    protected function getProfileConfig(AbstractRequestData $requestData): ProfileConfigEntity
-    {
-        if ($requestData->getProfileConfig() instanceof ProfileConfigEntity) {
-            // the given profile config should be prioritised
-            return $requestData->getProfileConfig();
-        }
-
-        /** @var PaymentRequestData $requestData */
-        $search = $this->profileConfigOrderSearch->createSearchObject($requestData->getOrder());
-        $search->setPaymentMethodId($requestData->getTransaction()->getPaymentMethodId());
-
-        return $this->profileConfigSearch->search($search)->first();
     }
 
     protected function supportsRequestData(AbstractRequestData $requestData): bool
