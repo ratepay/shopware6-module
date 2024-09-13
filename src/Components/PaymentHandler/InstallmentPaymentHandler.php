@@ -62,7 +62,7 @@ class InstallmentPaymentHandler extends AbstractPaymentHandler
         $ratepayData = RequestHelper::getRatepayData($requestDataBag);
 
         $installmentData = $ratepayData->get('installment');
-        if ($installmentData->get('paymentType') && $installmentData->get('paymentType') === 'DIRECT-DEBIT') {
+        if ($installmentData && $installmentData->get('paymentType') && $installmentData->get('paymentType') === 'DIRECT-DEBIT') {
             $validations = array_merge($validations, $this->getDebitConstraints($baseData));
         }
 

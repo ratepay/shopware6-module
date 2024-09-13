@@ -31,13 +31,16 @@ use Ratepay\RpayPayments\Util\PaymentFirstday;
 use Ratepay\RpayPayments\Util\RequestHelper;
 use RuntimeException;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
+use Shopware\Core\Framework\Adapter\Translation\AbstractTranslator;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Throwable;
 
 class BuildPaymentSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly InstallmentService $installmentService
+        private readonly InstallmentService $installmentService,
+        private readonly AbstractTranslator $translator
     ) {
     }
 
@@ -54,7 +57,9 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
         /** @var PaymentRequestData $requestData */
         $requestData = $event->getRequestData();
 
-        if (MethodHelper::isInstallmentMethod($requestData->getTransaction()->getPaymentMethod()->getHandlerIdentifier())) {
+        $paymentMethod = $requestData->getTransaction()->getPaymentMethod();
+
+        if (MethodHelper::isInstallmentMethod($paymentMethod->getHandlerIdentifier())) {
             /** @var Payment $paymentObject */
             $paymentObject = $event->getBuildData();
 
@@ -71,9 +76,15 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
             );
             $calcContext->setTotalAmount($paymentObject->getAmount());
             $calcContext->setOrder($requestData->getOrder());
-            $calcContext->setPaymentMethod($requestData->getTransaction()->getPaymentMethod());
+            $calcContext->setPaymentMethod($paymentMethod);
 
-            $plan = $this->installmentService->getInstallmentPlanData($calcContext);
+            try {
+                $plan = $this->installmentService->getInstallmentPlanData($calcContext);
+            } catch (Throwable $exception) {
+                throw new RuntimeException($this->translator->trans('checkout.error.RATEPAY_INSTALLMENT_CAN_NOT_BE_LOADED', [
+                    '%method%' => $paymentMethod->getTranslated()['name'] ?? $paymentMethod->getName(),
+                ]), $exception->getCode(), previous: $exception);
+            }
 
             if (PlanHasher::isPlanEqualWithHash($requestedInstallment->get('hash'), $plan)) {
                 throw new Exception('the hash value of the calculated plan does not match the given hash');

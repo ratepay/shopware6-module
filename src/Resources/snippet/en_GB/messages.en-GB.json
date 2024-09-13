@@ -11,6 +11,7 @@
     "error.VIOLATION::METHOD_NOT_AVAILABLE": "Unfortunately, it is not possible to use the selected payment method.",
     "error.VIOLATION::RP_MISSING_BANK_ACCOUNT_HOLDER": "Please provide a bank account owner.",
     "error.VIOLATION::RP_INVALID_BANK_ACCOUNT_HOLDER": "Please provide a valid bank account owner.",
+    "checkout.error.RATEPAY_INSTALLMENT_CAN_NOT_BE_LOADED": "Unfortunately the instalment calculator for the payment method %method% could not be loaded and so the payment method could not be provided to you. Please reload the page, try again later, or choose another payment method.",
     "ratepay": {
         "storefront": {
             "admin-order": {

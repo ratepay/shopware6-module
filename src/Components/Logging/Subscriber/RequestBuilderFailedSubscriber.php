@@ -32,7 +32,7 @@ class RequestBuilderFailedSubscriber implements EventSubscriberInterface
     public function onRequestBuilderFailed(RequestBuilderFailedEvent $event): void
     {
         // $requestData = $event->getRequestData();
-        $exception = $event->getException();
+        $exception = $event->getThrowable();
         $this->fileLogger->error('RequestBuilder failed', [
             'message' => $exception->getMessage(),
             'trace' => $exception->getTraceAsString(),

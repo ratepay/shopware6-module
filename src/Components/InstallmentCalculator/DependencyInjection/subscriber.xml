@@ -16,8 +16,12 @@
             <tag name="kernel.event_subscriber"/>
         </defaults>
 
-        <service id="Ratepay\RpayPayments\Components\InstallmentCalculator\Subscriber\BuildPaymentSubscriber"/>
-        <service id="Ratepay\RpayPayments\Components\InstallmentCalculator\Subscriber\CheckoutSubscriber"/>
+        <service id="Ratepay\RpayPayments\Components\InstallmentCalculator\Subscriber\BuildPaymentSubscriber">
+            <argument key="$translator" type="service" id="Shopware\Core\Framework\Adapter\Translation\Translator"/>
+        </service>
+        <service id="Ratepay\RpayPayments\Components\InstallmentCalculator\Subscriber\CheckoutSubscriber">
+            <argument key="$translator" type="service" id="Shopware\Core\Framework\Adapter\Translation\Translator"/>
+        </service>
         <service id="Ratepay\RpayPayments\Components\InstallmentCalculator\Subscriber\ProductPageSubscriber">
             <argument key="$logger" id="monolog.logger.ratepay" type="service"/>
             <argument key="$countryRepository" id="country.repository" type="service"/>

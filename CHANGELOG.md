@@ -2,6 +2,8 @@
 
 ## WIP
 
+* RATESWX-306: installment: prevent fatal error message in checkout on unreachable gateway
+
 ## Version 7.0.1 - Released on 2024-06-07
 
 RATESWSX-303: fix admin-session logout endless redirect & make admin-session urls more unified

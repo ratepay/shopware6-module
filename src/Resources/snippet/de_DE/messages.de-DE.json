@@ -11,6 +11,7 @@
     "error.VIOLATION::METHOD_NOT_AVAILABLE": "Leider ist eine Bezahlung mit der gewählten Zahlungsart nicht möglich.",
     "error.VIOLATION::RP_MISSING_BANK_ACCOUNT_HOLDER": "Bitte geben Sie den Kontoinhaber an.",
     "error.VIOLATION::RP_INVALID_BANK_ACCOUNT_HOLDER": "Bitte geben Sie einen gültigen Kontoinhaber an.",
+    "checkout.error.RATEPAY_INSTALLMENT_CAN_NOT_BE_LOADED": "Leider kann der Ratenrechner der Zahlungsart %method% nicht geladen und damit die Zahlungsmethode nicht zur Verfügung gestellt werden. Bitte laden Sie die Seite neu, versuchen Sie es später erneut, oder wählen eine andere Zahlungsart.",
     "ratepay": {
         "storefront": {
             "admin-order": {
