@@ -15,6 +15,7 @@ use Ratepay\RpayPayments\Components\ProfileConfig\Model\Collection\ProfileConfig
 use Ratepay\RpayPayments\Components\ProfileConfig\Util\AddressUtil;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class ProfileByOrderEntity implements ProfileSearchInterface
 {
@@ -40,8 +41,8 @@ class ProfileByOrderEntity implements ProfileSearchInterface
             ->setTotalAmount($order->getPrice()->getTotalPrice());
     }
 
-    public function search(ProfileConfigSearch $profileConfigSearch): ProfileConfigCollection
+    public function search(ProfileConfigSearch $profileConfigSearch, SalesChannelContext $salesChannelContext): ProfileConfigCollection
     {
-        return $this->searchService->search($profileConfigSearch);
+        return $this->searchService->search($profileConfigSearch, $salesChannelContext);
     }
 }

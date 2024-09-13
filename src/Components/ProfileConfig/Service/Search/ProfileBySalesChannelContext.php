@@ -30,8 +30,8 @@ class ProfileBySalesChannelContext implements ProfileSearchInterface
         return $this->searchService->createSearchObject($salesChannelContext, $cart);
     }
 
-    public function search(ProfileConfigSearch $profileConfigSearch): ProfileConfigCollection
+    public function search(ProfileConfigSearch $profileConfigSearch, SalesChannelContext $salesChannelContext): ProfileConfigCollection
     {
-        return $this->searchService->search($profileConfigSearch);
+        return $this->searchService->search($profileConfigSearch, $salesChannelContext);
     }
 }

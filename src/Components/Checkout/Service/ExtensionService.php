@@ -145,7 +145,8 @@ class ExtensionService
 
         $searchService = $order instanceof OrderEntity ? $this->profileByOrderEntity : $this->profileBySalesChannelContext;
         $profileConfig = $searchService->search(
-            $searchService->createSearchObject($order ?? $salesChannelContext)->setPaymentMethodId($paymentMethod->getId())
+            $searchService->createSearchObject($order ?? $salesChannelContext)->setPaymentMethodId($paymentMethod->getId()),
+            $salesChannelContext
         )->first();
 
         if ($profileConfig === null) {

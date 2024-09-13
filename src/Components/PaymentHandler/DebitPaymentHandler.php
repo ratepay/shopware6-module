@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\PaymentHandler;
 
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class DebitPaymentHandler extends AbstractPaymentHandler
 {
@@ -22,11 +24,11 @@ class DebitPaymentHandler extends AbstractPaymentHandler
      */
     final public const RATEPAY_METHOD = 'ELV';
 
-    public function getValidationDefinitions(DataBag $requestDataBag, $baseData): array
+    public function getValidationDefinitions(DataBag $requestDataBag, SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null): array
     {
         return array_merge(
-            parent::getValidationDefinitions($requestDataBag, $baseData),
-            $this->getDebitConstraints($baseData)
+            parent::getValidationDefinitions($requestDataBag, $salesChannelContext, $orderEntity),
+            $this->getDebitConstraints($orderEntity ?: $salesChannelContext)
         );
     }
 

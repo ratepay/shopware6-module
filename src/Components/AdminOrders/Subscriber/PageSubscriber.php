@@ -11,13 +11,14 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\AdminOrders\Subscriber;
 
+use Ratepay\RpayPayments\Components\AdminOrders\Service\SessionService;
 use Shopware\Storefront\Event\StorefrontRenderEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PageSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly string $sessionKey
+        private readonly SessionService $sessionService
     ) {
     }
 
@@ -31,6 +32,10 @@ class PageSubscriber implements EventSubscriberInterface
     public function onPage(StorefrontRenderEvent $event): void
     {
         $session = $event->getRequest()->getSession();
-        $event->setParameter('ratepayAdminOrderSession', $session->get($this->sessionKey) === true);
+        $event->setParameter('ratepayAdminOrderSession', [
+            'active' => $this->sessionService->isAdminSession($event->getSalesChannelContext(), $session),
+            'canLogout' => $this->sessionService->canLogout($event->getSalesChannelContext(), $session),
+            'isLoggedInAsCustomer' => $this->sessionService->isLoggedInAsCustomer($event->getSalesChannelContext(), $session),
+        ]);
     }
 }

@@ -2,7 +2,8 @@
 
 ## WIP
 
-* RATESWX-306: installment: prevent fatal error message in checkout on unreachable gateway
+* RATESWSX-306: installment: prevent fatal error message in checkout on unreachable gateway
+* RATESWSX-307: add support for login as (third-party modules and Shopware standard since 6.6.5.x)
 
 ## Version 7.0.1 - Released on 2024-06-07
 

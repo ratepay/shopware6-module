@@ -22,7 +22,8 @@ class ValidationDefinitionCollectEvent
         // the property needs to be writeable, because we are using reference on this property
         protected array $definitions,
         private readonly DataBag $requestDataBag,
-        private readonly OrderEntity|SalesChannelContext $baseData
+        private readonly SalesChannelContext $salesChannelContext,
+        private readonly ?OrderEntity $orderEntity = null
     ) {
     }
 
@@ -49,13 +50,26 @@ class ValidationDefinitionCollectEvent
         return $this;
     }
 
+    /**
+     * @deprecated please use getOrderEntity or getSalesChannelContext
+     */
     public function getBaseData(): OrderEntity|SalesChannelContext
     {
-        return $this->baseData;
+        return $this->orderEntity ?: $this->salesChannelContext;
     }
 
     public function getRequestDataBag(): DataBag
     {
         return $this->requestDataBag;
+    }
+
+    public function getSalesChannelContext(): SalesChannelContext
+    {
+        return $this->salesChannelContext;
+    }
+
+    public function getOrderEntity(): ?OrderEntity
+    {
+        return $this->orderEntity;
     }
 }

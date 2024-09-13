@@ -13,6 +13,7 @@ namespace Ratepay\RpayPayments\Components\ProfileConfig\Event;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class CreateProfileConfigCriteriaEvent
 {
@@ -26,7 +27,8 @@ class CreateProfileConfigCriteriaEvent
         private readonly bool $differentAddresses,
         private readonly bool $isB2b,
         private readonly float $totalAmount,
-        private readonly Context $context
+        private readonly Context $context,
+        private readonly SalesChannelContext $salesChannelContext
     ) {
     }
 
@@ -78,5 +80,10 @@ class CreateProfileConfigCriteriaEvent
     public function getContext(): Context
     {
         return $this->context;
+    }
+
+    public function getSalesChannelContext(): SalesChannelContext
+    {
+        return $this->salesChannelContext;
     }
 }

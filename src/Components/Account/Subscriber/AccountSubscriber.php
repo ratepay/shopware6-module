@@ -129,7 +129,7 @@ class AccountSubscriber implements EventSubscriberInterface
         $requestData = new DataBag($event->getStorefrontRequest()->request->all());
         $ratepayData = RequestHelper::getRatepayData($requestData);
 
-        $validationDefinitions = $paymentHandler->getValidationDefinitions($requestData, $orderEntity);
+        $validationDefinitions = $paymentHandler->getValidationDefinitions($requestData, $event->getSalesChannelContext(), $orderEntity);
         $definition = new DataValidationDefinition();
         $definition->addSub(RequestHelper::RATEPAY_DATA_KEY, DataValidationHelper::addSubConstraints(new DataValidationDefinition(), $validationDefinitions));
         try {

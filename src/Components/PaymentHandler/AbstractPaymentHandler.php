@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\PaymentHandler;
 
 use DateTimeInterface;
-use InvalidArgumentException;
 use RatePAY\Model\Response\PaymentRequest;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\Birthday;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\BirthdayNotBlank;
@@ -22,6 +21,7 @@ use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\ValidationDefinitionCollectEvent;
 use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
+use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileByOrderEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileSearchService;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentRequestService;
@@ -61,7 +61,8 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly PluginConfigService $configService,
         private readonly RequestStack $requestStack,
-        private readonly ProfileSearchService $profileSearchService
+        private readonly ProfileSearchService $profileSearchService,
+        private readonly ProfileByOrderEntity $profileByOrderEntitySearchService
     ) {
     }
 
@@ -89,12 +90,18 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
 
             if ($ratepayData->has('profile_uuid')) {
                 $profile = $this->profileSearchService->getProfileConfigById($ratepayData->get('profile_uuid'));
-                if (!$profile instanceof Entity) {
-                    throw new ProfileNotFoundException();
-                }
-
-                $paymentRequestData->setProfileConfig($profile);
+            } else {
+                $profile = $this->profileByOrderEntitySearchService->search(
+                    $this->profileByOrderEntitySearchService->createSearchObject($order),
+                    $salesChannelContext
+                )->first();
             }
+
+            if (!$profile instanceof Entity) {
+                throw new ProfileNotFoundException();
+            }
+
+            $paymentRequestData->setProfileConfig($profile);
 
             $this->eventDispatcher->dispatch(new BeforePaymentEvent($paymentRequestData));
 
@@ -141,24 +148,19 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
         }
     }
 
-    /**
-     * @param OrderEntity|SalesChannelContext $baseData
-     */
-    public function getValidationDefinitions(DataBag $requestDataBag, $baseData): array
+    public function getValidationDefinitions(DataBag $requestDataBag, SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null): array
     {
         $validations = [];
 
         /** @var DataBag $ratepayData */
         $ratepayData = RequestHelper::getRatepayData($requestDataBag) ?: new ParameterBag();
 
-        if ($baseData instanceof SalesChannelContext) {
-            $birthday = $baseData->getCustomer()->getBirthday();
-            $isCompany = !empty($baseData->getCustomer()->getActiveBillingAddress()->getCompany());
-        } elseif ($baseData instanceof OrderEntity) {
-            $birthday = $baseData->getOrderCustomer()->getCustomer()->getBirthday();
-            $isCompany = !empty($baseData->getAddresses()->get($baseData->getBillingAddressId())->getCompany());
+        if ($orderEntity instanceof OrderEntity) {
+            $birthday = $orderEntity->getOrderCustomer()->getCustomer()->getBirthday();
+            $isCompany = !empty($orderEntity->getAddresses()->get($orderEntity->getBillingAddressId())->getCompany());
         } else {
-            throw new InvalidArgumentException('please provide a ' . SalesChannelContext::class . ' or an ' . OrderEntity::class . '. You provided a ' . $baseData::class . ' object');
+            $birthday = $salesChannelContext->getCustomer()->getBirthday();
+            $isCompany = !empty($salesChannelContext->getCustomer()->getActiveBillingAddress()->getCompany());
         }
 
         if ($ratepayData->get('birthday') || (!$birthday instanceof DateTimeInterface && $isCompany === false)) {
@@ -174,7 +176,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
         }
 
         /** @var ValidationDefinitionCollectEvent $event */
-        $event = $this->eventDispatcher->dispatch(new ValidationDefinitionCollectEvent($validations, $requestDataBag, $baseData));
+        $event = $this->eventDispatcher->dispatch(new ValidationDefinitionCollectEvent($validations, $requestDataBag, $salesChannelContext, $orderEntity));
 
         return $event->getDefinitions();
     }

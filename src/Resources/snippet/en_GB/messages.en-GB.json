@@ -15,7 +15,8 @@
     "ratepay": {
         "storefront": {
             "admin-order": {
-                "notice": "You are going create a new order as admin. So the Ratepay profiles, which are available for admin orders will be used. The other profiles will be not available.",
+                "notice": "You are going create a new order as admin. So the Ratepay profiles, which are available for admin orders only will be used. The other profiles will be not available.",
+                "noticeLoggedInAsCustomer": "To regain access to the regular profiles again, please log out of the customer account.",
                 "close-session": "Terminate session",
                 "session-destroyed": "The admin session has been terminated. Now you can create normal orders again."
             },

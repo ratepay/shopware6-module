@@ -40,13 +40,13 @@ class DfpService implements DfpServiceInterface
      * provide the user-agent via header or a request variable `userAgent` to generate a more unique device-identifier
      * the request-variable is prioritized
      */
-    public function generatedDfpId(Request $request, OrderEntity|SalesChannelContext $baseData): ?string
+    public function generatedDfpId(Request $request, SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null): ?string
     {
-        if (!$this->isDfpRequired($baseData)) {
+        if (!$this->isDfpRequired($salesChannelContext, $orderEntity)) {
             return null;
         }
 
-        if ($baseData instanceof OrderEntity && $token = $this->getOrderDeviceToken($baseData)) {
+        if ($orderEntity instanceof OrderEntity && $token = $this->getOrderDeviceToken($orderEntity)) {
             // token has been used for (failed) payment. So we can reuse it.
             return $token;
         }
@@ -57,29 +57,29 @@ class DfpService implements DfpServiceInterface
         $dataForId = [
             ((string) $userAgent),
         ];
-        if ($baseData instanceof SalesChannelContext) {
-            $dataForId[] = (string) $this->getCustomerFallBack($baseData);
+        if (!$orderEntity instanceof OrderEntity) {
+            $dataForId[] = (string) $this->getCustomerFallBack($salesChannelContext);
         }
 
         $generatedId = md5(implode('', $dataForId));
 
-        $prefix = $this->getDfpPrefix($baseData);
+        $prefix = $this->getDfpPrefix($orderEntity ?: $salesChannelContext);
 
         // replace the beginning of the generated id with the generated prefix
         return $prefix . substr($generatedId, strlen($prefix));
     }
 
-    public function isDfpIdValid(OrderEntity|SalesChannelContext $baseData, string $dfpId = null): bool
+    public function isDfpIdValid(SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null, string $dfpId = null): bool
     {
-        $prefix = $this->getDfpPrefix($baseData);
+        $prefix = $this->getDfpPrefix($salesChannelContext);
 
         // verify if the prefix is at the beginning of the id
         return str_starts_with((string) $dfpId, $prefix);
     }
 
-    public function getDfpSnippet(Request $request, OrderEntity|SalesChannelContext $baseData): ?string
+    public function getDfpSnippet(Request $request, SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null): ?string
     {
-        if ($id = $this->generatedDfpId($request, $baseData)) {
+        if ($id = $this->generatedDfpId($request, $salesChannelContext, $orderEntity)) {
             $dfpHelper = new DeviceFingerprint($this->configService->getDeviceFingerprintSnippetId());
             return str_replace('\"', '"', $dfpHelper->getDeviceIdentSnippet($id));
         }
@@ -87,7 +87,7 @@ class DfpService implements DfpServiceInterface
         return null;
     }
 
-    public function isDfpRequired(OrderEntity|SalesChannelContext $object): bool
+    public function isDfpRequired(SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null): bool
     {
         return true;
     }
