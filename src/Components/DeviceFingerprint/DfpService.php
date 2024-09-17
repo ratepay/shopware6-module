@@ -71,7 +71,7 @@ class DfpService implements DfpServiceInterface
 
     public function isDfpIdValid(SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null, string $dfpId = null): bool
     {
-        $prefix = $this->getDfpPrefix($salesChannelContext);
+        $prefix = $this->getDfpPrefix($orderEntity ?: $salesChannelContext);
 
         // verify if the prefix is at the beginning of the id
         return str_starts_with((string) $dfpId, $prefix);
