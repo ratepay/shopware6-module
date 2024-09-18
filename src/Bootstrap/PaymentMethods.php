@@ -135,9 +135,10 @@ class PaymentMethods extends AbstractBootstrap
             $criteria->addFilter(new EqualsFilter('handlerIdentifier', $paymentMethod['handlerIdentifier']));
             $criteria->setLimit(1);
 
-            $id = $this->paymentRepository->searchIds($criteria, $this->defaultContext)->firstId();
+            /** @var PaymentMethodEntity|null $entity */
+            $entity = $this->paymentRepository->search($criteria, $this->defaultContext)->first();
 
-            if ($id === null) {
+            if ($entity === null) {
                 if (!$this->isFieldTechnicalNameAvailable()) {
                     unset($paymentMethod['technicalName']);
                 }
@@ -145,6 +146,12 @@ class PaymentMethods extends AbstractBootstrap
                 $paymentMethod['pluginId'] = $this->plugin->getId();
                 $paymentMethod['active'] = false;
                 $upsertData[] = $paymentMethod;
+            } elseif ($entity->getPluginId() === null) {
+                // plugin has been installed in the past, but was removed and installed again.
+                $upsertData[] = [
+                    'id' => $entity->getId(),
+                    'pluginId' => $this->plugin->getId(),
+                ];
             }
         }
 
