@@ -1,6 +1,6 @@
 # Changelog
 
-## WIP
+## Version 7.1.0 - Released on 2024-09-19
 
 * RATESWSX-306: installment: prevent fatal error message in checkout on unreachable gateway
 * RATESWSX-307: add support for login as (third-party modules and Shopware standard since 6.6.5.x)
@@ -10,7 +10,7 @@
 
 ## Version 7.0.1 - Released on 2024-06-07
 
-RATESWSX-303: fix admin-session logout endless redirect & make admin-session urls more unified
+* RATESWSX-303: fix admin-session logout endless redirect & make admin-session urls more unified
 
 ## Version 7.0.0 - Released on 2024-04-16
 
