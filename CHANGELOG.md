@@ -1,5 +1,13 @@
 # Changelog
 
+# Version 7.1.3 - Released on 2024-10-17
+
+This release is only for Shopware 6.5 and contains all changes from version 7.1.2
+
+## Version 7.1.2 - Released on 2024-10-17
+
+* RATESWSX-318: fix reloading profile-config if legacy payment-methods are available
+
 ## Version 7.1.1 - Released on 2024-09-19
 
 This release is only for Shopware 6.5 and contains all changes from version 7.1.0

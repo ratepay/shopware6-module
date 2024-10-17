@@ -14,6 +14,7 @@ namespace Ratepay\RpayPayments\Components\ProfileConfig\Service;
 use RatePAY\Model\Response\ProfileRequest;
 use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentPaymentHandler;
 use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
+use Ratepay\RpayPayments\Components\PaymentHandler\LegacyPaymentHandler;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodInstallmentEntity;
@@ -24,6 +25,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
 
 class ProfileConfigResponseConverter
@@ -65,7 +67,12 @@ class ProfileConfigResponseConverter
 
             /** @var PaymentMethodEntity $paymentMethod */
             foreach ($paymentMethods as $paymentMethod) {
-                $arrayKey = strtolower((string) constant($paymentMethod->getHandlerIdentifier() . '::RATEPAY_METHOD'));
+                $constantName = $paymentMethod->getHandlerIdentifier() . '::RATEPAY_METHOD';
+                if (!defined($constantName)) {
+                    continue;
+                }
+
+                $arrayKey = strtolower((string) constant($constantName));
 
                 if (!isset($responseData['merchantConfig']['activation-status-' . $arrayKey]) ||
                     (((int) $responseData['merchantConfig']['activation-status-' . $arrayKey]) === 1)) {
@@ -131,6 +138,7 @@ class ProfileConfigResponseConverter
             $criteria = new Criteria();
             $criteria->addAssociation('plugin');
             $criteria->addFilter(new EqualsFilter('plugin.baseClass', RpayPayments::class));
+            $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_AND, [new EqualsFilter('handlerIdentifier', LegacyPaymentHandler::class)]));
             /** @var PaymentMethodEntity[] $paymentMethods */
             $paymentMethods = $this->paymentMethodRepository->search($criteria, Context::createDefaultContext())->getElements();
             $this->paymentMethods = $paymentMethods;
