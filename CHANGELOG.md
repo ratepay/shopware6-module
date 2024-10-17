@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 7.1.2 - Released on 2024-10-17
+
+* RATESWSX-318: fix reloading profile-config if legacy payment-methods are available
+
 ## Version 7.1.0 - Released on 2024-09-19
 
 * RATESWSX-306: installment: prevent fatal error message in checkout on unreachable gateway
