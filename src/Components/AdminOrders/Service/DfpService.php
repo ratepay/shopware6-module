@@ -35,11 +35,6 @@ class DfpService implements DfpServiceInterface
         return $this->isDfpRequired($salesChannelContext, $orderEntity) ? $this->decorated->getDfpSnippet($request, $salesChannelContext, $orderEntity) : null;
     }
 
-    public function isDfpIdValid(SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null, string $dfpId = null): bool
-    {
-        return !$this->isDfpRequired($salesChannelContext, $orderEntity) || $this->decorated->isDfpIdValid($salesChannelContext, $orderEntity, $dfpId);
-    }
-
     public function isDfpRequired(SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null): bool
     {
         $session = $this->requestStack->getMainRequest()->getSession();
