@@ -1,5 +1,9 @@
 # Changelog
 
+## WIP 
+
+* RATESWSX-320: dfp: remove validation & improve user-identification
+
 ## Version 7.1.2 - Released on 2024-10-17
 
 * RATESWSX-318: fix reloading profile-config if legacy payment-methods are available

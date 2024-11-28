@@ -15,7 +15,6 @@ use RatePAY\Model\Request\SubModel\Head;
 use RatePAY\Model\Request\SubModel\Head\CustomerDevice;
 use Ratepay\RpayPayments\Components\Checkout\Event\OrderExtensionDataBuilt;
 use Ratepay\RpayPayments\Components\Checkout\Event\PaymentDataExtensionBuilt;
-use Ratepay\RpayPayments\Components\DeviceFingerprint\Constraint\DfpConstraint;
 use Ratepay\RpayPayments\Components\DeviceFingerprint\DfpServiceInterface;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\ValidationDefinitionCollectEvent;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
@@ -86,7 +85,6 @@ class DeviceFingerprintSubscriber implements EventSubscriberInterface
 
         $event->addDefinition('deviceIdentToken', [
             new NotBlank(),
-            new DfpConstraint($this->dfpService, $event->getSalesChannelContext(), $event->getOrderEntity()),
         ]);
     }
 
