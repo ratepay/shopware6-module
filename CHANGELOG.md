@@ -1,5 +1,9 @@
 # Changelog
 
+## WIP 
+
+* RATESWSX-320: dfp: remove validation & improve user-identification
+
 # Version 7.1.3 - Released on 2024-10-17
 
 This release is only for Shopware 6.5 and contains all changes from version 7.1.2
