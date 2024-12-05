@@ -3,6 +3,7 @@
 ## WIP 
 
 * RATESWSX-320: dfp: remove validation & improve user-identification
+* RATESWSX-321: fix deletion of ratepay-data if payment-method got switched
 
 # Version 7.1.3 - Released on 2024-10-17
 
