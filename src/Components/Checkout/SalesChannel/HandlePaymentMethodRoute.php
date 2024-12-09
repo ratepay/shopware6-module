@@ -44,28 +44,24 @@ class HandlePaymentMethodRoute extends AbstractHandlePaymentMethodRoute
 
     public function load(Request $request, SalesChannelContext $context): HandlePaymentMethodRouteResponse
     {
-        if ($request->headers->count() === 0) {
-            // it seems like that this is not an API request. This should be an internal call of the route.
-            // the module should only handle API calls.
-            return $this->innerService->load($request, $context);
-        }
-
         $orderId = $request->request->getAlnum('orderId');
+        /** @var OrderEntity|null $order */
+        $order = !empty($orderId) ? $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($orderId), $context->getContext())->first() : null;
 
-        $paymentHandlerIdentifier = null;
-        $order = null;
-        if (!empty($orderId)) {
-            /** @var OrderEntity|null $order */
-            $order = $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($orderId), $context->getContext())->first();
-            if ($order instanceof OrderEntity && ($transaction = $order->getTransactions()->last()) instanceof OrderTransactionEntity) {
-                $paymentHandlerIdentifier = $transaction->getPaymentMethod()->getHandlerIdentifier();
+        if (($request->attributes->all('_routeScope')[0] ?? null) === 'store-api') {
+            // we only validate API requests
+            $paymentHandlerIdentifier = null;
+            if (!empty($orderId)) {
+                if ($order instanceof OrderEntity && ($transaction = $order->getTransactions()->last()) instanceof OrderTransactionEntity) {
+                    $paymentHandlerIdentifier = $transaction->getPaymentMethod()->getHandlerIdentifier();
+                }
+            } else {
+                $paymentHandlerIdentifier = $context->getPaymentMethod()->getHandlerIdentifier();
             }
-        } else {
-            $paymentHandlerIdentifier = $context->getPaymentMethod()->getHandlerIdentifier();
-        }
 
-        if ($paymentHandlerIdentifier !== null && is_subclass_of($paymentHandlerIdentifier, AbstractPaymentHandler::class)) {
-            $this->dataValidationService->validatePaymentData(new DataBag($request->request->all()), $context, $order ?? null);
+            if ($paymentHandlerIdentifier !== null && is_subclass_of($paymentHandlerIdentifier, AbstractPaymentHandler::class)) {
+                $this->dataValidationService->validatePaymentData(new DataBag($request->request->all()), $context, $order ?? null);
+            }
         }
 
         $result = $this->innerService->load($request, $context);
