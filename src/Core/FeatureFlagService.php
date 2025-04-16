@@ -34,7 +34,9 @@ class FeatureFlagService
 
         $list = str_replace(',', "\n", $flags);
         $list = explode("\n", $list);
+        $list = array_filter($list, static fn ($value): bool => is_string($value) && !empty($value));
+        $list = array_filter(array_map('trim', $list));
 
-        self::$flags = array_filter($list, static fn ($value): bool => !empty($value));
+        self::$flags = $list;
     }
 }
