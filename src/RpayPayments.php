@@ -35,6 +35,7 @@ use Symfony\Component\DependencyInjection\Loader\DirectoryLoader;
 use Symfony\Component\DependencyInjection\Loader\GlobFileLoader;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Throwable;
 
 class RpayPayments extends Plugin
 {
@@ -170,11 +171,15 @@ class RpayPayments extends Plugin
     {
         parent::boot();
 
-        /** @var SystemConfigService $systemConfig */
-        $systemConfig = $this->container->get(SystemConfigService::class);
-        $flags = $systemConfig->get('RpayPayments.config.featureFlags');
-        if (is_string($flags)) {
-            FeatureFlagService::loadFeatureFlags();
+        try {
+            /** @var SystemConfigService $systemConfig */
+            $systemConfig = $this->container->get(SystemConfigService::class);
+            $flags = $systemConfig->get('RpayPayments.config.featureFlags');
+            if (is_string($flags)) {
+                FeatureFlagService::loadFeatureFlags($flags);
+            }
+        } catch (Throwable) {
+            // maybe the database connection is not established.
         }
     }
 
