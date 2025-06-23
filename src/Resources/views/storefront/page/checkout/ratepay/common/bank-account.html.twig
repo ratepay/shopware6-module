@@ -22,9 +22,8 @@
         <div class="form-row">
             <div class="form-group col-sm-4">
                 <label class="form-label" for="rp-iban-account-holder">
-                    <strong>{{ "ratepay.storefront.checkout.fields.accountHolder"|trans|sw_sanitize }}</strong>
+                    <strong>{{ "ratepay.storefront.checkout.fields.accountHolder"|trans|sw_sanitize }}{{ "general.required"|trans|sw_sanitize }}</strong>
                 </label>
-                <span class="mandatory-star">*</span>
                 {% if ratepay.accountHolders|length == 1 %}
                     <input type="text"
                            class="form-control{% if formViolations.getViolations('/ratepay/bankData/accountHolder') is not empty %} is-invalid{% endif %}"
@@ -51,9 +50,8 @@
             </div>
             <div class="form-group col-sm-4">
                 <label class="form-label" for="rp-iban-account-number">
-                    <strong>{{ "ratepay.storefront.checkout.fields.iban"|trans|sw_sanitize }}</strong>
+                    <strong>{{ "ratepay.storefront.checkout.fields.iban"|trans|sw_sanitize }}{{ "general.required"|trans|sw_sanitize }}</strong>
                 </label>
-                <span class="mandatory-star">*</span>
                 <input
                     type="text"
                     class="form-control{% if formViolations.getViolations('/ratepay/bankData/iban') is not empty %} is-invalid{% endif %}"
