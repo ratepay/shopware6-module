@@ -19,9 +19,9 @@ jobs:
         runs-on: 'ubuntu-latest'
         strategy:
             matrix:
-                php-version: [ '8.2', '8.3' ]
+                php-version: [ '8.2', '8.3', '8.4' ]
                 mysql-version: [ '8.0' ]
-                shopware-version: [ 'v6.6.0.0', 'v6.6.1.0', 'v6.6.2.0', 'v6.6.3.0', 'v6.6.4.0' ]
+                shopware-version: [ 'v6.7.0.0', 'v6.7.1.0', 'v6.7.2.0' ]
             fail-fast: false
             max-parallel: 10
         services:
