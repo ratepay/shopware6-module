@@ -1,7 +1,7 @@
 {
     "name": "ratepay/shopware6-module",
     "description": "Ratepay payment methods for Shopware 6",
-    "version": "7.2.0",
+    "version": "8.0.0",
     "license": "MIT",
     "authors": [
         {
@@ -41,9 +41,9 @@
         }
     },
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "ratepay/php-library": "^1.8",
-        "shopware/core": "~6.6.0",
+        "shopware/core": "~6.7.0",
         "ext-simplexml": "*",
         "ext-json": "*"
     },
@@ -73,5 +73,10 @@
         "rector/rector": "^1.1",
         "symplify/easy-coding-standard": "^12.2",
         "phpunit/phpunit": "^9.6"
+    },
+    "config": {
+        "allow-plugins": {
+            "symfony/runtime": false
+        }
     }
 }

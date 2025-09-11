@@ -1,13 +1,13 @@
 # Ratepay GmbH - Shopware 6 Payment Module
 
-| Module             | Ratepay Payment Plugin for Shopware 6                                                                                                        |
-|--------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
-| Author             | Interlutions GmbH                                                                                                                            |
-| Shop Version       | `6.3.0.2 to 6.6.x.x`                                                                                                                         |
-| Link               | http://www.ratepay.com                                                                                                                       |
-| Mail               | integration@ratepay.com                                                                                                                      |
-| Full Documentation | [click here](https://docs.ratepay.com/docs/developer/shop_modules/shopware/shopware_6/ratepay_payment_plugin_for_shopware_6/)                |
-| Legal Disclaimer   | [click here](https://docs.ratepay.com/docs/developer/shop_modules/overview/)                                                                 |
+| Module             | Ratepay Payment Plugin for Shopware 6                                                                                         |
+|--------------------|-------------------------------------------------------------------------------------------------------------------------------|
+| Author             | Interlutions GmbH                                                                                                             |
+| Shop Version       | `6.3.0.2 to 6.7.x.x`                                                                                                          |
+| Link               | http://www.ratepay.com                                                                                                        |
+| Mail               | integration@ratepay.com                                                                                                       |
+| Full Documentation | [click here](https://docs.ratepay.com/docs/developer/shop_modules/shopware/shopware_6/ratepay_payment_plugin_for_shopware_6/) |
+| Legal Disclaimer   | [click here](https://docs.ratepay.com/docs/developer/shop_modules/overview/)                                                  |
 
 ## Installation via Shopware Store
 
