@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\PaymentHandler\Event;
 
 use RatePAY\Model\Response\PaymentRequest;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Throwable;
@@ -22,7 +22,7 @@ class PaymentFailedEvent extends AbstractPaymentEvent
 {
     public function __construct(
         OrderEntity $order,
-        SyncPaymentTransactionStruct $transaction,
+        OrderTransactionEntity $transaction,
         RequestDataBag $requestDataBag,
         SalesChannelContext $salesChannelContext,
         PaymentRequest $response = null,

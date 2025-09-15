@@ -12,7 +12,9 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\PaymentHandler\Event;
 
 use RatePAY\Model\Response\PaymentRequest;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Checkout\Payment\Cart\PaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Event\ShopwareEvent;
@@ -24,7 +26,7 @@ abstract class AbstractPaymentEvent extends Event implements ShopwareEvent
 {
     public function __construct(
         private readonly OrderEntity $order,
-        private readonly SyncPaymentTransactionStruct $transaction,
+        private readonly OrderTransactionEntity $transaction,
         private readonly RequestDataBag $requestDataBag,
         private readonly SalesChannelContext $salesChannelContext,
         private readonly ?PaymentRequest $response = null
@@ -41,7 +43,7 @@ abstract class AbstractPaymentEvent extends Event implements ShopwareEvent
         return $this->salesChannelContext->getContext();
     }
 
-    public function getTransaction(): SyncPaymentTransactionStruct
+    public function getTransaction(): OrderTransactionEntity
     {
         return $this->transaction;
     }
