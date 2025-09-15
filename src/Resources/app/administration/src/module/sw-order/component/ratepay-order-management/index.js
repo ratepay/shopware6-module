@@ -126,6 +126,13 @@ Component.register('ratepay-order-management', {
         taxRepository() {
             return this.repositoryFactory.create('tax');
         },
+        taxOptions() {
+            return this.taxes.map(tax => ({
+                id: tax.id,
+                value: tax.id,
+                label: this.getTaxLabel(tax),
+            }));
+        },
     },
 
     created() {
@@ -166,14 +173,14 @@ Component.register('ratepay-order-management', {
             this.addDebit.data.tax = this.defaultTax;
             this.addDebit.data.taxId = this.defaultTax.id;
         },
-        updateCreditTax() {
-            if (this.addCredit.data.taxId) {
-                this.addCredit.data.tax = this.taxes.get(this.addCredit.data.taxId);
+        updateCreditTax(newTaxId) {
+            if (newTaxId) {
+                this.addCredit.data.tax = this.taxes.get(newTaxId);
             }
         },
-        updateDebitTax() {
-            if (this.addDebit.data.taxId) {
-                this.addDebit.data.tax = this.taxes.get(this.addDebit.data.taxId);
+        updateDebitTax(newTaxId) {
+            if (newTaxId) {
+                this.addDebit.data.tax = this.taxes.get(newTaxId);
             }
         },
         onClickButtonDeliver() {

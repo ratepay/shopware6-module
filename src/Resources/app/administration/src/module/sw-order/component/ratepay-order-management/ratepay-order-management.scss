@@ -4,52 +4,63 @@
 // file that was distributed with this source code.
 
 .ratepay-article-panel {
-    .sw-data-grid.is--compact {
-        border-top: 1px solid #D1D9E0;
+  .sw-data-grid.is--compact {
+    border-top: 1px solid #D1D9E0;
 
-        .sw-data-grid__cell--quantity {
-            .sw-data-grid__cell-content {
-                padding: 0;
+    .sw-data-grid__cell--quantity {
+      padding: 1rem;
 
-                &, div, select {
-                    height: 100%;
-                }
-            }
-
-            .sw-block-field__block {
-                border: 0;
-            }
-
-            select {
-                text-align: left;
-                padding-right: 30px;
-                background: transparent;
-            }
-        }
-    }
-
-    & > .sw-card__content {
+      .sw-data-grid__cell-content {
         padding: 0;
 
-        .button-group {
-            margin-bottom: 15px;
-            padding-left: 10px;
-            padding-right: 10px;
+        &, div, select {
+          height: 100%;
         }
 
+        .mt-field input, .mt-field select, .mt-field textarea {
+          padding: 0;
+          text-align: center;
+        }
+      }
+
+      .sw-block-field__block {
+        border: 0;
+      }
+
+      select {
+        text-align: left;
+        padding-right: 30px;
+        background: transparent;
+      }
     }
 
-    .sw-tabs__custom-content {
-        padding-bottom: 0;
+    .sw-data-grid__cell {
+      .mt-number-field__controls {
+        display: flex;
+      }
+    }
+  }
+
+  & > .sw-card__content {
+    padding: 0;
+
+    .button-group {
+      margin-bottom: 15px;
+      padding-left: 10px;
+      padding-right: 10px;
     }
 
+  }
 
+  .sw-tabs__custom-content {
+    padding-bottom: 0;
+  }
 }
 
 .rp-price-field {
-    &.hide-lock {
-        .sw-price-field__lock {
-            visibility: hidden;
-        }
+  &.hide-lock {
+    .sw-price-field__lock {
+      visibility: hidden;
     }
+  }
 }

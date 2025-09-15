@@ -7,10 +7,9 @@
 
 import template from './sw-order-detail-ratepay.html.twig';
 
-const {Component} = Shopware;
-const {mapState} = Component.getComponentHelper();
+const {Component, Store} = Shopware;
 
-Shopware.Component.register('sw-order-detail-ratepay', {
+Component.register('sw-order-detail-ratepay', {
     template,
 
     metaInfo() {
@@ -20,9 +19,7 @@ Shopware.Component.register('sw-order-detail-ratepay', {
     },
 
     computed: {
-        ...mapState('swOrderDetail', [
-            'order',
-        ]),
+        order: () => Store.get('swOrderDetail').order,
     },
 
     created() {
