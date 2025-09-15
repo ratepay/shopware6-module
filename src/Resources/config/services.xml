@@ -23,6 +23,10 @@
 
         <!-- needs to be public, so we can get it in boot in bundle-file -->
         <service id="Ratepay\RpayPayments\Components\FeatureFlags\Util\FeatureFlagService" autowire="true" public="true"/>
+
+        <service id="Ratepay\RpayPayments\Core\Subscriber\OrderRouteRequestSubscriber">
+            <tag name="kernel.event_subscriber" />
+        </service>
     </services>
 
 </container>
