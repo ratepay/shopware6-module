@@ -13,6 +13,8 @@ namespace Ratepay\RpayPayments\Util;
 
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigEntity;
 use Ratepay\RpayPayments\Components\ProfileConfig\Model\ProfileConfigMethodEntity;
+use Ratepay\RpayPayments\Core\Entity\Extension\OrderExtension;
+use Ratepay\RpayPayments\Core\Entity\Extension\OrderLineItemExtension;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 
@@ -21,13 +23,13 @@ class CriteriaHelper
     public static function getCriteriaForOrder(string $orderId): Criteria
     {
         $criteria = new Criteria([$orderId]);
-        // $criteria->addAssociation(OrderExtension::RATEPAY_DATA);
+        $criteria->addAssociation(OrderExtension::EXTENSION_NAME);
         $criteria->addAssociation('currency');
         $criteria->addAssociation('language.locale');
         $criteria->addAssociation('addresses.country');
         $criteria->addAssociation('addresses.salutation');
         $criteria->addAssociation('orderCustomer.customer');
-        // $criteria->addAssociation('lineItems.'.OrderLineItemExtension::RATEPAY_DATA);
+        $criteria->addAssociation('lineItems.' . OrderLineItemExtension::EXTENSION_NAME);
         $criteria->addAssociation('lineItems.product');
         $criteria->addAssociation('deliveries.shippingMethod');
         $criteria->addAssociation('deliveries.positions');

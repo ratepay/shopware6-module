@@ -77,7 +77,9 @@ class ProductPanel extends AbstractController
     public function load(string $orderId, Context $context): JsonResponse
     {
         $criteria = new Criteria([$orderId]);
+        $criteria->addAssociation(OrderExtension::EXTENSION_NAME);
         $criteria->addAssociation('lineItems');
+        $criteria->addAssociation('lineItems.' . OrderLineItemExtension::EXTENSION_NAME);
 
         $order = $this->orderRepository->search($criteria, $context)->first();
 
