@@ -27,7 +27,7 @@ class LoginSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CustomerLogoutEvent::class => ['onLogout', -3000], // as late as possible to prioritize thirdparty modules
+            CustomerLogoutEvent::class => ['onLogout', -3000], // as late as possible to prioritize third-party modules
         ];
     }
 

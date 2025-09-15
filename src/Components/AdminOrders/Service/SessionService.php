@@ -33,11 +33,6 @@ class SessionService
 
     public function isLoggedInAsCustomer(SalesChannelContext $context, SessionInterface $session): bool
     {
-        // supported since SW 6.6.5.x - TODO remove this check if compatibility has been change to Shopware >= 6.6.5
-        if (method_exists($context, 'getImitatingUserId') && $context->getImitatingUserId() !== null) {
-            return true;
-        }
-
         if ($context->getCustomerId() === null) {
             return false;
         }
@@ -55,7 +50,7 @@ class SessionService
     {
         $session->remove($this->sessionKey);
 
-        // make sure that the third-party modules did not left any data, which we will check
+        // make sure that the third-party modules did not leave any data, which we will check
         foreach ($this->getThirdPartyLoginAsSessionKeys() as $key) {
             $session->remove($key);
         }
