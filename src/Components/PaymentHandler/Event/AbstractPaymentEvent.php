@@ -14,8 +14,6 @@ namespace Ratepay\RpayPayments\Components\PaymentHandler\Event;
 use RatePAY\Model\Response\PaymentRequest;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Checkout\Payment\Cart\PaymentTransactionStruct;
-use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Event\ShopwareEvent;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
