@@ -88,7 +88,7 @@ abstract class AbstractPaymentHandler extends \Shopware\Core\Checkout\Payment\Ca
 
         $dataBag = new RequestDataBag();
         $dataBag->set('paymentDetails', [
-            'ratepay' => $ratepayDataBag
+            'ratepay' => $ratepayDataBag,
         ]);
 
         $ratepayData = RequestHelper::getRatepayData($dataBag) ?: new ParameterBag();
