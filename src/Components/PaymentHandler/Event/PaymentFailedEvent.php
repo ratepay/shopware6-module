@@ -25,7 +25,7 @@ class PaymentFailedEvent extends AbstractPaymentEvent
         OrderTransactionEntity $transaction,
         RequestDataBag $requestDataBag,
         SalesChannelContext $salesChannelContext,
-        PaymentRequest $response = null,
+        ?PaymentRequest $response = null,
         private readonly ?Throwable $exception = null
     ) {
         parent::__construct($order, $transaction, $requestDataBag, $salesChannelContext, $response);

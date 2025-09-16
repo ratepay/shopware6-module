@@ -18,5 +18,5 @@ abstract class AbstractCheckoutController
 {
     abstract public function getDecorated(): self;
 
-    abstract public function getPaymentData(Request $request, SalesChannelContext $salesChannelContext, string $orderId = null): Response;
+    abstract public function getPaymentData(Request $request, SalesChannelContext $salesChannelContext, ?string $orderId = null): Response;
 }

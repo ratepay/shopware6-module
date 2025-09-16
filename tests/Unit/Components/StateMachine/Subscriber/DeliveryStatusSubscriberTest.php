@@ -239,7 +239,7 @@ class DeliveryStatusSubscriberTest extends TestCase
     /**
      * @dataProvider dataProviderShipping
      */
-    public function testIfShippingGotHandledCorrectly(int $delivered, int $canceled, int $refunded, string $expectedMethod = null): void
+    public function testIfShippingGotHandledCorrectly(int $delivered, int $canceled, int $refunded, ?string $expectedMethod = null): void
     {
         if ($expectedMethod === StateMachineTransitionActions::ACTION_RETOUR) {
             // we won't save this change, because it could be that the items are only refunded and not returned.
@@ -339,7 +339,7 @@ class DeliveryStatusSubscriberTest extends TestCase
     /**
      * @return StateMachineRegistry&MockObject
      */
-    private function createStateMachineRegistry(string $expectedTransition = null): StateMachineRegistry
+    private function createStateMachineRegistry(?string $expectedTransition = null): StateMachineRegistry
     {
         $transactionStateHandler = $this->createMock(StateMachineRegistry::class);
 

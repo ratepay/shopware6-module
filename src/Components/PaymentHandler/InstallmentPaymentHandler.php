@@ -31,7 +31,7 @@ class InstallmentPaymentHandler extends AbstractPaymentHandler
     /**
      * @return DataValidationDefinition[]
      */
-    public function getValidationDefinitions(DataBag $requestDataBag, SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null): array
+    public function getValidationDefinitions(DataBag $requestDataBag, SalesChannelContext $salesChannelContext, ?OrderEntity $orderEntity = null): array
     {
         $validations = parent::getValidationDefinitions($requestDataBag, $salesChannelContext, $orderEntity);
 

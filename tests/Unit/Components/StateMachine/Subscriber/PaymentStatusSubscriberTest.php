@@ -226,7 +226,7 @@ class PaymentStatusSubscriberTest extends TestCase
     /**
      * @dataProvider dataProviderShipping
      */
-    public function testIfShippingGotHandledCorrectly(int $delivered, int $canceled, int $refunded, string $expectedMethod = null): void
+    public function testIfShippingGotHandledCorrectly(int $delivered, int $canceled, int $refunded, ?string $expectedMethod = null): void
     {
         $event = $this->createOrderOperationDoneEvent([
             $this->getLineItem(5, 0, 5, 0),
@@ -323,7 +323,7 @@ class PaymentStatusSubscriberTest extends TestCase
     /**
      * @return OrderTransactionStateHandler&MockObject
      */
-    private function createTransactionHandlerMock(string $expectedMethod = null): OrderTransactionStateHandler
+    private function createTransactionHandlerMock(?string $expectedMethod = null): OrderTransactionStateHandler
     {
         $transactionStateHandler = $this->createMock(OrderTransactionStateHandler::class);
 

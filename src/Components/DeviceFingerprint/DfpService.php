@@ -39,7 +39,7 @@ class DfpService implements DfpServiceInterface
      * provide the user-agent via header or a request variable `userAgent` to generate a more unique device-identifier
      * the request-variable is prioritized
      */
-    public function generatedDfpId(Request $request, SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null): ?string
+    public function generatedDfpId(Request $request, SalesChannelContext $salesChannelContext, ?OrderEntity $orderEntity = null): ?string
     {
         if (!$this->isDfpRequired($salesChannelContext, $orderEntity)) {
             return null;
@@ -52,7 +52,7 @@ class DfpService implements DfpServiceInterface
         return $this->getCustomerToken($request, $salesChannelContext);
     }
 
-    public function getDfpSnippet(Request $request, SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null): ?string
+    public function getDfpSnippet(Request $request, SalesChannelContext $salesChannelContext, ?OrderEntity $orderEntity = null): ?string
     {
         if ($id = $this->generatedDfpId($request, $salesChannelContext, $orderEntity)) {
             $dfpHelper = new DeviceFingerprint($this->configService->getDeviceFingerprintSnippetId());
@@ -62,7 +62,7 @@ class DfpService implements DfpServiceInterface
         return null;
     }
 
-    public function isDfpRequired(SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null): bool
+    public function isDfpRequired(SalesChannelContext $salesChannelContext, ?OrderEntity $orderEntity = null): bool
     {
         return true;
     }
@@ -93,7 +93,7 @@ class DfpService implements DfpServiceInterface
             'uuid' => $existingHashData->uuid,
             'token' => $context->getToken(),
 
-            // user-agent is only required for logged-in users. This will prevent that they can not switch the device
+            // user-agent is only required for logged-in users. This will prevent switching the device
             'user-agent' => $request->get('userAgent') ?? $request->headers->get('User-Agent') ?? $context->getCustomer()?->getRemoteAddress(),
 
             // if user-agent is not given, we need another parameter. We will try the last-login.

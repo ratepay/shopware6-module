@@ -43,7 +43,7 @@ class CheckoutController extends AbstractCheckoutController
         ],
         methods: ['GET']
     )]
-    public function getPaymentData(Request $request, SalesChannelContext $salesChannelContext, string $orderId = null): Response
+    public function getPaymentData(Request $request, SalesChannelContext $salesChannelContext, ?string $orderId = null): Response
     {
         try {
             if ($orderId) {

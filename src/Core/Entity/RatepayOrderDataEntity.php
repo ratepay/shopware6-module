@@ -166,7 +166,7 @@ class RatepayOrderDataEntity extends Entity
     /**
      * @return mixed
      */
-    public function getAdditionalData(string $key = null)
+    public function getAdditionalData(?string $key = null)
     {
         return $key ? ($this->additionalData[$key] ?? null) : $this->additionalData;
     }

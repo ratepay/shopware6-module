@@ -20,7 +20,7 @@ class RedirectException extends Exception
         private readonly RedirectResponse $redirectResponse,
         string $message = '',
         int $code = 0,
-        Exception $previousException = null
+        ?Exception $previousException = null
     ) {
         parent::__construct($message, $code, $previousException);
     }

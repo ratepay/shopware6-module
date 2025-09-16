@@ -25,17 +25,17 @@ class DfpService implements DfpServiceInterface
     ) {
     }
 
-    public function generatedDfpId(Request $request, SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null): ?string
+    public function generatedDfpId(Request $request, SalesChannelContext $salesChannelContext, ?OrderEntity $orderEntity = null): ?string
     {
         return $this->isDfpRequired($salesChannelContext, $orderEntity) ? $this->decorated->generatedDfpId($request, $salesChannelContext, $orderEntity) : null;
     }
 
-    public function getDfpSnippet(Request $request, SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null): ?string
+    public function getDfpSnippet(Request $request, SalesChannelContext $salesChannelContext, ?OrderEntity $orderEntity = null): ?string
     {
         return $this->isDfpRequired($salesChannelContext, $orderEntity) ? $this->decorated->getDfpSnippet($request, $salesChannelContext, $orderEntity) : null;
     }
 
-    public function isDfpRequired(SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null): bool
+    public function isDfpRequired(SalesChannelContext $salesChannelContext, ?OrderEntity $orderEntity = null): bool
     {
         $session = $this->requestStack->getMainRequest()->getSession();
         if ($this->sessionService->isAdminSession($salesChannelContext, $session)) {

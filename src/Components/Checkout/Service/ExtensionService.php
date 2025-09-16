@@ -139,7 +139,7 @@ class ExtensionService
     public function buildPaymentDataExtension(
         SalesChannelContext $salesChannelContext,
         ?OrderEntity $order = null,
-        Request $httpRequest = null
+        ?Request $httpRequest = null
     ): ?ArrayStruct {
         $paymentMethod = $salesChannelContext->getPaymentMethod();
 
