@@ -16,11 +16,6 @@ use Shopware\Core\System\SalesChannel\StoreApiResponse;
 class InstallmentCalculationResponse extends StoreApiResponse
 {
     /**
-     * @var ArrayStruct
-     */
-    protected $object;
-
-    /**
      * @param array{translations: array, plan: array} $data
      */
     public function __construct(array $data)
