@@ -1,10 +1,11 @@
 # Changelog
 
-## Version 8.0.0 - Released on 2025-09-XX
+## Version 8.0.0 - Released on 2025-09-18
 
 * RATESWSX-332: add Shopware 6.7.x.x compatibility
 * RATESWSX-332: build tool: migration from Webpack to Vite
-* RATESWSX-332: upgrade Code to PHP 8.2
+* RATESWSX-332: upgrade code to be compatible with PHP 8.2, PHP 8.3 and PHP 8.4
+* RATESWSX-332: upgrade composer version to be compatible with PHP 8.4
 
 ## Version 7.2.0 - Released on 2024-12-09
 
