@@ -13,7 +13,7 @@
 
         <defaults>
             <bind key="$orderRepository" type="service" id="order.repository" />
-            <tag name="shopware.payment.method.sync"/>
+            <tag name="shopware.payment.method"/>
         </defaults>
 
         <service id="Ratepay\RpayPayments\Components\PaymentHandler\InvoicePaymentHandler" public="true" autowire="true" />

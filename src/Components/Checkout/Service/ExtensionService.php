@@ -139,7 +139,7 @@ class ExtensionService
     public function buildPaymentDataExtension(
         SalesChannelContext $salesChannelContext,
         ?OrderEntity $order = null,
-        Request $httpRequest = null
+        ?Request $httpRequest = null
     ): ?ArrayStruct {
         $paymentMethod = $salesChannelContext->getPaymentMethod();
 
@@ -169,19 +169,19 @@ class ExtensionService
         }
 
         $extension = new ArrayStruct();
-        $extension->offsetSet('isSandbox', $profileConfig->isSandbox());
-        $extension->offsetSet('birthday', $customerBirthday ?? null);
-        $extension->offsetSet('vatId', $customerVatId ?? null);
-        $extension->offsetSet('phoneNumber', $customerPhoneNumber ?? null);
-        $extension->offsetSet('company', $customerCompany ?? null);
-        $extension->offsetSet('accountHolders', $accountHolders ?? null);
-        $extension->offsetSet(
+        $extension->set('isSandbox', $profileConfig->isSandbox());
+        $extension->set('birthday', $customerBirthday ?? null);
+        $extension->set('vatId', $customerVatId ?? null);
+        $extension->set('phoneNumber', $customerPhoneNumber ?? null);
+        $extension->set('company', $customerCompany ?? null);
+        $extension->set('accountHolders', $accountHolders ?? null);
+        $extension->set(
             'paymentMethod',
             strtolower((string) constant($paymentMethod->getHandlerIdentifier() . '::RATEPAY_METHOD'))
         );
 
         if ($httpRequest instanceof Request) {
-            // add user entered values again, so that the user have not to reenter his values
+            // add user entered values again, so that the user has not to reenter his values
             foreach (RequestHelper::getArray($httpRequest, RequestHelper::RATEPAY_DATA_KEY) ?: [] as $key => $value) {
                 if ($key === 'birthday' && is_array($value)) {
                     $value = (new DateTime())->setDate((int) $value['year'], (int) $value['month'], (int) $value['day']);

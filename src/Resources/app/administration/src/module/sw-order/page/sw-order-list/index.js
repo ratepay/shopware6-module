@@ -5,12 +5,15 @@ const {Component} = Shopware;
 Component.override('sw-order-list', {
   template,
 
+  inject: ['repositoryFactory'],
+
   data() {
     return {
       ratepayCreateOrderModal: false,
       salesChannels: null
     };
   },
+
 
   methods: {
     openRatepayCreateOrderModal() {

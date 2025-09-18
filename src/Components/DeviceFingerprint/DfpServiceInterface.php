@@ -16,9 +16,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 interface DfpServiceInterface
 {
-    public function generatedDfpId(Request $request, SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null): ?string;
+    public function generatedDfpId(Request $request, SalesChannelContext $salesChannelContext, ?OrderEntity $orderEntity = null): ?string;
 
-    public function getDfpSnippet(Request $request, SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null): ?string;
+    public function getDfpSnippet(Request $request, SalesChannelContext $salesChannelContext, ?OrderEntity $orderEntity = null): ?string;
 
     public function isDfpRequired(SalesChannelContext $salesChannelContext, ?OrderEntity $orderEntity = null): bool;
 }

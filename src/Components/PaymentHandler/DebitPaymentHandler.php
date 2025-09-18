@@ -24,7 +24,7 @@ class DebitPaymentHandler extends AbstractPaymentHandler
      */
     final public const RATEPAY_METHOD = 'ELV';
 
-    public function getValidationDefinitions(DataBag $requestDataBag, SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null): array
+    public function getValidationDefinitions(DataBag $requestDataBag, SalesChannelContext $salesChannelContext, ?OrderEntity $orderEntity = null): array
     {
         return array_merge(
             parent::getValidationDefinitions($requestDataBag, $salesChannelContext, $orderEntity),

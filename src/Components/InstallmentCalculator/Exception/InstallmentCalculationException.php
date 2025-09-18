@@ -17,7 +17,7 @@ use Throwable;
 
 class InstallmentCalculationException extends ShopwareHttpException
 {
-    public function __construct(string $message = null, array $parameters = [], ?Throwable $e = null)
+    public function __construct(?string $message = null, array $parameters = [], ?Throwable $e = null)
     {
         $message = 'Calculation of the installment plan was not successful. ' . $message;
 

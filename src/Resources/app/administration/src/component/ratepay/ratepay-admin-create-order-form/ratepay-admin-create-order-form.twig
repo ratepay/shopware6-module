@@ -1,32 +1,28 @@
 {#
-  ~ Copyright (c) Ratepay GmbH
-  ~
-  ~ For the full copyright and license information, please view the LICENSE
-  ~ file that was distributed with this source code.
+~ Copyright (c) 2020 Ratepay GmbH
+~
+~ For the full copyright and license information, please view the LICENSE
+~ file that was distributed with this source code.
 #}
+
 <div>
-    <sw-select-field v-model:value="selectedSalesChannelId"
-                     :label="$tc('ratepay.admin.create-order.modal.labels.salesChannel')"
-                     @update:value="selectedSalesChannelDomainId = null">
-        <option>{{ $t('ratepay.admin.create-order.modal.please-select') }}</option>
-        <option v-for="salesChannel in salesChannels"
-                :value="salesChannel.id"
-                :selected="salesChannel === selectedSalesChannelId">
-            {{ salesChannel.translated.name }}
-        </option>
-    </sw-select-field>
+    <sw-entity-single-select
+            v-model:value="selectedSalesChannelId"
+            class="sw-cms-layout-assignment-modal__sales-channel-select"
+            entity="sales_channel"
+            :label="$tc('ratepay.admin.create-order.modal.labels.salesChannel')"
+            @update:value="selectedSalesChannelDomainId = null"
+    />
 
-
-    <sw-select-field v-model:value="selectedSalesChannelDomainId"
-                     :label="$tc('ratepay.admin.create-order.modal.labels.salesChannelDomain')"
-                     v-if="salesChannelDomains.length">
-        <option>{{ $t('ratepay.admin.create-order.modal.please-select') }}</option>
-        <option v-for="salesChannelDomain in salesChannelDomains"
-                :value="salesChannelDomain.id"
-                :selected="salesChannelDomain.id === selectedSalesChannelDomainId">
-            {{ salesChannelDomain.url }}
-        </option>
-    </sw-select-field>
+    <sw-entity-single-select
+            v-model:value="selectedSalesChannelDomainId"
+            class="sw-cms-layout-assignment-modal__sales-channel-domain-select"
+            entity="sales_channel_domain"
+            :label="$tc('ratepay.admin.create-order.modal.labels.salesChannelDomain')"
+            label-property="url"
+            :criteria="domainCriteria"
+            :disabled="!selectedSalesChannelId"
+    />
 
     <sw-button @click="navigateToFrontend" class="sw-button--primary" v-if="selectedSalesChannelDomainId">
         {{ $t('ratepay.admin.create-order.modal.start-session') }}

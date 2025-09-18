@@ -31,24 +31,28 @@ use Ratepay\RpayPayments\Exception\RatepayException;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Ratepay\RpayPayments\Util\RequestHelper;
 use RuntimeException;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
-use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
-use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
+use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PaymentHandlerType;
+use Shopware\Core\Checkout\Payment\Cart\PaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\PaymentException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Throwable;
 
-abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterface
+abstract class AbstractPaymentHandler extends \Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AbstractPaymentHandler
 {
     /**
      * @var string
@@ -57,6 +61,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
 
     public function __construct(
         private readonly EntityRepository $orderRepository,
+        private readonly EntityRepository $orderTransactionRepository,
         private readonly PaymentRequestService $paymentRequestService,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly PluginConfigService $configService,
@@ -68,21 +73,44 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
 
     abstract public static function getRatepayPaymentMethodName(): string;
 
-    public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
+    public function supports(PaymentHandlerType $type, string $paymentMethodId, Context $context): bool
     {
+        // This payment handler does not support recurring payments nor refunds
+        return false;
+    }
+
+    public function pay(Request $request, PaymentTransactionStruct $transaction, Context $context, ?Struct $validateStruct): ?RedirectResponse
+    {
+        $salesChannelContext = $request->attributes->get('sw-sales-channel-context');
+
+        $data = $request->get('ratepay');
+        $ratepayDataBag = new RequestDataBag($data);
+
+        $dataBag = new RequestDataBag();
+        $dataBag->set('paymentDetails', [
+            'ratepay' => $ratepayDataBag,
+        ]);
+
         $ratepayData = RequestHelper::getRatepayData($dataBag) ?: new ParameterBag();
 
-        $order = $this->getOrderWithAssociations($transaction->getOrder(), $salesChannelContext->getContext());
+        $orderTransactionId = $transaction->getOrderTransactionId();
+        $orderTransaction = $this->getOrderTransactionById($orderTransactionId, $context);
 
-        if (!$order instanceof OrderEntity || $ratepayData->count() === 0) {
-            throw $this->syncProcessInterrupted($transaction->getOrderTransaction()->getId(), 'unknown error during payment');
+        $orderEntity = $orderTransaction?->getOrder();
+        $order = $this->getOrderWithAssociations($orderEntity, Context::createDefaultContext());
+
+        $paymentMethod = $order->getTransactions()->first()->getPaymentMethod();
+        $orderTransaction->setPaymentMethod($paymentMethod);
+
+        if (!$order instanceof OrderEntity || count($ratepayData) === 0 || !$orderTransaction) {
+            throw $this->syncProcessInterrupted($orderTransactionId, 'unknown error during payment');
         }
 
         try {
             $paymentRequestData = new PaymentRequestData(
                 $salesChannelContext,
                 $order,
-                $transaction->getOrderTransaction(),
+                $orderTransaction,
                 $dataBag,
                 $this->configService->isSendDiscountsAsCartItem(),
                 $this->configService->isSendShippingCostsAsCartItem()
@@ -112,7 +140,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
             if ($response->isSuccessful()) {
                 $this->eventDispatcher->dispatch(new PaymentSuccessfulEvent(
                     $order,
-                    $transaction,
+                    $orderTransaction,
                     $dataBag,
                     $salesChannelContext,
                     $response
@@ -133,7 +161,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
         } catch (RatepayException $ratepayException) {
             $this->eventDispatcher->dispatch(new PaymentFailedEvent(
                 $order,
-                $transaction,
+                $orderTransaction,
                 $dataBag,
                 $salesChannelContext,
                 $response ?? null,
@@ -144,11 +172,13 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
                 $session->getFlashBag()->add(StorefrontController::DANGER, $ratepayException->getMessage());
             }
 
-            throw $this->syncProcessInterrupted($transaction->getOrderTransaction()->getId(), $ratepayException->getMessage(), $ratepayException);
+            throw $this->syncProcessInterrupted($orderTransactionId, $ratepayException->getMessage(), $ratepayException);
         }
+
+        return null;
     }
 
-    public function getValidationDefinitions(DataBag $requestDataBag, SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null): array
+    public function getValidationDefinitions(DataBag $requestDataBag, SalesChannelContext $salesChannelContext, ?OrderEntity $orderEntity = null): array
     {
         $validations = [];
 
@@ -197,5 +227,13 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
 
         // should never occur - just to be safe
         return new RuntimeException('payment interrupted: ' . $errorMessage, 0, $e);
+    }
+
+    private function getOrderTransactionById(string $orderTransactionId, Context $context): ?OrderTransactionEntity
+    {
+        $criteria = new Criteria([$orderTransactionId]);
+        $criteria->addAssociation('order');
+
+        return $this->orderTransactionRepository->search($criteria, $context::createDefaultContext())->first();
     }
 }

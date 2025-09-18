@@ -33,7 +33,7 @@ class OrderExtension extends EntityExtension
                 'id',
                 'order_id',
                 RatepayOrderDataDefinition::class,
-                true
+                false
             ))->addFlags(new RestrictDelete())
         );
     }
@@ -41,5 +41,10 @@ class OrderExtension extends EntityExtension
     public function getDefinitionClass(): string
     {
         return OrderDefinition::class;
+    }
+
+    public function getEntityName(): string
+    {
+        return OrderDefinition::ENTITY_NAME;
     }
 }

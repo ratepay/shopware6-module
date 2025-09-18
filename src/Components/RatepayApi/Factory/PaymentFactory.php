@@ -29,9 +29,10 @@ class PaymentFactory extends AbstractFactory
     {
         /** @var PaymentRequestData $requestData */
         $transaction = $requestData->getTransaction();
+        $order = $requestData->getOrder();
         $payment = new Payment();
 
-        $handler = $transaction->getPaymentMethod()->getHandlerIdentifier();
+        $handler = $order->getTransactions()->first()->getPaymentMethod()->getHandlerIdentifier();
         $ratepayMethod = constant($handler . '::RATEPAY_METHOD');
         $payment->setMethod($ratepayMethod);
         $payment->setAmount($transaction->getAmount()->getTotalPrice());

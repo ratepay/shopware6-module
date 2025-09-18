@@ -29,7 +29,7 @@ class DataValidationService
     ) {
     }
 
-    public function validatePaymentData(DataBag $parameterBag, SalesChannelContext $salesChannelContext, OrderEntity $orderEntity = null): void
+    public function validatePaymentData(DataBag $parameterBag, SalesChannelContext $salesChannelContext, ?OrderEntity $orderEntity = null): void
     {
         if ($orderEntity instanceof OrderEntity) {
             $paymentMethodId = $orderEntity->getTransactions()->last()->getPaymentMethodId();

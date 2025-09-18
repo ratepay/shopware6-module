@@ -25,7 +25,8 @@ Component.register('ratepay-admin-create-order-form', {
     data() {
         return {
             loading: false,
-            salesChannels: null,
+            salesChannels: [],
+            salesChannelDomains: [],
 
             selectedSalesChannelId: null,
             selectedSalesChannelDomainId: null,
@@ -39,26 +40,26 @@ Component.register('ratepay-admin-create-order-form', {
         this.salesChannelRepository = this.repositoryFactory.create('sales_channel');
         this.salesChannelDomainRepository = this.repositoryFactory.create('sales_channel_domain');
 
-        let criteria = new Criteria();
+        const criteria = new Criteria();
         criteria.addFilter(Criteria.not('AND', [Criteria.equals('domains.url', null)]));
         criteria.addFilter(Criteria.equals('active', true));
-        criteria.addAssociation('domains');
+        criteria.addAssociation('domains'); // optional, can prefill domains
 
         this.loading = true;
-        this.salesChannelRepository
-            .search(criteria, Shopware.Context.api)
-            .then((result) => {
-                this.salesChannels = result.filter((item) => {
-                    return item.domains.length > 0;
-                });
-                this.loading = false;
-            });
+        this.salesChannelRepository.search(criteria, Shopware.Context.api).then((result) => {
+            this.salesChannels = result.filter(item => item.domains.length > 0);
+            this.loading = false;
+        });
     },
 
     computed: {
-        salesChannelDomains() {
-            return this.selectedSalesChannelId ? this.salesChannels.get(this.selectedSalesChannelId)?.domains ?? [] : [];
-        },
+        domainCriteria() {
+            const criteria = new Criteria();
+            if (this.selectedSalesChannelId) {
+                criteria.addFilter(Criteria.equals('salesChannelId', this.selectedSalesChannelId));
+            }
+            return criteria;
+        }
     },
 
     methods: {

@@ -21,7 +21,7 @@ class ForwardException extends Exception
         private readonly string $route,
         private readonly array $routeParams = [],
         private readonly array $queryParams = [],
-        Exception $exception = null
+        ?Exception $exception = null
     ) {
         parent::__construct('', 0, $exception);
     }

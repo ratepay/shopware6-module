@@ -35,7 +35,7 @@ class PaymentFilterService
     ) {
     }
 
-    public function filterPaymentMethods(PaymentMethodCollection $paymentMethodCollection, SalesChannelContext $salesChannelContext, OrderEntity $order = null): void
+    public function filterPaymentMethods(PaymentMethodCollection $paymentMethodCollection, SalesChannelContext $salesChannelContext, ?OrderEntity $order = null): void
     {
         foreach ($paymentMethodCollection->getElements() as $key => $paymentMethod) {
             if (!$this->isPaymentMethodAvailable($paymentMethod, $salesChannelContext, $order)) {
@@ -44,7 +44,7 @@ class PaymentFilterService
         }
     }
 
-    private function isPaymentMethodAvailable(PaymentMethodEntity $paymentMethod, SalesChannelContext $salesChannelContext, OrderEntity $order = null): bool
+    private function isPaymentMethodAvailable(PaymentMethodEntity $paymentMethod, SalesChannelContext $salesChannelContext, ?OrderEntity $order = null): bool
     {
         if ($paymentMethod->getHandlerIdentifier() === LegacyPaymentHandler::class) {
             return false;

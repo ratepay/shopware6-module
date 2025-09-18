@@ -13,13 +13,11 @@ namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Struct;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Core\System\SalesChannel\StoreApiResponse;
 
+/**
+ * @extends StoreApiResponse<ArrayStruct>
+ */
 class InstallmentCalculationResponse extends StoreApiResponse
 {
-    /**
-     * @var ArrayStruct
-     */
-    protected $object;
-
     /**
      * @param array{translations: array, plan: array} $data
      */

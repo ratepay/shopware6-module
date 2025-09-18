@@ -36,13 +36,13 @@ class PaymentSuccessfulSubscriber implements EventSubscriberInterface
 
     public function changeTransactionState(PaymentSuccessfulEvent $event): void
     {
-        $paymentMethod = $event->getTransaction()->getOrderTransaction()->getPaymentMethod();
+        $paymentMethod = $event->getTransaction()->getPaymentMethod();
         $newState = $this->configService->getPaymentStatusForMethod($paymentMethod);
         if ($newState && $newState !== OrderTransactionStates::STATE_OPEN) {
             $this->stateMachineRegistry->transition(
                 new Transition(
                     OrderTransactionDefinition::ENTITY_NAME,
-                    $event->getTransaction()->getOrderTransaction()->getId(),
+                    $event->getTransaction()->getId(),
                     $newState,
                     'stateId'
                 ),
