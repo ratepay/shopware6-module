@@ -1,0 +1,25 @@
+{
+  "base": "/bundles/rpaypayments/administration/",
+  "entryPoints": {
+    "rpay-payments": {
+      "css": [
+        "/bundles/rpaypayments/administration/assets/rpay-payments-DQrD5tLS.css"
+      ],
+      "dynamic": [],
+      "js": [
+        "/bundles/rpaypayments/administration/assets/rpay-payments-CzvWDQ2q.js"
+      ],
+      "legacy": false,
+      "preload": []
+    }
+  },
+  "legacy": false,
+  "metadatas": {},
+  "version": [
+    "7.1.0",
+    7,
+    1,
+    0
+  ],
+  "viteServer": null
+}
