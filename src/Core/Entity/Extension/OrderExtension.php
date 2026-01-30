@@ -33,7 +33,7 @@ class OrderExtension extends EntityExtension
                 'id',
                 'order_id',
                 RatepayOrderDataDefinition::class,
-                false
+                true
             ))->addFlags(new RestrictDelete())
         );
     }
