@@ -1,6 +1,6 @@
 # Changelog
 
-## WIP
+## Version 9.0.0 - WIP
 
 * FC#0132520 - add config options to change capture trigger, disable automatic refunds
 
