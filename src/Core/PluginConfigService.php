@@ -106,6 +106,20 @@ class PluginConfigService
         return (bool) ($config['updateDeliveryStatus'] ?? false);
     }
 
+    public function getCaptureTrigger(): string
+    {
+        $config = $this->getPluginConfiguration();
+
+        return $config['captureTrigger'] ?? 'deliver';
+    }
+
+    public function isTransactionRefundsOnDeliveryStatusChange(): bool
+    {
+        $config = $this->getPluginConfiguration();
+
+        return (bool) ($config['automaticTransactionRefunds'] ?? true);
+    }
+
     protected function getContext(): Context
     {
         return Context::createDefaultContext();

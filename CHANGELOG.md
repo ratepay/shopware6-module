@@ -1,5 +1,9 @@
 # Changelog
 
+## WIP
+
+* FC#0132520 - add config options to change capture trigger, disable automatic refunds
+
 ## Version 8.0.0 - Released on 2025-09-18
 
 * RATESWSX-332: add Shopware 6.7.x.x compatibility
