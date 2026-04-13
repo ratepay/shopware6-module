@@ -14,6 +14,7 @@ namespace Ratepay\RpayPayments\Components\StateMachine\Subscriber;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
+use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\AbstractModifyRequest;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentCancelService;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentDeliverService;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentReturnService;
@@ -25,6 +26,9 @@ use Ratepay\RpayPayments\Util\MethodHelper;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryStates;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -38,6 +42,7 @@ class TransitionSubscriber implements EventSubscriberInterface
 
     public function __construct(
         private readonly EntityRepository $orderDeliveryRepository,
+        private readonly EntityRepository $orderTransactionRepository,
         private readonly EntityRepository $orderRepository,
         private readonly PluginConfigService $configService,
         private readonly PaymentDeliverService $paymentDeliverService,
@@ -56,7 +61,60 @@ class TransitionSubscriber implements EventSubscriberInterface
 
     public function onTransition(StateMachineTransitionEvent $event): void
     {
-        if ($event->getEntityName() !== OrderDeliveryDefinition::ENTITY_NAME || !$this->configService->isAutoOperationBasedOnDeliveryStatusEnabled()) {
+        if ($event->getEntityName() === OrderTransactionDefinition::ENTITY_NAME) {
+            $this->onTransactionStatusTransition($event);
+        } else if ($event->getEntityName() === OrderDeliveryDefinition::ENTITY_NAME) {
+            $this->onDeliveryStatusTransition($event);
+        }
+    }
+
+    protected function onTransactionStatusTransition(StateMachineTransitionEvent $event): void
+    {
+        if ($this->configService->getCaptureTrigger() !== 'pay') {
+            return;
+        }
+
+        /** @var ArrayStruct|null $struct */
+        $struct = $event->getContext()->getExtension('ratepay');
+        if ($struct?->get(self::PREVENT_BIDIRECTIONALITY) === true) {
+            return;
+        }
+
+        /** @var OrderTransactionEntity $orderTransaction */
+        $orderTransaction = $this->orderTransactionRepository->search(new Criteria([$event->getEntityId()]), $event->getContext())->first();
+        /** @var OrderEntity $order */
+        $order = $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($orderTransaction->getOrderId()), $event->getContext())->first();
+
+        if (!MethodHelper::isRatepayOrder($order)) {
+            return;
+        }
+
+        $ratepayData = $order->getExtension(OrderExtension::EXTENSION_NAME);
+
+        if (!$ratepayData instanceof RatepayOrderDataEntity) {
+            $this->logger->warning('Error during bidirectionality: No Ratepay Data was found.', [
+                'order'       => $order->getId(),
+                'orderNumber' => $order->getOrderNumber(),
+            ]);
+            return;
+        }
+
+        switch ($event->getToPlace()->getTechnicalName()) {
+            case OrderTransactionStates::STATE_PAID:
+                $operation = OrderOperationData::OPERATION_DELIVER;
+                $service   = $this->paymentDeliverService;
+                break;
+            default:
+                // do nothing
+                return;
+        }
+
+        $this->performOperation($event, $order, $operation, $service, $ratepayData);
+    }
+
+    protected function onDeliveryStatusTransition(StateMachineTransitionEvent $event): void
+    {
+        if (!$this->configService->isAutoOperationBasedOnDeliveryStatusEnabled()) {
             return;
         }
 
@@ -79,7 +137,7 @@ class TransitionSubscriber implements EventSubscriberInterface
 
         if (!$ratepayData instanceof RatepayOrderDataEntity) {
             $this->logger->warning('Error during bidirectionality: No Ratepay Data was found.', [
-                'order' => $order->getId(),
+                'order'       => $order->getId(),
                 'orderNumber' => $order->getOrderNumber(),
             ]);
             return;
@@ -87,22 +145,39 @@ class TransitionSubscriber implements EventSubscriberInterface
 
         switch ($event->getToPlace()->getTechnicalName()) {
             case OrderDeliveryStates::STATE_SHIPPED:
+                if ($this->configService->getCaptureTrigger() !== 'deliver') {
+                    // do nothing
+                    return;
+                }
                 $operation = OrderOperationData::OPERATION_DELIVER;
-                $service = $this->paymentDeliverService;
+                $service   = $this->paymentDeliverService;
                 break;
             case OrderDeliveryStates::STATE_CANCELLED:
+                if (!$this->configService->isTransactionRefundsOnDeliveryStatusChange()) {
+                    // do nothing
+                    return;
+                }
                 $operation = OrderOperationData::OPERATION_CANCEL;
-                $service = $this->paymentCancelService;
+                $service   = $this->paymentCancelService;
                 break;
             case OrderDeliveryStates::STATE_RETURNED:
+                if (!$this->configService->isTransactionRefundsOnDeliveryStatusChange()) {
+                    // do nothing
+                    return;
+                }
                 $operation = OrderOperationData::OPERATION_RETURN;
-                $service = $this->paymentReturnService;
+                $service   = $this->paymentReturnService;
                 break;
             default:
                 // do nothing
                 return;
         }
+        $this->performOperation($event, $order, $operation, $service, $ratepayData);
 
+    }
+
+    protected function performOperation(StateMachineTransitionEvent $event, OrderEntity $order, string $operation, AbstractModifyRequest $service, RatepayOrderDataEntity $ratepayData): void
+    {
         // we need this to prevent endless recursion if update-delivery-status is enabled.
         // this should never happen, because shopware can not change the status to the actual status again and so this subscriber should never called again.
         $event->getContext()->addExtension('ratepay', new ArrayStruct([
@@ -114,17 +189,17 @@ class TransitionSubscriber implements EventSubscriberInterface
             $response = $service->doRequest($orderOperationData);
             if (!$response->getResponse()->isSuccessful()) {
                 $this->logger->error('Error during bidirectionality. (Exception: ' . $response->getResponse()->getReasonMessage() . ')', [
-                    'order' => $order->getId(),
-                    'transactionId' => $ratepayData->getTransactionId(),
-                    'orderNumber' => $order->getOrderNumber(),
+                    'order'          => $order->getId(),
+                    'transactionId'  => $ratepayData->getTransactionId(),
+                    'orderNumber'    => $order->getOrderNumber(),
                     'itemsToProcess' => $orderOperationData->getItems(),
                 ]);
             }
         } catch (Exception $exception) {
             $this->logger->critical('Exception during bidirectionality. (Exception: ' . $exception->getMessage() . ')', [
-                'order' => $order->getId(),
-                'transactionId' => $ratepayData->getTransactionId(),
-                'orderNumber' => $order->getOrderNumber(),
+                'order'          => $order->getId(),
+                'transactionId'  => $ratepayData->getTransactionId(),
+                'orderNumber'    => $order->getOrderNumber(),
                 'itemsToProcess' => $orderOperationData->getItems(),
             ]);
         }

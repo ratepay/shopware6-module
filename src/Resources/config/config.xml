@@ -194,6 +194,24 @@
             <label lang="de-DE">Automatische Versandmeldung von virtuellen Produkten deaktivieren</label>
         </input-field>
 
+        <input-field type="single-select">
+            <name>captureTrigger</name>
+            <options>
+                <option><id>deliver</id><name>On delivery status "Shipped"</name><name lang="de-DE">Bei Lieferungstatus "Versandt"</name></option>
+                <option><id>pay</id><name>On payment status "Paid"</name><name lang="de-DE">Bei Zahlungsstatus "Bezahlt"</name></option>
+            </options>
+            <defaultValue>deliver</defaultValue>
+            <label>Capture trigger</label>
+            <label lang="de-DE">Auslöser Zahlungseinzug</label>
+        </input-field>
+
+        <input-field type="bool">
+            <name>automaticTransactionRefunds</name>
+            <label>Refund transactions automatically when order delivery status changes to "Cancelled" or "Returned".</label>
+            <label lang="de-DE">Transaktionen automatisch erstatten, wenn sich der Lieferstatus auf "Abgebrochen" oder "Retour" ändert.</label>
+            <defaultValue>true</defaultValue>
+        </input-field>
+
         <input-field type="textarea">
             <name>featureFlags</name>
             <label>Feature Flags</label>
