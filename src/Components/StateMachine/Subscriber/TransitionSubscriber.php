@@ -153,7 +153,7 @@ class TransitionSubscriber implements EventSubscriberInterface
                 $service   = $this->paymentDeliverService;
                 break;
             case OrderDeliveryStates::STATE_CANCELLED:
-                if (!$this->configService->isTransactionRefundsOnDeliveryStatusChange()) {
+                if ($this->configService->getPerformTransactionRefunds() !== 'automatic') {
                     // do nothing
                     return;
                 }
@@ -161,7 +161,7 @@ class TransitionSubscriber implements EventSubscriberInterface
                 $service   = $this->paymentCancelService;
                 break;
             case OrderDeliveryStates::STATE_RETURNED:
-                if (!$this->configService->isTransactionRefundsOnDeliveryStatusChange()) {
+                if ($this->configService->getPerformTransactionRefunds() !== 'automatic') {
                     // do nothing
                     return;
                 }
