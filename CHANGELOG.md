@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 9.1.0 - WIP
+## Version 9.1.0 - Released on 2026-04-15
 
 * FC#0132520 - add option to disable refunds completely
 
