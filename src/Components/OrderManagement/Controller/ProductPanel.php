@@ -23,6 +23,7 @@ use Ratepay\RpayPayments\Core\Entity\Extension\OrderExtension;
 use Ratepay\RpayPayments\Core\Entity\Extension\OrderLineItemExtension;
 use Ratepay\RpayPayments\Core\Entity\RatepayOrderDataEntity;
 use Ratepay\RpayPayments\Core\Entity\RatepayOrderLineItemDataEntity;
+use Ratepay\RpayPayments\Core\PluginConfigService;
 use Ratepay\RpayPayments\Core\Util\LineItemUtil;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
 use RuntimeException;
@@ -64,7 +65,8 @@ class ProductPanel extends AbstractController
         PaymentCancelService $paymentCancelService,
         private readonly PaymentCreditService $creditService,
         private readonly LineItemFactory $lineItemFactory,
-        private readonly DataValidator $dataValidator
+        private readonly DataValidator $dataValidator,
+        private readonly PluginConfigService $pluginConfigService,
     ) {
         $this->requestServicesByOperation = [
             OrderOperationData::OPERATION_DELIVER => $paymentDeliverService,
@@ -218,15 +220,22 @@ class ProductPanel extends AbstractController
             ], 400); // todo is this status OK ?
         }
 
-        $response = $this->requestServicesByOperation[$operation]->doRequest(
-            new OrderOperationData($context, $order, $operation, $items, (bool) $request->request->get('updateStock'))
-        );
+        $performOperation = true;
+        if ($operation === OrderOperationData::OPERATION_CANCEL || $operation === OrderOperationData::OPERATION_RETURN) {
+            $performOperation = $this->pluginConfigService->getPerformTransactionRefunds() !== 'never';
+        }
 
-        if (!$response->getResponse()->isSuccessful()) {
-            return $this->json([
-                'success' => false,
-                'message' => $response->getResponse()->getReasonMessage(),
-            ], 500);
+        if ($performOperation) {
+            $response = $this->requestServicesByOperation[$operation]->doRequest(
+                new OrderOperationData($context, $order, $operation, $items, (bool)$request->request->get('updateStock'))
+            );
+
+            if (!$response->getResponse()->isSuccessful()) {
+                return $this->json([
+                    'success' => false,
+                    'message' => $response->getResponse()->getReasonMessage(),
+                ], 500);
+            }
         }
 
         return new Response(null, Response::HTTP_NO_CONTENT);

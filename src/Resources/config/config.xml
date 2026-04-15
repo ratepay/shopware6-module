@@ -205,11 +205,28 @@
             <label lang="de-DE">Auslöser Zahlungseinzug</label>
         </input-field>
 
-        <input-field type="bool">
-            <name>automaticTransactionRefunds</name>
-            <label>Refund transactions automatically when order delivery status changes to "Cancelled" or "Returned".</label>
-            <label lang="de-DE">Transaktionen automatisch erstatten, wenn sich der Lieferstatus auf "Abgebrochen" oder "Retour" ändert.</label>
-            <defaultValue>true</defaultValue>
+        <input-field type="single-select">
+            <name>performTransactionRefunds</name>
+            <options>
+                <option>
+                    <id>automatic</id>
+                    <name>Refund transactions automatically when order delivery status changes to "Cancelled" or "Returned" or when performing a manual cancel or refund in the order admin.</name>
+                    <name lang="de-DE">Transaktionen automatisch erstatten, wenn sich der Lieferstatus auf "Abgebrochen" oder "Retour" ändert oder wenn manuelle Stornierungen und Erstattungen im Bestell-Admin durchgeführt werden.</name>
+                </option>
+                <option>
+                    <id>manual</id>
+                    <name>Only refund transactions when performing a manual cancel or refund in the order admin.</name>
+                    <name lang="de-DE">Transaktionen nur erstatten, wenn manuelle Stornierungen oder Erstattungen im Bestell-Admin durchgeführt werden.</name>
+                </option>
+                <option>
+                    <id>never</id>
+                    <name>Never refund transactions.</name>
+                    <name lang="de-DE">Transaktionen niemals erstatten.</name>
+                </option>
+            </options>
+            <label>Transaction refunds</label>
+            <label lang="de-DE">Transaktionen erstatten</label>
+            <defaultValue>automatic</defaultValue>
         </input-field>
 
         <input-field type="textarea">

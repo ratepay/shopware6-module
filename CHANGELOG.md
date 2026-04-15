@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 9.1.0 - WIP
+
+* FC#0132520 - add option to disable refunds completely
+
 ## Version 9.0.0 - Released on 2026-04-13
 
 * FC#0132520 - add config options to change capture trigger, disable automatic refunds
