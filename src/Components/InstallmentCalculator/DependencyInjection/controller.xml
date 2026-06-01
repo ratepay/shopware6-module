@@ -21,6 +21,7 @@
 
         <service id="Ratepay\RpayPayments\Components\InstallmentCalculator\Controller\InstallmentRoute" autowire="true" public="true" >
             <argument key="$orderRepository" id="order.repository" type="service"/>
+            <argument key="$extensionService" id="Ratepay\RpayPayments\Components\Checkout\Service\ExtensionService" type="service"/>
         </service>
 
     </services>

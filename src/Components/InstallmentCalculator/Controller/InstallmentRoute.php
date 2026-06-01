@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\InstallmentCalculator\Controller;
 
+use Ratepay\RpayPayments\Components\Checkout\Service\ExtensionService;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentCalculatorContext;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Struct\InstallmentCalculationResponse;
@@ -30,7 +31,8 @@ class InstallmentRoute
 {
     public function __construct(
         private readonly InstallmentService $installmentService,
-        private readonly EntityRepository $orderRepository
+        private readonly EntityRepository $orderRepository,
+        private readonly ExtensionService $extensionService
     ) {
     }
 
@@ -43,6 +45,11 @@ class InstallmentRoute
     {
         $type = $request->query->getAlpha('type');
         $value = $request->query->getInt('value', 1); // RATESWSX-186: fix that no "0" values can be provided
+        // read max and min installment rate values from extension service and enforce these boundaries 
+        $extension = $this->extensionService->buildPaymentDataExtension($salesChannelContext, null, $request);
+        $minRate = $extension->get('installment')['calculator']['rp_minimumRate'];
+        $maxRate = $extension->get('installment')['calculator']['rp_maximumRate'];
+        $value = $value < $minRate ? 20 : ($value > $maxRate ? $maxRate : $value);
 
         if ($orderId) {
             $order = $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($orderId), $salesChannelContext->getContext())->first();
