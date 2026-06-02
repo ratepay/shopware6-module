@@ -44,12 +44,15 @@ class InstallmentRoute
     public function calculateInstallment(Request $request, SalesChannelContext $salesChannelContext, ?string $orderId = null): InstallmentCalculationResponse
     {
         $type = $request->query->getAlpha('type');
-        $value = $request->query->getInt('value', 1); // RATESWSX-186: fix that no "0" values can be provided
+        // use getString() instead of getInt to prevent BadRequest exception for values < PHP_INT_MAX
+        $value = (int) $request->query->getString('value', '1'); // RATESWSX-186: fix that no "0" values can be provided
         // read max and min installment rate values from extension service and enforce these boundaries 
-        $extension = $this->extensionService->buildPaymentDataExtension($salesChannelContext, null, $request);
-        $minRate = $extension->get('installment')['calculator']['rp_minimumRate'];
-        $maxRate = $extension->get('installment')['calculator']['rp_maximumRate'];
-        $value = $value < $minRate ? 20 : ($value > $maxRate ? $maxRate : $value);
+        if ($type === 'rate') {
+            $extension = $this->extensionService->buildPaymentDataExtension($salesChannelContext, null, $request);
+            $minRate = $extension->get('installment')['calculator']['rp_minimumRate'];
+            $maxRate = $extension->get('installment')['calculator']['rp_maximumRate'];
+            $value = $value < $minRate ? 20 : ($value > $maxRate ? $maxRate : $value);
+        }
 
         if ($orderId) {
             $order = $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($orderId), $salesChannelContext->getContext())->first();
