@@ -149,6 +149,7 @@ class TransitionSubscriber implements EventSubscriberInterface
                     // do nothing
                     return;
                 }
+
                 $operation = OrderOperationData::OPERATION_DELIVER;
                 $service = $this->paymentDeliverService;
                 break;
@@ -157,6 +158,7 @@ class TransitionSubscriber implements EventSubscriberInterface
                     // do nothing
                     return;
                 }
+
                 $operation = OrderOperationData::OPERATION_CANCEL;
                 $service = $this->paymentCancelService;
                 break;
@@ -165,6 +167,7 @@ class TransitionSubscriber implements EventSubscriberInterface
                     // do nothing
                     return;
                 }
+
                 $operation = OrderOperationData::OPERATION_RETURN;
                 $service = $this->paymentReturnService;
                 break;
@@ -172,6 +175,7 @@ class TransitionSubscriber implements EventSubscriberInterface
                 // do nothing
                 return;
         }
+
         $this->performOperation($event, $order, $operation, $service, $ratepayData);
     }
 
