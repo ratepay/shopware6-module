@@ -99,7 +99,7 @@ abstract class AbstractPaymentHandler extends \Shopware\Core\Checkout\Payment\Ca
         $orderEntity = $orderTransaction?->getOrder();
         $order = $this->getOrderWithAssociations($orderEntity, Context::createDefaultContext());
 
-        $paymentMethod = $order->getTransactions()->first()->getPaymentMethod();
+        $paymentMethod = $order->getTransactions()->last()->getPaymentMethod();
         $orderTransaction->setPaymentMethod($paymentMethod);
 
         if (!$order instanceof OrderEntity || count($ratepayData) === 0 || !$orderTransaction) {
