@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 9.2.0 - Released on 2026-06-02
+
+* FC#0134374 - fix Ratepay payment failing when being used as a second payment try after a PayPal payment failed
+* FC#0131299 - security hardening for installments
+
 ## Version 9.1.0 - Released on 2026-04-15
 
 * FC#0132520 - add option to disable refunds completely
