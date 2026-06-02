@@ -63,7 +63,7 @@ class TransitionSubscriber implements EventSubscriberInterface
     {
         if ($event->getEntityName() === OrderTransactionDefinition::ENTITY_NAME) {
             $this->onTransactionStatusTransition($event);
-        } else if ($event->getEntityName() === OrderDeliveryDefinition::ENTITY_NAME) {
+        } elseif ($event->getEntityName() === OrderDeliveryDefinition::ENTITY_NAME) {
             $this->onDeliveryStatusTransition($event);
         }
     }
@@ -93,7 +93,7 @@ class TransitionSubscriber implements EventSubscriberInterface
 
         if (!$ratepayData instanceof RatepayOrderDataEntity) {
             $this->logger->warning('Error during bidirectionality: No Ratepay Data was found.', [
-                'order'       => $order->getId(),
+                'order' => $order->getId(),
                 'orderNumber' => $order->getOrderNumber(),
             ]);
             return;
@@ -102,7 +102,7 @@ class TransitionSubscriber implements EventSubscriberInterface
         switch ($event->getToPlace()->getTechnicalName()) {
             case OrderTransactionStates::STATE_PAID:
                 $operation = OrderOperationData::OPERATION_DELIVER;
-                $service   = $this->paymentDeliverService;
+                $service = $this->paymentDeliverService;
                 break;
             default:
                 // do nothing
@@ -137,7 +137,7 @@ class TransitionSubscriber implements EventSubscriberInterface
 
         if (!$ratepayData instanceof RatepayOrderDataEntity) {
             $this->logger->warning('Error during bidirectionality: No Ratepay Data was found.', [
-                'order'       => $order->getId(),
+                'order' => $order->getId(),
                 'orderNumber' => $order->getOrderNumber(),
             ]);
             return;
@@ -150,7 +150,7 @@ class TransitionSubscriber implements EventSubscriberInterface
                     return;
                 }
                 $operation = OrderOperationData::OPERATION_DELIVER;
-                $service   = $this->paymentDeliverService;
+                $service = $this->paymentDeliverService;
                 break;
             case OrderDeliveryStates::STATE_CANCELLED:
                 if ($this->configService->getPerformTransactionRefunds() !== 'automatic') {
@@ -158,7 +158,7 @@ class TransitionSubscriber implements EventSubscriberInterface
                     return;
                 }
                 $operation = OrderOperationData::OPERATION_CANCEL;
-                $service   = $this->paymentCancelService;
+                $service = $this->paymentCancelService;
                 break;
             case OrderDeliveryStates::STATE_RETURNED:
                 if ($this->configService->getPerformTransactionRefunds() !== 'automatic') {
@@ -166,14 +166,13 @@ class TransitionSubscriber implements EventSubscriberInterface
                     return;
                 }
                 $operation = OrderOperationData::OPERATION_RETURN;
-                $service   = $this->paymentReturnService;
+                $service = $this->paymentReturnService;
                 break;
             default:
                 // do nothing
                 return;
         }
         $this->performOperation($event, $order, $operation, $service, $ratepayData);
-
     }
 
     protected function performOperation(StateMachineTransitionEvent $event, OrderEntity $order, string $operation, AbstractModifyRequest $service, RatepayOrderDataEntity $ratepayData): void
@@ -189,17 +188,17 @@ class TransitionSubscriber implements EventSubscriberInterface
             $response = $service->doRequest($orderOperationData);
             if (!$response->getResponse()->isSuccessful()) {
                 $this->logger->error('Error during bidirectionality. (Exception: ' . $response->getResponse()->getReasonMessage() . ')', [
-                    'order'          => $order->getId(),
-                    'transactionId'  => $ratepayData->getTransactionId(),
-                    'orderNumber'    => $order->getOrderNumber(),
+                    'order' => $order->getId(),
+                    'transactionId' => $ratepayData->getTransactionId(),
+                    'orderNumber' => $order->getOrderNumber(),
                     'itemsToProcess' => $orderOperationData->getItems(),
                 ]);
             }
         } catch (Exception $exception) {
             $this->logger->critical('Exception during bidirectionality. (Exception: ' . $exception->getMessage() . ')', [
-                'order'          => $order->getId(),
-                'transactionId'  => $ratepayData->getTransactionId(),
-                'orderNumber'    => $order->getOrderNumber(),
+                'order' => $order->getId(),
+                'transactionId' => $ratepayData->getTransactionId(),
+                'orderNumber' => $order->getOrderNumber(),
                 'itemsToProcess' => $orderOperationData->getItems(),
             ]);
         }
