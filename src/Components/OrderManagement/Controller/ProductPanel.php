@@ -227,7 +227,7 @@ class ProductPanel extends AbstractController
 
         if ($performOperation) {
             $response = $this->requestServicesByOperation[$operation]->doRequest(
-                new OrderOperationData($context, $order, $operation, $items, (bool)$request->request->get('updateStock'))
+                new OrderOperationData($context, $order, $operation, $items, (bool) $request->request->get('updateStock'))
             );
 
             if (!$response->getResponse()->isSuccessful()) {

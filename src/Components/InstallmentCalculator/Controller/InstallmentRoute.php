@@ -46,7 +46,7 @@ class InstallmentRoute
         $type = $request->query->getAlpha('type');
         // use getString() instead of getInt to prevent BadRequest exception for values < PHP_INT_MAX
         $value = (int) $request->query->getString('value', '1'); // RATESWSX-186: fix that no "0" values can be provided
-        // read max and min installment rate values from extension service and enforce these boundaries 
+        // read max and min installment rate values from extension service and enforce these boundaries
         if ($type === 'rate') {
             $extension = $this->extensionService->buildPaymentDataExtension($salesChannelContext, null, $request);
             $minRate = $extension->get('installment')['calculator']['rp_minimumRate'];
