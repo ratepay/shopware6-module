@@ -58,7 +58,7 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
         }
 
         $this->paymentFilterService->filterPaymentMethods(
-            $response->getPaymentMethods(),
+            $response->getObject(),
             $context,
             $order
         );

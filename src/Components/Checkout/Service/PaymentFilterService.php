@@ -21,8 +21,8 @@ use Ratepay\RpayPayments\Util\MethodHelper;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -35,11 +35,12 @@ class PaymentFilterService
     ) {
     }
 
-    public function filterPaymentMethods(PaymentMethodCollection $paymentMethodCollection, SalesChannelContext $salesChannelContext, ?OrderEntity $order = null): void
+    public function filterPaymentMethods(EntitySearchResult $entitySearchResult, SalesChannelContext $salesChannelContext, ?OrderEntity $order = null): void
     {
-        foreach ($paymentMethodCollection->getElements() as $key => $paymentMethod) {
+        foreach ($entitySearchResult->getElements() as $key => $paymentMethod) {
             if (!$this->isPaymentMethodAvailable($paymentMethod, $salesChannelContext, $order)) {
-                $paymentMethodCollection->remove($key);
+                $entitySearchResult->remove($key);
+                $entitySearchResult->getEntities()->remove($key);
             }
         }
     }
