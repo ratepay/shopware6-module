@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 9.3.0 - Released on 2026-07-24
+
+* FC#0136014 - fix headless store api payment method response serialisation error caused by mismatch between entity search result object lists
+
 ## Version 9.2.0 - Released on 2026-06-02
 
 * FC#0134374 - fix Ratepay payment failing when being used as a second payment try after a PayPal payment failed
