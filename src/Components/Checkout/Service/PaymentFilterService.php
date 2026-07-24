@@ -21,6 +21,7 @@ use Ratepay\RpayPayments\Util\MethodHelper;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -35,6 +36,9 @@ class PaymentFilterService
     ) {
     }
 
+    /**
+     * @param EntitySearchResult<PaymentMethodCollection> $entitySearchResult
+     */
     public function filterPaymentMethods(EntitySearchResult $entitySearchResult, SalesChannelContext $salesChannelContext, ?OrderEntity $order = null): void
     {
         foreach ($entitySearchResult->getElements() as $key => $paymentMethod) {
