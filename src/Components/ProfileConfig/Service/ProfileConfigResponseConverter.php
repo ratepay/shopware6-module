@@ -106,6 +106,7 @@ class ProfileConfigResponseConverter
                     ProfileConfigMethodEntity::FIELD_LIMIT_MAX_B2B => ((float) $responseData['merchantConfig']['tx-limit-' . $arrayKey . '-max-b2b']) ?: null,
                     ProfileConfigMethodEntity::FIELD_ALLOW_B2B => $responseData['merchantConfig']['b2b-' . $arrayKey] === 'yes',
                     ProfileConfigMethodEntity::FIELD_ALLOW_DIFFERENT_ADDRESSES => $responseData['merchantConfig']['delivery-address-' . $arrayKey] === 'yes',
+                    ProfileConfigMethodEntity::FIELD_REQUIRE_SECCI => ($responseData['merchantConfig']["secci-enabled-$arrayKey"] ?? 'no') === 'yes'
                 ];
                 if ($arrayKey === 'installment') {
                     $paymentFirstDay = explode(',', (string) $responseData['installmentConfig']['valid-payment-firstdays']);

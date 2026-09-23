@@ -1,0 +1,16 @@
+{
+    "ratepay": {
+        "secciVariant": {
+            "above": {
+                "title": "Always, above",
+                "description": "SECCI information is displayed immediately upon page load, above the payment methods.",
+                "alt": "SECCI information is placed above the payment methods"
+            },
+            "below": {
+                "title": "On select, below",
+                "description": "SECCI information is displayed only after the customer has selected a Ratepay payment method, below the payment methods.",
+                "alt": "SECCI information is placed below the payment methods"
+            }
+        }
+    }
+}

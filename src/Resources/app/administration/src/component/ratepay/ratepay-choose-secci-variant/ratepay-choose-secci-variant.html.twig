@@ -1,0 +1,32 @@
+{% block ratepay_choose_secci_variant %}
+<fieldset class="ratepay-choose-secci-variant" :disabled="disabled">
+    <div class="ratepay-choose-secci-variant__options">
+        <label
+            v-for="variant in variants"
+            :key="variant.value"
+            class="ratepay-choose-secci-variant__option"
+            :class="{ 'is-selected': isSelected(variant.value) }"
+        >
+            <span class="ratepay-choose-secci-variant__heading">
+                <input
+                    type="radio"
+                    :name="groupName"
+                    :value="variant.value"
+                    :checked="isSelected(variant.value)"
+                    :disabled="disabled"
+                    @change="selectVariant(variant.value)"
+                >
+                <span>{{ $t(`ratepay.secciVariant.${variant.snippet}.title`) }}</span>
+            </span>
+            <img
+                class="ratepay-choose-secci-variant__preview"
+                :src="assetFilter(variant.image)"
+                :alt="$t(`ratepay.secciVariant.${variant.snippet}.alt`)"
+            >
+            <span class="ratepay-choose-secci-variant__description">
+                {{ $t(`ratepay.secciVariant.${variant.snippet}.description`) }}
+            </span>
+        </label>
+    </div>
+</fieldset>
+{% endblock %}

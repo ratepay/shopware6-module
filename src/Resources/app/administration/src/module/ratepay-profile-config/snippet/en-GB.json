@@ -58,6 +58,7 @@
                             "limitMax": "max. amount",
                             "limitMaxB2b": "max. amount (B2B)",
                             "allowDifferentAddresses": "allow different addresses",
+                            "requireSecci": "require SECCI",
                             "installmentHeading": "Installment",
                             "installment": {
                                 "allowedMonths": "available months",

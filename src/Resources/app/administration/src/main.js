@@ -8,6 +8,7 @@
 /**
  * Custom Components
  */
+import './component/ratepay/ratepay-choose-secci-variant';
 import './component/ratepay/ratepay-admin-create-order-form';
 import './component/ratepay-plugin-icon';
 
