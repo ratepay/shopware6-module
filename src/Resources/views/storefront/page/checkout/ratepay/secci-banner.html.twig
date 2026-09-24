@@ -1,0 +1,60 @@
+{% block ratepay_secci_banner %}
+    <div class="col-sm-12">
+        <div class="ratepay--secci_banner ratepay--secci_variant{{ variant }}">
+            <div class="ratepay--secci_banner--container">
+                <div class="ratepay--secci_banner--info">
+                    {% sw_icon 'info' %}
+                </div>
+                <div class="ratepay--secci_banner--text_container">
+                    <div class="ratepay--secci_banner--headline">
+                        {{ 'rp.secci.header'|trans }}
+                    </div>
+                    <p class="ratepay--secci_banner--text">
+                        {% if variant == 1 %}
+                            {{ 'rp.secci.choose.payment.method'|trans }}
+                            {{ context.customer.email }}
+                            {{ 'rp.secci.choose.payment.method2'|trans }}
+                        {% else %}
+                            {{ 'rp.secci.choose.delivery.method'|trans }}
+                        {% endif %}
+                    </p>
+                    <span class="ratepay--secci_banner--show_more_button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#ratepayMoreText"
+                          role="button"
+                          aria-expanded="false"
+                          aria-controls="ratepayMoreText">
+                                    {{ 'rp.secci.learn.more'|trans }}
+                        {% sw_icon 'arrow-up' style {
+                            color: 'primary',
+                            pack:'solid'
+                        } %}
+                        {% sw_icon 'arrow-down' style {
+                            color: 'primary',
+                            pack:'solid'
+                        } %}
+                                </span>
+                    <p id="ratepayMoreText"
+                       class="ratepay--secci_banner--more_text collapse">
+                        {{ 'rp.secci.description'|trans }}
+                    </p>
+                    {% if variant == 2 %}
+                        <div class="ratepay--secci_header--delivery_buttons">
+                            <a href="{{ path('frontend.checkout.ratepay.secci.mail') }}"
+                               class="btn btn-primary">
+                                {% sw_icon 'envelope' %}
+                                {{ 'rp.secci.get.by.email'|trans }}
+                            </a>
+                            <a href="{{ path('frontend.checkout.ratepay.secci.pdf') }}"
+                               class="btn btn-outline-secondary">
+                                {% sw_icon 'cloud-download' %}
+                                {{ 'rp.secci.download.pdf'|trans }}
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="ratepay--secci_banner--spacer" aria-hidden="true"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

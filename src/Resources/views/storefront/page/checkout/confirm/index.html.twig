@@ -7,8 +7,18 @@
 
 {% sw_extends '@Storefront/storefront/page/checkout/confirm/index.html.twig' %}
 
+{% block page_checkout_confirm_payment %}
+    {% if page.extensions.ratepay.showSecciBanner and page.extensions.ratepay.secciVariant == 1 %}
+        {% block ratepay_secci_banner_variant1 %}
+            {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/secci-banner.html.twig' with { variant: 1 } %}
+        {% endblock %}
+    {% endif %}
+
+    {{ parent() }}
+{% endblock %}
+
 {% block page_checkout_confirm_product_table %}
-    {% if (page.extensions.ratepay) %}
+    {% if (page.extensions.ratepay.enableBillingForm) %}
         <div class="ratepay--billing-form">
             <div class="row">
                 <div class="col-md-12">
@@ -28,13 +38,20 @@
             </div>
         </div>
         {% if page.extensions.ratepay.dfp %}
-            <input type="hidden" name="ratepay[deviceIdentToken]" value="{{ page.extensions.ratepay.dfp.deviceIdentToken }}" form="confirmOrderForm"/>
+            <input type="hidden" name="ratepay[deviceIdentToken]"
+                   value="{{ page.extensions.ratepay.dfp.deviceIdentToken }}" form="confirmOrderForm"/>
             {% if app.session.get('twig-ratepay-dfp') != page.extensions.ratepay.dfp.deviceIdentToken %}
                 {{ app.session.set('twig-ratepay-dfp', page.extensions.ratepay.dfp.deviceIdentToken) }}
                 {{ page.extensions.ratepay.dfp.html|raw }}
             {% endif %}
         {% endif %}
     {% endif %}
-    {{ parent() }}
 
+    {% if page.extensions.ratepay.showSecciBanner and page.extensions.ratepay.secciVariant == 2 %}
+        {% block ratepay_secci_banner_variant2 %}
+            {% sw_include '@RatepayPaments/storefront/page/checkout/ratepay/secci-banner.html.twig' with { variant: 2 } %}
+        {% endblock %}
+    {% endif %}
+
+    {{ parent() }}
 {% endblock %}

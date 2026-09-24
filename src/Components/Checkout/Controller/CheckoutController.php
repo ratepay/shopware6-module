@@ -10,60 +10,63 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\Checkout\Controller;
 
-use Ratepay\RpayPayments\Components\Checkout\Service\ExtensionService;
-use Ratepay\RpayPayments\Components\Checkout\Struct\PaymentDataResponse;
-use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
-use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundHttpException;
+use Ratepay\RpayPayments\Components\Checkout\Service\SecciService;
+use Shopware\Core\Checkout\Cart\Cart;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Plugin\Exception\DecorationPatternException;
-use Shopware\Core\Framework\Struct\ArrayStruct;
+use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoader;
-use Symfony\Component\HttpFoundation\Request;
+use Shopware\Storefront\Controller\StorefrontController;
+use Shopware\Storefront\Framework\Routing\StorefrontRouteScope;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(defaults: [
-    '_routeScope' => ['store-api'],
-])]
-class CheckoutController extends AbstractCheckoutController
+#[Package('checkout')]
+#[\Symfony\Component\Routing\Attribute\Route(defaults: [PlatformRequest::ATTRIBUTE_ROUTE_SCOPE => [StorefrontRouteScope::ID]])]
+class CheckoutController extends StorefrontController
 {
-    public function __construct(
-        private readonly ExtensionService $extensionService,
-        private readonly AccountEditOrderPageLoader $orderLoader
-    ) {
-    }
-
     #[Route(
-        path: '/store-api/ratepay/payment-data/{orderId}',
-        name: 'store-api.ratepay.checkout.payment-data',
+        path: '/checkout/ratepay/secci/mail',
+        name: 'frontend.checkout.ratepay.secci.mail',
         defaults: [
             '_loginRequired' => true,
             '_loginRequiredAllowGuest' => true,
         ],
-        methods: ['GET']
+        methods: ['GET'],
     )]
-    public function getPaymentData(Request $request, SalesChannelContext $salesChannelContext, ?string $orderId = null): Response
+    public function triggerSecciEmail(Cart $cart, SalesChannelContext $salesChannelContext, SecciService $secciService): Response
     {
-        try {
-            if ($orderId) {
-                $subRequest = new Request();
-                $subRequest->request->set('orderId', $orderId);
-                $page = $this->orderLoader->load($subRequest, $salesChannelContext);
-                /** @var ArrayStruct|null $extension */
-                $extension = $page->getExtension('ratepay');
+        $secciService->triggerSecciEmail($cart, $salesChannelContext);
+        return $this->redirectToRoute('frontend.checkout.confirm.page');
+    }
 
-                if ($extension === null) {
-                    throw new HttpException(400, 'Ratepay payment method seems to be not selected.');
-                }
-            } else {
-                $extension = $this->extensionService->buildPaymentDataExtension($salesChannelContext, null, $request);
-            }
+    #[Route(
+        path: '/checkout/ratepay/secci/pdf',
+        name: 'frontend.checkout.ratepay.secci.pdf',
+        defaults: [
+            '_loginRequired' => true,
+            '_loginRequiredAllowGuest' => true,
+        ],
+        methods: ['GET'],
+    )]
+    public function downloadSecciPdf(Cart $cart, SalesChannelContext $salesChannelContext, SecciService $secciService): Response
+    {
+        $document = $secciService->prepareSecciPdf($cart, $salesChannelContext);
 
-            return new PaymentDataResponse($extension);
-        } catch (ProfileNotFoundException) {
-            throw new ProfileNotFoundHttpException();
+        if ($document) {
+            $response = new Response($document['data'], Response::HTTP_OK, [
+                'Content-Type' => $document['contentType'],
+            ]);
+            $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                "{$document['id']}.pdf",
+            ));
+
+            return $response;
         }
+
+        return $this->redirectToRoute('frontend.checkout.confirm.page');
     }
 
     public function getDecorated(): AbstractCheckoutController

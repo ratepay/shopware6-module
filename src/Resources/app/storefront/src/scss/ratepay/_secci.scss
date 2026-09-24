@@ -1,0 +1,85 @@
+.ratepay--secci_banner {
+  background-color: #eef4fb;
+  border: 1px solid #cddcee;
+  margin: 0 0 16px;
+  padding: 12px;
+}
+
+.ratepay--secci_banner--container {
+  display: flex;
+  gap: 10px;
+}
+
+.ratepay--secci_banner--info,
+.ratepay--secci_banner--spacer {
+  flex: 0 0 24px;
+}
+
+.ratepay--secci_banner--text_container {
+  flex-grow: 1;
+}
+
+.ratepay--secci_banner--headline {
+  font-weight: 700;
+}
+
+.ratepay--secci_banner--text {
+  margin: 6px 0 0;
+  line-height: 1.375;
+}
+
+.ratepay--secci_banner--show_more_button {
+  margin: 10px 0 0;
+  display: flex;
+  color: inherit;
+
+  & > span > svg {
+    top: 0;
+  }
+
+  &[aria-expanded="false"] .icon-arrow-up {
+    display: none;
+  }
+
+  &[aria-expanded="true"] .icon-arrow-down {
+    display: none;
+  }
+}
+
+.ratepay--secci_banner--more_text {
+  border-top: 1px solid rgb(205, 220, 238);
+  margin: 10px 0 0;
+  padding: 10px 0 0;
+}
+
+.ratepay--secci_header--delivery_buttons {
+  display: flex;
+  gap: 24px;
+
+  .btn {
+    flex-grow: 1;
+    display: flex;
+
+    > span {
+      margin-right: 10px;
+
+      > svg {
+        top: 0;
+      }
+    }
+  }
+}
+
+.ratepay--secci_banner.ratepay--secci_variant2 {
+  margin-bottom: 2.5rem;
+
+  .ratepay--secci_banner--show_more_button {
+    margin-bottom: 10px;
+  }
+
+  .ratepay--secci_banner--more_text {
+    border-bottom: 1px solid rgb(205, 220, 238);
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+  }
+}
