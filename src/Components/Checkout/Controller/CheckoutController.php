@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -11,21 +12,27 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\Checkout\Controller;
 
 use Ratepay\RpayPayments\Components\Checkout\Service\ExtensionService;
+use Ratepay\RpayPayments\Components\Checkout\Service\SecciService;
 use Ratepay\RpayPayments\Components\Checkout\Struct\PaymentDataResponse;
 use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundException;
 use Ratepay\RpayPayments\Components\ProfileConfig\Exception\ProfileNotFoundHttpException;
+use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Framework\Plugin\Exception\DecorationPatternException;
+use Shopware\Core\Framework\Routing\StoreApiRouteScope;
 use Shopware\Core\Framework\Struct\ArrayStruct;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Shopware\Storefront\Framework\Routing\StorefrontRouteScope;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoader;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Throwable;
 
-#[Route(defaults: [
-    '_routeScope' => ['store-api'],
-])]
+#[Route(defaults: [PlatformRequest::ATTRIBUTE_ROUTE_SCOPE => [StoreApiRouteScope::ID]])]
 class CheckoutController extends AbstractCheckoutController
 {
     public function __construct(
@@ -64,6 +71,57 @@ class CheckoutController extends AbstractCheckoutController
         } catch (ProfileNotFoundException) {
             throw new ProfileNotFoundHttpException();
         }
+    }
+
+    #[Route(
+        path: '/checkout/ratepay/secci',
+        name: 'frontend.checkout.ratepay.secci',
+        defaults: [
+            PlatformRequest::ATTRIBUTE_ROUTE_SCOPE => [StorefrontRouteScope::ID],
+            '_loginRequired' => true,
+            '_loginRequiredAllowGuest' => true,
+            'XmlHttpRequest' => true,
+        ],
+        methods: ['POST'],
+
+    )]
+    public function triggerSecciDelivery(Request $request, Cart $cart, SalesChannelContext $salesChannelContext, SecciService $secciService): Response
+    {
+        $ratepayData = $request->request->all('ratepay');
+        $deliveryMethod = $ratepayData['secciDeliveryType'] ?? null;
+        $databag = new RequestDataBag(['paymentDetails' => ['ratepay' => $ratepayData]]);
+
+        $responseData = [
+            'deliveryMethod' => $deliveryMethod,
+        ];
+
+        if ($deliveryMethod === 'mail') {
+            try {
+                $result = $secciService->triggerSecciEmail($databag, $cart, $salesChannelContext);
+                $responseData['success'] = $result !== null;
+                $responseData['documentId'] = $result;
+            } catch (Throwable $t) {
+                $responseData['success'] = false;
+                $responseData['exception'] = $t->getMessage();
+            }
+        } elseif ($deliveryMethod === 'pdf') {
+            $document = $secciService->prepareSecciPdf($databag, $cart, $salesChannelContext);
+
+            if ($document) {
+                $responseData['success'] = true;
+                $responseData['document'] = [
+                    'id' => $document['id'],
+                    'contentType' => $document['contentType'],
+                    'data' => base64_encode($document['data'])
+                ];
+            } else {
+                $responseData['success'] = false;
+            }
+        } else {
+            return new Response(status: Response::HTTP_BAD_REQUEST);
+        }
+
+        return new JsonResponse($responseData);
     }
 
     public function getDecorated(): AbstractCheckoutController

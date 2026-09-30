@@ -1,0 +1,7 @@
+{
+    "ratepay": {
+        "salesChannelDetail": {
+            "defaultPaymentMethodRequiresSecci": "Käufer müssen proaktiv eine BNPL-Zahlungsmethode auswählen. Legen Sie eine Zahlungsmethode ohne Kreditprüfung als Standard fest. Alternativ wählen Sie die Ratepay SECCI-Banner-Variante \"{titleBelow}\" in der Ratepay Plugin Konfiguration."
+        }
+    }
+}

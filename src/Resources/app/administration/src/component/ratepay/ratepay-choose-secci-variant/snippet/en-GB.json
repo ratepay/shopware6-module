@@ -1,0 +1,18 @@
+{
+    "ratepay": {
+        "secciVariant": {
+            "defaultPaymentMethodErrorLine1": "The default payment method of the sales channel \"{salesChannels}\" requires SECCI. | The following sales channels have a default payment method that requires SECCI: {salesChannels}",
+            "defaultPaymentMethodErrorLine2": "This is incompatible with SECCI banner variant \"{titleAbove}\". Use banner variant \"{titleBelow}\" or change the default payment method to one that does not require SECCI.",
+            "above": {
+                "title": "Always, above",
+                "description": "SECCI banner is displayed immediately upon page load, above the payment methods.",
+                "alt": "SECCI banner is placed above the payment methods"
+            },
+            "below": {
+                "title": "On select, below",
+                "description": "SECCI banner is displayed only after the customer has selected a Ratepay payment method with SECCI requirement, below the payment methods.",
+                "alt": "SECCI banner is placed below the payment methods"
+            }
+        }
+    }
+}

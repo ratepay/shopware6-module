@@ -11,6 +11,7 @@
     "error.VIOLATION::METHOD_NOT_AVAILABLE": "Unfortunately, it is not possible to use the selected payment method.",
     "error.VIOLATION::RP_MISSING_BANK_ACCOUNT_HOLDER": "Please provide a bank account owner.",
     "error.VIOLATION::RP_INVALID_BANK_ACCOUNT_HOLDER": "Please provide a valid bank account owner.",
+    "error.VIOLATION::RP_SECCI_REQUIRED": "Receiving the Standard EU Consumer Credit Information is mandatory.",
     "checkout.error.RATEPAY_INSTALLMENT_CAN_NOT_BE_LOADED": "Unfortunately the instalment calculator for the payment method %method% could not be loaded and so the payment method could not be provided to you. Please reload the page, try again later, or choose another payment method.",
     "ratepay": {
         "storefront": {
@@ -45,6 +46,28 @@
                 },
                 "installment": {
                     "intro": "In the following you can decide how you would like to organise the payment by instalment. Simply specify the number of instalments and therefore <b> the runtime</b> of the instalment or simply specify the preferred <b>number of monthly instalments</b>."
+                },
+                "secci": {
+                    "deliveredByMail": {
+                        "header": "Sent by email",
+                        "text": "Your Standard EU Consumer Credit Information was sent to %email%."
+                    },
+                    "deliveredByDownload": {
+                        "header": "Downloaded",
+                        "text": "Your Standard EU Consumer Credit Information was downloaded to your device."
+                    },
+                    "retry": "Try again",
+                    "moto": {
+                        "header": "SECCI delivery by phone",
+                        "text": "Send the SECCI to the customer via email.",
+                        "customerEmail": "Customer email address",
+                        "send": "Send",
+                        "deliveredByMail": {
+                            "header": "SECCI delivered",
+                            "textLine1": "Ask the customer to read back the following document ID, to confirm delivery of the exact document.",
+                            "textLine2": "Document ID: %documentId%"
+                        }
+                    }
                 }
             },
             "product-page": {

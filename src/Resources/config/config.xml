@@ -27,6 +27,12 @@
             <value>ratepay</value>
         </input-field>
 
+        <component name="ratepay-choose-secci-variant">
+            <name>ratepaySecciVariant</name>
+            <label>Display SECCI banner</label>
+            <label lang="de-DE">SECCI-Banner anzeigen</label>
+            <defaultValue>1</defaultValue>
+        </component>
 
     </card>
     <!-- waiting for this: https://issues.shopware.com/issues/NEXT-7670 -->

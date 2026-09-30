@@ -1,0 +1,16 @@
+{#
+  ~ Copyright (c) Ratepay GmbH
+  ~
+  ~ For the full copyright and license information, please view the LICENSE
+  ~ file that was distributed with this source code.
+#}
+
+{% sw_extends "@Storefront/storefront/component/payment/payment-form.html.twig" %}
+
+{% block component_payment_form_list %}
+    {% if page.extension('ratepay').disablePaymentModePreselection %}
+        {% set selectedPaymentMethodId = 'placeholder' %}
+    {% endif %}
+
+    {{ parent() }}
+{% endblock %}

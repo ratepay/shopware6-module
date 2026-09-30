@@ -1,0 +1,7 @@
+{
+    "ratepay": {
+        "salesChannelDetail": {
+            "defaultPaymentMethodRequiresSecci": "Buyers must choose buy now pay later options proactively. Set a non-credit method as your default. Alternatively choose Ratepay SECCI banner variant \"{titleBelow}\" in the Ratepay plugin configuration."
+        }
+    }
+}

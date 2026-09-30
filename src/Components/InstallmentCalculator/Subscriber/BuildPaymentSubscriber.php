@@ -24,7 +24,9 @@ use Ratepay\RpayPayments\Components\InstallmentCalculator\Util\PlanHasher;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AddCreditData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
+use Ratepay\RpayPayments\Components\RatepayApi\Dto\SecciRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Event\BuildEvent;
+use Ratepay\RpayPayments\Components\RatepayApi\Factory\CartPaymentFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\PaymentFactory;
 use Ratepay\RpayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory;
 use Ratepay\RpayPayments\Util\MethodHelper;
@@ -49,6 +51,7 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
     {
         return [
             PaymentFactory::class => 'buildPayment',
+            CartPaymentFactory::class => 'buildCartPayment',
             ShoppingBasketFactory::class => 'buildShoppingBasket',
         ];
     }
@@ -82,6 +85,74 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
             $calcContext->setTotalAmount($paymentObject->getAmount());
             $calcContext->setOrder($requestData->getOrder());
             $calcContext->setPaymentMethod($paymentMethod);
+
+            try {
+                $plan = $this->installmentService->getInstallmentPlanData($calcContext);
+            } catch (Throwable $exception) {
+                throw new RuntimeException($this->translator->trans('checkout.error.RATEPAY_INSTALLMENT_CAN_NOT_BE_LOADED', [
+                    '%method%' => $paymentMethod->getTranslated()['name'] ?? $paymentMethod->getName(),
+                ]), $exception->getCode(), previous: $exception);
+            }
+
+            if (PlanHasher::isPlanEqualWithHash($requestedInstallment->get('hash'), $plan)) {
+                throw new Exception('the hash value of the calculated plan does not match the given hash');
+            }
+
+            $paymentType = $requestedInstallment->get('paymentType');
+            $paymentFirstDay = match ($paymentType) {
+                'DIRECT-DEBIT' => PaymentFirstday::DIRECT_DEBIT,
+                'BANK-TRANSFER' => PaymentFirstday::BANK_TRANSFER,
+                default => throw new InvalidArgumentException('invalid paymentType'),
+            };
+
+            $paymentObject
+                ->setAmount($plan['totalAmount'])
+                ->setInstallmentDetails(
+                    (new InstallmentDetails())
+                        ->setInstallmentNumber($plan['numberOfRatesFull'])
+                        ->setInstallmentAmount($plan['rate'])
+                        ->setLastInstallmentAmount($plan['lastRate'])
+                        ->setInterestRate($plan['interestRate'])
+                        /* @phpstan-ignore-next-line */
+                        ->setPaymentFirstday($paymentFirstDay)
+                )
+                ->setDebitPayType($paymentType);
+        }
+    }
+
+    /**
+     * @param BuildEvent<Payment> $event
+     * @throws JsonException
+     */
+    public function buildCartPayment(BuildEvent $event): void
+    {
+        /** @var SecciRequestData $requestData */
+        $requestData = $event->getRequestData();
+
+        $paymentMethod = $requestData->getPaymentMethod();
+
+        if (MethodHelper::isInstallmentMethod($paymentMethod->getHandlerIdentifier())) {
+            /** @var Payment $paymentObject */
+            $paymentObject = $event->getBuildData();
+
+            /** @var DataBag $requestDataBag */ // should be never null, because it is already validated
+            $requestDataBag = RequestHelper::getRatepayData($requestData->getRequestDataBag()) ?? new DataBag();
+
+            /** @var DataBag $requestedInstallment */
+            $requestedInstallment = $requestDataBag->get('installment');
+            if (!$requestedInstallment) {
+                throw new RuntimeException($this->translator->trans('checkout.error.RATEPAY_INSTALLMENT_CAN_NOT_BE_LOADED', [
+                    '%method%' => $paymentMethod->getTranslated()['name'] ?? $paymentMethod->getName(),
+                ]));
+            }
+
+            $calcContext = new InstallmentCalculatorContext(
+                $requestData->getSalesChannelContext(),
+                $requestedInstallment->get('type'),
+                $requestedInstallment->get('value')
+            );
+            $calcContext->setTotalAmount($paymentObject->getAmount());
+            $calcContext->setPaymentMethodId($paymentMethod->getId());
 
             try {
                 $plan = $this->installmentService->getInstallmentPlanData($calcContext);
