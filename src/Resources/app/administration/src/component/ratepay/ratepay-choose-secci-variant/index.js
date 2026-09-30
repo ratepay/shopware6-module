@@ -83,7 +83,6 @@ Shopware.Component.register('ratepay-choose-secci-variant', {
                 }
             });
 
-            console.info("Sales channels with SECCI:", Array.from(salesChannels.values()).join(', '));
             return Array.from(salesChannels.values());
         },
 

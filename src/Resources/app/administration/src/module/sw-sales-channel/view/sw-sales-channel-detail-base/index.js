@@ -14,6 +14,8 @@ const { Criteria } = Shopware.Data;
 Shopware.Component.override('sw-sales-channel-detail-base', {
     template,
 
+    inject: ['systemConfigApiService'],
+
     snippets: {
         'de-DE': deDE,
         'en-GB': enGB
@@ -58,6 +60,12 @@ Shopware.Component.override('sw-sales-channel-detail-base', {
             criteria.addFilter(Criteria.equals('paymentMethodId', this.salesChannel.paymentMethodId));
 
             try {
+                const config = await this.systemConfigApiService.getValues('RpayPayments.config');
+
+                if (config['RpayPayments.config.ratepaySecciVariant'] != 1) {
+                    return;
+                }
+
                 const configurations = await this.repositoryFactory
                     .create('ratepay_profile_config_method')
                     .search(criteria, Shopware.Context.api);
