@@ -44,7 +44,7 @@ class CartShoppingBasketFactory extends AbstractFactory
         $basket->setCurrency($requestData->getCurrency()->getIsoCode());
         $basket->setItems(new Items());
 
-        if ($requestData->getCart()->getLineItems()->isEmpty() === []) {
+        if ($requestData->getCart()->getLineItems()->getElements() === []) {
             throw new EmptyBasketException();
         }
 
