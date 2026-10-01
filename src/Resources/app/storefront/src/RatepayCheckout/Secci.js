@@ -5,11 +5,10 @@
  * file that was distributed with this source code.
  */
 
-import Plugin from 'src/plugin-system/plugin.class';
 import FormSerializeUtil from 'src/utility/form/form-serialize.util';
 import ElementLoadingIndicatorUtil from 'src/utility/loading-indicator/element-loading-indicator.util';
 
-export default class Secci extends Plugin {
+export default class Secci extends window.PluginBaseClass {
 
     init() {
         this._submitButtons = this.el.querySelectorAll('[data-ratepay-secci-delivery-type]');
@@ -26,6 +25,10 @@ export default class Secci extends Plugin {
     _registerEvents() {
         this._submitButtons.forEach(button => button.addEventListener('click', this.onSubmit.bind(this)));
         this._resetButtons.forEach(button => button.addEventListener('click', this._onReset.bind(this)));
+
+        window.PluginManager.getPluginInstances('RatepayInstallment').forEach(plugin => {
+            plugin.$emitter.subscribe('RatepayInstallmentPlanUpdated', this._onReset.bind(this));
+        });
     }
 
     onSubmit(event) {

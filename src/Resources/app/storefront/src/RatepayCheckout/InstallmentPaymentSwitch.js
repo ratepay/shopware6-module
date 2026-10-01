@@ -5,9 +5,7 @@
  * file that was distributed with this source code.
  */
 
-import Plugin from 'src/plugin-system/plugin.class';
-
-export default class InstallmentPaymentSwitch extends Plugin {
+export default class InstallmentPaymentSwitch extends window.PluginBaseClass {
 
     static options = {
         paymentTypeBankTransfer: 'BANK-TRANSFER',
