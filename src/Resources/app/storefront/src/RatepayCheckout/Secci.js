@@ -29,11 +29,6 @@ export default class Secci extends Plugin {
     }
 
     onSubmit(event) {
-        if (!this._form.checkValidity()) {
-            (this._form.querySelector(':invalid') ?? document.querySelector(':invalid'))?.focus();
-            return;
-        }
-
         this._addLoadingIndicators();
         this._sendRequest(event);
     }
@@ -68,7 +63,7 @@ export default class Secci extends Plugin {
         if (response.success) {
             this._removeLoadingIndicators();
             this.el.classList.remove('ratepay--secci_banner--error');
-            this.el.classList.add(response.deliveryMethod === 'download' ? 'ratepay--secci_banner--downloaded' : 'ratepay--secci_banner--mailed');
+            this.el.classList.add(response.deliveryMethod === 'pdf' ? 'ratepay--secci_banner--downloaded' : 'ratepay--secci_banner--mailed');
 
             if (response.document) {
                 this._downloadPdf(response.document);
