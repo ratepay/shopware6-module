@@ -1,0 +1,20 @@
+{#
+  ~ Copyright (c) Ratepay GmbH
+  ~
+  ~ For the full copyright and license information, please view the LICENSE
+  ~ file that was distributed with this source code.
+#}
+
+{% block sw_sales_channel_detail_base_disabled_payments_methods_warning %}
+    {% parent %}
+
+    <mt-banner
+        v-if="ratepayDefaultPaymentMethodRequiresSecci"
+        variant="critical"
+        :show-icon="true"
+    >
+        <p>{{ $tc('ratepay.salesChannelDetail.defaultPaymentMethodRequiresSecci', {
+            titleBelow: $tc('ratepay.secciVariant.below.title')
+        }) }}</p>
+    </mt-banner>
+{% endblock %}

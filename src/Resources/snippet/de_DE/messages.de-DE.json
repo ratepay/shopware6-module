@@ -11,6 +11,7 @@
     "error.VIOLATION::METHOD_NOT_AVAILABLE": "Leider ist eine Bezahlung mit der gewählten Zahlungsart nicht möglich.",
     "error.VIOLATION::RP_MISSING_BANK_ACCOUNT_HOLDER": "Bitte geben Sie den Kontoinhaber an.",
     "error.VIOLATION::RP_INVALID_BANK_ACCOUNT_HOLDER": "Bitte geben Sie einen gültigen Kontoinhaber an.",
+    "error.VIOLATION::RP_SECCI_REQUIRED": "Der Empfang der EU-Standardinformationen für Verbraucherkredite ist erforderlich.",
     "checkout.error.RATEPAY_INSTALLMENT_CAN_NOT_BE_LOADED": "Leider kann der Ratenrechner der Zahlungsart %method% nicht geladen und damit die Zahlungsmethode nicht zur Verfügung gestellt werden. Bitte laden Sie die Seite neu, versuchen Sie es später erneut, oder wählen eine andere Zahlungsart.",
     "ratepay": {
         "storefront": {
@@ -45,6 +46,28 @@
                 },
                 "installment": {
                     "intro": "Im Folgenden k&ouml;nnen Sie entscheiden, wie Sie die Ratenzahlung gestalten m&ouml;chten. Legen Sie bequem die Anzahl der Raten und somit <b>die Laufzeit</b> der Ratenzahlung fest oder bestimmen Sie einfach die gew&uuml;nschte <b>monatliche Ratenh&ouml;he.</b>"
+                },
+                "secci": {
+                    "deliveredByMail": {
+                        "header": "Per E-Mail gesendet",
+                        "text": "Ihre EU-Standardinformationen für Verbraucherkredite wurden an %email% gesendet."
+                    },
+                    "deliveredByDownload": {
+                        "header": "Heruntergeladen",
+                        "text": "Ihre EU-Standardinformationen für Verbraucherkredite wurden auf Ihr Gerät heruntergeladen."
+                    },
+                    "retry": "Erneut versuchen",
+                    "moto": {
+                        "header": "SECCI-Bereitstellung per Telefon",
+                        "text": "Senden Sie die SECCI per E-Mail an den Kunden.",
+                        "customerEmail": "E-Mail-Adresse des Kunden",
+                        "send": "Senden",
+                        "deliveredByMail": {
+                            "header": "SECCI gesendet",
+                            "textLine1": "Bitten Sie den Kunden, die unten stehende Dokument-ID zurückzulesen, damit Sie bestätigen können, dass er dasselbe Dokument erhalten hat.",
+                            "textLine2": "Dokument-ID: %documentId%"
+                        }
+                    }
                 }
             },
             "product-page": {

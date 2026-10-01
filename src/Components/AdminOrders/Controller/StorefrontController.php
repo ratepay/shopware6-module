@@ -14,13 +14,18 @@ namespace Ratepay\RpayPayments\Components\AdminOrders\Controller;
 use DateTime;
 use Exception;
 use Ratepay\RpayPayments\Components\AdminOrders\Model\RatepayAdminOrderTokenEntity;
+use Ratepay\RpayPayments\Components\AdminOrders\Service\SessionService;
+use Ratepay\RpayPayments\Components\Checkout\Service\SecciService;
+use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Framework\Adapter\Translation\AbstractTranslator;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -77,6 +82,26 @@ class StorefrontController extends AbstractController
         }
 
         return $this->redirectToRoute('frontend.home.page');
+    }
+
+    #[Route(path: '/secci', name: 'ratepay.frontend.admin-secci', defaults: ['XmlHttpRequest' => true], methods: ['POST'])]
+    public function secci(SessionService $sessionService, Request $request, Cart $cart, SalesChannelContext $salesChannelContext, SecciService $secciService): Response
+    {
+        if (!$sessionService->isAdminSession($salesChannelContext, $request->getSession())) {
+            return new Response(status: Response::HTTP_UNAUTHORIZED);
+        }
+
+        $email = $request->request->get('motoSecciEmail');
+        $ratepayData = $request->request->all('ratepay');
+        $databag = new RequestDataBag(['paymentDetails' => ['ratepay' => $ratepayData]]);
+
+        $result = $secciService->triggerMotoSecciEmail($email, $databag, $cart, $salesChannelContext);
+        return new JsonResponse([
+            'success' => $result !== null,
+            'deliveryMethod' => 'moto',
+            'documentId' => $result,
+            'email' => $email,
+        ]);
     }
 
     #[Route(path: '/logout', name: 'ratepay.frontend.admin-logout', methods: ['GET'])]

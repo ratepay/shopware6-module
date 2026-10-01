@@ -1,0 +1,58 @@
+{#
+  ~ Copyright (c) Ratepay GmbH
+  ~
+  ~ For the full copyright and license information, please view the LICENSE
+  ~ file that was distributed with this source code.
+#}
+
+{% block ratepay_choose_secci_variant %}
+<fieldset class="ratepay-choose-secci-variant" :disabled="disabled">
+    <mt-banner
+            v-if="isSelected('1') && salesChannelsWithSecciDefaultPaymentMethod.length > 0"
+            class="sw-error-summary"
+            variant="critical"
+            :show-icon="true"
+    >
+        <p>{{ $tc('ratepay.secciVariant.defaultPaymentMethodErrorLine1', {
+                count: salesChannelsWithSecciDefaultPaymentMethod.length,
+                salesChannels: salesChannelsWithSecciDefaultPaymentMethod.join(', ')
+            }) }}</p>
+        <p>
+            {{ $tc('ratepay.secciVariant.defaultPaymentMethodErrorLine2', {
+                titleAbove: $tc('ratepay.secciVariant.above.title'),
+                titleBelow: $tc('ratepay.secciVariant.below.title'),
+            }) }}
+        </p>
+
+    </mt-banner>
+
+    <div class="ratepay-choose-secci-variant__options">
+        <label
+                v-for="variant in variants"
+                :key="variant.value"
+                class="ratepay-choose-secci-variant__option"
+                :class="{ 'is-selected': isSelected(variant.value) }"
+        >
+            <span class="ratepay-choose-secci-variant__heading">
+                <input
+                        type="radio"
+                        :name="groupName"
+                        :value="variant.value"
+                        :checked="isSelected(variant.value)"
+                        :disabled="disabled"
+                        @change="selectVariant(variant.value)"
+                >
+                <span>{{ $t(`ratepay.secciVariant.${variant.snippet}.title`) }}</span>
+            </span>
+            <img
+                    class="ratepay-choose-secci-variant__preview"
+                    :src="assetFilter(variant.image)"
+                    :alt="$t(`ratepay.secciVariant.${variant.snippet}.alt`)"
+            >
+            <span class="ratepay-choose-secci-variant__description">
+                {{ $t(`ratepay.secciVariant.${variant.snippet}.description`) }}
+            </span>
+        </label>
+    </div>
+</fieldset>
+{% endblock %}

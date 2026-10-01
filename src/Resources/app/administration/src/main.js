@@ -8,6 +8,7 @@
 /**
  * Custom Components
  */
+import './component/ratepay/ratepay-choose-secci-variant';
 import './component/ratepay/ratepay-admin-create-order-form';
 import './component/ratepay-plugin-icon';
 
@@ -28,3 +29,4 @@ import './init/admin-order-token-service.init';
  * Shopware Extensions
  */
 import './module/sw-order';
+import './module/sw-sales-channel/view/sw-sales-channel-detail-base';

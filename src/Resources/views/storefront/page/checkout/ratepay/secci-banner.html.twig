@@ -1,0 +1,182 @@
+{#
+  ~ Copyright (c) Ratepay GmbH
+  ~
+  ~ For the full copyright and license information, please view the LICENSE
+  ~ file that was distributed with this source code.
+#}
+
+{% block ratepay_secci_banner %}
+    <div class="col-sm-12">
+        <div class="ratepay--secci_banner ratepay--secci_variant{{ variant }}{% if error %} ratepay--secci_banner--error{% endif %}"
+             data-ratepay-secci="true"
+             data-ratepay-secci-error-url="{{ path('frontend.checkout.confirm.page') }}"
+             data-ratepay-secci-action="{{ variant == 3 ? path('ratepay.frontend.admin-secci') : path('frontend.checkout.ratepay.secci') }}">
+            <div class="ratepay--secci_banner--container">
+                <div class="ratepay--secci_banner--icon">
+                    <div class="ratepay--secci_banner--icon_info">
+                        {% if variant == 3 %}
+                            {% sw_icon 'headset' style {
+                                color: 'info'
+                            } %}
+                        {% else %}
+                            {% sw_icon 'info' style {
+                                color: 'info'
+                            } %}
+                        {% endif %}
+                    </div>
+                    <div class="ratepay--secci_banner--icon_error">
+                        {% sw_icon 'info' style {
+                            color: 'danger'
+                        } %}
+                    </div>
+                    <div class="ratepay--secci_banner--icon_success">
+                        {% sw_icon 'checkmark-circle' %}
+                    </div>
+                </div>
+                <div class="ratepay--secci_banner--text_container">
+                    <div class="ratepay--secci_banner--text_initial">
+                        <div class="ratepay--secci_banner--headline">
+                            {% if variant == 3 %}
+                                {{ "ratepay.storefront.checkout.secci.moto.header"|trans }}
+                            {% else %}
+                                {{ 'rp.secci.header'|trans }}
+                            {% endif %}
+                        </div>
+
+                        <p class="ratepay--secci_banner--text">
+                            {% if variant == 1 %}
+                                {{ 'rp.secci.choose.payment.method'|trans }}
+                                {{ context.customer.email }}
+                                {{ 'rp.secci.choose.payment.method2'|trans }}
+                            {% elseif variant == 2 %}
+                                {{ 'rp.secci.choose.delivery.method'|trans }}
+                            {% else %}
+                                {{ "ratepay.storefront.checkout.secci.moto.text"|trans }}
+                            {% endif %}
+                        </p>
+
+                        {% if variant != 3 %}
+                            <span class="ratepay--secci_banner--show_more_button"
+                                  data-bs-toggle="collapse"
+                                  data-bs-target="#ratepayMoreText"
+                                  role="button"
+                                  aria-expanded="false"
+                                  aria-controls="ratepayMoreText">
+                                        {{ 'rp.secci.learn.more'|trans }}
+                                {% sw_icon 'arrow-up' style {
+                                    color: 'primary',
+                                    pack:'solid'
+                                } %}
+                                {% sw_icon 'arrow-down' style {
+                                    color: 'primary',
+                                    pack:'solid'
+                                } %}
+                            </span>
+
+                            <p id="ratepayMoreText"
+                               class="ratepay--secci_banner--more_text collapse">
+                                {{ 'rp.secci.description'|trans }}
+                            </p>
+                        {% endif %}
+
+                        {% if variant == 2 %}
+                            <div class="ratepay--secci_banner--delivery_buttons">
+                                {% block ratepay_secci_banner_mail_button %}
+                                    <button class="btn btn-outline-secondary"
+                                            data-ratepay-secci-delivery-type="mail">
+                                        {% sw_icon 'envelope' %}
+                                        {{ 'rp.secci.get.by.email'|trans }}
+                                    </button>
+                                {% endblock %}
+
+                                {% block ratepay_secci_banner_pdf_button %}
+                                    <button class="btn btn-outline-secondary"
+                                            data-ratepay-secci-delivery-type="pdf">
+                                        {% sw_icon 'cloud-download' %}
+                                        {{ 'rp.secci.download.pdf'|trans }}
+                                    </button>
+                                {% endblock %}
+                            </div>
+                        {% endif %}
+
+                        {% if variant == 3 %}
+                            <div class="ratepay--secci_banner--moto form-group">
+                                <label class="form-label"
+                                        for="ratepaySecciEmail">{{ "ratepay.storefront.checkout.secci.moto.customerEmail"|trans }}</label>
+                                <input type="email"
+                                       class="form-control"
+                                       id="ratepaySecciEmail"
+                                       value="{{ context.customer.email }}">
+                            </div>
+                            <div class="ratepay--secci_banner--delivery_buttons">
+                                {% block ratepay_secci_banner_moto_button %}
+                                    <button class="btn btn-outline-secondary"
+                                            data-ratepay-secci-delivery-type="moto">
+                                        {% sw_icon 'envelope' %}
+                                        {{ "ratepay.storefront.checkout.secci.moto.send"|trans }}
+                                    </button>
+                                {% endblock %}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+                    {% if variant == 2 %}
+                        <div class="ratepay--secci_banner--text_downloaded">
+                            <div class="ratepay--secci_banner--headline">
+                                {{ 'ratepay.storefront.checkout.secci.deliveredByDownload.header'|trans }}
+                            </div>
+                            <p class="ratepay--secci_banner--text">
+                                {{ 'ratepay.storefront.checkout.secci.deliveredByDownload.text'|trans }}
+                            </p>
+                            <span class="ratepay--secci_banner--retry_button"
+                                  role="button"
+                                  data-ratepay-secci-reset>
+                                {{ "ratepay.storefront.checkout.secci.retry"|trans }}
+                            </span>
+                        </div>
+
+                        <div class="ratepay--secci_banner--text_mailed">
+                            <div class="ratepay--secci_banner--headline">
+                                {{ 'ratepay.storefront.checkout.secci.deliveredByMail.header'|trans }}
+                            </div>
+                            <p class="ratepay--secci_banner--text">
+                                {{ 'ratepay.storefront.checkout.secci.deliveredByMail.text'|trans({
+                                    '%email%': context.customer.email
+                                }) }}
+                            </p>
+                            <span class="ratepay--secci_banner--retry_button"
+                                  role="button"
+                                  data-ratepay-secci-reset>
+                                {{ "ratepay.storefront.checkout.secci.retry"|trans }}
+                            </span>
+                        </div>
+                    {% endif %}
+
+                    {% if variant == 3 %}
+                        <div class="ratepay--secci_banner--text_mailed">
+                            <div class="ratepay--secci_banner--headline">
+                                {{ 'ratepay.storefront.checkout.secci.moto.deliveredByMail.header'|trans }}
+                            </div>
+                            <p class="ratepay--secci_banner--text" data-ratepay-secci-moto-mail></p>
+                            <p class="ratepay--secci_banner--text">
+                                {{ 'ratepay.storefront.checkout.secci.moto.deliveredByMail.textLine1'|trans }}
+                            </p>
+                            <p class="ratepay--secci_banner--text">
+                                {{ "ratepay.storefront.checkout.secci.moto.deliveredByMail.textLine2"|trans({
+                                    '%documentId%': '<span class="ratepay--secci_banner--document_id" data-ratepay-secci-moto-documentid></span>'
+                                })|raw }}
+                            </p>
+                            <span class="ratepay--secci_banner--retry_button"
+                                  role="button"
+                                  data-ratepay-secci-reset>
+                                {{ "ratepay.storefront.checkout.secci.retry"|trans }}
+                            </span>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="ratepay--secci_banner--spacer" aria-hidden="true"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

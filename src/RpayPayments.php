@@ -15,6 +15,7 @@ use Ratepay\RpayPayments\Bootstrap\AbstractBootstrap;
 use Ratepay\RpayPayments\Bootstrap\Database;
 use Ratepay\RpayPayments\Bootstrap\PaymentMethods;
 use Ratepay\RpayPayments\Bootstrap\PluginConfiguration;
+use Ratepay\RpayPayments\Bootstrap\Snippets;
 use Ratepay\RpayPayments\Core\FeatureFlagService;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -193,6 +194,7 @@ class RpayPayments extends Plugin
             new Database(),
             new PaymentMethods(),
             new PluginConfiguration(),
+            new Snippets(),
         ];
 
         /** @var EntityRepository $pluginRepository */
