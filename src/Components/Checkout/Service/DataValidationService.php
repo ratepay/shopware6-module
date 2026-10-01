@@ -76,7 +76,7 @@ class DataValidationService
                 $cart->getPrice()->getTotalPrice(),
                 $paymentMethodId,
                 $salesChannelContext->getCurrencyId(),
-                $salesChannelContext->getLanguageId(),
+                $salesChannelContext->getLanguageInfo()->localeCode,
                 RequestHelper::getRatepayData($dataBag)->all()
             );
             $dataBag->get(RequestHelper::RATEPAY_DATA_KEY)->set('secci', $attestationToken);

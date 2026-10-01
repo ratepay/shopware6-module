@@ -25,11 +25,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class CheckoutSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        protected ExtensionService $extensionService,
-        protected SystemConfigService $systemConfigService,
+        protected ExtensionService                    $extensionService,
+        protected SystemConfigService                 $systemConfigService,
         protected ProfileBySalesChannelContextAndCart $profileBySalesChannelContextAndCart,
-        protected SecciService $secciService,
-        protected SessionService $sessionService,
+        protected SecciService                        $secciService,
+        protected SessionService                      $sessionService,
     ) {
     }
 
@@ -68,7 +68,12 @@ class CheckoutSubscriber implements EventSubscriberInterface
 
             if (
                 $this->secciService->paymentMethodRequiresSecci($salesChannelContext->getPaymentMethod(), $event->getPage()->getCart(), $salesChannelContext)
-                && !$this->secciService->hasAttestationToken()
+                && $this->secciService->getAttestationToken(
+                    $event->getPage()->getCart()->getPrice()->getTotalPrice(),
+                    $salesChannelContext->getPaymentMethod()->getId(),
+                    $salesChannelContext->getCurrencyId(),
+                    $salesChannelContext->getLanguageInfo()->localeCode
+                ) === null
             ) {
                 $disablePaymentModePreselection = true;
             }

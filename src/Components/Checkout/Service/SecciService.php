@@ -167,7 +167,8 @@ class SecciService
                 $cart->getPrice()->getTotalPrice(),
                 $salesChannelContext->getPaymentMethod()->getId(),
                 $salesChannelContext->getCurrencyId(),
-                $salesChannelContext->getLanguageId(),
+                // We cannot reliably use context locale, as the ContextSwitchEvent passes a context with the default locale instead of the current one
+                $this->requestStack->getMainRequest()->getLocale() ?? $salesChannelContext->getLanguageInfo()->localeCode,
                 $ratepayParameters
             );
             return $response;
@@ -178,24 +179,19 @@ class SecciService
         return $response;
     }
 
-    private function saveAttestationToken(string $token, float $cartTotal, string $paymentMethodId, string $currencyId, string $languageId, array $ratepayParameters): void
+    private function saveAttestationToken(string $token, float $cartTotal, string $paymentMethodId, string $currencyId, string $locale, array $ratepayParameters): void
     {
         $this->requestStack->getSession()->set(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN, [
             'cartTotal' => $cartTotal,
             'paymentMethodId' => $paymentMethodId,
             'token' => $token,
             'currencyId' => $currencyId,
-            'languageId' => $languageId,
+            'locale' => $locale,
             'ratepayParameters' => $ratepayParameters,
         ]);
     }
 
-    public function hasAttestationToken(): bool
-    {
-        return $this->requestStack->getSession()->has(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN);
-    }
-
-    public function getAttestationToken(float $cartTotal, string $paymentMethodId, string $currencyId, string $languageId, array $ratepayParameters = []): ?string
+    public function getAttestationToken(float $cartTotal, string $paymentMethodId, string $currencyId, string $locale, array $ratepayParameters = []): ?string
     {
         $result = $this->requestStack->getSession()->get(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN);
         if (empty($result)) {
@@ -212,7 +208,7 @@ class SecciService
         if ($result['currencyId'] !== $currencyId) {
             return null;
         }
-        if ($result['languageId'] !== $languageId) {
+        if ($result['locale'] !== $locale) {
             return null;
         }
 

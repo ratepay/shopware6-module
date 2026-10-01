@@ -110,7 +110,7 @@ abstract class AbstractPaymentHandler extends \Shopware\Core\Checkout\Payment\Ca
             $order->getPrice()->getTotalPrice(),
             $paymentMethod->getId(),
             $salesChannelContext->getCurrencyId(),
-            $salesChannelContext->getLanguageId(),
+            $salesChannelContext->getLanguageInfo()->localeCode,
             $ratepayData->all()
         );
         $orderTransaction->setCustomFields($customFields);
