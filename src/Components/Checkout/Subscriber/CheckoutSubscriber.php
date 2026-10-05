@@ -70,7 +70,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
         $paymentMethodRequiresSecci = $secciPaymentMethods->has($salesChannelContext->getPaymentMethod()->getId());
 
         if ($secciVariant == 1) {
-            $showSecciBanner = !$secciPaymentMethods->isEmpty();
+            $showSecciBanner = !$secciPaymentMethods->count() === 0;
 
             $attestationToken = $this->secciService->getAttestationToken(
                 $event->getPage()->getCart()->getPrice()->getTotalPrice(),
