@@ -19,6 +19,7 @@ use Shopware\Core\System\SalesChannel\Context\SalesChannelContextService;
 use Shopware\Core\System\SalesChannel\Event\SalesChannelContextSwitchEvent;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class ContextSwitchSubscriber implements EventSubscriberInterface
 {
@@ -27,6 +28,7 @@ class ContextSwitchSubscriber implements EventSubscriberInterface
         private readonly EntityRepository $paymentMethodRepository,
         private readonly CartService $cartService,
         private readonly SystemConfigService $systemConfigService,
+        private readonly RequestStack $requestStack,
     ) {
     }
 

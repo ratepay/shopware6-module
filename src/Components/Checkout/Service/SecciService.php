@@ -41,17 +41,11 @@ class SecciService
     }
 
     /**
-     * Check if any available Ratepay payment method requires SECCI.
+     * Filter payment methods that require SECCI.
      */
-    public function anyPaymentMethodRequiresSecci(PaymentMethodCollection $paymentMethods, Cart $cart, SalesChannelContext $salesChannelContext): bool
+    public function filterPaymentMethodRequiresSecci(PaymentMethodCollection $paymentMethods, Cart $cart, SalesChannelContext $salesChannelContext): PaymentMethodCollection
     {
-        foreach ($paymentMethods as $paymentMethod) {
-            if ($this->paymentMethodRequiresSecci($paymentMethod, $cart, $salesChannelContext)) {
-                return true;
-            }
-        }
-
-        return false;
+        return $paymentMethods->filter(fn(PaymentMethodEntity $paymentMethod) => $this->paymentMethodRequiresSecci($paymentMethod, $cart, $salesChannelContext));
     }
 
     /**

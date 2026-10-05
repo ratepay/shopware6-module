@@ -21,6 +21,7 @@ use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class CheckoutSubscriber implements EventSubscriberInterface
 {
@@ -30,7 +31,9 @@ class CheckoutSubscriber implements EventSubscriberInterface
         protected ProfileBySalesChannelContextAndCart $profileBySalesChannelContextAndCart,
         protected SecciService                        $secciService,
         protected SessionService                      $sessionService,
-    ) {
+        protected RequestStack                        $requestStack,
+    )
+    {
     }
 
     public static function getSubscribedEvents(): array
@@ -62,29 +65,38 @@ class CheckoutSubscriber implements EventSubscriberInterface
             $secciVariant = 3;
         }
         $disablePaymentModePreselection = false;
+        $showSecciDeliveryConfirmation = false;
+        $secciPaymentMethods = $this->secciService->filterPaymentMethodRequiresSecci($event->getPage()->getPaymentMethods(), $event->getPage()->getCart(), $event->getSalesChannelContext());
+        $paymentMethodRequiresSecci = $secciPaymentMethods->has($salesChannelContext->getPaymentMethod()->getId());
 
         if ($secciVariant == 1) {
-            $showSecciBanner = $this->secciService->anyPaymentMethodRequiresSecci($event->getPage()->getPaymentMethods(), $event->getPage()->getCart(), $event->getSalesChannelContext());
+            $showSecciBanner = !$secciPaymentMethods->isEmpty();
+
+            $attestationToken = $this->secciService->getAttestationToken(
+                $event->getPage()->getCart()->getPrice()->getTotalPrice(),
+                $salesChannelContext->getPaymentMethod()->getId(),
+                $salesChannelContext->getCurrencyId(),
+                $salesChannelContext->getLanguageInfo()->localeCode
+            );
 
             if (
-                $this->secciService->paymentMethodRequiresSecci($salesChannelContext->getPaymentMethod(), $event->getPage()->getCart(), $salesChannelContext)
-                && $this->secciService->getAttestationToken(
-                    $event->getPage()->getCart()->getPrice()->getTotalPrice(),
-                    $salesChannelContext->getPaymentMethod()->getId(),
-                    $salesChannelContext->getCurrencyId(),
-                    $salesChannelContext->getLanguageInfo()->localeCode
-                ) === null
+                $paymentMethodRequiresSecci
+                && $attestationToken === null
             ) {
                 $disablePaymentModePreselection = true;
             }
+
+            $showSecciDeliveryConfirmation = $attestationToken !== null && $paymentMethodRequiresSecci;
         } else {
-            $showSecciBanner = $this->secciService->paymentMethodRequiresSecci($salesChannelContext->getPaymentMethod(), $event->getPage()->getCart(), $salesChannelContext);
+            $showSecciBanner = $paymentMethodRequiresSecci;
         }
 
         $extension->assign([
             'showSecciBanner' => $showSecciBanner,
             'secciVariant' => $secciVariant,
-            'disablePaymentModePreselection' => $disablePaymentModePreselection
+            'disablePaymentModePreselection' => $disablePaymentModePreselection,
+            'secciPaymentMethods' => $secciPaymentMethods,
+            'showSecciDeliveryConfirmation' => $showSecciDeliveryConfirmation,
         ]);
     }
 

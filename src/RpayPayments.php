@@ -194,7 +194,6 @@ class RpayPayments extends Plugin
             new Database(),
             new PaymentMethods(),
             new PluginConfiguration(),
-            new Snippets(),
         ];
 
         /** @var EntityRepository $pluginRepository */

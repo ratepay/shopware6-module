@@ -4,13 +4,13 @@
             "defaultPaymentMethodErrorLine1": "Die Standard-Zahlungsart des Verkaufskanals \"{salesChannels}\" erfordert SECCI. | Für folgende Verkaufskanäle erfordert die Standard-Zahlungsart SECCI: {salesChannels}",
             "defaultPaymentMethodErrorLine2": "Diese Konfiguration ist inkompatibel mit Banner-Variante \"{titleAbove}\". Wählen Sie Banner-Variante \"{titleBelow}\" oder ändern Sie die Standard-Zahlungsart auf eine Zahlungsart, die nicht SECCI erfordert.",
             "above": {
-                "title": "Immer, darüber",
-                "description": "Das SECCI Banner wird sofort nach Laden der Seite angezeigt, über den Zahlungsarten.",
+                "title": "Automatische Zustellung per E-Mail",
+                "description": "Das SECCI-Banner wird über den Zahlungsarten angezeigt und die SECCI wird dem Käufer automatisch per E-Mail zugestellt, wodurch keine zusätzlichen Schritte im Bestellvorgang erforderlich sind.",
                 "alt": "SECCI Banner über den Zahlungsarten"
             },
             "below": {
-                "title": "Nach Auswahl, darunter",
-                "description": "Das SECCI Banner wird erst nach Auswahl einer Ratepay Zahlungsart mit SECCI Anforderung angezeigt, unter den Zahlungsarten.",
+                "title": "Explizite SECCI-Interaktion",
+                "description": "Bei Auswahl einer CCD2-relevanten Ratepay-Zahlungsart wird die SECCI-Komponente unter den Zahlungsarten angezeigt. Der Käufer muss die SECCI herunterladen oder per E-Mail anfordern, wodurch ein zusätzlicher Schritt im Bestellvorgang erforderlich ist.",
                 "alt": "SECCI Banner unter den Zahlungsarten"
             }
         }

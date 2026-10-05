@@ -11,7 +11,7 @@
     "error.VIOLATION::METHOD_NOT_AVAILABLE": "Unfortunately, it is not possible to use the selected payment method.",
     "error.VIOLATION::RP_MISSING_BANK_ACCOUNT_HOLDER": "Please provide a bank account owner.",
     "error.VIOLATION::RP_INVALID_BANK_ACCOUNT_HOLDER": "Please provide a valid bank account owner.",
-    "error.VIOLATION::RP_SECCI_REQUIRED": "Receiving the Standard EU Consumer Credit Information is mandatory.",
+    "error.VIOLATION::RP_SECCI_REQUIRED": "Please download or request the SECCI document by email before completing your purchase.",
     "checkout.error.RATEPAY_INSTALLMENT_CAN_NOT_BE_LOADED": "Unfortunately the instalment calculator for the payment method %method% could not be loaded and so the payment method could not be provided to you. Please reload the page, try again later, or choose another payment method.",
     "ratepay": {
         "storefront": {
@@ -48,6 +48,32 @@
                     "intro": "In the following you can decide how you would like to organise the payment by instalment. Simply specify the number of instalments and therefore <b> the runtime</b> of the instalment or simply specify the preferred <b>number of monthly instalments</b>."
                 },
                 "secci": {
+                    "header": "Standard EU Consumer Credit Information",
+                    "variant1": {
+                        "text": "Selecting %paymentMethods% will automatically send this information to %email%.",
+                        "explanation": "EU consumer credit rules have changed and now require additional information for %paymentMethods% purchases. This information helps you understand the key credit terms before completing your purchase. Our payment partner Ratepay will use your email address solely to send it, using a third-party email delivery provider.",
+                        "confirmation": "We've sent the required Standard European Consumer Credit Information to %email%.",
+                        "downloadPdf": "Download PDF version"
+                    },
+                    "variant2": {
+                        "text": "Before placing your order, choose how you’d like to receive this information.",
+                        "explanation": "EU consumer credit rules have changed and now require additional information for this payment method. This information helps you understand the key credit terms before completing your purchase. If you choose Get by email, our payment partner Ratepay will use your email address only to send this information, using a third-party email delivery provider."
+                    },
+                    "paymentMethodsJoiner": {
+                        "or": {
+                            "firstFew": ", ",
+                            "last": " or "
+                        },
+                        "and": {
+                            "firstFew": ", ",
+                            "last": " and "
+                        }
+                    },
+                    "learnMore": "Learn more",
+                    "deliveryMethodButtons": {
+                        "email": "Get by email",
+                        "pdf": "Download PDF"
+                    },
                     "deliveredByMail": {
                         "header": "Sent by email",
                         "text": "Your Standard EU Consumer Credit Information was sent to %email%."
@@ -56,7 +82,8 @@
                         "header": "Downloaded",
                         "text": "Your Standard EU Consumer Credit Information was downloaded to your device."
                     },
-                    "retry": "Try again",
+                    "retry": "Back to selection",
+                    "email": "E-Mail: %email%",
                     "moto": {
                         "header": "SECCI delivery by phone",
                         "text": "Send the SECCI to the customer via email.",

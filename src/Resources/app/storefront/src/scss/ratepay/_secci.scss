@@ -92,8 +92,13 @@
                 }
             }
 
-            .ratepay--secci_banner--retry_button {
+            .ratepay--secci_banner--email_address {
+                margin-top: 10px;
+            }
+
+            .ratepay--secci_banner--retry_button, .ratepay--secci_banner--confirmation_pdf_button {
                 text-decoration: underline;
+                cursor: pointer;
                 display: block;
                 margin-top: 10px;
             }
@@ -101,7 +106,6 @@
     }
 
     &.ratepay--secci_variant2, &.ratepay--secci_variant3 {
-        margin-bottom: 2.5rem;
 
         .ratepay--secci_banner--show_more_button {
             margin-bottom: 10px;

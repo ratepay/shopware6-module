@@ -11,7 +11,7 @@
     "error.VIOLATION::METHOD_NOT_AVAILABLE": "Leider ist eine Bezahlung mit der gewählten Zahlungsart nicht möglich.",
     "error.VIOLATION::RP_MISSING_BANK_ACCOUNT_HOLDER": "Bitte geben Sie den Kontoinhaber an.",
     "error.VIOLATION::RP_INVALID_BANK_ACCOUNT_HOLDER": "Bitte geben Sie einen gültigen Kontoinhaber an.",
-    "error.VIOLATION::RP_SECCI_REQUIRED": "Der Empfang der EU-Standardinformationen für Verbraucherkredite ist erforderlich.",
+    "error.VIOLATION::RP_SECCI_REQUIRED": "Bitte laden Sie das SECCI-Dokument herunter oder fordern Sie es per E-Mail an, bevor Sie den Kauf abschließen.",
     "checkout.error.RATEPAY_INSTALLMENT_CAN_NOT_BE_LOADED": "Leider kann der Ratenrechner der Zahlungsart %method% nicht geladen und damit die Zahlungsmethode nicht zur Verfügung gestellt werden. Bitte laden Sie die Seite neu, versuchen Sie es später erneut, oder wählen eine andere Zahlungsart.",
     "ratepay": {
         "storefront": {
@@ -48,6 +48,32 @@
                     "intro": "Im Folgenden k&ouml;nnen Sie entscheiden, wie Sie die Ratenzahlung gestalten m&ouml;chten. Legen Sie bequem die Anzahl der Raten und somit <b>die Laufzeit</b> der Ratenzahlung fest oder bestimmen Sie einfach die gew&uuml;nschte <b>monatliche Ratenh&ouml;he.</b>"
                 },
                 "secci": {
+                    "header": "EU-Standardinformationen für Verbraucherkredite",
+                    "variant1": {
+                        "text": "Wenn Sie %paymentMethods% wählen, werden diese Informationen automatisch an %email% gesendet.",
+                        "explanation": "Die EU-Verbraucherkreditrichtlinien haben sich geändert und erfordern nun zusätzliche Informationen für %paymentMethods%. Diese Informationen helfen Ihnen, die wesentlichen Kreditkonditionen vor Abschluss Ihres Kaufs zu verstehen. Unser Zahlungspartner Ratepay verwendet Ihre E-Mail-Adresse ausschließlich zum Versand dieser Informationen über einen externen E-Mail-Dienstleister.",
+                        "confirmation": "Wir haben die erforderlichen Europäischen Standardinformationen für Verbraucherkredite an %email% gesendet.",
+                        "downloadPdf": "PDF-Version herunterladen"
+                    },
+                    "variant2": {
+                        "text": "Bevor Sie Ihre Bestellung abschließen, wählen Sie, wie Sie diese Informationen erhalten möchten.",
+                        "explanation": "Die EU-Verbraucherkreditrichtlinien haben sich geändert und erfordern nun zusätzliche Informationen für diese Zahlungsmethode. Diese Informationen helfen Ihnen, die wesentlichen Kreditkonditionen vor Abschluss Ihres Kaufs zu verstehen. Wenn Sie „Per E-Mail erhalten“ wählen, verwendet unser Zahlungspartner Ratepay Ihre E-Mail-Adresse ausschließlich zum Versand dieser Informationen über einen externen E-Mail-Dienstleister."
+                    },
+                    "paymentMethodsJoiner": {
+                        "or": {
+                            "firstFew": ", ",
+                            "last": " oder "
+                        },
+                        "and": {
+                            "firstFew": ", ",
+                            "last": " und "
+                        }
+                    },
+                    "learnMore": "Mehr erfahren",
+                    "deliveryMethodButtons": {
+                        "email": "Per E-Mail erhalten",
+                        "pdf": "PDF herunterladen"
+                    },
                     "deliveredByMail": {
                         "header": "Per E-Mail gesendet",
                         "text": "Ihre EU-Standardinformationen für Verbraucherkredite wurden an %email% gesendet."
@@ -56,7 +82,8 @@
                         "header": "Heruntergeladen",
                         "text": "Ihre EU-Standardinformationen für Verbraucherkredite wurden auf Ihr Gerät heruntergeladen."
                     },
-                    "retry": "Erneut versuchen",
+                    "retry": "Zurück zur Auswahl",
+                    "email": "E-Mail: %email%",
                     "moto": {
                         "header": "SECCI-Bereitstellung per Telefon",
                         "text": "Senden Sie die SECCI per E-Mail an den Kunden.",
