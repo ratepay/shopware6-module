@@ -21,6 +21,7 @@ use Ratepay\RpayPayments\Components\InstallmentCalculator\Exception\DebitNotAllo
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Model\InstallmentCalculatorContext;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Service\InstallmentService;
 use Ratepay\RpayPayments\Components\InstallmentCalculator\Util\PlanHasher;
+use Ratepay\RpayPayments\Components\PaymentHandler\InstallmentZeroPercentPaymentHandler;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\AddCreditData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\OrderOperationData;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\PaymentRequestData;
@@ -141,9 +142,13 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
             /** @var DataBag $requestedInstallment */
             $requestedInstallment = $requestDataBag->get('installment');
             if (!$requestedInstallment) {
-                throw new RuntimeException($this->translator->trans('checkout.error.RATEPAY_INSTALLMENT_CAN_NOT_BE_LOADED', [
-                    '%method%' => $paymentMethod->getTranslated()['name'] ?? $paymentMethod->getName(),
-                ]));
+                if ($paymentMethod->getHandlerIdentifier() == InstallmentZeroPercentPaymentHandler::class) {
+                    $requestedInstallment = $this->buildPayIn3();
+                } else {
+                    throw new RuntimeException($this->translator->trans('checkout.error.RATEPAY_INSTALLMENT_CAN_NOT_BE_LOADED', [
+                        '%method%' => $paymentMethod->getTranslated()['name'] ?? $paymentMethod->getName(),
+                    ]));
+                }
             }
 
             $calcContext = new InstallmentCalculatorContext(
@@ -162,7 +167,7 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
                 ]), $exception->getCode(), previous: $exception);
             }
 
-            if (PlanHasher::isPlanEqualWithHash($requestedInstallment->get('hash'), $plan)) {
+            if (!$requestedInstallment->get('skipHashCheck', false) && PlanHasher::isPlanEqualWithHash($requestedInstallment->get('hash'), $plan)) {
                 throw new Exception('the hash value of the calculated plan does not match the given hash');
             }
 
@@ -219,5 +224,15 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
         }
 
         return $event;
+    }
+
+    private function buildPayIn3(): DataBag
+    {
+        return new DataBag([
+            'paymentType' => 'DIRECT-DEBIT',
+            'type' => InstallmentCalculatorContext::CALCULATION_TYPE_RATE,
+            'value' => 3,
+            'skipHashCheck' => true,
+        ]);
     }
 }
