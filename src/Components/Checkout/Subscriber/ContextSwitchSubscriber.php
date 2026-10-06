@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
 
+use Ratepay\RpayPayments\Components\AdminOrders\Service\SessionService;
 use Ratepay\RpayPayments\Components\Checkout\Service\SecciService;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -24,11 +25,12 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class ContextSwitchSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly SecciService $secciService,
-        private readonly EntityRepository $paymentMethodRepository,
-        private readonly CartService $cartService,
+        private readonly SecciService        $secciService,
+        private readonly EntityRepository    $paymentMethodRepository,
+        private readonly CartService         $cartService,
         private readonly SystemConfigService $systemConfigService,
-        private readonly RequestStack $requestStack,
+        private readonly RequestStack        $requestStack,
+        private readonly SessionService      $sessionService,
     ) {
     }
 
@@ -50,7 +52,10 @@ class ContextSwitchSubscriber implements EventSubscriberInterface
     {
         $salesChannelContext = $event->getSalesChannelContext();
 
-        if (($this->systemConfigService->get('RpayPayments.config.ratepaySecciVariant', $salesChannelContext->getSalesChannelId()) ?? 1) != 1) {
+        if (
+            ($this->systemConfigService->get('RpayPayments.config.ratepaySecciVariant', $salesChannelContext->getSalesChannelId()) ?? 1) != 1
+            && $this->sessionService->isAdminSession($event->getSalesChannelContext(), $this->requestStack->getSession())
+        ) {
             // Only variant 1 triggers automatic SECCI delivery
             return;
         }

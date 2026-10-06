@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\Checkout\Controller;
 
+use Ratepay\RpayPayments\Components\AdminOrders\Service\SessionService;
 use Ratepay\RpayPayments\Components\Checkout\Service\ExtensionService;
 use Ratepay\RpayPayments\Components\Checkout\Service\SecciService;
 use Ratepay\RpayPayments\Components\Checkout\Struct\PaymentDataResponse;
@@ -36,7 +37,7 @@ use Throwable;
 class CheckoutController extends AbstractCheckoutController
 {
     public function __construct(
-        private readonly ExtensionService $extensionService,
+        private readonly ExtensionService           $extensionService,
         private readonly AccountEditOrderPageLoader $orderLoader
     ) {
     }
@@ -122,6 +123,36 @@ class CheckoutController extends AbstractCheckoutController
         }
 
         return new JsonResponse($responseData);
+    }
+
+    #[Route(
+        path: '/checkout/ratepay/secci-admin',
+        name: 'frontend.checkout.ratepay.secci-admin',
+        defaults: [
+            PlatformRequest::ATTRIBUTE_ROUTE_SCOPE => [StorefrontRouteScope::ID],
+            '_loginRequired' => true,
+            '_loginRequiredAllowGuest' => true,
+            'XmlHttpRequest' => true,
+        ],
+        methods: ['POST']
+    )]
+    public function secci(SessionService $sessionService, Request $request, Cart $cart, SalesChannelContext $salesChannelContext, SecciService $secciService): Response
+    {
+        if (!$sessionService->isAdminSession($salesChannelContext, $request->getSession())) {
+            return new Response(status: Response::HTTP_UNAUTHORIZED);
+        }
+
+        $email = $request->request->get('motoSecciEmail');
+        $ratepayData = $request->request->all('ratepay');
+        $databag = new RequestDataBag(['paymentDetails' => ['ratepay' => $ratepayData]]);
+
+        $result = $secciService->triggerMotoSecciEmail($email, $databag, $cart, $salesChannelContext);
+        return new JsonResponse([
+            'success' => $result !== null,
+            'deliveryMethod' => 'moto',
+            'documentId' => $result,
+            'email' => $email,
+        ]);
     }
 
     public function getDecorated(): AbstractCheckoutController

@@ -161,7 +161,7 @@ class SecciService
                 $cart->getPrice()->getTotalPrice(),
                 $salesChannelContext->getPaymentMethod()->getId(),
                 $salesChannelContext->getCurrencyId(),
-                // We cannot reliably use context locale, as the ContextSwitchEvent passes a context with the default locale instead of the current one
+                // We cannot reliably use context locale as the ContextSwitchEvent passes a context with the default locale instead of the current one
                 $this->requestStack->getMainRequest()->getLocale() ?? $salesChannelContext->getLanguageInfo()->localeCode,
                 $ratepayParameters
             );
@@ -181,7 +181,7 @@ class SecciService
             'token' => $token,
             'currencyId' => $currencyId,
             'locale' => $locale,
-            'ratepayParameters' => $ratepayParameters,
+            'installmentHash' => $ratepayParameters['installment']['hash'] ?? null,
         ]);
     }
 
@@ -208,8 +208,7 @@ class SecciService
 
         // Validate financing data has not changed. Ignore secci parameters. Only for variant 2
         if ($this->systemConfigService->get('RpayPayments.config.ratepaySecciVariant') == 2) {
-            unset($ratepayParameters['secciDeliveryType'], $ratepayParameters['secciRequired'], $result['ratepayParameters']['secciDeliveryType'], $result['ratepayParameters']['secciRequired']);
-            if ($result['ratepayParameters'] != $ratepayParameters) {
+            if ($result['installmentHash'] !== ($ratepayParameters['installment']['hash'] ?? null)) {
                 return null;
             }
         }

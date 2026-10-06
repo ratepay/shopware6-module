@@ -152,4 +152,11 @@
             font-weight: 700;
         }
     }
+
+    @include media-breakpoint-down(md) {
+        .ratepay--secci_banner--delivery_buttons {
+            flex-direction: column;
+            gap: 12px;
+        }
+    }
 }

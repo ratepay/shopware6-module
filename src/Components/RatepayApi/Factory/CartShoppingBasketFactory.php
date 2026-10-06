@@ -65,7 +65,7 @@ class CartShoppingBasketFactory extends AbstractFactory
         if ($this->shouldSubmitItemAsCartItem($item, $unitPrice)) {
             $basket->getItems()->addItem(
                 (new Item())
-                    ->setArticleNumber($item->getId())
+                    ->setArticleNumber($item->getType() === LineItem::PRODUCT_LINE_ITEM_TYPE ? $item->getPayload()['productNumber'] : $item->getId())
                     ->setDescription($item->getLabel())
                     ->setQuantity($item->getQuantity())
                     ->setUnitPriceGross($unitPrice)

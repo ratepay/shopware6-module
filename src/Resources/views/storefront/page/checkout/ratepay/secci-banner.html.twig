@@ -13,7 +13,7 @@
         <div class="ratepay--secci_banner ratepay--secci_variant{{ variant }}{% if error %} ratepay--secci_banner--error{% endif %}"
              data-ratepay-secci="true"
              data-ratepay-secci-error-url="{{ path('frontend.checkout.confirm.page') }}"
-             data-ratepay-secci-action="{{ variant == 3 ? path('ratepay.frontend.admin-secci') : path('frontend.checkout.ratepay.secci') }}">
+             data-ratepay-secci-action="{{ variant == 3 ? path('frontend.checkout.ratepay.secci-admin') : path('frontend.checkout.ratepay.secci') }}">
             <div class="ratepay--secci_banner--container">
                 <div class="ratepay--secci_banner--icon">
                     <div class="ratepay--secci_banner--icon_info">
@@ -51,10 +51,12 @@
                                 {% set paymentMethodsString = '' %}
                                 {# @var paymentMethod \Shopware\Core\Checkout\Payment\PaymentMethodEntity #}
                                 {% for paymentMethod in secciPaymentMethods %}
-                                    {% if loop.last %}
-                                        {% set paymentMethodsString = paymentMethodsString ~ ('ratepay.storefront.checkout.secci.paymentMethodsJoiner.or.last'|trans) %}
-                                    {% elseif not loop.first %}
-                                        {% set paymentMethodsString = paymentMethodsString ~ ('ratepay.storefront.checkout.secci.paymentMethodsJoiner.or.firstFew'|trans) %}
+                                    {% if not loop.first %}
+                                        {% if loop.last %}
+                                            {% set paymentMethodsString = paymentMethodsString ~ ('ratepay.storefront.checkout.secci.paymentMethodsJoiner.or.last'|trans) %}
+                                        {% else %}
+                                            {% set paymentMethodsString = paymentMethodsString ~ ('ratepay.storefront.checkout.secci.paymentMethodsJoiner.or.firstFew'|trans) %}
+                                        {% endif %}
                                     {% endif %}
                                     {% set paymentMethodsString = paymentMethodsString ~ paymentMethod.translated.name %}
                                 {% endfor %}
@@ -94,10 +96,12 @@
                                     {% set paymentMethodsString = '' %}
                                     {# @var paymentMethod \Shopware\Core\Checkout\Payment\PaymentMethodEntity #}
                                     {% for paymentMethod in secciPaymentMethods %}
-                                        {% if loop.last %}
-                                            {% set paymentMethodsString = paymentMethodsString ~ ('ratepay.storefront.checkout.secci.paymentMethodsJoiner.and.last'|trans) %}
-                                        {% elseif not loop.first %}
-                                            {% set paymentMethodsString = paymentMethodsString ~ ('ratepay.storefront.checkout.secci.paymentMethodsJoiner.and.firstFew'|trans) %}
+                                        {% if not loop.first %}
+                                            {% if loop.last %}
+                                                {% set paymentMethodsString = paymentMethodsString ~ ('ratepay.storefront.checkout.secci.paymentMethodsJoiner.and.last'|trans) %}
+                                            {% else %}
+                                                {% set paymentMethodsString = paymentMethodsString ~ ('ratepay.storefront.checkout.secci.paymentMethodsJoiner.and.firstFew'|trans) %}
+                                            {% endif %}
                                         {% endif %}
                                         {% set paymentMethodsString = paymentMethodsString ~ paymentMethod.translated.name %}
                                     {% endfor %}

@@ -85,7 +85,7 @@
                     "retry": "Back to selection",
                     "email": "E-Mail: %email%",
                     "moto": {
-                        "header": "SECCI delivery by phone",
+                        "header": "SECCI delivery by email",
                         "text": "Send the SECCI to the customer via email.",
                         "customerEmail": "Customer email address",
                         "send": "Send",
