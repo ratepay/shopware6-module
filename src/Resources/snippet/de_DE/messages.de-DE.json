@@ -12,6 +12,7 @@
     "error.VIOLATION::RP_MISSING_BANK_ACCOUNT_HOLDER": "Bitte geben Sie den Kontoinhaber an.",
     "error.VIOLATION::RP_INVALID_BANK_ACCOUNT_HOLDER": "Bitte geben Sie einen gültigen Kontoinhaber an.",
     "error.VIOLATION::RP_SECCI_REQUIRED": "Bitte laden Sie das SECCI-Dokument herunter oder fordern Sie es per E-Mail an, bevor Sie den Kauf abschließen.",
+    "error.VIOLATION::RP_MOTO_SECCI_REQUIRED": "Bitte senden Sie dem Kunden das SECCI-Dokument per E-Mail, bevor Sie den Kauf abschließen.",
     "checkout.error.RATEPAY_INSTALLMENT_CAN_NOT_BE_LOADED": "Leider kann der Ratenrechner der Zahlungsart %method% nicht geladen und damit die Zahlungsmethode nicht zur Verfügung gestellt werden. Bitte laden Sie die Seite neu, versuchen Sie es später erneut, oder wählen eine andere Zahlungsart.",
     "ratepay": {
         "storefront": {

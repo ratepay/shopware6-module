@@ -13,10 +13,12 @@ namespace Ratepay\RpayPayments\Components\PaymentHandler;
 
 use DateTimeInterface;
 use RatePAY\Model\Response\PaymentRequest;
+use Ratepay\RpayPayments\Components\AdminOrders\Service\SessionService;
 use Ratepay\RpayPayments\Components\Checkout\Service\SecciService;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\Birthday;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\BirthdayNotBlank;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\IsOfLegalAge;
+use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\MotoSecciRequired;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\SecciRequired;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\BeforePaymentEvent;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
@@ -71,6 +73,7 @@ abstract class AbstractPaymentHandler extends \Shopware\Core\Checkout\Payment\Ca
         private readonly ProfileSearchService $profileSearchService,
         private readonly ProfileByOrderEntity $profileByOrderEntitySearchService,
         private readonly SecciService $secciService,
+        private readonly SessionService $sessionService,
     ) {
     }
 
@@ -221,8 +224,9 @@ abstract class AbstractPaymentHandler extends \Shopware\Core\Checkout\Payment\Ca
         }
 
         if ($ratepayData->get('secciRequired') === true) {
+            $isMotoFlow = $this->sessionService->isAdminSession($salesChannelContext, $this->requestStack->getSession());
             $validations['secci'] = [
-                new SecciRequired(),
+                $isMotoFlow ? new MotoSecciRequired() : new SecciRequired(),
             ];
         }
 

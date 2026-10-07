@@ -44,6 +44,7 @@ Shopware.Component.register('ratepay-choose-secci-variant', {
 
     data() {
         return {
+            secciRequiredForAnyPaymentMethod: [],
             salesChannelsWithSecciDefaultPaymentMethod: [],
             groupName: `ratepay-secci-${Shopware.Utils.createId()}`,
             variants: [
@@ -54,6 +55,7 @@ Shopware.Component.register('ratepay-choose-secci-variant', {
     },
 
     async created() {
+        this.secciRequiredForAnyPaymentMethod = await this.loadSecciRequiredForAnyPaymentMethod();
         this.salesChannelsWithSecciDefaultPaymentMethod = await this.loadSalesChannelsRequiringSecci();
     },
 
@@ -64,6 +66,16 @@ Shopware.Component.register('ratepay-choose-secci-variant', {
     },
 
     methods: {
+        async loadSecciRequiredForAnyPaymentMethod() {
+            const repository = this.repositoryFactory.create('ratepay_profile_config_method');
+            const criteria = new Criteria();
+            criteria.addFilter(Criteria.equals('requireSecci', true));
+            criteria.addFilter(Criteria.equals('profile.status', true));
+
+            const configurations = await repository.search(criteria, Shopware.Context.api);
+            return configurations.length > 0;
+        },
+
         async loadSalesChannelsRequiringSecci() {
             const repository = this.repositoryFactory.create('ratepay_profile_config_method');
             const criteria = new Criteria();
