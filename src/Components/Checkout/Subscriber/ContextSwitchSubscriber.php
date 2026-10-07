@@ -52,11 +52,13 @@ class ContextSwitchSubscriber implements EventSubscriberInterface
     {
         $salesChannelContext = $event->getSalesChannelContext();
 
-        if (
-            ($this->systemConfigService->get('RpayPayments.config.ratepaySecciVariant', $salesChannelContext->getSalesChannelId()) ?? 1) != 1
-            && $this->sessionService->isAdminSession($event->getSalesChannelContext(), $this->requestStack->getSession())
-        ) {
+        if (($this->systemConfigService->get('RpayPayments.config.ratepaySecciVariant', $salesChannelContext->getSalesChannelId()) ?? 1) != 1) {
             // Only variant 1 triggers automatic SECCI delivery
+            return;
+        }
+
+        if ($this->sessionService->isAdminSession($event->getSalesChannelContext(), $this->requestStack->getSession())) {
+            // Do not trigger automatic SECCI delivery in admin session
             return;
         }
 
