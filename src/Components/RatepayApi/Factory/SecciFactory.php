@@ -20,6 +20,10 @@ use Ratepay\RpayPayments\Components\RatepayApi\Dto\SecciRequestData;
  */
 class SecciFactory extends AbstractFactory
 {
+
+    private const LANGUAGE_WHITELIST = ['DE', 'EN', 'NL'];
+    private const FALLBACK_LANGUAGE = 'EN';
+
     protected function isSupported(AbstractRequestData $requestData): bool
     {
         return $requestData instanceof SecciRequestData;
@@ -31,8 +35,10 @@ class SecciFactory extends AbstractFactory
 
         $secci = new Secci();
         $secci->setDeliveryMethod($requestData->getDeliveryMethod());
-        $secci->setLanguage($requestData->getLanguageIso());
         $secci->setCountryCode($requestData->getCountryCode());
+
+        $language = $this->getLanguage($requestData);
+        $secci->setLanguage($language);
 
         if ($requestData->getDeliveryMethod() === SecciRequestData::DELIVERY_METHOD_EMAIL) {
             $secci->setEmail($requestData->getEmail());
@@ -41,5 +47,28 @@ class SecciFactory extends AbstractFactory
         }
 
         return $secci;
+    }
+
+    /**
+     * Extract language from locale code and check against whitelist.
+     */
+    private function getLanguage(SecciRequestData|AbstractRequestData $requestData): string
+    {
+        $language = $requestData->getLocaleCode();
+
+        // Translate locale code to language ISO
+        if (strlen($language) > 2) {
+            $language = substr($language, 0, 2);
+        }
+
+        // Make sure language is uppercase
+        $language = strtoupper($language);
+
+        // Make sure language is in whitelist
+        if (!in_array($language, self::LANGUAGE_WHITELIST, true)) {
+            $language = self::FALLBACK_LANGUAGE;
+        }
+
+        return $language;
     }
 }

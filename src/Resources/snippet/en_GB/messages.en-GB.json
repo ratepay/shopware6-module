@@ -96,7 +96,8 @@
                             "textLine1": "Ask the customer to read back the following document ID, to confirm delivery of the exact document.",
                             "textLine2": "Document ID: %documentId%"
                         }
-                    }
+                    },
+                    "complianceServiceErrorMessage": "Standard European Consumer Credit Information (SECCI) is temporarily unavailable. Please try again."
                 }
             },
             "product-page": {

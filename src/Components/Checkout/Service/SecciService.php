@@ -22,10 +22,13 @@ use Ratepay\RpayPayments\Util\RequestHelper;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
+use Shopware\Core\Framework\Adapter\Translation\AbstractTranslator;
+use Shopware\Core\Framework\Adapter\Translation\Translator;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Controller\StorefrontController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class SecciService
@@ -37,6 +40,8 @@ class SecciService
         private readonly SecciRequestService                 $secciRequestService,
         private readonly RequestStack                        $requestStack,
         private readonly SystemConfigService                 $systemConfigService,
+        #[Autowire(service: Translator::class)]
+        private readonly AbstractTranslator                  $translator
     )
     {
     }
@@ -174,7 +179,8 @@ class SecciService
             return $response;
         }
 
-        $this->requestStack->getSession()->getFlashBag()->add(StorefrontController::DANGER, $response->getReasonMessage());
+        $errorMessage = $this->translator->trans('ratepay.storefront.checkout.secci.complianceServiceErrorMessage');
+        $this->requestStack->getSession()->getFlashBag()->add(StorefrontController::DANGER, $errorMessage);
 
         return $response;
     }

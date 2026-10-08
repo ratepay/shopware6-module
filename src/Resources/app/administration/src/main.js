@@ -29,4 +29,5 @@ import './init/admin-order-token-service.init';
  * Shopware Extensions
  */
 import './module/sw-order';
+import './module/sw-sales-channel/page/sw-sales-channel-detail';
 import './module/sw-sales-channel/view/sw-sales-channel-detail-base';

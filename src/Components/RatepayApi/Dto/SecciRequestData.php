@@ -25,17 +25,17 @@ class SecciRequestData extends AbstractRequestData implements OperationDataWithC
     public const ACTION_DOWNLOAD = 'DOWNLOAD';
 
     public function __construct(
-        private readonly string $deliveryMethod,
-        private readonly ?string $email,
-        private readonly string $languageIso,
-        private readonly string $countryCode,
-        private readonly Cart $cart,
+        private readonly string              $deliveryMethod,
+        private readonly ?string             $email,
+        private readonly string              $localeCode,
+        private readonly string              $countryCode,
+        private readonly Cart                $cart,
         private readonly PaymentMethodEntity $paymentMethod,
-        private readonly CurrencyEntity $currency,
-        private readonly string $taxState,
-        private readonly DataBag $requestDataBag,
+        private readonly CurrencyEntity      $currency,
+        private readonly string              $taxState,
+        private readonly DataBag             $requestDataBag,
         private readonly SalesChannelContext $salesChannelContext,
-        ProfileConfigEntity $profileConfig,
+        ProfileConfigEntity                  $profileConfig,
     ) {
         parent::__construct($this->salesChannelContext->getContext());
         $this->setProfileConfig($profileConfig);
@@ -51,9 +51,9 @@ class SecciRequestData extends AbstractRequestData implements OperationDataWithC
         return $this->email;
     }
 
-    public function getLanguageIso(): string
+    public function getLocaleCode(): string
     {
-        return $this->languageIso;
+        return $this->localeCode;
     }
 
     public function getCountryCode(): string
