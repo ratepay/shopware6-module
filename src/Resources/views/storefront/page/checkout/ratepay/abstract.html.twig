@@ -79,9 +79,11 @@
 {% endif %}
 
 {% block ratepay_legal_textes %}
+    {% set showSepa = page.extensions.ratepay.paymentMethod == 'elv' %}
     <div class="form-row row">
         <div class="form-group col-sm-12">
-            {{ "ratepay.storefront.checkout.hints.legalText"|trans|raw }}
+            <span data-ratepay-legal-text-without-sepa{% if showSepa %} style="display: none;"{% endif %}>{{ "ratepay.storefront.checkout.hints.legalText"|trans|raw }}</span>
+            <span data-ratepay-legal-text-with-sepa{% if not showSepa %} style="display: none;"{% endif %}>{{ "ratepay.storefront.checkout.hints.legalTextSepa"|trans|raw }}</span>
         </div>
     </div>
 {% endblock %}

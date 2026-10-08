@@ -6,7 +6,6 @@
     "error.VIOLATION::RP_CHECKSUM_FAILED_ERROR": "Die Prüfziffer der IBAN ist ungültig",
     "error.VIOLATION::RP_INVALID_FORMAT_ERROR": "Bitte geben Sie eine gültige IBAN ein.",
     "error.VIOLATION::RP_NOT_SUPPORTED_COUNTRY_CODE_ERROR": "Das eingegeben Land der IBAN ist ungültig.",
-    "error.VIOLATION::RP_MISSING_SEPA_CONFIRM": "Bitte bestätigen Sie das SEPA-Mandat.",
     "error.VIOLATION::RP_METHOD_NOT_AVAILABLE": "Leider ist eine Bezahlung mit der gewählten Zahlungsart nicht möglich. Diese Entscheidung ist auf Grundlage einer automatisierten Datenverarbeitung getroffen worden. Einzelheiten finden Sie in den <a href=\"https://www.ratepay.com/legal-payment-terms/\" target=\"_blank\">zusätzlichen Allgemeinen Geschäftsbedingungen und den Datenschutzhinweisen unseres Zahlungspartners</a>.",
     "error.VIOLATION::METHOD_NOT_AVAILABLE": "Leider ist eine Bezahlung mit der gewählten Zahlungsart nicht möglich.",
     "error.VIOLATION::RP_MISSING_BANK_ACCOUNT_HOLDER": "Bitte geben Sie den Kontoinhaber an.",
@@ -40,10 +39,13 @@
                 "hints": {
                     "sandboxInfo": "Der Test-Modus für die ausgewählte Zahlungsart ist aktiv. Bitte nutzen Sie diese Zahlungsart nicht für die Bestellung und informieren Sie den Shopbetreiber über diese Nachricht.",
                     "birthdayHint": "Sie müssen mindestens 18 Jahre alt sein, um per %method% bezahlen zu können.",
-                    "legalText": "Mit Klicken auf \"Zahlungspflichtig bestellen\" erklären Sie sich mit den <a href=\"//www.ratepay.com/legal-payment-terms\" title=\"Zahlungsbedingungen\" target=\"_blank\">Zahlungsbedingungen unseres Zahlungspartners</a> sowie mit der Durchführung einer <a href=\"//www.ratepay.com/legal-payment-dataprivacy\" title=\"Datenschutzerklärung\" target=\"_blank\">Risikoprüfung durch unseren Zahlungspartner</a> einverstanden.",
-                    "sepaMandatInformation": "Mandatsreferenz und Gläubiger-ID wird Ihnen separat mitgeteilt.",
-                    "sepaAuthorize": "Ich ermächtige die Ratepay GmbH, Zahlungen von meinem Konto mittels Lastschrift einzuziehen. Zugleich weise ich mein Kreditinstitut an, die von der Ratepay GmbH auf mein Konto gezogenen Lastschriften einzulösen.",
-                    "sepaAuthorizeNote": "Hinweis: Ich kann innerhalb von acht Wochen, beginnend mit dem Belastungsdatum, die Erstattung des belasteten Betrages verlangen. Es gelten dabei die mit meinem Kreditinstitut vereinbarten Bedingungen."
+                    "legalText": "Mit Klicken auf \"Zahlungspflichtig bestellen\" erklären Sie sich mit den <a href=\"https://www.ratepay.com/legal-payment-terms\" title=\"Zahlungsbedingungen\" target=\"_blank\">Ratepay Zahlungsbedingungen</a> sowie mit der Durchführung einer <a href=\"https://www.ratepay.com/legal-payment-dataprivacy\" title=\"Datenschutzerklärung Zahlungen\" target=\"_blank\">Risikoprüfung durch Ratepay</a> einverstanden.",
+                    "legalTextSepa": "Mit Klicken auf \"Zahlungspflichtig bestellen\" erklären Sie sich mit den <a href=\"https://www.ratepay.com/legal-payment-terms\" title=\"Zahlungsbedingungen\" target=\"_blank\"> Ratepay Zahlungsbedingungen</a>, einschließlich der Erteilung des SEPA-Lastschriftmandats, sowie mit der Durchführung einer <a href=\"https://www.ratepay.com/legal-payment-dataprivacy\" title=\"Datenschutzerklärung Zahlungen\" target=\"_blank\">Risikoprüfung durch Ratepay</a> einverstanden.",
+                    "sepaExplanationToggle": "SEPA-Lastschriftmandat — Erklärung",
+                    "sepaExplanationText1": "Indem Sie dem SEPA-Lastschriftmandat zustimmen, ermächtigen Sie die Ratepay GmbH, Zahlungen von Ihrem Konto mittels Lastschrift einzuziehen. Gleichzeitig weisen Sie Ihr Kreditinstitut an, die von der Ratepay GmbH auf Ihr Konto gezogenen Lastschriften einzulösen.",
+                    "sepaExplanationText2Prefix": "Hinweis:",
+                    "sepaExplanationText2": "Sie können innerhalb von acht Wochen, beginnend mit dem Belastungsdatum, die Erstattung des belasteten Betrages verlangen. Es gelten dabei die mit Ihrem Kreditinstitut vereinbarten Bedingungen.",
+                    "sepaExplanationText3": "Die Mandatsreferenz und Gläubiger-Identifikationsnummer werden Ihnen separat mitgeteilt."
                 },
                 "installment": {
                     "intro": "Im Folgenden k&ouml;nnen Sie entscheiden, wie Sie die Ratenzahlung gestalten m&ouml;chten. Legen Sie bequem die Anzahl der Raten und somit <b>die Laufzeit</b> der Ratenzahlung fest oder bestimmen Sie einfach die gew&uuml;nschte <b>monatliche Ratenh&ouml;he.</b>"

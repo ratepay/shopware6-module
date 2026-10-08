@@ -13,7 +13,6 @@
                 <label class="form-label">
                     <strong>{{ "document.bankAccount"|trans|sw_sanitize }}</strong>
                 </label>
-                {% sw_include '@RpayPayments/storefront/page/checkout/ratepay/common/sepa-legal.html.twig' %}
             </div>
         </div>
     {% endblock %}
@@ -65,23 +64,18 @@
         </div>
     {% endblock %}
 
-    {% block ratepay_personal_data_bank_account_sepa_confirm %}
-        <div class="form-row">
-            <div class="form-group col-sm-12">
-                <div class="form-check">
-                    <input type="checkbox"
-                           class="form-check-input {% if formViolations.getViolations('/ratepay/bankData/sepaConfirmation') is not empty %} is-invalid{% endif %}"
-                           required="required"
-                           id="rp-sepa-confirmation"
-                           form="confirmOrderForm"
-                           name="ratepay[bankData][sepaConfirmation]"
-                    >
-                    <label for="rp-sepa-confirmation" class="form-check-label">
-                        {% block ratepay_personal_data_bank_account_sepa_confirm_text %}
-                            <p>{{ "ratepay.storefront.checkout.hints.sepaAuthorize"|trans|sw_sanitize }}</p>
-                            <p>{{ "ratepay.storefront.checkout.hints.sepaAuthorizeNote"|trans|sw_sanitize }}</p>
-                        {% endblock %}
-                    </label>
+    {% block ratepay_personal_data_bank_account_explanation %}
+        <div class="ratepay-sepa-explanation-wrapper accordion" id="ratepaySepaExplanationAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="ratepaySepaExplanationAccordionHeader">
+                    <button class="accordion-button collapsed fw-medium" type="button" data-bs-toggle="collapse" data-bs-target="#ratepaySepaExplanationAccordionBody" aria-expanded="false" aria-controls="ratepaySepaExplanationAccordionBody">
+                        {{ "ratepay.storefront.checkout.hints.sepaExplanationToggle"|trans }}
+                    </button>
+                </h2>
+                <div id="ratepaySepaExplanationAccordionBody" class="accordion-collapse collapse" aria-labelledby="ratepaySepaExplanationAccordionHeader" data-bs-parent="#ratepaySepaExplanationAccordion">
+                    <div class="accordion-body">
+                        {% sw_include '@RpayPayments/storefront/page/checkout/ratepay/common/sepa-legal.html.twig' %}
+                    </div>
                 </div>
             </div>
         </div>

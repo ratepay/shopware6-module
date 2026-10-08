@@ -15,6 +15,9 @@ export default class InstallmentPaymentSwitch extends window.PluginBaseClass {
 
     init() {
         this._sepaForm = this.el.querySelector('#rp-sepa-form');
+        this._legalTextWithSepa = document.querySelector('[data-ratepay-legal-text-with-sepa]');
+        this._legalTextWithoutSepa = document.querySelector('[data-ratepay-legal-text-without-sepa]');
+
         this.el.querySelectorAll(this.options.selectorTypeField).forEach(element => {
             element.addEventListener('change', this._onChangeType.bind(this));
         });
@@ -36,10 +39,15 @@ export default class InstallmentPaymentSwitch extends window.PluginBaseClass {
         if (this._sepaForm) {
             this._sepaForm.querySelector('#rp-iban-account-holder').removeAttribute('required');
             this._sepaForm.querySelector('#rp-iban-account-number').removeAttribute('required');
-            this._sepaForm.querySelector('#rp-sepa-confirmation').removeAttribute('required');
             this._sepaForm.querySelector('#rp-iban-account-holder').setAttribute('disabled', 'disabled');
             this._sepaForm.querySelector('#rp-iban-account-number').setAttribute('disabled', 'disabled');
-            this._sepaForm.querySelector('#rp-sepa-confirmation').setAttribute('disabled', 'disabled');
+        }
+
+        if (this._legalTextWithoutSepa) {
+            this._legalTextWithoutSepa.style.display = 'block';
+        }
+        if (this._legalTextWithSepa) {
+            this._legalTextWithSepa.style.display = 'none';
         }
     }
 
@@ -47,10 +55,15 @@ export default class InstallmentPaymentSwitch extends window.PluginBaseClass {
         if (this._sepaForm) {
             this._sepaForm.querySelector('#rp-iban-account-holder').removeAttribute('disabled');
             this._sepaForm.querySelector('#rp-iban-account-number').removeAttribute('disabled');
-            this._sepaForm.querySelector('#rp-sepa-confirmation').removeAttribute('disabled');
             this._sepaForm.querySelector('#rp-iban-account-holder').setAttribute('required', 'required');
             this._sepaForm.querySelector('#rp-iban-account-number').setAttribute('required', 'required');
-            this._sepaForm.querySelector('#rp-sepa-confirmation').setAttribute('required', 'required');
+        }
+
+        if (this._legalTextWithSepa) {
+            this._legalTextWithSepa.style.display = 'block';
+        }
+        if (this._legalTextWithoutSepa) {
+            this._legalTextWithoutSepa.style.display = 'none';
         }
     }
 }

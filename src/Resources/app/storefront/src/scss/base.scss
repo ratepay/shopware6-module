@@ -66,3 +66,25 @@
         padding-left: 1rem;
     }
 }
+
+.ratepay-sepa-explanation-wrapper {
+    margin-bottom: 20px;
+
+    .accordion-button {
+        --bs-accordion-active-bg: var(--bs-accordion-bg);
+
+        padding: 6px 10px;
+    }
+
+    .accordion-body {
+        padding: 12px 10px;
+
+        p {
+            margin-bottom: 1rem;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+}
