@@ -29,7 +29,7 @@
     {#% endif %#}
 {% endblock %}
 
-{% if page.extensions.ratepay.showSecciDeliveryConfirmation %}
+{% if page.extensions.ratepay.showSecciDeliveryConfirmation and page.extensions.ratepay.secciVariant == 1 %}
     <div class="col-sm-12">
         <div class="ratepay--secci_banner ratepay--secci_variant1 ratepay--secci_banner--mailed"
              data-ratepay-secci="true"
@@ -71,6 +71,9 @@
             variant: page.extensions.ratepay.secciVariant,
             error: formViolations.violations('/ratepay/secci') is not empty,
             secciPaymentMethods: page.extensions.ratepay.secciPaymentMethods,
+            showSecciDeliveryConfirmation: page.extensions.ratepay.showSecciDeliveryConfirmation,
+            motoDocumentId: page.extensions.ratepay.motoDocumentId,
+            motoEmail: page.extensions.ratepay.motoEmail,
         } %}
     {% endblock %}
 {% endif %}

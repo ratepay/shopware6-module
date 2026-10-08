@@ -90,6 +90,7 @@
                         "text": "Senden Sie die SECCI per E-Mail an den Kunden.",
                         "customerEmail": "E-Mail-Adresse des Kunden",
                         "send": "Senden",
+                        "retry": "Erneut senden",
                         "deliveredByMail": {
                             "header": "SECCI gesendet",
                             "textLine1": "Bitten Sie den Kunden, die unten stehende Dokument-ID zurückzulesen, damit Sie bestätigen können, dass er dasselbe Dokument erhalten hat.",

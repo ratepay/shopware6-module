@@ -6,11 +6,14 @@
 #}
 {# @var variant int #}
 {# @var error bool #}
+{# @var showSecciDeliveryConfirmation bool #}
+{# @var motoDocumentId string #}
+{# @var motoEmail string #}
 {# @var secciPaymentMethods \Shopware\Core\Checkout\Payment\PaymentMethodCollection #}
 
 {% block ratepay_secci_banner %}
     <div class="col-sm-12">
-        <div class="ratepay--secci_banner ratepay--secci_variant{{ variant }}{% if error %} ratepay--secci_banner--error{% endif %}"
+        <div class="ratepay--secci_banner ratepay--secci_variant{{ variant }}{% if error %} ratepay--secci_banner--error{% endif %}{% if variant === 3 and showSecciDeliveryConfirmation %} ratepay--secci_banner--mailed{% endif %}"
              data-ratepay-secci="true"
              data-ratepay-secci-error-url="{{ path('frontend.checkout.confirm.page') }}"
              data-ratepay-secci-action="{{ variant == 3 ? path('frontend.checkout.ratepay.secci-admin') : path('frontend.checkout.ratepay.secci') }}">
@@ -199,19 +202,19 @@
                             <div class="ratepay--secci_banner--headline">
                                 {{ 'ratepay.storefront.checkout.secci.moto.deliveredByMail.header'|trans }}
                             </div>
-                            <p class="ratepay--secci_banner--text" data-ratepay-secci-moto-mail></p>
+                            <p class="ratepay--secci_banner--text" data-ratepay-secci-moto-mail>{% if showSecciDeliveryConfirmation %}{{ motoEmail }}{% endif %}</p>
                             <p class="ratepay--secci_banner--text">
                                 {{ 'ratepay.storefront.checkout.secci.moto.deliveredByMail.textLine1'|trans }}
                             </p>
                             <p class="ratepay--secci_banner--text">
                                 {{ "ratepay.storefront.checkout.secci.moto.deliveredByMail.textLine2"|trans({
-                                    '%documentId%': '<span class="ratepay--secci_banner--document_id" data-ratepay-secci-moto-documentid></span>'
+                                    '%documentId%': '<span class="ratepay--secci_banner--document_id" data-ratepay-secci-moto-documentid>' ~ (showSecciDeliveryConfirmation ? motoDocumentId : '') ~'</span>'
                                 })|raw }}
                             </p>
                             <span class="ratepay--secci_banner--retry_button"
                                   role="button"
                                   data-ratepay-secci-reset>
-                                {{ "ratepay.storefront.checkout.secci.retry"|trans }}
+                                {{ "ratepay.storefront.checkout.secci.moto.retry"|trans }}
                             </span>
                         </div>
                     {% endif %}

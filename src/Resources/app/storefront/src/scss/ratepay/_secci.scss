@@ -105,6 +105,29 @@
         }
     }
 
+    &.ratepay--secci_variant1 {
+        font-size: 80%;
+
+        .ratepay--secci_banner--icon {
+            .icon {
+                width: 1.2rem;
+                height: 1.2rem;
+            }
+
+            @include media-breakpoint-down(md) {
+                display: none;
+            }
+        }
+
+        .ratepay--secci_banner--spacer {
+            display: none;
+        }
+
+        .ratepay--secci_banner--more_text {
+            margin-bottom: 10px;
+        }
+    }
+
     &.ratepay--secci_variant2, &.ratepay--secci_variant3 {
 
         .ratepay--secci_banner--show_more_button {

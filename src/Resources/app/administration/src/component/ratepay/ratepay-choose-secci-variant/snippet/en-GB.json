@@ -2,8 +2,8 @@
     "ratepay": {
         "secciVariant": {
             "notRequired": "Your Ratepay Profile Configurations do not require SECCI (CCD2).",
-            "defaultPaymentMethodErrorLine1": "The default payment method of the sales channel \"{salesChannels}\" requires SECCI. | The following sales channels have a default payment method that requires SECCI: {salesChannels}",
-            "defaultPaymentMethodErrorLine2": "This is incompatible with SECCI banner variant \"{titleAbove}\". Use banner variant \"{titleBelow}\" or change the default payment method to one that does not require SECCI.",
+            "defaultPaymentMethodErrorLine1": "The default payment method of the sales channel \"{salesChannels}\" requires SECCI (CCD2). | The following sales channels have a default payment method that requires SECCI (CCD2): {salesChannels}",
+            "defaultPaymentMethodErrorLine2": "This configuration is not supported. Change the default payment method to one that does not require SECCI (CCD2).",
             "above": {
                 "title": "Automatic email delivery",
                 "description": "The SECCI banner displays above payment methods and the SECCI is emailed to the buyer automatically, requiring no additional checkout steps.",

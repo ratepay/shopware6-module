@@ -1,7 +1,7 @@
 {
     "ratepay": {
         "salesChannelDetail": {
-            "defaultPaymentMethodRequiresSecci": "Buyers must choose buy now pay later options proactively. Set a non-credit method as your default. Alternatively choose Ratepay SECCI banner variant \"{titleBelow}\" in the Ratepay plugin configuration."
+            "defaultPaymentMethodRequiresSecci": "Credit-based payment methods, including BNPL, can’t be set as the default under CCD2. Choose a non-credit payment method instead."
         }
     }
 }

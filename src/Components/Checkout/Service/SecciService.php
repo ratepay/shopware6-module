@@ -34,10 +34,11 @@ class SecciService
 
     public function __construct(
         private readonly ProfileBySalesChannelContextAndCart $profileBySalesChannelContextAndCart,
-        private readonly SecciRequestService $secciRequestService,
-        private readonly RequestStack $requestStack,
-        private readonly SystemConfigService $systemConfigService,
-    ) {
+        private readonly SecciRequestService                 $secciRequestService,
+        private readonly RequestStack                        $requestStack,
+        private readonly SystemConfigService                 $systemConfigService,
+    )
+    {
     }
 
     /**
@@ -161,6 +162,9 @@ class SecciService
             $ratepayParameters = RequestHelper::getRatepayData($requestDataBag)?->all() ?? [];
             $this->saveAttestationToken(
                 $token,
+                $sendMail ? 'mail' : 'pdf',
+                $response->getDocumentId() ?? null,
+                $emailAddress,
                 $cart->getPrice()->getTotalPrice(),
                 $salesChannelContext->getPaymentMethod()->getId(),
                 $salesChannelContext->getCurrencyId(),
@@ -175,19 +179,23 @@ class SecciService
         return $response;
     }
 
-    private function saveAttestationToken(string $token, float $cartTotal, string $paymentMethodId, string $currencyId, string $locale, array $ratepayParameters): void
+    private function saveAttestationToken(string $token, string $deliveryMethod, ?string $documentId, ?string $emailRecipient, float $cartTotal, string $paymentMethodId, string $currencyId, string $locale, array $ratepayParameters): void
     {
         $this->requestStack->getSession()->set(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN, [
+            'token' => $token,
+            'deliveryMethod' => $deliveryMethod,
+            'documentId' => $documentId,
+            'emailRecipient' => $emailRecipient,
             'cartTotal' => $cartTotal,
             'paymentMethodId' => $paymentMethodId,
-            'token' => $token,
             'currencyId' => $currencyId,
             'locale' => $locale,
             'installmentHash' => $ratepayParameters['installment']['hash'] ?? null,
         ]);
     }
 
-    public function getAttestationToken(float $cartTotal, string $paymentMethodId, string $currencyId, string $locale, array $ratepayParameters = []): ?string
+    #[ArrayShape(['token' => "string", 'deliveryMethod' => "string", 'documentId' => "string", 'emailRecipient' => "string", 'cartTotal' => "float", 'paymentMethodId' => "string", 'currencyId' => "string", 'locale' => "string", 'installmentHash' => "string|null"])]
+    public function getAttestationTokenStorage(float $cartTotal, string $paymentMethodId, string $currencyId, string $locale, array $ratepayParameters = []): ?array
     {
         $result = $this->requestStack->getSession()->get(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN);
         if (empty($result)) {
@@ -216,8 +224,14 @@ class SecciService
         }
 
         // All parameters match saved token, return it
-        return $result['token'];
+        return $result;
     }
+
+    public function getAttestationToken(float $cartTotal, string $paymentMethodId, string $currencyId, string $locale, array $ratepayParameters = []): ?string
+    {
+        return $this->getAttestationTokenStorage($cartTotal, $paymentMethodId, $currencyId, $locale, $ratepayParameters)['token'] ?? null;
+    }
+
 
     public function clearAttestationToken(): void
     {
