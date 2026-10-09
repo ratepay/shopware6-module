@@ -109,6 +109,11 @@ class ProfileConfigMethodDefinition extends EntityDefinition
                 ProfileConfigMethodEntity::FIELD_ALLOW_DIFFERENT_ADDRESSES
             )),
 
+            (new BoolField(
+                'require_secci',
+                ProfileConfigMethodEntity::FIELD_REQUIRE_SECCI,
+            )),
+
             (new OneToOneAssociationField(
                 ProfileConfigMethodEntity::FIELD_INSTALLMENT_CONFIG,
                 'id',

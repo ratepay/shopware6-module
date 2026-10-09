@@ -16,7 +16,6 @@ use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\BankAccountHolderC
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\BankAccountHolderNotBlank;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\Iban;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\IbanNotBlank;
-use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\SepaConfirmNotBlank;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Validation\DataValidationDefinition;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -33,10 +32,6 @@ trait DebitValidationTrait
             'iban',
             new IbanNotBlank(),
             new Iban()
-        );
-        $bankData->add(
-            'sepaConfirmation',
-            new SepaConfirmNotBlank()
         );
 
         return [

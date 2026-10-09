@@ -23,6 +23,7 @@
         <service id="Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentCancelService" autowire="true"/>
         <service id="Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentCreditService" autowire="true"/>
         <service id="Ratepay\RpayPayments\Components\RatepayApi\Service\Request\PaymentInitService" autowire="true"/>
+        <service id="Ratepay\RpayPayments\Components\RatepayApi\Service\Request\SecciRequestService" autowire="true"/>
 
     </services>
 </container>

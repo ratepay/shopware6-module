@@ -1,0 +1,19 @@
+{
+    "ratepay": {
+        "secciVariant": {
+            "notRequired": "Ihre Ratepay Profil Konfigurationen erfordern SECCI (CCD2) nicht.",
+            "defaultPaymentMethodErrorLine1": "Die Standard-Zahlungsart des Verkaufskanals \"{salesChannels}\" erfordert SECCI (CCD2). | Für folgende Verkaufskanäle erfordert die Standard-Zahlungsart SECCI (CCD2): {salesChannels}",
+            "defaultPaymentMethodErrorLine2": "Diese Konfiguration wird nicht unterstützt. Ändern Sie die Standard-Zahlungsart auf eine Zahlungsart, die nicht SECCI (CCD2) erfordert.",
+            "above": {
+                "title": "Automatische Zustellung per E-Mail",
+                "description": "Das SECCI-Banner wird über den Zahlungsarten angezeigt und die SECCI wird dem Käufer automatisch per E-Mail zugestellt, wodurch keine zusätzlichen Schritte im Bestellvorgang erforderlich sind.",
+                "alt": "SECCI Banner über den Zahlungsarten"
+            },
+            "below": {
+                "title": "Explizite SECCI-Interaktion",
+                "description": "Bei Auswahl einer CCD2-relevanten Ratepay-Zahlungsart wird die SECCI-Komponente unter den Zahlungsarten angezeigt. Der Käufer muss die SECCI herunterladen oder per E-Mail anfordern, wodurch ein zusätzlicher Schritt im Bestellvorgang erforderlich ist.",
+                "alt": "SECCI Banner unter den Zahlungsarten"
+            }
+        }
+    }
+}

@@ -11,10 +11,10 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\PaymentHandler\Constraint;
 
-class SepaConfirmNotBlank extends AbstractNotBlank
+class SecciRequired extends AbstractNotBlank
 {
     protected static function getRatepayErrorCode(): string
     {
-        return 'RP_MISSING_SEPA_CONFIRM';
+        return 'RP_SECCI_REQUIRED';
     }
 }

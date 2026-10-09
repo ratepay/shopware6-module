@@ -13,9 +13,13 @@ namespace Ratepay\RpayPayments\Components\PaymentHandler;
 
 use DateTimeInterface;
 use RatePAY\Model\Response\PaymentRequest;
+use Ratepay\RpayPayments\Components\AdminOrders\Service\SessionService;
+use Ratepay\RpayPayments\Components\Checkout\Service\SecciService;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\Birthday;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\BirthdayNotBlank;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\IsOfLegalAge;
+use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\MotoSecciRequired;
+use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\SecciRequired;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\BeforePaymentEvent;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
@@ -67,7 +71,9 @@ abstract class AbstractPaymentHandler extends \Shopware\Core\Checkout\Payment\Ca
         private readonly PluginConfigService $configService,
         private readonly RequestStack $requestStack,
         private readonly ProfileSearchService $profileSearchService,
-        private readonly ProfileByOrderEntity $profileByOrderEntitySearchService
+        private readonly ProfileByOrderEntity $profileByOrderEntitySearchService,
+        private readonly SecciService $secciService,
+        private readonly SessionService $sessionService,
     ) {
     }
 
@@ -101,6 +107,16 @@ abstract class AbstractPaymentHandler extends \Shopware\Core\Checkout\Payment\Ca
 
         $paymentMethod = $order->getTransactions()->last()->getPaymentMethod();
         $orderTransaction->setPaymentMethod($paymentMethod);
+
+        $customFields = $orderTransaction->getCustomFields() ?? [];
+        $customFields['ratepay_attestation_token'] = $this->secciService->getAttestationToken(
+            $order->getPrice()->getTotalPrice(),
+            $paymentMethod->getId(),
+            $salesChannelContext->getCurrencyId(),
+            $salesChannelContext->getLanguageInfo()->localeCode,
+            $ratepayData->all()
+        );
+        $orderTransaction->setCustomFields($customFields);
 
         if (!$order instanceof OrderEntity || count($ratepayData) === 0 || !$orderTransaction) {
             throw $this->syncProcessInterrupted($orderTransactionId, 'unknown error during payment');
@@ -145,6 +161,8 @@ abstract class AbstractPaymentHandler extends \Shopware\Core\Checkout\Payment\Ca
                     $salesChannelContext,
                     $response
                 ));
+
+                $this->secciService->clearAttestationToken();
             } else {
                 $message = null;
                 if (method_exists($response, 'getCustomerMessage')) {
@@ -202,6 +220,13 @@ abstract class AbstractPaymentHandler extends \Shopware\Core\Checkout\Payment\Ca
                 new IsOfLegalAge([
                     'message' => self::ERROR_SNIPPET_VIOLATION_PREFIX . IsOfLegalAge::TOO_YOUNG_ERROR_NAME,
                 ]),
+            ];
+        }
+
+        if ($ratepayData->get('secciRequired') === true) {
+            $isMotoFlow = $this->sessionService->isAdminSession($salesChannelContext, $this->requestStack->getSession());
+            $validations['secci'] = [
+                $isMotoFlow ? new MotoSecciRequired() : new SecciRequired(),
             ];
         }
 
