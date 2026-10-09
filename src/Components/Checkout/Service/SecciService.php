@@ -136,13 +136,10 @@ class SecciService
             $emailAddress = $emailAddress ?? $salesChannelContext->getCustomer()->getEmail();
         }
 
-        // We cannot reliably use context locale as the ContextSwitchEvent passes a context with the default locale instead of the current one
-        $locale = $this->requestStack->getMainRequest()->getLocale() ?? $salesChannelContext->getLanguageInfo()->localeCode;
-
         $secciRequestData = new SecciRequestData(
             $sendMail ? SecciRequestData::DELIVERY_METHOD_EMAIL : SecciRequestData::DELIVERY_METHOD_PDF,
             $emailAddress,
-            $locale,
+            $salesChannelContext->getLanguageInfo()->localeCode,
             $salesChannelContext->getCustomer()->getActiveBillingAddress()->getCountry()->getIso(),
             $cart,
             $salesChannelContext->getPaymentMethod(),
@@ -173,7 +170,7 @@ class SecciService
                 $cart->getPrice()->getTotalPrice(),
                 $salesChannelContext->getPaymentMethod()->getId(),
                 $salesChannelContext->getCurrencyId(),
-                $locale,
+                $salesChannelContext->getLanguageInfo()->localeCode,
                 $ratepayParameters
             );
             return $response;
