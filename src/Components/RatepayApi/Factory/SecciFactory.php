@@ -22,7 +22,6 @@ class SecciFactory extends AbstractFactory
 {
 
     private const LANGUAGE_WHITELIST = ['DE', 'EN', 'NL'];
-    private const FALLBACK_LANGUAGE = 'EN';
 
     protected function isSupported(AbstractRequestData $requestData): bool
     {
@@ -38,7 +37,9 @@ class SecciFactory extends AbstractFactory
         $secci->setCountryCode($requestData->getCountryCode());
 
         $language = $this->getLanguage($requestData);
-        $secci->setLanguage($language);
+        if ($language) {
+            $secci->setLanguage($language);
+        }
 
         if ($requestData->getDeliveryMethod() === SecciRequestData::DELIVERY_METHOD_EMAIL) {
             $secci->setEmail($requestData->getEmail());
@@ -52,7 +53,7 @@ class SecciFactory extends AbstractFactory
     /**
      * Extract language from locale code and check against whitelist.
      */
-    private function getLanguage(SecciRequestData|AbstractRequestData $requestData): string
+    private function getLanguage(SecciRequestData|AbstractRequestData $requestData): ?string
     {
         $language = $requestData->getLocaleCode();
 
@@ -65,10 +66,11 @@ class SecciFactory extends AbstractFactory
         $language = strtoupper($language);
 
         // Make sure language is in whitelist
-        if (!in_array($language, self::LANGUAGE_WHITELIST, true)) {
-            $language = self::FALLBACK_LANGUAGE;
+        if (in_array($language, self::LANGUAGE_WHITELIST)) {
+            return $language;
         }
 
-        return $language;
+        return null;
+
     }
 }
