@@ -68,6 +68,11 @@ class SecciService
     public function paymentMethodIdRequiresSecci(string $handlerIdentifier, string $paymentMethodId, Cart $cart, SalesChannelContext $salesChannelContext): bool
     {
         if (MethodHelper::isRatepayMethod($handlerIdentifier)) {
+            if (!empty($salesChannelContext->getCustomer()?->getActiveBillingAddress()?->getCompany())) {
+                // B2B customers never require SECCI
+                return false;
+            }
+
             $search = $this->profileBySalesChannelContextAndCart->createSearchObject($salesChannelContext, $cart);
             $search->setPaymentMethodId($paymentMethodId);
             $result = $this->profileBySalesChannelContextAndCart->search($search, $salesChannelContext);
