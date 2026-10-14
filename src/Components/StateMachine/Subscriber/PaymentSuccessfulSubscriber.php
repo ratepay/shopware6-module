@@ -15,6 +15,7 @@ use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
 use Ratepay\RpayPayments\Core\PluginConfigService;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
+use Shopware\Core\Content\Flow\Dispatching\Action\SetOrderStateAction;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Shopware\Core\System\StateMachine\Transition;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -39,6 +40,9 @@ class PaymentSuccessfulSubscriber implements EventSubscriberInterface
         $paymentMethod = $event->getTransaction()->getPaymentMethod();
         $newState = $this->configService->getPaymentStatusForMethod($paymentMethod);
         if ($newState && $newState !== OrderTransactionStates::STATE_OPEN) {
+            $context = clone $event->getSalesChannelContext()->getContext();
+            $context->addState(SetOrderStateAction::FORCE_TRANSITION);
+
             $this->stateMachineRegistry->transition(
                 new Transition(
                     OrderTransactionDefinition::ENTITY_NAME,
@@ -46,7 +50,7 @@ class PaymentSuccessfulSubscriber implements EventSubscriberInterface
                     $newState,
                     'stateId'
                 ),
-                $event->getSalesChannelContext()->getContext()
+                $context
             );
         }
     }
