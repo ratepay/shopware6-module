@@ -3,11 +3,11 @@
   "entryPoints": {
     "rpay-payments": {
       "css": [
-        "/bundles/rpaypayments/administration/assets/rpay-payments-B_KuVzDm.css"
+        "/bundles/rpaypayments/administration/assets/rpay-payments-pccplPpG.css"
       ],
       "dynamic": [],
       "js": [
-        "/bundles/rpaypayments/administration/assets/rpay-payments-BMx3jZ12.js"
+        "/bundles/rpaypayments/administration/assets/rpay-payments-CTQd7YIE.js"
       ],
       "legacy": false,
       "preload": []

@@ -7,7 +7,9 @@
 
 {% block ratepay_choose_secci_variant %}
 <div v-if="!secciRequiredForAnyPaymentMethod">
-    {{ $tc('ratepay.secciVariant.notRequired') }}
+    <span class="ratepay-choose-secci-variant__not-applicable">
+        {{ $tc('ratepay.secciVariant.notRequired') }}
+    </span>
 </div>
 
 <fieldset v-else class="ratepay-choose-secci-variant" :disabled="disabled">
