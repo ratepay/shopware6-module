@@ -112,8 +112,8 @@ abstract class AbstractPaymentHandler extends \Shopware\Core\Checkout\Payment\Ca
         $customFields['ratepay_attestation_token'] = $this->secciService->getAttestationToken(
             $order->getPrice()->getTotalPrice(),
             $paymentMethod->getId(),
-            $salesChannelContext->getCurrencyId(),
-            $salesChannelContext->getLanguageInfo()->localeCode,
+            $order->getCurrencyId(),
+            $order->getLanguage()->getLocale()->getCode(),
             $ratepayData->all()
         );
         $orderTransaction->setCustomFields($customFields);
