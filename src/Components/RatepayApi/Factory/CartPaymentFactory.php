@@ -34,7 +34,6 @@ class CartPaymentFactory extends AbstractFactory
 
         $payment = new Payment();
         $payment->setMethod($ratepayMethod);
-        $payment->setCurrency($requestData->getCurrency()->getIsoCode());
         $payment->setAmount($requestData->getCart()->getPrice()->getTotalPrice());
 
         return $payment;
