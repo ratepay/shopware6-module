@@ -6,11 +6,12 @@
     "error.VIOLATION::RP_CHECKSUM_FAILED_ERROR": "The check digits of the IBAN are invalid.",
     "error.VIOLATION::RP_INVALID_FORMAT_ERROR": "Please provide a valid IBAN.",
     "error.VIOLATION::RP_NOT_SUPPORTED_COUNTRY_CODE_ERROR": "The country of the IBAN is not valid.",
-    "error.VIOLATION::RP_MISSING_SEPA_CONFIRM": "Please confirm the SEPA mandate.",
     "error.VIOLATION::RP_METHOD_NOT_AVAILABLE": "Unfortunately, it is not possible to use the selected payment method. This decision is based on an automated data processing procedure. For details click <a href=\"https://www.ratepay.com/en/ratepay-terms-of-payment/\" target=\"_blank\">additional terms and conditions and privacy policies for our payment provider</a>.",
     "error.VIOLATION::METHOD_NOT_AVAILABLE": "Unfortunately, it is not possible to use the selected payment method.",
     "error.VIOLATION::RP_MISSING_BANK_ACCOUNT_HOLDER": "Please provide a bank account owner.",
     "error.VIOLATION::RP_INVALID_BANK_ACCOUNT_HOLDER": "Please provide a valid bank account owner.",
+    "error.VIOLATION::RP_SECCI_REQUIRED": "Please download or request the SECCI document by email before completing your purchase.",
+    "error.VIOLATION::RP_MOTO_SECCI_REQUIRED": "Please email the SECCI document to the customer before completing the purchase.",
     "checkout.error.RATEPAY_INSTALLMENT_CAN_NOT_BE_LOADED": "Unfortunately the instalment calculator for the payment method %method% could not be loaded and so the payment method could not be provided to you. Please reload the page, try again later, or choose another payment method.",
     "ratepay": {
         "storefront": {
@@ -38,13 +39,67 @@
                 "hints": {
                     "sandboxInfo": "The test-mode for the selected payment is active. Please do not use the payment method for your order and notify the shop owner about this message.",
                     "birthdayHint": "You must be at least 18 years old to pay using %method%.",
-                    "legalText": "With clicking on \"Submit order\" you agree to the <a href=\"//www.ratepay.com/legal-payment-terms\" title=\"Legal Payment Terms\" target=\"_blank\">terms of payment of our payment partner</a> as well as to the performance of a <a href=\"//www.ratepay.com/legal-payment-dataprivacy\" title=\"Legal Payment Dataprivacy\" target=\"_blank\">risk check by our payment partner</a>.",
-                    "sepaMandatInformation": "The mandate reference and creditor identifier will be communicated to you separately.",
-                    "sepaAuthorize": "I hereby authorise Ratepay GmbH to collect payments from my account by direct debit. At the same time, I authorise my bank to debit my account in accordance with the instructions from Ratepay GmbH.",
-                    "sepaAuthorizeNote": "Note: As part of my rights, I am entitled to a refund from my bank under the terms and conditions of my agreement with my bank. A refund must be claimed within 8 weeks starting from the date on which my account was debited. My rights are explained in a statement that I can obtain from my bank."
+                    "legalText": "By clicking \"Submit order\", you agree to the <a href=\"https://www.ratepay.com/en/ratepay-terms-of-payment\" title=\"Terms of Payment\" target=\"_blank\"> Ratepay Terms of Payment</a> and to a <a href=\"https://www.ratepay.com/en/ratepay-data-privacy-statement\" title=\"Payment Privacy Information\" target=\"_blank\">risk check performed by Ratepay</a>.",
+                    "legalTextSepa": "By clicking \"Submit order\", you agree to the <a href=\"https://www.ratepay.com/en/ratepay-terms-of-payment\" title=\"Terms of Payment\" target=\"_blank\"> Ratepay Terms of Payment</a>, including the SEPA Direct Debit mandate, and to a <a href=\"https://www.ratepay.com/en/ratepay-data-privacy-statement\" title=\"Payment Privacy Information\" target=\"_blank\">risk check performed by Ratepay</a>.",
+                    "sepaExplanationToggle": "SEPA Direct Debit Mandate — declaration",
+                    "sepaExplanationText1": "By agreeing to the SEPA Direct Debit Mandate, you authorise Ratepay GmbH to collect payments from your account by direct debit. At the same time, you instruct your bank to debit your account in accordance with the instructions from Ratepay GmbH.",
+                    "sepaExplanationText2Prefix": "Note:",
+                    "sepaExplanationText2": "As part of your rights, you are entitled to a refund from your bank. A refund must be claimed within 8 weeks, starting from the date on which your account was debited. The terms and conditions of your bank apply.",
+                    "sepaExplanationText3": "The mandate reference and creditor identification number will be communicated to you separately."
                 },
                 "installment": {
                     "intro": "In the following you can decide how you would like to organise the payment by instalment. Simply specify the number of instalments and therefore <b> the runtime</b> of the instalment or simply specify the preferred <b>number of monthly instalments</b>."
+                },
+                "secci": {
+                    "header": "Standard EU Consumer Credit Information",
+                    "variant1": {
+                        "text": "Selecting %paymentMethods% will automatically send this information to %email%.",
+                        "explanation": "EU consumer credit rules have changed and now require additional information for %paymentMethods% purchases. This information helps you understand the key credit terms before completing your purchase. Our payment partner Ratepay will use your email address solely to send it, using a third-party email delivery provider.",
+                        "confirmation": "We've sent the required Standard European Consumer Credit Information to %email%.",
+                        "downloadPdf": "Download PDF version"
+                    },
+                    "variant2": {
+                        "text": "Before placing your order, choose how you’d like to receive this information.",
+                        "explanation": "EU consumer credit rules have changed and now require additional information for this payment method. This information helps you understand the key credit terms before completing your purchase. If you choose Get by email, our payment partner Ratepay will use your email address only to send this information, using a third-party email delivery provider."
+                    },
+                    "paymentMethodsJoiner": {
+                        "or": {
+                            "firstFew": ", ",
+                            "last": " or "
+                        },
+                        "and": {
+                            "firstFew": ", ",
+                            "last": " and "
+                        }
+                    },
+                    "learnMore": "Learn more",
+                    "deliveryMethodButtons": {
+                        "email": "Get by email",
+                        "pdf": "Download PDF"
+                    },
+                    "deliveredByMail": {
+                        "header": "Sent by email",
+                        "text": "Your Standard EU Consumer Credit Information was sent to %email%."
+                    },
+                    "deliveredByDownload": {
+                        "header": "Downloaded",
+                        "text": "Your Standard EU Consumer Credit Information was downloaded to your device."
+                    },
+                    "retry": "Back to selection",
+                    "email": "E-Mail: %email%",
+                    "moto": {
+                        "header": "SECCI delivery by email",
+                        "text": "Send the SECCI to the customer via email.",
+                        "customerEmail": "Customer email address",
+                        "send": "Send",
+                        "retry": "Send again",
+                        "deliveredByMail": {
+                            "header": "SECCI delivered",
+                            "textLine1": "Ask the customer to read back the following document ID, to confirm delivery of the exact document.",
+                            "textLine2": "Document ID: %documentId%"
+                        }
+                    },
+                    "complianceServiceErrorMessage": "Standard European Consumer Credit Information (SECCI) is temporarily unavailable. Please try again."
                 }
             },
             "product-page": {

@@ -19,7 +19,7 @@
             <argument key="$lineItemExtensionRepository" id="ratepay_order_line_item_data.repository" type="service"/>
         </service>
 
-        <service id="Ratepay\RpayPayments\Components\Checkout\Service\PaymentFilterService" />
+        <service id="Ratepay\RpayPayments\Components\Checkout\Service\PaymentFilterService"/>
 
         <service id="Ratepay\RpayPayments\Components\Checkout\Service\PaymentMethodRoute"
                  decorates="Shopware\Core\Checkout\Payment\SalesChannel\PaymentMethodRoute"
@@ -31,18 +31,24 @@
             <argument type="service" id="payment_method.repository"/>
         </service>
 
-        <service id="Ratepay\RpayPayments\Components\Checkout\Service\DataValidationService" />
+        <service id="Ratepay\RpayPayments\Components\Checkout\Service\DataValidationService"/>
 
         <service id="Ratepay\RpayPayments\Components\Checkout\SalesChannel\CartOrderRoute" public="true"
                  decorates="Shopware\Core\Checkout\Cart\SalesChannel\CartOrderRoute">
-            <argument key="$innerService" type="service" id=".inner" />
+            <argument key="$innerService" type="service" id=".inner"/>
         </service>
 
         <service id="Ratepay\RpayPayments\Components\Checkout\SalesChannel\HandlePaymentMethodRoute" public="true"
                  decorates="Shopware\Core\Checkout\Payment\SalesChannel\HandlePaymentMethodRoute">
-            <argument key="$innerService" type="service" id=".inner" />
-            <argument key="$orderRepository" type="service" id="order.repository" />
-            <argument key="$ratepayDataRepository" type="service" id="ratepay_order_data.repository" />
+            <argument key="$innerService" type="service" id=".inner"/>
+            <argument key="$orderRepository" type="service" id="order.repository"/>
+            <argument key="$ratepayDataRepository" type="service" id="ratepay_order_data.repository"/>
+        </service>
+
+        <service id="Ratepay\RpayPayments\Components\Checkout\Service\SecciService" public="true">
+            <argument type="service" id="Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileBySalesChannelContextAndCart"/>
+            <argument type="service" id="Ratepay\RpayPayments\Components\RatepayApi\Service\Request\SecciRequestService"/>
+            <argument type="service" id="request_stack"/>
         </service>
 
     </services>

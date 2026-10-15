@@ -1,0 +1,31 @@
+{
+  "hash": "0ea4c8e7",
+  "configHash": "1b71a882",
+  "lockfileHash": "da26a9b9",
+  "browserHash": "b076a8da",
+  "optimized": {
+    "highlight.js/lib/core": {
+      "src": "../../../node_modules/highlight.js/lib/core.js",
+      "file": "highlight__js_lib_core.js",
+      "fileHash": "4077b32b",
+      "needsInterop": true
+    },
+    "highlight.js/lib/languages/xml": {
+      "src": "../../../node_modules/highlight.js/lib/languages/xml.js",
+      "file": "highlight__js_lib_languages_xml.js",
+      "fileHash": "c26f8c75",
+      "needsInterop": true
+    },
+    "xml-formatter": {
+      "src": "../../../node_modules/xml-formatter/index.js",
+      "file": "xml-formatter.js",
+      "fileHash": "f93f3606",
+      "needsInterop": true
+    }
+  },
+  "chunks": {
+    "chunk-BUSYA2B4": {
+      "file": "chunk-BUSYA2B4.js"
+    }
+  }
+}

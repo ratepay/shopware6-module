@@ -24,6 +24,8 @@
             <argument key="$requestStack" type="service" id="request_stack"/>
         </service>
 
+        <service id="Ratepay\RpayPayments\Components\Checkout\Subscriber\ContextSwitchSubscriber"/>
+
         <service id="Ratepay\RpayPayments\Components\Checkout\Subscriber\PaymentFailedSubscriber">
             <argument type="service" id="ratepay_api_log.repository"/>
         </service>

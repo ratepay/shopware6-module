@@ -74,6 +74,11 @@ class ProfileConfigMethodEntity extends Entity
      */
     final public const FIELD_INSTALLMENT_CONFIG = 'installmentConfig';
 
+    /**
+     * @var string
+     */
+    final public const FIELD_REQUIRE_SECCI = "requireSecci";
+
     protected ?PaymentMethodEntity $paymentMethod = null;
 
     protected string $paymentMethodId;
@@ -91,6 +96,8 @@ class ProfileConfigMethodEntity extends Entity
     protected bool $allowDifferentAddresses;
 
     protected ?bool $allowB2b = null;
+
+    protected bool $requireSecci = false;
 
     protected ?ProfileConfigMethodInstallmentEntity $installmentConfig = null;
 
@@ -137,6 +144,11 @@ class ProfileConfigMethodEntity extends Entity
     public function isAllowB2b(): ?bool
     {
         return $this->allowB2b;
+    }
+
+    public function isRequireSecci(): bool
+    {
+        return $this->requireSecci;
     }
 
     public function getInstallmentConfig(): ?ProfileConfigMethodInstallmentEntity
