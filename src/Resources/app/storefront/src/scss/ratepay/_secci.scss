@@ -159,10 +159,12 @@
         }
     }
 
+    &:not(.ratepay--secci_banner--error) .ratepay--secci_banner--text_error,
     &:not(.ratepay--secci_banner--mailed) .ratepay--secci_banner--text_mailed,
     &:not(.ratepay--secci_banner--downloaded) .ratepay--secci_banner--text_downloaded,
+    &.ratepay--secci_banner--error .ratepay--secci_banner--text_initial,
     &.ratepay--secci_banner--mailed .ratepay--secci_banner--text_initial,
-    &.ratepay--secci_banner--downloaded .ratepay--secci_banner--text_initial {
+    &.ratepay--secci_banner--downloaded .ratepay--secci_banner--text_initial, {
         display: none;
     }
 

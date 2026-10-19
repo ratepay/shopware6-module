@@ -31,7 +31,8 @@ class ContextSwitchSubscriber implements EventSubscriberInterface
         private readonly SystemConfigService $systemConfigService,
         private readonly RequestStack        $requestStack,
         private readonly SessionService      $sessionService,
-    ) {
+    )
+    {
     }
 
     public static function getSubscribedEvents(): array
@@ -43,8 +44,25 @@ class ContextSwitchSubscriber implements EventSubscriberInterface
 
     public function onContextSwitch(SalesChannelContextSwitchEvent $event): void
     {
+        $this->maybeResetSecciFailed($event);
+
         if ($event->getRequestDataBag()->has(SalesChannelContextService::PAYMENT_METHOD_ID)) {
             $this->triggerSecciDelivery($event);
+        }
+    }
+
+    private function maybeResetSecciFailed(SalesChannelContextSwitchEvent $event): void
+    {
+        // Remove Secci failure session data if SECCI-relevant data is changing
+        if (
+            $event->getRequestDataBag()->has(SalesChannelContextService::PAYMENT_METHOD_ID)
+            || $event->getRequestDataBag()->has(SalesChannelContextService::COUNTRY_ID)
+            || $event->getRequestDataBag()->has(SalesChannelContextService::CURRENCY_ID)
+            || $event->getRequestDataBag()->has(SalesChannelContextService::CUSTOMER_ID)
+            || $event->getRequestDataBag()->has(SalesChannelContextService::IMITATING_USER_ID)
+            || $event->getRequestDataBag()->has(SalesChannelContextService::LANGUAGE_ID)
+        ) {
+            $this->requestStack->getSession()->remove('secciFailed');
         }
     }
 
@@ -71,7 +89,11 @@ class ContextSwitchSubscriber implements EventSubscriberInterface
         $cart = $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext);
 
         if ($paymentMethod && $this->secciService->paymentMethodRequiresSecci($paymentMethod, $cart, $salesChannelContext)) {
-            $this->secciService->triggerSecciEmail($event->getRequestDataBag()->toRequestDataBag(), $cart, $salesChannelContext);
+            $result = $this->secciService->triggerSecciEmail($event->getRequestDataBag()->toRequestDataBag(), $cart, $salesChannelContext);
+            if ($result) {
+            } else {
+                $this->requestStack->getSession()->set('secciFailed', true);
+            }
         }
     }
 }

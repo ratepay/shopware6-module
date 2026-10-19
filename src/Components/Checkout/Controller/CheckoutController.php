@@ -28,6 +28,7 @@ use Shopware\Storefront\Framework\Routing\StorefrontRouteScope;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoader;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Attribute\Route;
@@ -38,8 +39,10 @@ class CheckoutController extends AbstractCheckoutController
 {
     public function __construct(
         private readonly ExtensionService           $extensionService,
-        private readonly AccountEditOrderPageLoader $orderLoader
-    ) {
+        private readonly AccountEditOrderPageLoader $orderLoader,
+        private readonly RequestStack               $requestStack,
+    )
+    {
     }
 
     #[Route(
@@ -122,6 +125,12 @@ class CheckoutController extends AbstractCheckoutController
             return new Response(status: Response::HTTP_BAD_REQUEST);
         }
 
+        if ($responseData['success']) {
+            $this->requestStack->getSession()->remove('secciFailed');
+        } else {
+            $this->requestStack->getSession()->set('secciFailed', true);
+        }
+
         return new JsonResponse($responseData);
     }
 
@@ -136,7 +145,7 @@ class CheckoutController extends AbstractCheckoutController
         ],
         methods: ['POST']
     )]
-    public function secci(SessionService $sessionService, Request $request, Cart $cart, SalesChannelContext $salesChannelContext, SecciService $secciService): Response
+    public function trigerMotoSecciDelivery(SessionService $sessionService, Request $request, Cart $cart, SalesChannelContext $salesChannelContext, SecciService $secciService): Response
     {
         if (!$sessionService->isAdminSession($salesChannelContext, $request->getSession())) {
             return new Response(status: Response::HTTP_UNAUTHORIZED);

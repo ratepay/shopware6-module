@@ -11,38 +11,57 @@ import ElementLoadingIndicatorUtil from 'src/utility/loading-indicator/element-l
 export default class Secci extends window.PluginBaseClass {
 
     init() {
+        this._variant = this.el.dataset.ratepaySecciVariant;
+        this._action = this.el.dataset.ratepaySecciAction;
+        this._errorUrl = this.el.dataset.ratepaySecciErrorUrl
+
+        this._form = document.forms['confirmOrderForm'];
+
         this._submitButtons = this.el.querySelectorAll('[data-ratepay-secci-delivery-type]');
         this._resetButtons = this.el.querySelectorAll('[data-ratepay-secci-reset]');
-        this._form = document.forms['confirmOrderForm'];
-        this._action = this.el.dataset.ratepaySecciAction;
-        this._errorUrl = this.el.dataset.ratepaySecciErrorUrl;
+
         this._motoEmailInput = this.el.querySelector('#ratepaySecciEmail');
         this._motoSuccessMail = this.el.querySelector('[data-ratepay-secci-moto-mail]');
         this._motoSuccessDocumentId = this.el.querySelector('[data-ratepay-secci-moto-documentid]');
+
         this._registerEvents();
     }
 
     _registerEvents() {
-        this._submitButtons.forEach(button => button.addEventListener('click', this.onSubmit.bind(this)));
+        this._submitButtons.forEach(button => button.addEventListener('click', this._onSubmit.bind(this)));
         this._resetButtons.forEach(button => button.addEventListener('click', this._onReset.bind(this)));
 
         window.PluginManager.getPluginInstances('RatepayInstallment').forEach(plugin => {
             plugin.$emitter.subscribe('RatepayInstallmentPlanUpdated', this._onReset.bind(this));
         });
+
+        window.PluginManager.getPluginInstances('RatepayInstallmentPaymentSwitch').forEach(plugin => {
+            plugin.$emitter.subscribe('RatepayInstallmentPaymentMethodSwitched', this._onReset.bind(this));
+        });
+
+        if (this._variant == 1) {
+            // With automatic SECCI delivery, email delivery must be triggered when customer switches between direct debit and bank transfer
+            window.PluginManager.getPluginInstances('RatepayInstallmentPaymentSwitch').forEach(plugin => {
+                plugin.$emitter.subscribe('RatepayInstallmentPaymentMethodSwitched', this._onVariant1InstallmentPaymentMethodSwitched.bind(this));
+            });
+        }
     }
 
-    onSubmit(event) {
+    _onSubmit(event) {
         this._addLoadingIndicators();
-        this._sendRequest(event);
+        this._sendRequest(event.currentTarget.dataset.ratepaySecciDeliveryType);
     }
 
     _onReset() {
         this.el.classList.remove('ratepay--secci_banner--downloaded', 'ratepay--secci_banner--mailed');
     }
 
-    _sendRequest(event) {
-        const deliveryType = event.currentTarget.dataset.ratepaySecciDeliveryType;
+    _onVariant1InstallmentPaymentMethodSwitched() {
+        this._addLoadingIndicators();
+        this._sendRequest('mail');
+    }
 
+    _sendRequest(deliveryType) {
         const formData = FormSerializeUtil.serialize(this._form);
         formData.append('ratepay[secciDeliveryType]', deliveryType);
 

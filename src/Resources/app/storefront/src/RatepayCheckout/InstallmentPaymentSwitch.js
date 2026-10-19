@@ -33,6 +33,8 @@ export default class InstallmentPaymentSwitch extends window.PluginBaseClass {
         } else {
             this._hideSepaForm()
         }
+
+        this.$emitter.publish('RatepayInstallmentPaymentMethodSwitched');
     }
 
     _hideSepaForm() {

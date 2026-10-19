@@ -29,10 +29,11 @@
     {#% endif %#}
 {% endblock %}
 
-{% if page.extensions.ratepay.showSecciDeliveryConfirmation and page.extensions.ratepay.secciVariant == 1 %}
+{% if (page.extensions.ratepay.showSecciDeliveryConfirmation or page.extensions.ratepay.showSecciFailedConfirmation) and page.extensions.ratepay.secciVariant == 1 %}
     <div class="col-sm-12">
-        <div class="ratepay--secci_banner ratepay--secci_variant1 ratepay--secci_banner--mailed"
+        <div class="ratepay--secci_banner ratepay--secci_variant1 {{ page.extensions.ratepay.showSecciFailedConfirmation ? 'ratepay--secci_banner--error' : 'ratepay--secci_banner--mailed' }}"
              data-ratepay-secci="true"
+             data-ratepay-secci-variant="{{ page.extensions.ratepay.secciVariant }}"
              data-ratepay-secci-error-url="{{ path('frontend.checkout.confirm.page') }}"
              data-ratepay-secci-action="{{ path('frontend.checkout.ratepay.secci') }}">
             <div class="ratepay--secci_banner--container">
@@ -40,24 +41,48 @@
                     <div class="ratepay--secci_banner--icon_success">
                         {% sw_icon 'checkmark-circle' %}
                     </div>
+                    <div class="ratepay--secci_banner--icon_error">
+                        {% sw_icon 'info' style {
+                            color: 'danger'
+                        } %}
+                    </div>
                 </div>
                 <div class="ratepay--secci_banner--text_container">
-                    <div class="ratepay--secci_banner--text_mailed">
-                        <div class="ratepay--secci_banner--headline">
-                            {{ 'ratepay.storefront.checkout.secci.deliveredByMail.header'|trans }}
+                    {% if page.extensions.ratepay.showSecciFailedConfirmation %}
+                        <div class="ratepay--secci_banner--text_error">
+                            <div class="ratepay--secci_banner--headline">
+                                {{ 'ratepay.storefront.checkout.secci.mailFailed.header'|trans }}
+                            </div>
+                            <p class="ratepay--secci_banner--text">
+                                {{ 'ratepay.storefront.checkout.secci.mailFailed.text'|trans({
+                                    '%email%': context.customer.email
+                                }) }}
+                            </p>
+                            {% block ratepay_secci_banner_failed_pdf_button %}
+                                <span class="ratepay--secci_banner--confirmation_pdf_button"
+                                      data-ratepay-secci-delivery-type="pdf">
+                                    {{ 'ratepay.storefront.checkout.secci.mailFailed.downloadPdfButton'|trans }}
+                                </span>
+                            {% endblock %}
                         </div>
-                        <p class="ratepay--secci_banner--text">
-                            {{ 'ratepay.storefront.checkout.secci.variant1.confirmation'|trans({
-                                '%email%': context.customer.email
-                            }) }}
-                        </p>
-                        {% block ratepay_secci_banner_confirmation_pdf_button %}
-                            <span class="ratepay--secci_banner--confirmation_pdf_button"
-                                  data-ratepay-secci-delivery-type="pdf">
-                                {{ 'ratepay.storefront.checkout.secci.variant1.downloadPdf'|trans }}
-                            </span>
-                        {% endblock %}
-                    </div>
+                    {% else %}
+                        <div class="ratepay--secci_banner--text_mailed">
+                            <div class="ratepay--secci_banner--headline">
+                                {{ 'ratepay.storefront.checkout.secci.deliveredByMail.header'|trans }}
+                            </div>
+                            <p class="ratepay--secci_banner--text">
+                                {{ 'ratepay.storefront.checkout.secci.variant1.confirmation'|trans({
+                                    '%email%': context.customer.email
+                                }) }}
+                            </p>
+                            {% block ratepay_secci_banner_confirmation_pdf_button %}
+                                <span class="ratepay--secci_banner--confirmation_pdf_button"
+                                      data-ratepay-secci-delivery-type="pdf">
+                                    {{ 'ratepay.storefront.checkout.secci.variant1.downloadPdf'|trans }}
+                                </span>
+                            {% endblock %}
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="ratepay--secci_banner--spacer" aria-hidden="true"></div>
             </div>

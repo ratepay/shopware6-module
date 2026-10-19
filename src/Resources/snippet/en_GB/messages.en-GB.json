@@ -99,7 +99,12 @@
                             "textLine2": "Document ID: %documentId%"
                         }
                     },
-                    "complianceServiceErrorMessage": "Standard European Consumer Credit Information (SECCI) is temporarily unavailable. Please try again."
+                    "complianceServiceErrorMessage": "Standard European Consumer Credit Information (SECCI) is temporarily unavailable. Please try again.",
+                    "mailFailed": {
+                        "header": "E-Mail could not be sent",
+                        "text": "We couldn't send the Standard European Consumer Credit Information to %email%.",
+                        "downloadPdfButton": "Download PDF version"
+                    }
                 }
             },
             "product-page": {

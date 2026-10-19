@@ -99,7 +99,12 @@
                             "textLine2": "Dokument-ID: %documentId%"
                         }
                     },
-                    "complianceServiceErrorMessage": "Europäische Standardinformationen für Verbraucherkredite (SECCI) sind vorübergehend nicht verfügbar. Bitte versuche es noch einmal."
+                    "complianceServiceErrorMessage": "Europäische Standardinformationen für Verbraucherkredite (SECCI) sind vorübergehend nicht verfügbar. Bitte versuche es noch einmal.",
+                    "mailFailed": {
+                        "header": "E-Mail konnte nicht gesendet werden",
+                        "text": "Wir konnten die EU-Standardinformationen für Verbraucherkredite nicht an %email% senden.",
+                        "downloadPdfButton": "PDF-Version herunterladen"
+                    }
                 }
             },
             "product-page": {

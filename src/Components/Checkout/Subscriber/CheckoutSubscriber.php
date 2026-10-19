@@ -100,14 +100,17 @@ class CheckoutSubscriber implements EventSubscriberInterface
             }
         }
 
+        $secciFailed = $this->requestStack->getSession()->get('secciFailed') ?? false;
+
         $extension->assign([
             'showSecciBanner' => $showSecciBanner,
             'secciVariant' => $secciVariant,
             'disablePaymentModePreselection' => $disablePaymentModePreselection,
             'secciPaymentMethods' => $secciPaymentMethods,
             'showSecciDeliveryConfirmation' => $showSecciDeliveryConfirmation,
+            'showSecciFailedConfirmation' => $secciFailed,
             'motoDocumentId' => $motoDocumentId,
-            'motoEmail' => $motoEmail
+            'motoEmail' => $motoEmail,
         ]);
     }
 
