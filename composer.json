@@ -42,7 +42,7 @@
     },
     "require": {
         "php": "^8.2",
-        "ratepay/php-library": "^1.8",
+        "ratepay/php-library": "^2.0",
         "shopware/core": "~6.7.0",
         "ext-simplexml": "*",
         "ext-json": "*"
