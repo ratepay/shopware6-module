@@ -9,7 +9,7 @@
     margin-bottom: 16px;
     padding: 12px;
 
-    &.ratepay--secci_banner--error {
+    &.ratepay--secci_banner--error, &.ratepay--secci_banner--failed {
         background-color: oklab(0.577 0.217662 0.112464 / 0.05);
         border-color: lab(48.4493 77.4328 61.5452);
     }
@@ -141,13 +141,13 @@
         }
     }
 
-    &.ratepay--secci_banner--error, &.ratepay--secci_banner--mailed, &.ratepay--secci_banner--downloaded {
+    &.ratepay--secci_banner--error, &.ratepay--secci_banner--failed, &.ratepay--secci_banner--mailed, &.ratepay--secci_banner--downloaded {
         .ratepay--secci_banner--icon_info {
             display: none;
         }
     }
 
-    &:not(.ratepay--secci_banner--error) {
+    &:not(.ratepay--secci_banner--error):not(.ratepay--secci_banner--failed) {
         .ratepay--secci_banner--icon_error {
             display: none;
         }
@@ -159,10 +159,10 @@
         }
     }
 
-    &:not(.ratepay--secci_banner--error) .ratepay--secci_banner--text_error,
+    &:not(.ratepay--secci_banner--failed) .ratepay--secci_banner--text_failed,
     &:not(.ratepay--secci_banner--mailed) .ratepay--secci_banner--text_mailed,
     &:not(.ratepay--secci_banner--downloaded) .ratepay--secci_banner--text_downloaded,
-    &.ratepay--secci_banner--error .ratepay--secci_banner--text_initial,
+    &.ratepay--secci_banner--failed .ratepay--secci_banner--text_initial,
     &.ratepay--secci_banner--mailed .ratepay--secci_banner--text_initial,
     &.ratepay--secci_banner--downloaded .ratepay--secci_banner--text_initial, {
         display: none;

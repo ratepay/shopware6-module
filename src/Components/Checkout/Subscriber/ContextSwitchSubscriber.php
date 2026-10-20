@@ -18,6 +18,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextService;
 use Shopware\Core\System\SalesChannel\Event\SalesChannelContextSwitchEvent;
+use Shopware\Core\System\SalesChannel\Event\SwitchContextEvent;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -38,8 +39,17 @@ class ContextSwitchSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
+            SwitchContextEvent::DATABASE_CHECK => 'beforeContextSwitch',
             SalesChannelContextSwitchEvent::class => 'onContextSwitch'
         ];
+    }
+
+    public function beforeContextSwitch(SwitchContextEvent $event): void
+    {
+        if ($event->getRequestData()->has(SalesChannelContextService::PAYMENT_METHOD_ID)) {
+            // Save locale for later as the context language resets to default during the context switch operation
+            $this->requestStack->getMainRequest()->attributes->set('ratepay_saved_locale', $event->getSalesChannelContext()->getLanguageInfo()->localeCode);
+        }
     }
 
     public function onContextSwitch(SalesChannelContextSwitchEvent $event): void

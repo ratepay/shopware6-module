@@ -141,10 +141,12 @@ class SecciService
             $emailAddress = $emailAddress ?? $salesChannelContext->getCustomer()->getEmail();
         }
 
+        $locale = $this->requestStack->getMainRequest()->attributes->get('ratepay_saved_locale') ?? $salesChannelContext->getLanguageInfo()->localeCode;
+
         $secciRequestData = new SecciRequestData(
             $sendMail ? SecciRequestData::DELIVERY_METHOD_EMAIL : SecciRequestData::DELIVERY_METHOD_PDF,
             $emailAddress,
-            $salesChannelContext->getLanguageInfo()->localeCode,
+            $locale,
             $salesChannelContext->getCustomer()->getActiveBillingAddress()->getCountry()->getIso(),
             $cart,
             $salesChannelContext->getPaymentMethod(),
@@ -175,7 +177,7 @@ class SecciService
                 $cart->getPrice()->getTotalPrice(),
                 $salesChannelContext->getPaymentMethod()->getId(),
                 $salesChannelContext->getCurrencyId(),
-                $salesChannelContext->getLanguageInfo()->localeCode,
+                $locale,
                 $ratepayParameters
             );
             return $response;
