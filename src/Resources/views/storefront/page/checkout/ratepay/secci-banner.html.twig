@@ -7,13 +7,21 @@
 {# @var variant int #}
 {# @var error bool #}
 {# @var showSecciDeliveryConfirmation bool #}
+{# @var secciDeliveryConfirmationType string #}
 {# @var motoDocumentId string #}
 {# @var motoEmail string #}
 {# @var secciPaymentMethods \Shopware\Core\Checkout\Payment\PaymentMethodCollection #}
 
+{% set additionalClass = '' %}
+{% if error %}
+    {% set additionalClass = ' ratepay--secci_banner--error' %}
+{% elseif variant !== 1 and showSecciDeliveryConfirmation %}
+    {% set additionalClass = ' ratepay--secci_banner--' ~ (secciDeliveryConfirmationType === 'pdf' ? 'downloaded' : 'mailed') %}
+{% endif %}
+
 {% block ratepay_secci_banner %}
     <div class="col-sm-12">
-        <div class="ratepay--secci_banner ratepay--secci_variant{{ variant }}{% if error %} ratepay--secci_banner--error{% endif %}{% if variant === 3 and showSecciDeliveryConfirmation %} ratepay--secci_banner--mailed{% endif %}"
+        <div class="ratepay--secci_banner ratepay--secci_variant{{ variant }}{{ additionalClass }}"
              data-ratepay-secci="true"
              data-ratepay-secci-variant="{{ page.extensions.ratepay.secciVariant }}"
              data-ratepay-secci-error-url="{{ path('frontend.checkout.confirm.page') }}"
@@ -203,7 +211,8 @@
                             <div class="ratepay--secci_banner--headline">
                                 {{ 'ratepay.storefront.checkout.secci.moto.deliveredByMail.header'|trans }}
                             </div>
-                            <p class="ratepay--secci_banner--text" data-ratepay-secci-moto-mail>{% if showSecciDeliveryConfirmation %}{{ motoEmail }}{% endif %}</p>
+                            <p class="ratepay--secci_banner--text"
+                               data-ratepay-secci-moto-mail>{% if showSecciDeliveryConfirmation %}{{ motoEmail }}{% endif %}</p>
                             <p class="ratepay--secci_banner--text">
                                 {{ 'ratepay.storefront.checkout.secci.moto.deliveredByMail.textLine1'|trans }}
                             </p>

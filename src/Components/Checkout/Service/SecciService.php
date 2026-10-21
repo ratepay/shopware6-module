@@ -228,7 +228,7 @@ class SecciService
 
         // Validate financing data has not changed. Ignore secci parameters. Only for variant 2
         if ($this->systemConfigService->get('RpayPayments.config.ratepaySecciVariant') == 2) {
-            if ($result['installmentHash'] !== ($ratepayParameters['installment']['hash'] ?? null)) {
+            if (!empty($ratepayParameters) && $result['installmentHash'] !== ($ratepayParameters['installment']['hash'] ?? null)) {
                 return null;
             }
         }

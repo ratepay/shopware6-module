@@ -65,39 +65,35 @@ class CheckoutSubscriber implements EventSubscriberInterface
             $secciVariant = 3;
         }
         $disablePaymentModePreselection = false;
-        $showSecciDeliveryConfirmation = false;
         $motoDocumentId = null;
         $motoEmail = null;
 
         $secciPaymentMethods = $this->secciService->filterPaymentMethodRequiresSecci($event->getPage()->getPaymentMethods(), $event->getPage()->getCart(), $event->getSalesChannelContext());
         $paymentMethodRequiresSecci = $secciPaymentMethods->has($salesChannelContext->getPaymentMethod()->getId());
 
-        if ($secciVariant == 2) {
-            $showSecciBanner = $paymentMethodRequiresSecci;
+        if ($secciVariant == 1) {
+            $showSecciBanner = $secciPaymentMethods->count() !== 0;
         } else {
-            if ($secciVariant == 1) {
-                $showSecciBanner = $secciPaymentMethods->count() !== 0;
-            } else {
-                $showSecciBanner = $paymentMethodRequiresSecci;
-            }
+            $showSecciBanner = $paymentMethodRequiresSecci;
+        }
 
-            $attestationTokenStorage = $this->secciService->getAttestationTokenStorage(
-                $event->getPage()->getCart()->getPrice()->getTotalPrice(),
-                $salesChannelContext->getPaymentMethod()->getId(),
-                $salesChannelContext->getCurrencyId(),
-                $salesChannelContext->getLanguageInfo()->localeCode
-            );
+        $attestationTokenStorage = $this->secciService->getAttestationTokenStorage(
+            $event->getPage()->getCart()->getPrice()->getTotalPrice(),
+            $salesChannelContext->getPaymentMethod()->getId(),
+            $salesChannelContext->getCurrencyId(),
+            $salesChannelContext->getLanguageInfo()->localeCode
+        );
 
-            if ($secciVariant == 1 && $paymentMethodRequiresSecci && $attestationTokenStorage === null) {
-                $disablePaymentModePreselection = true;
-            }
+        if ($secciVariant == 1 && $paymentMethodRequiresSecci && $attestationTokenStorage === null) {
+            $disablePaymentModePreselection = true;
+        }
 
-            $showSecciDeliveryConfirmation = $attestationTokenStorage !== null && $paymentMethodRequiresSecci;
+        $showSecciDeliveryConfirmation = $attestationTokenStorage !== null && $paymentMethodRequiresSecci;
+        $secciDeliveryConfirmationType = $attestationTokenStorage['deliveryMethod'] ?? null;
 
-            if ($secciVariant == 3) {
-                $motoDocumentId = $attestationTokenStorage['documentId'] ?? null;
-                $motoEmail = $attestationTokenStorage['emailRecipient'] ?? null;
-            }
+        if ($secciVariant == 3) {
+            $motoDocumentId = $attestationTokenStorage['documentId'] ?? null;
+            $motoEmail = $attestationTokenStorage['emailRecipient'] ?? null;
         }
 
         $secciFailed = $this->requestStack->getSession()->get('secciFailed') ?? false;
@@ -108,6 +104,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
             'disablePaymentModePreselection' => $disablePaymentModePreselection,
             'secciPaymentMethods' => $secciPaymentMethods,
             'showSecciDeliveryConfirmation' => $showSecciDeliveryConfirmation,
+            'secciDeliveryConfirmationType' => $secciDeliveryConfirmationType,
             'showSecciFailedConfirmation' => $secciFailed,
             'motoDocumentId' => $motoDocumentId,
             'motoEmail' => $motoEmail,
