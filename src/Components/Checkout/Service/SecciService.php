@@ -205,6 +205,7 @@ class SecciService
             'currencyId' => $currencyId,
             'locale' => $locale,
             'installmentHash' => $ratepayParameters['installment']['hash'] ?? null,
+            'paymentType' => $ratepayParameters['installment']['paymentType'] ?? null,
         ]);
     }
 
@@ -231,8 +232,12 @@ class SecciService
         }
 
         // Validate financing data has not changed. Ignore secci parameters. Only for variant 2
-        if ($this->systemConfigService->get('RpayPayments.config.ratepaySecciVariant') == 2) {
-            if (!empty($ratepayParameters) && $result['installmentHash'] !== ($ratepayParameters['installment']['hash'] ?? null)) {
+        if ($this->systemConfigService->get('RpayPayments.config.ratepaySecciVariant') == 2 && !empty($ratepayParameters)) {
+            if ($result['installmentHash'] !== ($ratepayParameters['installment']['hash'] ?? null)) {
+                return null;
+            }
+
+            if ($result['paymentType'] !== ($ratepayParameters['installment']['paymentType'] ?? null)) {
                 return null;
             }
         }
