@@ -74,6 +74,10 @@ class SecciService
             }
 
             $search = $this->profileBySalesChannelContextAndCart->createSearchObject($salesChannelContext, $cart);
+            if ($search === null) {
+                return false;
+            }
+
             $search->setPaymentMethodId($paymentMethodId);
             $result = $this->profileBySalesChannelContextAndCart->search($search, $salesChannelContext);
 
