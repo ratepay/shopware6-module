@@ -1,0 +1,7 @@
+{
+    "ratepay": {
+        "salesChannelDetail": {
+            "defaultPaymentMethodRequiresSecci": "Credit-based payment methods, including BNPL, can’t be set as the default under CCD2. Choose a non-credit payment method instead."
+        }
+    }
+}

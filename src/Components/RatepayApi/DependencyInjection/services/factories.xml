@@ -22,9 +22,12 @@
             <argument key="$languageRepository" type="service" id="language.repository"/>
         </service>
 
+        <service id="Ratepay\RpayPayments\Components\RatepayApi\Factory\CartShoppingBasketFactory" autowire="true"/>
+        <service id="Ratepay\RpayPayments\Components\RatepayApi\Factory\CartPaymentFactory" autowire="true"/>
         <service id="Ratepay\RpayPayments\Components\RatepayApi\Factory\ExternalFactory" autowire="true"/>
         <service id="Ratepay\RpayPayments\Components\RatepayApi\Factory\InvoiceFactory" autowire="true"/>
         <service id="Ratepay\RpayPayments\Components\RatepayApi\Factory\PaymentFactory" autowire="true"/>
+        <service id="Ratepay\RpayPayments\Components\RatepayApi\Factory\SecciFactory" autowire="true"/>
         <service id="Ratepay\RpayPayments\Components\RatepayApi\Factory\ShoppingBasketFactory" autowire="true"/>
 
     </services>

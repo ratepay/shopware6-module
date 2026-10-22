@@ -24,6 +24,8 @@
             <argument key="$requestStack" type="service" id="request_stack"/>
         </service>
 
+        <service id="Ratepay\RpayPayments\Components\Checkout\Subscriber\ContextSwitchSubscriber"/>
+
         <service id="Ratepay\RpayPayments\Components\Checkout\Subscriber\PaymentFailedSubscriber">
             <argument type="service" id="ratepay_api_log.repository"/>
         </service>
@@ -32,6 +34,11 @@
             <argument id="customer.repository" type="service"/>
             <argument id="order_address.repository" type="service"/>
             <argument id="customer_address.repository" type="service"/>
+        </service>
+
+        <service id="Ratepay\RpayPayments\Components\Checkout\Subscriber\CartLoadingSubscriber">
+            <argument type="service" id="Shopware\Core\System\SalesChannel\SalesChannel\ContextSwitchRoute"/>
+            <tag name="kernel.event_subscriber"/>
         </service>
 
     </services>

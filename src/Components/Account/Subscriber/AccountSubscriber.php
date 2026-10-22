@@ -127,7 +127,7 @@ class AccountSubscriber implements EventSubscriberInterface
 
         // we must validate the ratepay data on our own. to prevent errors with other extensions, we will only validate ratepay-data.
         $requestData = new DataBag($event->getStorefrontRequest()->request->all());
-        $ratepayData = RequestHelper::getRatepayData($requestData);
+        $ratepayData = RequestHelper::getRatepayData($requestData) ?? new DataBag();
 
         $validationDefinitions = $paymentHandler->getValidationDefinitions($requestData, $event->getSalesChannelContext(), $orderEntity);
         $definition = new DataValidationDefinition();
