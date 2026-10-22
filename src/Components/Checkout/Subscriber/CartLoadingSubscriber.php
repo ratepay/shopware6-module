@@ -22,7 +22,7 @@ class CartLoadingSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutCartRuleLoaderExtension::onPost() => 'afterCartLoaded',
+            CheckoutCartRuleLoaderExtension::class . '.post' => 'afterCartLoaded',
         ];
     }
 
