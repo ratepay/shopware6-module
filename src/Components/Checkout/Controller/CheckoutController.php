@@ -41,6 +41,7 @@ class CheckoutController extends AbstractCheckoutController
         private readonly ExtensionService           $extensionService,
         private readonly AccountEditOrderPageLoader $orderLoader,
         private readonly RequestStack               $requestStack,
+        private readonly SecciService               $secciService,
     )
     {
     }
@@ -91,6 +92,10 @@ class CheckoutController extends AbstractCheckoutController
     )]
     public function triggerSecciDelivery(Request $request, Cart $cart, SalesChannelContext $salesChannelContext, SecciService $secciService): Response
     {
+        if (!$this->secciService->paymentMethodRequiresSecci($salesChannelContext->getPaymentMethod(), $cart, $salesChannelContext)) {
+            return new Response(status: Response::HTTP_NO_CONTENT);
+        }
+
         $ratepayData = $request->request->all('ratepay');
         $deliveryMethod = $ratepayData['secciDeliveryType'] ?? null;
         $databag = new RequestDataBag(['paymentDetails' => ['ratepay' => $ratepayData]]);
@@ -149,6 +154,10 @@ class CheckoutController extends AbstractCheckoutController
     {
         if (!$sessionService->isAdminSession($salesChannelContext, $request->getSession())) {
             return new Response(status: Response::HTTP_UNAUTHORIZED);
+        }
+
+        if (!$this->secciService->paymentMethodRequiresSecci($salesChannelContext->getPaymentMethod(), $cart, $salesChannelContext)) {
+            return new Response(status: Response::HTTP_NO_CONTENT);
         }
 
         $email = $request->request->get('motoSecciEmail');
