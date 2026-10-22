@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Ratepay\RpayPayments\Components\Checkout\Cart;
+namespace Ratepay\RpayPayments\Components\Checkout\Cart\Error;
 
 
 use Shopware\Core\Checkout\Cart\Error\Error;

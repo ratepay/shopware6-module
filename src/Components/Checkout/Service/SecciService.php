@@ -146,12 +146,13 @@ class SecciService
         }
 
         $locale = $this->requestStack->getMainRequest()->attributes->get('ratepay_saved_locale') ?? $salesChannelContext->getLanguageInfo()->localeCode;
+        $billingCountry = $salesChannelContext->getCustomer()->getActiveBillingAddress()->getCountry()->getIso();
 
         $secciRequestData = new SecciRequestData(
             $sendMail ? SecciRequestData::DELIVERY_METHOD_EMAIL : SecciRequestData::DELIVERY_METHOD_PDF,
             $emailAddress,
             $locale,
-            $salesChannelContext->getCustomer()->getActiveBillingAddress()->getCountry()->getIso(),
+            $billingCountry,
             $cart,
             $salesChannelContext->getPaymentMethod(),
             $salesChannelContext->getCurrency(),
@@ -182,6 +183,7 @@ class SecciService
                 $salesChannelContext->getPaymentMethod()->getId(),
                 $salesChannelContext->getCurrencyId(),
                 $locale,
+                $billingCountry,
                 $ratepayParameters
             );
             return $response;
@@ -193,7 +195,7 @@ class SecciService
         return $response;
     }
 
-    private function saveAttestationToken(string $token, string $deliveryMethod, ?string $documentId, ?string $emailRecipient, float $cartTotal, string $paymentMethodId, string $currencyId, string $locale, array $ratepayParameters): void
+    private function saveAttestationToken(string $token, string $deliveryMethod, ?string $documentId, ?string $emailRecipient, float $cartTotal, string $paymentMethodId, string $currencyId, string $locale, string $billingCountry, array $ratepayParameters): void
     {
         $this->requestStack->getSession()->set(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN, [
             'token' => $token,
@@ -204,13 +206,19 @@ class SecciService
             'paymentMethodId' => $paymentMethodId,
             'currencyId' => $currencyId,
             'locale' => $locale,
+            'billingCountry' => $billingCountry,
             'installmentHash' => $ratepayParameters['installment']['hash'] ?? null,
             'paymentType' => $ratepayParameters['installment']['paymentType'] ?? null,
         ]);
     }
 
+    public function hasAttestationToken(): bool
+    {
+        return $this->requestStack->getSession()->has(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN);
+    }
+
     #[ArrayShape(['token' => "string", 'deliveryMethod' => "string", 'documentId' => "string", 'emailRecipient' => "string", 'cartTotal' => "float", 'paymentMethodId' => "string", 'currencyId' => "string", 'locale' => "string", 'installmentHash' => "string|null"])]
-    public function getAttestationTokenStorage(float $cartTotal, string $paymentMethodId, string $currencyId, string $locale, array $ratepayParameters = []): ?array
+    public function getAttestationTokenStorage(float $cartTotal, string $paymentMethodId, string $currencyId, string $locale, string $billingCountry, array $ratepayParameters = []): ?array
     {
         $result = $this->requestStack->getSession()->get(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN);
         if (empty($result)) {
@@ -230,6 +238,9 @@ class SecciService
         if ($result['locale'] !== $locale) {
             return null;
         }
+        if ($result['billingCountry'] !== $billingCountry) {
+            return null;
+        }
 
         // Validate financing data has not changed. Ignore secci parameters. Only for variant 2
         if ($this->systemConfigService->get('RpayPayments.config.ratepaySecciVariant') == 2 && !empty($ratepayParameters)) {
@@ -246,11 +257,10 @@ class SecciService
         return $result;
     }
 
-    public function getAttestationToken(float $cartTotal, string $paymentMethodId, string $currencyId, string $locale, array $ratepayParameters = []): ?string
+    public function getAttestationToken(float $cartTotal, string $paymentMethodId, string $currencyId, string $locale, string $billingCountry, array $ratepayParameters = []): ?string
     {
-        return $this->getAttestationTokenStorage($cartTotal, $paymentMethodId, $currencyId, $locale, $ratepayParameters)['token'] ?? null;
+        return $this->getAttestationTokenStorage($cartTotal, $paymentMethodId, $currencyId, $locale, $billingCountry, $ratepayParameters)['token'] ?? null;
     }
-
 
     public function clearAttestationToken(): void
     {

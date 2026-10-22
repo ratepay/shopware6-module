@@ -2,6 +2,7 @@
 
 namespace Ratepay\RpayPayments\Components\Checkout\Cart;
 
+use Ratepay\RpayPayments\Components\Checkout\Cart\Error\SecciExpiredError;
 use Ratepay\RpayPayments\Components\Checkout\Service\SecciService;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\CartBehavior;
@@ -17,8 +18,8 @@ class SecciPaymentMethodValidator implements CartProcessorInterface, CartValidat
 {
     public function __construct(
         private readonly SystemConfigService $systemConfigService,
-        private readonly SecciService $secciService,
-        private readonly RequestStack $requestStack,
+        private readonly SecciService        $secciService,
+        private readonly RequestStack        $requestStack,
     )
     {
     }
@@ -36,7 +37,14 @@ class SecciPaymentMethodValidator implements CartProcessorInterface, CartValidat
         if (
             $this->systemConfigService->get('RpayPayments.config.ratepaySecciVariant') == 1
             && $this->secciService->paymentMethodRequiresSecci($context->getPaymentMethod(), $cart, $context)
-            && $this->secciService->getAttestationToken($cart->getPrice()->getTotalPrice(), $context->getPaymentMethod()->getId(), $context->getCurrencyId(), $locale) === null
+            && $this->secciService->hasAttestationToken()
+            && $this->secciService->getAttestationToken(
+                $cart->getPrice()->getTotalPrice(),
+                $context->getPaymentMethod()->getId(),
+                $context->getCurrencyId(),
+                $locale,
+                $context->getCustomer()->getActiveBillingAddress()->getCountry()->getIso()
+            ) === null
         ) {
             $errors->add(new SecciExpiredError());
         }

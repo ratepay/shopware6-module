@@ -2,7 +2,7 @@
 
 namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
 
-use Ratepay\RpayPayments\Components\Checkout\Cart\SecciExpiredError;
+use Ratepay\RpayPayments\Components\Checkout\Cart\Error\SecciExpiredError;
 use Shopware\Core\Checkout\Cart\Extension\CheckoutCartRuleLoaderExtension;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextService;
@@ -40,12 +40,14 @@ class CartLoadingSubscriber implements EventSubscriberInterface
         if ($cart && $cart->getErrors()->has(SecciExpiredError::KEY)) {
             // Switch payment method
             $defaultPaymentMethodId = $event->getSalesChannelContext()->getSalesChannel()->getPaymentMethodId();
-            $this->contextSwitchRoute->switchContext(
-                new RequestDataBag([
-                    SalesChannelContextService::PAYMENT_METHOD_ID => $defaultPaymentMethodId,
-                ]),
-                $event->getSalesChannelContext(),
-            );
+            if ($event->getSalesChannelContext()->getPaymentMethod()->getId() !== $defaultPaymentMethodId) {
+                $this->contextSwitchRoute->switchContext(
+                    new RequestDataBag([
+                        SalesChannelContextService::PAYMENT_METHOD_ID => $defaultPaymentMethodId,
+                    ]),
+                    $event->getSalesChannelContext(),
+                );
+            }
         }
     }
 }

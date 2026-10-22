@@ -77,6 +77,7 @@ class DataValidationService
                 $paymentMethodId,
                 $salesChannelContext->getCurrencyId(),
                 $salesChannelContext->getLanguageInfo()->localeCode,
+                $salesChannelContext->getCustomer()->getActiveBillingAddress()->getCountry()->getIso(),
                 RequestHelper::getRatepayData($dataBag)->all()
             );
             $dataBag->get(RequestHelper::RATEPAY_DATA_KEY)->set('secci', $attestationToken);
