@@ -36,6 +36,11 @@
             <argument id="customer_address.repository" type="service"/>
         </service>
 
+        <service id="Ratepay\RpayPayments\Components\Checkout\Subscriber\CartLoadingSubscriber">
+            <argument type="service" id="Shopware\Core\System\SalesChannel\SalesChannel\ContextSwitchRoute"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
     </services>
 
 </container>

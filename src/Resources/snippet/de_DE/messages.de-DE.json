@@ -13,6 +13,7 @@
     "error.VIOLATION::RP_SECCI_REQUIRED": "Bitte laden Sie das SECCI-Dokument herunter oder fordern Sie es per E-Mail an, bevor Sie den Kauf abschließen.",
     "error.VIOLATION::RP_MOTO_SECCI_REQUIRED": "Bitte senden Sie dem Kunden das SECCI-Dokument per E-Mail, bevor Sie den Kauf abschließen.",
     "checkout.error.RATEPAY_INSTALLMENT_CAN_NOT_BE_LOADED": "Leider kann der Ratenrechner der Zahlungsart %method% nicht geladen und damit die Zahlungsmethode nicht zur Verfügung gestellt werden. Bitte laden Sie die Seite neu, versuchen Sie es später erneut, oder wählen eine andere Zahlungsart.",
+    "checkout.secci-expired": "Ihr Warenkorb hat sich seit der Erstellung der SECCI geändert. Bitte wählen Sie erneut Ihre Zahlungsart aus.",
     "ratepay": {
         "storefront": {
             "admin-order": {

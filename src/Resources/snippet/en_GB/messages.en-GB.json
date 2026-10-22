@@ -13,6 +13,7 @@
     "error.VIOLATION::RP_SECCI_REQUIRED": "Please download or request the SECCI document by email before completing your purchase.",
     "error.VIOLATION::RP_MOTO_SECCI_REQUIRED": "Please email the SECCI document to the customer before completing the purchase.",
     "checkout.error.RATEPAY_INSTALLMENT_CAN_NOT_BE_LOADED": "Unfortunately the instalment calculator for the payment method %method% could not be loaded and so the payment method could not be provided to you. Please reload the page, try again later, or choose another payment method.",
+    "checkout.secci-expired": "Your shopping cart has changed since the SECCI was created. Please select your payment method again.",
     "ratepay": {
         "storefront": {
             "admin-order": {

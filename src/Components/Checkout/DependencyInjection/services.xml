@@ -51,6 +51,10 @@
             <argument type="service" id="request_stack"/>
         </service>
 
+        <service id="Ratepay\RpayPayments\Components\Checkout\Cart\SecciPaymentMethodValidator" public="true">
+            <tag name="shopware.cart.validator"/>
+        </service>
+
     </services>
 
 </container>
