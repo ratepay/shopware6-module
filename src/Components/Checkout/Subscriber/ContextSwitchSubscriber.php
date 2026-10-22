@@ -57,6 +57,9 @@ class ContextSwitchSubscriber implements EventSubscriberInterface
         $this->maybeResetSecciFailed($event);
 
         if ($event->getRequestDataBag()->has(SalesChannelContextService::PAYMENT_METHOD_ID)) {
+            // Remove SECCI token from sessio
+            //$this->secciService->clearAttestationToken();
+
             $this->triggerSecciDelivery($event);
         }
     }

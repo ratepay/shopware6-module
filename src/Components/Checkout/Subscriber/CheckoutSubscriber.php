@@ -64,7 +64,6 @@ class CheckoutSubscriber implements EventSubscriberInterface
         if ($this->sessionService->isAdminSession($salesChannelContext, $event->getRequest()->getSession())) {
             $secciVariant = 3;
         }
-        $disablePaymentModePreselection = false;
         $motoDocumentId = null;
         $motoEmail = null;
 
@@ -85,10 +84,6 @@ class CheckoutSubscriber implements EventSubscriberInterface
             $salesChannelContext->getCustomer()->getActiveBillingAddress()->getCountry()->getIso(),
         );
 
-        if ($secciVariant == 1 && $paymentMethodRequiresSecci && $attestationTokenStorage === null) {
-            $disablePaymentModePreselection = true;
-        }
-
         $showSecciDeliveryConfirmation = $attestationTokenStorage !== null && $paymentMethodRequiresSecci;
         $secciDeliveryConfirmationType = $attestationTokenStorage['deliveryMethod'] ?? null;
 
@@ -102,7 +97,6 @@ class CheckoutSubscriber implements EventSubscriberInterface
         $extension->assign([
             'showSecciBanner' => $showSecciBanner,
             'secciVariant' => $secciVariant,
-            'disablePaymentModePreselection' => $disablePaymentModePreselection,
             'secciPaymentMethods' => $secciPaymentMethods,
             'showSecciDeliveryConfirmation' => $showSecciDeliveryConfirmation,
             'secciDeliveryConfirmationType' => $secciDeliveryConfirmationType,
