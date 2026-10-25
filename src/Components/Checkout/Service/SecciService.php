@@ -141,10 +141,10 @@ class SecciService
         $search = $this->profileBySalesChannelContextAndCart->createSearchObject($salesChannelContext, $cart);
         $profile = $this->profileBySalesChannelContextAndCart->search($search, $salesChannelContext);
 
-        if (!$sendMail) {
-            $emailAddress = null;
-        } else {
+        if ($sendMail) {
             $emailAddress = $emailAddress ?? $salesChannelContext->getCustomer()->getEmail();
+        } else {
+            $emailAddress = null;
         }
 
         $locale = $this->requestStack->getMainRequest()->attributes->get('ratepay_saved_locale') ?? $salesChannelContext->getLanguageInfo()->localeCode;

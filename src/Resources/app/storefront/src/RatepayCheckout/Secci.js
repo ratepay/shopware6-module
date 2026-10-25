@@ -84,7 +84,7 @@ export default class Secci extends window.PluginBaseClass {
     _processResponse(response) {
         if (response.success) {
             this._removeLoadingIndicators();
-            this.el.classList.remove('ratepay--secci_banner--error');
+            this.el.classList.remove('ratepay--secci_banner--error', 'ratepay--secci_banner--failed', 'ratepay--secci_banner--downloaded', 'ratepay--secci_banner--mailed');
             this.el.classList.add(response.deliveryMethod === 'pdf' ? 'ratepay--secci_banner--downloaded' : 'ratepay--secci_banner--mailed');
 
             if (response.document) {
