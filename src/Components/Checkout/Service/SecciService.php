@@ -13,6 +13,7 @@ namespace Ratepay\RpayPayments\Components\Checkout\Service;
 
 use JetBrains\PhpStorm\ArrayShape;
 use RatePAY\Model\Response\SecciRequest;
+use Ratepay\RpayPayments\Components\AdminOrders\Service\SessionService;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileBySalesChannelContextAndCart;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\SecciRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\SecciRequestService;
@@ -41,7 +42,8 @@ class SecciService
         private readonly RequestStack                        $requestStack,
         private readonly SystemConfigService                 $systemConfigService,
         #[Autowire(service: Translator::class)]
-        private readonly AbstractTranslator                  $translator
+        private readonly AbstractTranslator                  $translator,
+        private readonly SessionService                      $sessionService
     )
     {
     }
@@ -218,7 +220,7 @@ class SecciService
     }
 
     #[ArrayShape(['token' => "string", 'deliveryMethod' => "string", 'documentId' => "string", 'emailRecipient' => "string", 'cartTotal' => "float", 'paymentMethodId' => "string", 'currencyId' => "string", 'locale' => "string", 'installmentHash' => "string|null"])]
-    public function getAttestationTokenStorage(float $cartTotal, string $paymentMethodId, string $currencyId, string $locale, string $billingCountry, array $ratepayParameters = []): ?array
+    public function getAttestationTokenStorage(float $cartTotal, string $paymentMethodId, string $currencyId, string $locale, string $billingCountry, SalesChannelContext $context, array $ratepayParameters = []): ?array
     {
         $result = $this->requestStack->getSession()->get(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN);
         if (empty($result)) {
@@ -242,8 +244,13 @@ class SecciService
             return null;
         }
 
-        // Validate financing data has not changed. Ignore secci parameters. Only for variant 2
-        if ($this->systemConfigService->get('RpayPayments.config.ratepaySecciVariant') == 2 && !empty($ratepayParameters)) {
+        // Validate financing data has not changed. Only for variant 2 and 3.
+        if (!empty($ratepayParameters)
+            && (
+                $this->systemConfigService->get('RpayPayments.config.ratepaySecciVariant') == 2
+                || $this->sessionService->isAdminSession($context, $this->requestStack->getSession())
+            )
+        ) {
             if ($result['installmentHash'] !== ($ratepayParameters['installment']['hash'] ?? null)) {
                 return null;
             }
@@ -257,9 +264,9 @@ class SecciService
         return $result;
     }
 
-    public function getAttestationToken(float $cartTotal, string $paymentMethodId, string $currencyId, string $locale, string $billingCountry, array $ratepayParameters = []): ?string
+    public function getAttestationToken(float $cartTotal, string $paymentMethodId, string $currencyId, string $locale, string $billingCountry, SalesChannelContext $context, array $ratepayParameters = []): ?string
     {
-        return $this->getAttestationTokenStorage($cartTotal, $paymentMethodId, $currencyId, $locale, $billingCountry, $ratepayParameters)['token'] ?? null;
+        return $this->getAttestationTokenStorage($cartTotal, $paymentMethodId, $currencyId, $locale, $billingCountry, $context, $ratepayParameters)['token'] ?? null;
     }
 
     public function clearAttestationToken(): void

@@ -43,7 +43,8 @@ class SecciPaymentMethodValidator implements CartProcessorInterface, CartValidat
                 $context->getPaymentMethod()->getId(),
                 $context->getCurrencyId(),
                 $locale,
-                $context->getCustomer()->getActiveBillingAddress()->getCountry()->getIso()
+                $context->getCustomer()->getActiveBillingAddress()->getCountry()->getIso(),
+                $context,
             ) === null
         ) {
             $errors->add(new SecciExpiredError());

@@ -82,6 +82,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
             $salesChannelContext->getCurrencyId(),
             $salesChannelContext->getLanguageInfo()->localeCode,
             $salesChannelContext->getCustomer()->getActiveBillingAddress()->getCountry()->getIso(),
+            $salesChannelContext,
         );
 
         $showSecciDeliveryConfirmation = $attestationTokenStorage !== null && $paymentMethodRequiresSecci;
