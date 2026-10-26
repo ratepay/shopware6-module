@@ -11,13 +11,11 @@ use Shopware\Core\Checkout\Cart\CartValidatorInterface;
 use Shopware\Core\Checkout\Cart\Error\ErrorCollection;
 use Shopware\Core\Checkout\Cart\LineItem\CartDataCollection;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class SecciPaymentMethodValidator implements CartProcessorInterface, CartValidatorInterface
 {
     public function __construct(
-        private readonly SystemConfigService $systemConfigService,
         private readonly SecciService        $secciService,
         private readonly RequestStack        $requestStack,
     )
@@ -35,7 +33,7 @@ class SecciPaymentMethodValidator implements CartProcessorInterface, CartValidat
         $locale = $this->requestStack->getMainRequest()->attributes->get('ratepay_saved_locale') ?? $context->getLanguageInfo()->localeCode;
 
         if (
-            $this->systemConfigService->get('RpayPayments.config.ratepaySecciVariant') == 1
+            $this->secciService->getSecciVariant($context) === 1
             && $this->secciService->paymentMethodRequiresSecci($context->getPaymentMethod(), $cart, $context)
             && $this->secciService->hasAttestationToken()
             && $this->secciService->getAttestationToken(

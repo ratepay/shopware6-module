@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
 
-use Ratepay\RpayPayments\Components\AdminOrders\Service\SessionService;
 use Ratepay\RpayPayments\Components\Checkout\Service\SecciService;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -19,7 +18,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextService;
 use Shopware\Core\System\SalesChannel\Event\SalesChannelContextSwitchEvent;
 use Shopware\Core\System\SalesChannel\Event\SwitchContextEvent;
-use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -29,9 +27,7 @@ class ContextSwitchSubscriber implements EventSubscriberInterface
         private readonly SecciService        $secciService,
         private readonly EntityRepository    $paymentMethodRepository,
         private readonly CartService         $cartService,
-        private readonly SystemConfigService $systemConfigService,
         private readonly RequestStack        $requestStack,
-        private readonly SessionService      $sessionService,
     )
     {
     }
@@ -83,13 +79,8 @@ class ContextSwitchSubscriber implements EventSubscriberInterface
     {
         $salesChannelContext = $event->getSalesChannelContext();
 
-        if (($this->systemConfigService->get('RpayPayments.config.ratepaySecciVariant', $salesChannelContext->getSalesChannelId()) ?? 1) != 1) {
+        if ($this->secciService->getSecciVariant($salesChannelContext) !== 1) {
             // Only variant 1 triggers automatic SECCI delivery
-            return;
-        }
-
-        if ($this->sessionService->isAdminSession($event->getSalesChannelContext(), $this->requestStack->getSession())) {
-            // Do not trigger automatic SECCI delivery in admin session
             return;
         }
 
@@ -103,8 +94,7 @@ class ContextSwitchSubscriber implements EventSubscriberInterface
 
         if ($paymentMethod && $this->secciService->paymentMethodRequiresSecci($paymentMethod, $cart, $salesChannelContext)) {
             $result = $this->secciService->triggerSecciEmail($event->getRequestDataBag()->toRequestDataBag(), $cart, $salesChannelContext);
-            if ($result) {
-            } else {
+            if (!$result) {
                 $this->requestStack->getSession()->set('secciFailed', true);
             }
         }

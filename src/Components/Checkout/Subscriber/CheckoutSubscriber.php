@@ -60,10 +60,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
     {
         $salesChannelContext = $event->getSalesChannelContext();
 
-        $secciVariant = $this->systemConfigService->get('RpayPayments.config.ratepaySecciVariant', $salesChannelContext->getSalesChannelId()) ?? 1;
-        if ($this->sessionService->isAdminSession($salesChannelContext, $event->getRequest()->getSession())) {
-            $secciVariant = 3;
-        }
+        $secciVariant = $this->secciService->getSecciVariant($salesChannelContext);
         $motoDocumentId = null;
         $motoEmail = null;
 

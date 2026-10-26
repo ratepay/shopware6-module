@@ -43,9 +43,21 @@ class SecciService
         private readonly SystemConfigService                 $systemConfigService,
         #[Autowire(service: Translator::class)]
         private readonly AbstractTranslator                  $translator,
-        private readonly SessionService                      $sessionService
+        private readonly SessionService                      $sessionService,
     )
     {
+    }
+
+    /**
+     * Check active SECCI variant: 1 for automatic delivery, 2 for explicit interaction, 3 for MOTO.
+     */
+    public function getSecciVariant(SalesChannelContext $context): int
+    {
+        if ($this->sessionService->isAdminSession($context, $this->requestStack->getSession())) {
+            return 3;
+        }
+
+        return $this->systemConfigService->getInt('RpayPayments.config.ratepaySecciVariant');
     }
 
     /**
@@ -244,13 +256,8 @@ class SecciService
             return null;
         }
 
-        // Validate financing data has not changed. Only for variant 2 and 3.
-        if (!empty($ratepayParameters)
-            && (
-                $this->systemConfigService->get('RpayPayments.config.ratepaySecciVariant') == 2
-                || $this->sessionService->isAdminSession($context, $this->requestStack->getSession())
-            )
-        ) {
+        // Validate financing data and payment type have not changed. Only for variant 2 and 3.
+        if (in_array($this->getSecciVariant($context), [2, 3]) && !empty($ratepayParameters)) {
             if ($result['installmentHash'] !== ($ratepayParameters['installment']['hash'] ?? null)) {
                 return null;
             }
