@@ -35,17 +35,8 @@ class ContextSwitchSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            SwitchContextEvent::DATABASE_CHECK => 'beforeContextSwitch',
             SalesChannelContextSwitchEvent::class => 'onContextSwitch'
         ];
-    }
-
-    public function beforeContextSwitch(SwitchContextEvent $event): void
-    {
-        if ($event->getRequestData()->has(SalesChannelContextService::PAYMENT_METHOD_ID)) {
-            // Save locale for later as the context language resets to default during the context switch operation
-            $this->requestStack->getMainRequest()->attributes->set('ratepay_saved_locale', $event->getSalesChannelContext()->getLanguageInfo()->localeCode);
-        }
     }
 
     public function onContextSwitch(SalesChannelContextSwitchEvent $event): void
@@ -53,10 +44,10 @@ class ContextSwitchSubscriber implements EventSubscriberInterface
         $this->maybeResetSecciFailed($event);
 
         if ($event->getRequestDataBag()->has(SalesChannelContextService::PAYMENT_METHOD_ID)) {
-            // Remove SECCI token from sessio
-            //$this->secciService->clearAttestationToken();
+            // Remove SECCI token from session
+            $this->secciService->clearAttestationToken();
 
-            $this->triggerSecciDelivery($event);
+            $this->maybeScheduleSecciDelivery($event);
         }
     }
 
@@ -75,7 +66,7 @@ class ContextSwitchSubscriber implements EventSubscriberInterface
         }
     }
 
-    private function triggerSecciDelivery(SalesChannelContextSwitchEvent $event): void
+    private function maybeScheduleSecciDelivery(SalesChannelContextSwitchEvent $event): void
     {
         $salesChannelContext = $event->getSalesChannelContext();
 
@@ -93,10 +84,8 @@ class ContextSwitchSubscriber implements EventSubscriberInterface
         $cart = $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext);
 
         if ($paymentMethod && $this->secciService->paymentMethodRequiresSecci($paymentMethod, $cart, $salesChannelContext)) {
-            $result = $this->secciService->triggerSecciEmail($event->getRequestDataBag()->toRequestDataBag(), $cart, $salesChannelContext);
-            if (!$result) {
-                $this->requestStack->getSession()->set('secciFailed', true);
-            }
+            // Schedule SECCI delivery for when the confirm page is loaded. The current sales channel context does not reliably contain the correct language.
+            $this->requestStack->getSession()->set('ratepay_trigger_secci', true);
         }
     }
 }

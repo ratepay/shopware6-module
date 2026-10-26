@@ -18,6 +18,7 @@ use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileBySalesC
 use Ratepay\RpayPayments\Util\MethodHelper;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Core\Framework\Struct\Struct;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -48,12 +49,31 @@ class CheckoutSubscriber implements EventSubscriberInterface
      */
     public function addRatepayTemplateData(CheckoutConfirmPageLoadedEvent $event): void
     {
+        $this->deliverAutomaticSecci($event);
+
         $extension = $event->getPage()->getExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME) ?? new ArrayStruct();
 
         $this->addSecciData($event, $extension);
         $this->addPaymentData($event, $extension);
 
         $event->getPage()->addExtension(ExtensionService::PAYMENT_PAGE_EXTENSION_NAME, $extension);
+    }
+
+    private function deliverAutomaticSecci(CheckoutConfirmPageLoadedEvent $event): void
+    {
+        $salesChannelContext = $event->getSalesChannelContext();
+
+        if ($this->secciService->getSecciVariant($salesChannelContext) !== 1) {
+            // Only variant 1 triggers automatic SECCI delivery
+            return;
+        }
+
+        if ($this->requestStack->getSession()->remove('ratepay_trigger_secci')) {
+            $result = $this->secciService->triggerSecciEmail(new RequestDataBag(), $event->getPage()->getCart(), $salesChannelContext);
+            if (!$result) {
+                $this->requestStack->getSession()->set('secciFailed', true);
+            }
+        }
     }
 
     private function addSecciData(CheckoutConfirmPageLoadedEvent $event, Struct $extension): void
