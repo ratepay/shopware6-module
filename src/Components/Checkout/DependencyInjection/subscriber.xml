@@ -42,6 +42,8 @@
 
         <service id="Ratepay\RpayPayments\Components\Checkout\Subscriber\ContextSubscriber"/>
 
+        <service id="Ratepay\RpayPayments\Components\Checkout\Subscriber\AfterPaymentSubscriber"/>
+
     </services>
 
 </container>

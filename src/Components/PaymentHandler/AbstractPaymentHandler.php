@@ -163,8 +163,6 @@ abstract class AbstractPaymentHandler extends \Shopware\Core\Checkout\Payment\Ca
                     $salesChannelContext,
                     $response
                 ));
-
-                $this->secciService->clearAttestationToken();
             } else {
                 $message = null;
                 if (method_exists($response, 'getCustomerMessage')) {
