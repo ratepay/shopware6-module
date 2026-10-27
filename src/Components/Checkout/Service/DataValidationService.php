@@ -23,6 +23,7 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\Framework\Validation\DataValidationDefinition;
 use Shopware\Core\Framework\Validation\DataValidator;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class DataValidationService
 {
@@ -31,6 +32,7 @@ class DataValidationService
         private readonly DataValidator $dataValidator,
         private readonly SecciService $secciService,
         private readonly CartService $cartService,
+        private readonly RequestStack $requestStack,
     ) {
     }
 
@@ -71,12 +73,14 @@ class DataValidationService
     private function addSecciRequirement(DataBag $dataBag, string $handlerIdentifier, string $paymentMethodId, Cart $cart, SalesChannelContext $salesChannelContext): void
     {
         if ($this->secciService->paymentMethodIdRequiresSecci($handlerIdentifier, $paymentMethodId, $cart, $salesChannelContext)) {
+            $locale = $this->requestStack->getMainRequest()->attributes->get('ratepay_saved_locale') ?? $salesChannelContext->getLanguageInfo()->localeCode;
+
             $dataBag->get(RequestHelper::RATEPAY_DATA_KEY)->set('secciRequired', true);
             $attestationToken = $this->secciService->getAttestationToken(
                 $cart->getPrice()->getTotalPrice(),
                 $paymentMethodId,
                 $salesChannelContext->getCurrencyId(),
-                $salesChannelContext->getLanguageInfo()->localeCode,
+                $locale,
                 $salesChannelContext->getCustomer()->getActiveBillingAddress()->getCountry()->getIso(),
                 $salesChannelContext,
                 RequestHelper::getRatepayData($dataBag)->all(),
