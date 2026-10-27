@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\Checkout\Service;
 
 use JetBrains\PhpStorm\ArrayShape;
-use Psr\Log\LoggerInterface;
 use RatePAY\Model\Response\SecciRequest;
 use Ratepay\RpayPayments\Components\AdminOrders\Service\SessionService;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileBySalesChannelContextAndCart;
@@ -45,8 +44,6 @@ class SecciService
         #[Autowire(service: Translator::class)]
         private readonly AbstractTranslator                  $translator,
         private readonly SessionService                      $sessionService,
-        #[Autowire(service: 'monolog.logger.ratepay')]
-        private readonly LoggerInterface                     $logger,
     )
     {
     }
@@ -239,46 +236,36 @@ class SecciService
     {
         $result = $this->requestStack->getSession()->get(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN);
         if (empty($result)) {
-            $this->logger->debug('Attestation token not found in session');
             return null;
         }
 
         // Validate parameters
         if ($result['cartTotal'] !== $cartTotal) {
-            $this->logger->debug("Cart total mismatch in attestation token. Saved: {$result['cartTotal']}, Requested: $cartTotal");
             return null;
         }
         if ($result['paymentMethodId'] !== $paymentMethodId) {
-            $this->logger->debug("Payment method ID mismatch in attestation token. Saved: {$result['paymentMethodId']}, Requested: $paymentMethodId");
             return null;
         }
         if ($result['currencyId'] !== $currencyId) {
-            $this->logger->debug("Currency ID mismatch in attestation token. Saved: {$result['currencyId']}, Requested: $currencyId");
             return null;
         }
         if ($result['locale'] !== $locale) {
-            $this->logger->debug("Locale mismatch in attestation token. Saved: {$result['locale']}, Requested: $locale");
             return null;
         }
         if ($result['billingCountry'] !== $billingCountry) {
-            $this->logger->debug("Billing country mismatch in attestation token. Saved: {$result['billingCountry']}, Requested: $billingCountry");
             return null;
         }
 
         // Validate financing data and payment type have not changed. Only for variant 2 and 3.
         if (in_array($this->getSecciVariant($context), [2, 3]) && !empty($ratepayParameters)) {
             if ($result['installmentHash'] !== ($ratepayParameters['installment']['hash'] ?? null)) {
-                $this->logger->debug("Installment hash mismatch in attestation token. Saved: {$result['installmentHash']}, Requested: {$ratepayParameters['installment']['hash']}");
                 return null;
             }
 
             if ($result['paymentType'] !== ($ratepayParameters['installment']['paymentType'] ?? null)) {
-                $this->logger->debug("Payment type mismatch in attestation token. Saved: {$result['paymentType']}, Requested: {$ratepayParameters['installment']['paymentType']}");
                 return null;
             }
         }
-
-        $this->logger->debug("Attestation token matches all parameters.");
 
         // All parameters match saved token, return it
         return $result;
