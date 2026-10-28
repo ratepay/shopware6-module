@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 10.0.0 - Released on 2026-10-29
+
+* FC#0137699 - Implemented CCD2 compliance
+
 ## Version 9.3.0 - Released on 2026-07-24
 
 * FC#0136014 - fix headless store api payment method response serialisation error caused by mismatch between entity search result object lists
