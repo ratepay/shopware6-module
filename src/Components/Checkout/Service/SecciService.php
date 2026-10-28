@@ -133,13 +133,13 @@ class SecciService
     /**
      * Trigger SECCI PDF generation and return an array with the document data.
      *
-     * @return array{id: string, data: string, contentType: string}|null
+     * @return array{id: string, data: string, contentType: string|null}|null
      */
     public function prepareSecciPdf(RequestDataBag $requestDataBag, Cart $cart, SalesChannelContext $salesChannelContext): ?array
     {
         $response = $this->triggerSecciDeliveryAndSaveToken($requestDataBag, $cart, $salesChannelContext, false);
 
-        if ($response != null && $response->isSuccessful()) {
+        if ($response != null && $response->isSuccessful() && $response->getDocumentId() && $response->getDocument()) {
             return [
                 'id' => $response->getDocumentId(),
                 'data' => $response->getDocument(),

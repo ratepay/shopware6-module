@@ -36,8 +36,8 @@ class CartLoadingSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $cart = $event->result()?->getCart();
-        if ($cart && $cart->getErrors()->has(SecciExpiredError::KEY)) {
+        $cart = $event->result()->getCart();
+        if ($cart->getErrors()->has(SecciExpiredError::KEY)) {
             // Switch payment method
             $defaultPaymentMethodId = $event->getSalesChannelContext()->getSalesChannel()->getPaymentMethodId();
             if ($event->getSalesChannelContext()->getPaymentMethod()->getId() !== $defaultPaymentMethodId) {

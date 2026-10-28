@@ -81,7 +81,7 @@ class ContextSwitchSubscriber implements EventSubscriberInterface
             return;
         }
 
-        /** @var PaymentMethodEntity $paymentMethod */
+        /** @var PaymentMethodEntity|null $paymentMethod */
         $paymentMethod = $this->paymentMethodRepository->search(new Criteria([$paymentMethodId]), $salesChannelContext->getContext())->getEntities()->first();
         $cart = $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext);
 
