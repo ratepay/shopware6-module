@@ -67,10 +67,6 @@ class HeadFactory extends AbstractFactory
             $head->setTransactionId($orderExtension->getTransactionId());
         }
 
-        if ($requestData instanceof PaymentRequestData) {
-            $head->setAttestationToken($requestData->getAttestationToken());
-        }
-
         return $head;
     }
 
