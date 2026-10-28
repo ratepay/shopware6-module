@@ -17,12 +17,14 @@
         </defaults>
 
         <service id="Ratepay\RpayPayments\Components\Checkout\Subscriber\CheckoutSubscriber" public="true">
-            <argument type="service" id="Ratepay\RpayPayments\Components\Checkout\Service\ExtensionService" />
+            <argument type="service" id="Ratepay\RpayPayments\Components\Checkout\Service\ExtensionService"/>
         </service>
 
         <service id="Ratepay\RpayPayments\Components\Checkout\Subscriber\CheckoutValidationSubscriber">
             <argument key="$requestStack" type="service" id="request_stack"/>
         </service>
+
+        <service id="Ratepay\RpayPayments\Components\Checkout\Subscriber\ContextSwitchSubscriber"/>
 
         <service id="Ratepay\RpayPayments\Components\Checkout\Subscriber\PaymentFailedSubscriber">
             <argument type="service" id="ratepay_api_log.repository"/>
@@ -33,6 +35,14 @@
             <argument id="order_address.repository" type="service"/>
             <argument id="customer_address.repository" type="service"/>
         </service>
+
+        <service id="Ratepay\RpayPayments\Components\Checkout\Subscriber\CartLoadingSubscriber">
+            <argument type="service" id="Shopware\Core\System\SalesChannel\SalesChannel\ContextSwitchRoute"/>
+        </service>
+
+        <service id="Ratepay\RpayPayments\Components\Checkout\Subscriber\ContextSubscriber"/>
+
+        <service id="Ratepay\RpayPayments\Components\Checkout\Subscriber\AfterPaymentSubscriber"/>
 
     </services>
 

@@ -35,9 +35,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class StorefrontController extends AbstractController
 {
     public function __construct(
-        private readonly EntityRepository $tokenRepository,
+        private readonly EntityRepository   $tokenRepository,
         private readonly AbstractTranslator $translator,
-        private readonly string $sessionKey
+        private readonly string             $sessionKey
     ) {
     }
 

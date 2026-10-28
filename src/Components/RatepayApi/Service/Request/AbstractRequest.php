@@ -64,6 +64,11 @@ abstract class AbstractRequest
     /**
      * @var string
      */
+    final public const CALL_SECCI_REQUEST = 'SecciRequest';
+
+    /**
+     * @var string
+     */
     protected const EVENT_SUCCESSFUL = '.successful';
 
     /**

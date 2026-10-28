@@ -79,4 +79,9 @@ class PaymentRequestData extends OrderOperationData implements CheckoutOperation
     {
         return $this->getOrder()->getOrderCustomer()?->getCustomer() ?: throw new InvalidArgumentException('customer has not been loaded for order');
     }
+
+    public function getAttestationToken(): ?string
+    {
+        return $this->transaction->getCustomFieldsValue('ratepay_attestation_token');
+    }
 }
