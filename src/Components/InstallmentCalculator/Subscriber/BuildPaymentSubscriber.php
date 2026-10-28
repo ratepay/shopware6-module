@@ -139,7 +139,7 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
             /** @var DataBag $requestDataBag */ // should be never null, because it is already validated
             $requestDataBag = RequestHelper::getRatepayData($requestData->getRequestDataBag()) ?? new DataBag();
 
-            /** @var DataBag $requestedInstallment */
+            /** @var DataBag|null $requestedInstallment */
             $requestedInstallment = $requestDataBag->get('installment');
             if (!$requestedInstallment) {
                 if ($paymentMethod->getHandlerIdentifier() == InstallmentZeroPercentPaymentHandler::class) {

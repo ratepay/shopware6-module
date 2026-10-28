@@ -13,6 +13,7 @@ namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
 
 use Ratepay\RpayPayments\Components\Checkout\Service\SecciService;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
+use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextService;
@@ -80,6 +81,7 @@ class ContextSwitchSubscriber implements EventSubscriberInterface
             return;
         }
 
+        /** @var PaymentMethodEntity $paymentMethod */
         $paymentMethod = $this->paymentMethodRepository->search(new Criteria([$paymentMethodId]), $salesChannelContext->getContext())->getEntities()->first();
         $cart = $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext);
 

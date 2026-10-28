@@ -29,7 +29,7 @@ class AfterPaymentSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function afterPayment(PaymentSuccessfulEvent $event)
+    public function afterPayment(PaymentSuccessfulEvent $event): void
     {
         $salesChannelContext = $event->getSalesChannelContext();
 

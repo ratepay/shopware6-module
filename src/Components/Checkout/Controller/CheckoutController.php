@@ -160,7 +160,7 @@ class CheckoutController extends AbstractCheckoutController
             return new Response(status: Response::HTTP_NO_CONTENT);
         }
 
-        $email = $request->request->get('motoSecciEmail');
+        $email = $request->request->getString('motoSecciEmail');
         $ratepayData = $request->request->all('ratepay');
         $databag = new RequestDataBag(['paymentDetails' => ['ratepay' => $ratepayData]]);
 

@@ -53,8 +53,9 @@ class SecciFactory extends AbstractFactory
     /**
      * Extract language from locale code and check against whitelist.
      */
-    private function getLanguage(SecciRequestData|AbstractRequestData $requestData): ?string
+    private function getLanguage(AbstractRequestData $requestData): ?string
     {
+        /** @var SecciRequestData $requestData */
         $language = $requestData->getLocaleCode();
 
         // Translate locale code to language ISO

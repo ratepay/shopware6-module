@@ -31,6 +31,7 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 
 class SecciService
 {
@@ -131,8 +132,9 @@ class SecciService
 
     /**
      * Trigger SECCI PDF generation and return an array with the document data.
+     *
+     * @return array{id: string, data: string, contentType: string}|null
      */
-    #[ArrayShape(['id' => 'string', 'data' => 'string', 'contentType' => 'string'])]
     public function prepareSecciPdf(RequestDataBag $requestDataBag, Cart $cart, SalesChannelContext $salesChannelContext): ?array
     {
         $response = $this->triggerSecciDeliveryAndSaveToken($requestDataBag, $cart, $salesChannelContext, false);
@@ -179,7 +181,10 @@ class SecciService
         try {
             $requestBuilder = $this->secciRequestService->doRequest($secciRequestData);
         } catch (RatepayException $e) {
-            $this->requestStack->getSession()->getFlashBag()->add(StorefrontController::DANGER, $e->getMessage());
+            $session = $this->requestStack->getSession();
+            if ($session instanceof FlashBagAwareSessionInterface) {
+                $session->getFlashBag()->add(StorefrontController::DANGER, $e->getMessage());
+            }
             return null;
         }
         /** @var SecciRequest $response */
@@ -204,7 +209,10 @@ class SecciService
         }
 
         $errorMessage = $this->translator->trans('ratepay.storefront.checkout.secci.complianceServiceErrorMessage');
-        $this->requestStack->getSession()->getFlashBag()->add(StorefrontController::DANGER, $errorMessage);
+        $session = $this->requestStack->getSession();
+        if ($session instanceof FlashBagAwareSessionInterface) {
+            $session->getFlashBag()->add(StorefrontController::DANGER, $errorMessage);
+        }
 
         return $response;
     }
@@ -231,7 +239,9 @@ class SecciService
         return $this->requestStack->getSession()->has(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN);
     }
 
-    #[ArrayShape(['token' => "string", 'deliveryMethod' => "string", 'documentId' => "string", 'emailRecipient' => "string", 'cartTotal' => "float", 'paymentMethodId' => "string", 'currencyId' => "string", 'locale' => "string", 'installmentHash' => "string|null"])]
+    /**
+     * @return array{token: string, deliveryMethod: string, documentId: string, emailRecipient: string, cartTotal: float, paymentMethodId: string, currencyId: string, locale: string, installmentHash: string|null, paymentType: string|null}|null
+     */
     public function getAttestationTokenStorage(float $cartTotal, string $paymentMethodId, string $currencyId, string $locale, string $billingCountry, SalesChannelContext $context, array $ratepayParameters = []): ?array
     {
         $result = $this->requestStack->getSession()->get(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN);
