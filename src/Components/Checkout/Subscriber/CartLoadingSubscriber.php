@@ -1,4 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+/*
+ * Copyright (c) Ratepay GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
 
@@ -14,9 +22,8 @@ class CartLoadingSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private readonly AbstractContextSwitchRoute $contextSwitchRoute,
-        private readonly RequestStack               $requestStack,
-    )
-    {
+        private readonly RequestStack $requestStack,
+    ) {
     }
 
     public static function getSubscribedEvents(): array

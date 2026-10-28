@@ -1,4 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+/*
+ * Copyright (c) Ratepay GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Ratepay\RpayPayments\Components\Checkout\Cart;
 
@@ -16,16 +24,13 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class SecciPaymentMethodValidator implements CartProcessorInterface, CartValidatorInterface
 {
     public function __construct(
-        private readonly SecciService        $secciService,
-        private readonly RequestStack        $requestStack,
-    )
-    {
+        private readonly SecciService $secciService,
+        private readonly RequestStack $requestStack,
+    ) {
     }
-
 
     public function process(CartDataCollection $data, Cart $original, Cart $toCalculate, SalesChannelContext $context, CartBehavior $behavior): void
     {
-
     }
 
     public function validate(Cart $cart, ErrorCollection $errors, SalesChannelContext $context): void

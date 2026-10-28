@@ -34,23 +34,24 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Throwable;
 
-#[Route(defaults: [PlatformRequest::ATTRIBUTE_ROUTE_SCOPE => [StoreApiRouteScope::ID]])]
+#[Route(defaults: [
+    PlatformRequest::ATTRIBUTE_ROUTE_SCOPE => [StoreApiRouteScope::ID]
+])]
 class CheckoutController extends AbstractCheckoutController
 {
     public function __construct(
-        private readonly ExtensionService           $extensionService,
+        private readonly ExtensionService $extensionService,
         private readonly AccountEditOrderPageLoader $orderLoader,
-        private readonly RequestStack               $requestStack,
-        private readonly SecciService               $secciService,
-    )
-    {
+        private readonly RequestStack $requestStack,
+        private readonly SecciService $secciService,
+    ) {
     }
 
     #[Route(
         path: '/store-api/ratepay/payment-data/{orderId}',
         name: 'store-api.ratepay.checkout.payment-data',
         defaults: [
-            '_loginRequired' => true,
+            '_loginRequired'           => true,
             '_loginRequiredAllowGuest' => true,
         ],
         methods: ['GET']
@@ -83,12 +84,11 @@ class CheckoutController extends AbstractCheckoutController
         name: 'frontend.checkout.ratepay.secci',
         defaults: [
             PlatformRequest::ATTRIBUTE_ROUTE_SCOPE => [StorefrontRouteScope::ID],
-            '_loginRequired' => true,
-            '_loginRequiredAllowGuest' => true,
-            'XmlHttpRequest' => true,
+            '_loginRequired'                       => true,
+            '_loginRequiredAllowGuest'             => true,
+            'XmlHttpRequest'                       => true,
         ],
         methods: ['POST'],
-
     )]
     public function triggerSecciDelivery(Request $request, Cart $cart, SalesChannelContext $salesChannelContext, SecciService $secciService): Response
     {
@@ -96,9 +96,13 @@ class CheckoutController extends AbstractCheckoutController
             return new Response(status: Response::HTTP_NO_CONTENT);
         }
 
-        $ratepayData = $request->request->all('ratepay');
+        $ratepayData    = $request->request->all('ratepay');
         $deliveryMethod = $ratepayData['secciDeliveryType'] ?? null;
-        $databag = new RequestDataBag(['paymentDetails' => ['ratepay' => $ratepayData]]);
+        $databag        = new RequestDataBag([
+            'paymentDetails' => [
+                'ratepay' => $ratepayData
+            ]
+        ]);
 
         $responseData = [
             'deliveryMethod' => $deliveryMethod,
@@ -106,22 +110,22 @@ class CheckoutController extends AbstractCheckoutController
 
         if ($deliveryMethod === 'mail') {
             try {
-                $result = $secciService->triggerSecciEmail($databag, $cart, $salesChannelContext);
-                $responseData['success'] = $result !== null;
+                $result                     = $secciService->triggerSecciEmail($databag, $cart, $salesChannelContext);
+                $responseData['success']    = $result !== null;
                 $responseData['documentId'] = $result;
             } catch (Throwable $t) {
-                $responseData['success'] = false;
+                $responseData['success']   = false;
                 $responseData['exception'] = $t->getMessage();
             }
         } elseif ($deliveryMethod === 'pdf') {
             $document = $secciService->prepareSecciPdf($databag, $cart, $salesChannelContext);
 
             if ($document) {
-                $responseData['success'] = true;
+                $responseData['success']  = true;
                 $responseData['document'] = [
-                    'id' => $document['id'],
+                    'id'          => $document['id'],
                     'contentType' => $document['contentType'],
-                    'data' => base64_encode($document['data'])
+                    'data'        => base64_encode($document['data']),
                 ];
             } else {
                 $responseData['success'] = false;
@@ -144,9 +148,9 @@ class CheckoutController extends AbstractCheckoutController
         name: 'frontend.checkout.ratepay.secci-admin',
         defaults: [
             PlatformRequest::ATTRIBUTE_ROUTE_SCOPE => [StorefrontRouteScope::ID],
-            '_loginRequired' => true,
-            '_loginRequiredAllowGuest' => true,
-            'XmlHttpRequest' => true,
+            '_loginRequired'                       => true,
+            '_loginRequiredAllowGuest'             => true,
+            'XmlHttpRequest'                       => true,
         ],
         methods: ['POST']
     )]
@@ -160,16 +164,20 @@ class CheckoutController extends AbstractCheckoutController
             return new Response(status: Response::HTTP_NO_CONTENT);
         }
 
-        $email = $request->request->getString('motoSecciEmail');
+        $email       = $request->request->getString('motoSecciEmail');
         $ratepayData = $request->request->all('ratepay');
-        $databag = new RequestDataBag(['paymentDetails' => ['ratepay' => $ratepayData]]);
+        $databag     = new RequestDataBag([
+            'paymentDetails' => [
+                'ratepay' => $ratepayData
+            ]
+        ]);
 
         $result = $secciService->triggerMotoSecciEmail($email, $databag, $cart, $salesChannelContext);
         return new JsonResponse([
-            'success' => $result !== null,
+            'success'        => $result !== null,
             'deliveryMethod' => 'moto',
-            'documentId' => $result,
-            'email' => $email,
+            'documentId'     => $result,
+            'email'          => $email,
         ]);
     }
 

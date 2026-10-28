@@ -35,9 +35,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class StorefrontController extends AbstractController
 {
     public function __construct(
-        private readonly EntityRepository   $tokenRepository,
+        private readonly EntityRepository $tokenRepository,
         private readonly AbstractTranslator $translator,
-        private readonly string             $sessionKey
+        private readonly string $sessionKey
     ) {
     }
 
@@ -66,7 +66,7 @@ class StorefrontController extends AbstractController
         try {
             $this->tokenRepository->update([
                 [
-                    RatepayAdminOrderTokenEntity::FIELD_ID => $tokenEntity->getId(),
+                    RatepayAdminOrderTokenEntity::FIELD_ID         => $tokenEntity->getId(),
                     RatepayAdminOrderTokenEntity::FIELD_CART_TOKEN => $context->getToken(),
                 ],
             ], $context->getContext());
