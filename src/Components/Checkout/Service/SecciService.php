@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\Checkout\Service;
 
-use Ratepay\RpayPayments\Components\ProfileConfig\Dto\ProfileConfigSearch;
 use RatePAY\Model\Response\SecciRequest;
 use Ratepay\RpayPayments\Components\AdminOrders\Service\SessionService;
+use Ratepay\RpayPayments\Components\ProfileConfig\Dto\ProfileConfigSearch;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileBySalesChannelContextAndCart;
 use Ratepay\RpayPayments\Components\RatepayApi\Dto\SecciRequestData;
 use Ratepay\RpayPayments\Components\RatepayApi\Service\Request\SecciRequestService;
