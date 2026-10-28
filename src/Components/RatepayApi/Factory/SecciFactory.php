@@ -20,7 +20,6 @@ use Ratepay\RpayPayments\Components\RatepayApi\Dto\SecciRequestData;
  */
 class SecciFactory extends AbstractFactory
 {
-
     private const LANGUAGE_WHITELIST = ['DE', 'EN', 'NL'];
 
     protected function isSupported(AbstractRequestData $requestData): bool
@@ -67,11 +66,10 @@ class SecciFactory extends AbstractFactory
         $language = strtoupper($language);
 
         // Make sure language is in whitelist
-        if (in_array($language, self::LANGUAGE_WHITELIST)) {
+        if (in_array($language, self::LANGUAGE_WHITELIST, true)) {
             return $language;
         }
 
         return null;
-
     }
 }

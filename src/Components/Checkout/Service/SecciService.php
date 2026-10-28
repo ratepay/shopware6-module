@@ -139,8 +139,8 @@ class SecciService
 
         if ($response !== null && $response->isSuccessful() && $response->getDocumentId() && $response->getDocument()) {
             return [
-                'id'          => $response->getDocumentId(),
-                'data'        => $response->getDocument(),
+                'id' => $response->getDocumentId(),
+                'data' => $response->getDocument(),
                 'contentType' => $response->getContentType(),
             ];
         }
@@ -151,23 +151,6 @@ class SecciService
     public function hasAttestationToken(): bool
     {
         return $this->requestStack->getSession()->has(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN);
-    }
-
-    private function saveAttestationToken(string $token, string $deliveryMethod, ?string $documentId, ?string $emailRecipient, float $cartTotal, string $paymentMethodId, string $currencyId, string $locale, string $billingCountry, array $ratepayParameters): void
-    {
-        $this->requestStack->getSession()->set(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN, [
-            'token'           => $token,
-            'deliveryMethod'  => $deliveryMethod,
-            'documentId'      => $documentId,
-            'emailRecipient'  => $emailRecipient,
-            'cartTotal'       => $cartTotal,
-            'paymentMethodId' => $paymentMethodId,
-            'currencyId'      => $currencyId,
-            'locale'          => $locale,
-            'billingCountry'  => $billingCountry,
-            'installmentHash' => $ratepayParameters['installment']['hash'] ?? null,
-            'paymentType'     => $ratepayParameters['installment']['paymentType'] ?? null,
-        ]);
     }
 
     /**
@@ -198,7 +181,7 @@ class SecciService
         }
 
         // Validate financing data and payment type have not changed. Only for variant 2 and 3.
-        if (in_array($this->getSecciVariant($context), [2, 3]) && !empty($ratepayParameters)) {
+        if (in_array($this->getSecciVariant($context), [2, 3], true) && !empty($ratepayParameters)) {
             if ($result['installmentHash'] !== ($ratepayParameters['installment']['hash'] ?? null)) {
                 return null;
             }
@@ -222,9 +205,26 @@ class SecciService
         $this->requestStack->getSession()->remove(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN);
     }
 
+    private function saveAttestationToken(string $token, string $deliveryMethod, ?string $documentId, ?string $emailRecipient, float $cartTotal, string $paymentMethodId, string $currencyId, string $locale, string $billingCountry, array $ratepayParameters): void
+    {
+        $this->requestStack->getSession()->set(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN, [
+            'token' => $token,
+            'deliveryMethod' => $deliveryMethod,
+            'documentId' => $documentId,
+            'emailRecipient' => $emailRecipient,
+            'cartTotal' => $cartTotal,
+            'paymentMethodId' => $paymentMethodId,
+            'currencyId' => $currencyId,
+            'locale' => $locale,
+            'billingCountry' => $billingCountry,
+            'installmentHash' => $ratepayParameters['installment']['hash'] ?? null,
+            'paymentType' => $ratepayParameters['installment']['paymentType'] ?? null,
+        ]);
+    }
+
     private function triggerSecciDeliveryAndSaveToken(RequestDataBag $requestDataBag, Cart $cart, SalesChannelContext $salesChannelContext, bool $sendMail, ?string $emailAddress = null): ?SecciRequest
     {
-        $search  = $this->profileBySalesChannelContextAndCart->createSearchObject($salesChannelContext, $cart);
+        $search = $this->profileBySalesChannelContextAndCart->createSearchObject($salesChannelContext, $cart);
         $profile = $this->profileBySalesChannelContextAndCart->search($search, $salesChannelContext);
 
         if ($sendMail) {
@@ -233,7 +233,7 @@ class SecciService
             $emailAddress = null;
         }
 
-        $locale         = $this->requestStack->getMainRequest()->attributes->get('ratepay_saved_locale') ?? $salesChannelContext->getLanguageInfo()->localeCode;
+        $locale = $this->requestStack->getMainRequest()->attributes->get('ratepay_saved_locale') ?? $salesChannelContext->getLanguageInfo()->localeCode;
         $billingCountry = $salesChannelContext->getCustomer()->getActiveBillingAddress()->getCountry()->getIso();
 
         $secciRequestData = new SecciRequestData(
@@ -263,7 +263,7 @@ class SecciService
         $response = $requestBuilder->getResponse();
 
         if ($response->isSuccessful()) {
-            $token             = $response->getAttestationToken();
+            $token = $response->getAttestationToken();
             $ratepayParameters = RequestHelper::getRatepayData($requestDataBag)?->all() ?? [];
             $this->saveAttestationToken(
                 $token,
@@ -281,7 +281,7 @@ class SecciService
         }
 
         $errorMessage = $this->translator->trans('ratepay.storefront.checkout.secci.complianceServiceErrorMessage');
-        $session      = $this->requestStack->getSession();
+        $session = $this->requestStack->getSession();
         if ($session instanceof FlashBagAwareSessionInterface) {
             $session->getFlashBag()->add(StorefrontController::DANGER, $errorMessage);
         }

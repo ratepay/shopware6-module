@@ -66,7 +66,7 @@ class StorefrontController extends AbstractController
         try {
             $this->tokenRepository->update([
                 [
-                    RatepayAdminOrderTokenEntity::FIELD_ID         => $tokenEntity->getId(),
+                    RatepayAdminOrderTokenEntity::FIELD_ID => $tokenEntity->getId(),
                     RatepayAdminOrderTokenEntity::FIELD_CART_TOKEN => $context->getToken(),
                 ],
             ], $context->getContext());

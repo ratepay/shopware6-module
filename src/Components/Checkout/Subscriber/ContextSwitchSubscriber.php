@@ -18,25 +18,23 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextService;
 use Shopware\Core\System\SalesChannel\Event\SalesChannelContextSwitchEvent;
-use Shopware\Core\System\SalesChannel\Event\SwitchContextEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class ContextSwitchSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly SecciService        $secciService,
-        private readonly EntityRepository    $paymentMethodRepository,
-        private readonly CartService         $cartService,
-        private readonly RequestStack        $requestStack,
-    )
-    {
+        private readonly SecciService $secciService,
+        private readonly EntityRepository $paymentMethodRepository,
+        private readonly CartService $cartService,
+        private readonly RequestStack $requestStack,
+    ) {
     }
 
     public static function getSubscribedEvents(): array
     {
         return [
-            SalesChannelContextSwitchEvent::class => 'onContextSwitch'
+            SalesChannelContextSwitchEvent::class => 'onContextSwitch',
         ];
     }
 

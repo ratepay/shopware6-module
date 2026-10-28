@@ -77,7 +77,7 @@ class ProfileConfigMethodEntity extends Entity
     /**
      * @var string
      */
-    final public const FIELD_REQUIRE_SECCI = "requireSecci";
+    final public const FIELD_REQUIRE_SECCI = 'requireSecci';
 
     protected ?PaymentMethodEntity $paymentMethod = null;
 

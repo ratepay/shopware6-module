@@ -16,12 +16,9 @@ use Ratepay\RpayPayments\Components\Checkout\Service\ExtensionService;
 use Ratepay\RpayPayments\Components\Checkout\Service\SecciService;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileBySalesChannelContextAndCart;
 use Ratepay\RpayPayments\Util\MethodHelper;
-use Shopware\Core\Checkout\Cart\Cart;
-use Shopware\Core\Checkout\Cart\Event\CheckoutOrderPlacedEvent;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
-use Shopware\Core\System\SalesChannel\Context\SalesChannelContextService;
 use Shopware\Core\System\SalesChannel\SalesChannel\AbstractContextSwitchRoute;
 use Shopware\Core\System\SalesChannel\SalesChannel\ContextSwitchRoute;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
@@ -33,16 +30,15 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class CheckoutSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        protected ExtensionService                    $extensionService,
-        protected SystemConfigService                 $systemConfigService,
+        protected ExtensionService $extensionService,
+        protected SystemConfigService $systemConfigService,
         protected ProfileBySalesChannelContextAndCart $profileBySalesChannelContextAndCart,
-        protected SecciService                        $secciService,
-        protected SessionService                      $sessionService,
-        protected RequestStack                        $requestStack,
+        protected SecciService $secciService,
+        protected SessionService $sessionService,
+        protected RequestStack $requestStack,
         #[Autowire(service: ContextSwitchRoute::class)]
-        protected AbstractContextSwitchRoute          $contextSwitchRoute,
-    )
-    {
+        protected AbstractContextSwitchRoute $contextSwitchRoute,
+    ) {
     }
 
     public static function getSubscribedEvents(): array
@@ -95,7 +91,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
         $secciPaymentMethods = $this->secciService->filterPaymentMethodRequiresSecci($event->getPage()->getPaymentMethods(), $event->getPage()->getCart(), $event->getSalesChannelContext());
         $paymentMethodRequiresSecci = $secciPaymentMethods->has($salesChannelContext->getPaymentMethod()->getId());
 
-        if ($secciVariant == 1) {
+        if ($secciVariant === 1) {
             $showSecciBanner = $secciPaymentMethods->count() !== 0;
         } else {
             $showSecciBanner = $paymentMethodRequiresSecci;
@@ -113,7 +109,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
         $showSecciDeliveryConfirmation = $attestationTokenStorage !== null && $paymentMethodRequiresSecci;
         $secciDeliveryConfirmationType = $attestationTokenStorage['deliveryMethod'] ?? null;
 
-        if ($secciVariant == 3) {
+        if ($secciVariant === 3) {
             $motoDocumentId = $attestationTokenStorage['documentId'] ?? null;
             $motoEmail = $attestationTokenStorage['emailRecipient'] ?? null;
         }
@@ -140,7 +136,9 @@ class CheckoutSubscriber implements EventSubscriberInterface
         ) {
             $paymentDataExtension = $this->extensionService->buildPaymentDataExtension($event->getSalesChannelContext(), null, $event->getRequest());
             if ($paymentDataExtension instanceof ArrayStruct) {
-                $extension->assign(['enableBillingForm' => true]);
+                $extension->assign([
+                    'enableBillingForm' => true,
+                ]);
                 $extension->assign($paymentDataExtension->getVars());
             }
         }

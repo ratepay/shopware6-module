@@ -142,7 +142,7 @@ class BuildPaymentSubscriber implements EventSubscriberInterface
             /** @var DataBag|null $requestedInstallment */
             $requestedInstallment = $requestDataBag->get('installment');
             if (!$requestedInstallment) {
-                if ($paymentMethod->getHandlerIdentifier() == InstallmentZeroPercentPaymentHandler::class) {
+                if ($paymentMethod->getHandlerIdentifier() === InstallmentZeroPercentPaymentHandler::class) {
                     $requestedInstallment = $this->buildPayIn3();
                 } else {
                     throw new RuntimeException($this->translator->trans('checkout.error.RATEPAY_INSTALLMENT_CAN_NOT_BE_LOADED', [
