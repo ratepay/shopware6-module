@@ -51,6 +51,7 @@ class CartShoppingBasketFactory extends AbstractFactory
         foreach ($requestData->getCart()->getLineItems()->getElements() as $lineItem) {
             $this->addOrderLineItemToBasketByBasketLineItem($requestData, $basket, $lineItem);
         }
+
         $this->addShippingCosts($requestData, $basket);
 
         return $basket;

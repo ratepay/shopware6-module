@@ -53,8 +53,8 @@ class DataValidationService
         /** @var DataBag $_parameterBag */
         $_parameterBag = $parameterBag->get(RequestHelper::WRAPPER_KEY, $parameterBag); // paymentDetails is using for pwa request
 
-        if ($orderEntity === null) {
-            $this->addSecciRequirement($_parameterBag, get_class($paymentHandler), $paymentMethodId, $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext), $salesChannelContext);
+        if (!$orderEntity instanceof OrderEntity) {
+            $this->addSecciRequirement($_parameterBag, $paymentHandler::class, $paymentMethodId, $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext), $salesChannelContext);
         }
 
         $validationDefinitions = $paymentHandler->getValidationDefinitions(new RequestDataBag($_parameterBag->all()), $salesChannelContext, $orderEntity);

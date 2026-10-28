@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Ratepay\RpayPayments\Components\Checkout\Service;
 
+use Ratepay\RpayPayments\Components\ProfileConfig\Dto\ProfileConfigSearch
 use RatePAY\Model\Response\SecciRequest;
 use Ratepay\RpayPayments\Components\AdminOrders\Service\SessionService;
 use Ratepay\RpayPayments\Components\ProfileConfig\Service\Search\ProfileBySalesChannelContextAndCart;
@@ -64,7 +65,7 @@ class SecciService
      */
     public function filterPaymentMethodRequiresSecci(PaymentMethodCollection $paymentMethods, Cart $cart, SalesChannelContext $salesChannelContext): PaymentMethodCollection
     {
-        return $paymentMethods->filter(fn (PaymentMethodEntity $paymentMethod) => $this->paymentMethodRequiresSecci($paymentMethod, $cart, $salesChannelContext));
+        return $paymentMethods->filter(fn (PaymentMethodEntity $paymentMethod): bool => $this->paymentMethodRequiresSecci($paymentMethod, $cart, $salesChannelContext));
     }
 
     /**
@@ -87,7 +88,7 @@ class SecciService
             }
 
             $search = $this->profileBySalesChannelContextAndCart->createSearchObject($salesChannelContext, $cart);
-            if ($search === null) {
+            if (!$search instanceof ProfileConfigSearch) {
                 return false;
             }
 
@@ -96,10 +97,8 @@ class SecciService
 
             foreach ($result as $profileConfig) {
                 foreach ($profileConfig->getPaymentMethodConfigs() as $paymentMethodConfig) {
-                    if ($paymentMethodConfig->getPaymentMethodId() === $paymentMethodId) {
-                        if ($paymentMethodConfig->isRequireSecci()) {
-                            return true;
-                        }
+                    if ($paymentMethodConfig->getPaymentMethodId() === $paymentMethodId && $paymentMethodConfig->isRequireSecci()) {
+                        return true;
                     }
                 }
             }
@@ -115,7 +114,7 @@ class SecciService
     {
         $response = $this->triggerSecciDeliveryAndSaveToken($requestDataBag, $cart, $salesChannelContext, true);
 
-        return ($response !== null && $response->isSuccessful()) ? $response->getDocumentId() : null;
+        return ($response instanceof SecciRequest && $response->isSuccessful()) ? $response->getDocumentId() : null;
     }
 
     /**
@@ -125,7 +124,7 @@ class SecciService
     {
         $response = $this->triggerSecciDeliveryAndSaveToken($requestDataBag, $cart, $salesChannelContext, true, $emailAddress);
 
-        return ($response !== null && $response->isSuccessful()) ? $response->getDocumentId() : null;
+        return ($response instanceof SecciRequest && $response->isSuccessful()) ? $response->getDocumentId() : null;
     }
 
     /**
@@ -137,7 +136,7 @@ class SecciService
     {
         $response = $this->triggerSecciDeliveryAndSaveToken($requestDataBag, $cart, $salesChannelContext, false);
 
-        if ($response !== null && $response->isSuccessful() && $response->getDocumentId() && $response->getDocument()) {
+        if ($response instanceof SecciRequest && $response->isSuccessful() && $response->getDocumentId() && $response->getDocument()) {
             return [
                 'id' => $response->getDocumentId(),
                 'data' => $response->getDocument(),
@@ -167,21 +166,25 @@ class SecciService
         if ($result['cartTotal'] !== $cartTotal) {
             return null;
         }
+
         if ($result['paymentMethodId'] !== $paymentMethodId) {
             return null;
         }
+
         if ($result['currencyId'] !== $currencyId) {
             return null;
         }
+
         if ($result['locale'] !== $locale) {
             return null;
         }
+
         if ($result['billingCountry'] !== $billingCountry) {
             return null;
         }
 
         // Validate financing data and payment type have not changed. Only for variant 2 and 3.
-        if (in_array($this->getSecciVariant($context), [2, 3], true) && !empty($ratepayParameters)) {
+        if (in_array($this->getSecciVariant($context), [2, 3], true) && $ratepayParameters !== []) {
             if ($result['installmentHash'] !== ($ratepayParameters['installment']['hash'] ?? null)) {
                 return null;
             }
@@ -227,11 +230,7 @@ class SecciService
         $search = $this->profileBySalesChannelContextAndCart->createSearchObject($salesChannelContext, $cart);
         $profile = $this->profileBySalesChannelContextAndCart->search($search, $salesChannelContext);
 
-        if ($sendMail) {
-            $emailAddress = $emailAddress ?? $salesChannelContext->getCustomer()->getEmail();
-        } else {
-            $emailAddress = null;
-        }
+        $emailAddress = $sendMail ? $emailAddress ?? $salesChannelContext->getCustomer()->getEmail() : null;
 
         $locale = $this->requestStack->getMainRequest()->attributes->get('ratepay_saved_locale') ?? $salesChannelContext->getLanguageInfo()->localeCode;
         $billingCountry = $salesChannelContext->getCustomer()->getActiveBillingAddress()->getCountry()->getIso();
@@ -252,13 +251,15 @@ class SecciService
 
         try {
             $requestBuilder = $this->secciRequestService->doRequest($secciRequestData);
-        } catch (RatepayException $e) {
+        } catch (RatepayException $ratepayException) {
             $session = $this->requestStack->getSession();
             if ($session instanceof FlashBagAwareSessionInterface) {
-                $session->getFlashBag()->add(StorefrontController::DANGER, $e->getMessage());
+                $session->getFlashBag()->add(StorefrontController::DANGER, $ratepayException->getMessage());
             }
+            
             return null;
         }
+        
         /** @var SecciRequest $response */
         $response = $requestBuilder->getResponse();
 
