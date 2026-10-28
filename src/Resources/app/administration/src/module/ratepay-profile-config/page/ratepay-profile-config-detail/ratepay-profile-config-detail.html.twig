@@ -113,6 +113,10 @@
                                             <th>{{ $t('ratepay.profileConfig.page.paymentConfig.table.label.allowDifferentAddresses') }}</th>
                                             <td>{{ config.allowDifferentAddresses ? $t('global.default.yes') : $t('global.default.no') }}</td>
                                         </tr>
+                                        <tr>
+                                            <th>{{ $t('ratepay.profileConfig.page.paymentConfig.table.label.requireSecci') }}</th>
+                                            <td>{{ config.requireSecci ? $t('global.default.yes') : $t('global.default.no') }}</td>
+                                        </tr>
                                         <tr v-if="config.installmentConfig">
                                             <th colspan="2" style="padding-top: 15px; border-bottom: 1px solid #ccc;">{{ $t('ratepay.profileConfig.page.paymentConfig.table.label.installmentHeading') }}</th>
                                         </tr>

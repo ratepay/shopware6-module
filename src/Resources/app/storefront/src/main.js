@@ -7,6 +7,7 @@
 
 import RatepayInstallment from './RatepayCheckout/Installment';
 import RatepayInstallmentPaymentSwitch from './RatepayCheckout/InstallmentPaymentSwitch';
+import Secci from './RatepayCheckout/Secci';
 
 const PluginManager = window.PluginManager;
 let pluginList = PluginManager.getPluginList();
@@ -17,4 +18,8 @@ if(!('RatepayInstallment' in pluginList)) {
 
 if(!('RatepayInstallmentPaymentSwitch' in pluginList)) {
     PluginManager.register('RatepayInstallmentPaymentSwitch', RatepayInstallmentPaymentSwitch, '[data-ratepay-installment-payment-switch="true"]');
+}
+
+if(!('RatepaySecci' in pluginList)) {
+    PluginManager.register('RatepaySecci', Secci, '[data-ratepay-secci="true"]');
 }

@@ -26,6 +26,7 @@ class CriteriaHelper
         $criteria->addAssociation(OrderExtension::EXTENSION_NAME);
         $criteria->addAssociation('currency');
         $criteria->addAssociation('language.locale');
+        $criteria->addAssociation('billingAddress.country');
         $criteria->addAssociation('addresses.country');
         $criteria->addAssociation('addresses.salutation');
         $criteria->addAssociation('orderCustomer.customer');

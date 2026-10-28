@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /*
  * Copyright (c) Ratepay GmbH
  *
@@ -13,6 +14,8 @@ namespace Ratepay\RpayPayments\Components\Checkout\Service;
 use Ratepay\RpayPayments\Components\PaymentHandler\AbstractPaymentHandler;
 use Ratepay\RpayPayments\Util\DataValidationHelper;
 use Ratepay\RpayPayments\Util\RequestHelper;
+use Shopware\Core\Checkout\Cart\Cart;
+use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PaymentHandlerRegistry;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
@@ -20,12 +23,16 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\Framework\Validation\DataValidationDefinition;
 use Shopware\Core\Framework\Validation\DataValidator;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class DataValidationService
 {
     public function __construct(
         private readonly PaymentHandlerRegistry $paymentHandlerRegistry,
-        private readonly DataValidator $dataValidator
+        private readonly DataValidator $dataValidator,
+        private readonly SecciService $secciService,
+        private readonly CartService $cartService,
+        private readonly RequestStack $requestStack,
     ) {
     }
 
@@ -45,6 +52,11 @@ class DataValidationService
 
         /** @var DataBag $_parameterBag */
         $_parameterBag = $parameterBag->get(RequestHelper::WRAPPER_KEY, $parameterBag); // paymentDetails is using for pwa request
+
+        if ($orderEntity === null) {
+            $this->addSecciRequirement($_parameterBag, get_class($paymentHandler), $paymentMethodId, $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext), $salesChannelContext);
+        }
+
         $validationDefinitions = $paymentHandler->getValidationDefinitions(new RequestDataBag($_parameterBag->all()), $salesChannelContext, $orderEntity);
 
         $definitions = new DataValidationDefinition();
@@ -56,5 +68,24 @@ class DataValidationService
         }
 
         $this->dataValidator->validate($parameterBag->all(), $dataValidationDefinition);
+    }
+
+    private function addSecciRequirement(DataBag $dataBag, string $handlerIdentifier, string $paymentMethodId, Cart $cart, SalesChannelContext $salesChannelContext): void
+    {
+        if ($this->secciService->paymentMethodIdRequiresSecci($handlerIdentifier, $paymentMethodId, $cart, $salesChannelContext)) {
+            $locale = $this->requestStack->getMainRequest()->attributes->get('ratepay_saved_locale') ?? $salesChannelContext->getLanguageInfo()->localeCode;
+
+            $dataBag->get(RequestHelper::RATEPAY_DATA_KEY)->set('secciRequired', true);
+            $attestationToken = $this->secciService->getAttestationToken(
+                $cart->getPrice()->getTotalPrice(),
+                $paymentMethodId,
+                $salesChannelContext->getCurrencyId(),
+                $locale,
+                $salesChannelContext->getCustomer()->getActiveBillingAddress()->getCountry()->getIso(),
+                $salesChannelContext,
+                RequestHelper::getRatepayData($dataBag)->all(),
+            );
+            $dataBag->get(RequestHelper::RATEPAY_DATA_KEY)->set('secci', $attestationToken);
+        }
     }
 }
