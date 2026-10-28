@@ -24,6 +24,8 @@ export default class Secci extends window.PluginBaseClass {
         this._motoSuccessMail = this.el.querySelector('[data-ratepay-secci-moto-mail]');
         this._motoSuccessDocumentId = this.el.querySelector('[data-ratepay-secci-moto-documentid]');
 
+        this._safariWindow = null;
+
         this._registerEvents();
     }
 
@@ -49,7 +51,14 @@ export default class Secci extends window.PluginBaseClass {
 
     _onSubmit(event) {
         this._addLoadingIndicators();
-        this._sendRequest(event.currentTarget.dataset.ratepaySecciDeliveryType);
+
+        const deliveryType = event.currentTarget.dataset.ratepaySecciDeliveryType;
+        if (this.isIosSafari() && deliveryType === 'pdf' && (this._safariWindow == null || this._safariWindow.closed)) {
+            // Use a new tab on Safari on iOS as otherwise Safari opens the pdf in the checkout tab
+            this._openSafariWindow();
+        }
+
+        this._sendRequest(deliveryType);
     }
 
     _onReset() {
@@ -59,6 +68,17 @@ export default class Secci extends window.PluginBaseClass {
     _onVariant1InstallmentPaymentMethodSwitched() {
         this._addLoadingIndicators();
         this._sendRequest('mail');
+    }
+
+    _openSafariWindow() {
+        this._safariWindow = window.open('', '_blank');
+    }
+
+    _closeSafariWindow() {
+        if (this._safariWindow) {
+            this._safariWindow.close();
+            this._safariWindow = null;
+        }
     }
 
     _sendRequest(deliveryType) {
@@ -78,7 +98,10 @@ export default class Secci extends window.PluginBaseClass {
         fetch(this._action, fetchOptions)
             .then(response => response.json())
             .then(response => this._processResponse(response))
-            .catch(() => this._goToErrorPage());
+            .catch(() => {
+                this._closeSafariWindow();
+                this._goToErrorPage();
+            });
     }
 
     _processResponse(response) {
@@ -100,6 +123,7 @@ export default class Secci extends window.PluginBaseClass {
                 this._motoSuccessDocumentId.textContent = response.documentId;
             }
         } else {
+            this._closeSafariWindow();
             this._goToErrorPage();
         }
     }
@@ -128,22 +152,24 @@ export default class Secci extends window.PluginBaseClass {
         // Ensure the filename provides clear identification for the user
         const fileName = id.toLowerCase().endsWith('.pdf') ? id : `${id}.pdf`;
 
-        // Create temporary anchor to initiate the download without altering the DOM layout
-        const downloadLink = document.createElement('a');
-        downloadLink.href = blobUrl;
-        downloadLink.download = fileName;
-        downloadLink.style.display = 'none';
+        if (this._safariWindow) {
+            this._safariWindow.location.href = blobUrl;
+            //this._safariWindow.close();
+            //this._safariWindow = null;
+        } else {
+            // Create temporary anchor to initiate the download without altering the DOM layout
+            const downloadLink = document.createElement('a');
+            downloadLink.href = blobUrl;
+            downloadLink.download = fileName;
+            downloadLink.style.display = 'none';
 
-        if (this.isIosSafari()) {
-            // Use target="_blank" on Safari on iOS as otherwise Safari opens the pdf in the checkout tab
-            downloadLink.target = '_blank';
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+
+            // Release resources immediately to minimise memory overhead
+            document.body.removeChild(downloadLink);
         }
 
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-
-        // Release resources immediately to minimise memory overhead
-        document.body.removeChild(downloadLink);
         window.URL.revokeObjectURL(blobUrl);
     }
 

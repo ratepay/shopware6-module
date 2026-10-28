@@ -82,6 +82,10 @@
                         "header": "Per E-Mail gesendet",
                         "text": "Ihre EU-Standardinformationen für Verbraucherkredite wurden an %email% gesendet."
                     },
+                    "deliveredByDownload": {
+                        "header": "Heruntergeladen",
+                        "text": "Ihre EU-Standardinformationen für Verbraucherkredite wurden auf Ihr Gerät heruntergeladen."
+                    },
                     "retry": "Zurück zur Auswahl",
                     "email": "E-Mail: %email%",
                     "moto": {
