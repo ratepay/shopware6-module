@@ -5,13 +5,14 @@
  * file that was distributed with this source code.
  */
 
+import Plugin from 'src/plugin-system/plugin.class';
 import LoadingIndicator from 'src/utility/loading-indicator/loading-indicator.util';
 import HttpClient from 'src/service/http-client.service';
 
 // xhr call storage
 let xhr = null;
 
-export default class Installment extends window.PluginBaseClass {
+export default class Installment extends Plugin {
 
     static options = {
         hiddenCls: 'd-none',
@@ -95,7 +96,6 @@ export default class Installment extends window.PluginBaseClass {
             this._valueHolder.value = value;
             this._registerInstallmentPlanEvents();
             window.PluginManager.initializePlugins();
-            this.$emitter.publish('RatepayInstallmentPlanUpdated');
         };
 
         xhr = client.get(url, this._executeCallback.bind(this, cb));

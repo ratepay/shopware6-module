@@ -164,6 +164,11 @@
                                 "type": "string",
                                 "required": true,
                                 "description": "IBAN of the bank account"
+                            },
+                            "sepaConfirmation": {
+                                "type": "boolean",
+                                "required": true,
+                                "description": "needs to be `true`. The value is require to make sure the customer has confirmed the SEPA mandate."
                             }
                         }
                     }

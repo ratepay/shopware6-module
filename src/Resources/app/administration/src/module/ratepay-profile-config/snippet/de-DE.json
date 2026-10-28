@@ -57,7 +57,6 @@
                             "limitMax": "Maximalbestellwert",
                             "limitMaxB2b": "Maximalbestellwert (B2B)",
                             "allowDifferentAddresses": "Erlaube unterschiedliche Adressen",
-                            "requireSecci": "Erfordert SECCI (CCD2)",
                             "installmentHeading": "Ratenzahlung",
                             "installment": {
                                 "allowedMonths": "Verfügbare Monate",
