@@ -85,7 +85,13 @@ export default class Secci extends window.PluginBaseClass {
         if (response.success) {
             this._removeLoadingIndicators();
             this.el.classList.remove('ratepay--secci_banner--error', 'ratepay--secci_banner--failed', 'ratepay--secci_banner--downloaded', 'ratepay--secci_banner--mailed');
-            this.el.classList.add(response.deliveryMethod === 'pdf' ? 'ratepay--secci_banner--downloaded' : 'ratepay--secci_banner--mailed');
+
+            let confirmationClass = response.deliveryMethod === 'pdf' ? 'ratepay--secci_banner--downloaded' : 'ratepay--secci_banner--mailed';
+            if (this._variant == 1) {
+                // For SECCI banner variant 1, always show the mailed confirmation
+                confirmationClass = 'ratepay--secci_banner--mailed';
+            }
+            this.el.classList.add(confirmationClass);
 
             if (response.document) {
                 this._downloadPdf(response.document);
@@ -128,12 +134,29 @@ export default class Secci extends window.PluginBaseClass {
         downloadLink.download = fileName;
         downloadLink.style.display = 'none';
 
+        if (this.isIosSafari()) {
+            // Use target="_blank" on Safari on iOS as otherwise Safari opens the pdf in the checkout tab
+            downloadLink.target = '_blank';
+        }
+
         document.body.appendChild(downloadLink);
         downloadLink.click();
 
         // Release resources immediately to minimise memory overhead
         document.body.removeChild(downloadLink);
         window.URL.revokeObjectURL(blobUrl);
+    }
+
+    // Only Safari on iOS / iPadOS, other iOS browsers (Chrome, Firefox, Edge, Opera) download the PDF correctly
+    // iPadOS reports itself as MacIntel, but has touch points
+    isIosSafari() {
+        const userAgent = window.navigator.userAgent;
+        const isIOS = /iPad|iPhone|iPod/.test(userAgent) ||
+            (window.navigator.platform === 'MacIntel' && window.navigator.maxTouchPoints > 1);
+
+        return isIOS
+            && /Version\/[\d.]+.*Safari\//.test(userAgent)
+            && !/CriOS|FxiOS|EdgiOS|OPiOS|OPT\//.test(userAgent);
     }
 
     _goToErrorPage() {

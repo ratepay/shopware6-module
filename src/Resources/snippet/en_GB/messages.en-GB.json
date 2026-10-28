@@ -82,10 +82,6 @@
                         "header": "Sent by email",
                         "text": "Your Standard EU Consumer Credit Information was sent to %email%."
                     },
-                    "deliveredByDownload": {
-                        "header": "Downloaded",
-                        "text": "Your Standard EU Consumer Credit Information was downloaded to your device."
-                    },
                     "retry": "Back to selection",
                     "email": "E-Mail: %email%",
                     "moto": {

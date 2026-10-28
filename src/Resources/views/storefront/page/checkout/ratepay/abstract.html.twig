@@ -34,7 +34,8 @@
     {% if page.extensions.ratepay.showSecciFailedConfirmation %}
         {% set additionalClass = ' ratepay--secci_banner--failed' %}
     {% else %}
-        {% set additionalClass = ' ratepay--secci_banner--' ~ (page.extensions.ratepay.secciDeliveryConfirmationType === 'pdf' ? 'downloaded' : 'mailed') %}
+        {# Always show the mailed banner, even if the SECCI has been downloaded #}
+        {% set additionalClass = ' ratepay--secci_banner--mailed' %}
     {% endif %}
     <div class="col-sm-12">
         <div class="ratepay--secci_banner ratepay--secci_variant1{{ additionalClass }}"
@@ -86,15 +87,6 @@
                                 {{ 'ratepay.storefront.checkout.secci.variant1.downloadPdf'|trans }}
                             </span>
                         {% endblock %}
-                    </div>
-
-                    <div class="ratepay--secci_banner--text_downloaded">
-                        <div class="ratepay--secci_banner--headline">
-                            {{ 'ratepay.storefront.checkout.secci.deliveredByDownload.header'|trans }}
-                        </div>
-                        <p class="ratepay--secci_banner--text">
-                            {{ 'ratepay.storefront.checkout.secci.deliveredByDownload.text'|trans }}
-                        </p>
                     </div>
                 </div>
                 <div class="ratepay--secci_banner--spacer" aria-hidden="true"></div>
