@@ -256,10 +256,10 @@ class SecciService
             if ($session instanceof FlashBagAwareSessionInterface) {
                 $session->getFlashBag()->add(StorefrontController::DANGER, $ratepayException->getMessage());
             }
-            
+
             return null;
         }
-        
+
         /** @var SecciRequest $response */
         $response = $requestBuilder->getResponse();
 
