@@ -1,13 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 453 393" fill="none">
-    <defs>
-        <filter id="shadow" x="8" y="9" width="436" height="376" filterUnits="userSpaceOnUse">
-            <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#233850" flood-opacity="0.16"/>
-        </filter>
-        <filter id="button-shadow" x="75" y="276" width="302" height="43" filterUnits="userSpaceOnUse">
-            <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#233850" flood-opacity="0.18"/>
-        </filter>
-    </defs>
-    <rect x="12.5" y="11.5" width="428" height="369" rx="10" fill="white" stroke="#c3d0de" filter="url(#shadow)"/>
+    <rect x="12.5" y="11.5" width="428" height="369" rx="10" fill="white" stroke="#c3d0de"/>
     <rect x="33" y="32" width="387" height="328" rx="8" fill="#f1f6fa"/>
     <circle cx="71" cy="72" r="9.5" stroke="#7e94aa"/>
     <path d="M98 72H353" stroke="#aebac4" stroke-width="10" stroke-linecap="round"/>
@@ -27,7 +19,7 @@
             <tspan x="111" dy="20">to receive this information.</tspan>
         </text>
     </g>
-    <g filter="url(#button-shadow)">
+    <g>
         <rect x="79.5" y="278.5" width="143" height="35" rx="8" fill="white" stroke="#e1e7ed"/>
         <rect x="231.5" y="278.5" width="142" height="35" rx="8" fill="white" stroke="#e1e7ed"/>
     </g>
