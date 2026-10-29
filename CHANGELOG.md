@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 10.0.1 - Released on 2026-10-29
+
+* FC#0137699 - Fix Shopware extension store code review errors
+
 ## Version 10.0.0 - Released on 2026-10-29
 
 * FC#0137699 - Implemented CCD2 compliance
