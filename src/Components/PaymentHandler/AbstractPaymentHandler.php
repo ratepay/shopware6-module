@@ -13,9 +13,13 @@ namespace Ratepay\RpayPayments\Components\PaymentHandler;
 
 use DateTimeInterface;
 use RatePAY\Model\Response\PaymentRequest;
+use Ratepay\RpayPayments\Components\AdminOrders\Service\SessionService;
+use Ratepay\RpayPayments\Components\Checkout\Service\SecciService;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\Birthday;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\BirthdayNotBlank;
 use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\IsOfLegalAge;
+use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\MotoSecciRequired;
+use Ratepay\RpayPayments\Components\PaymentHandler\Constraint\SecciRequired;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\BeforePaymentEvent;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentFailedEvent;
 use Ratepay\RpayPayments\Components\PaymentHandler\Event\PaymentSuccessfulEvent;
@@ -31,6 +35,7 @@ use Ratepay\RpayPayments\Exception\RatepayException;
 use Ratepay\RpayPayments\Util\CriteriaHelper;
 use Ratepay\RpayPayments\Util\RequestHelper;
 use RuntimeException;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
@@ -38,6 +43,7 @@ use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Checkout\Payment\PaymentException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -62,7 +68,10 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
         private readonly PluginConfigService $configService,
         private readonly RequestStack $requestStack,
         private readonly ProfileSearchService $profileSearchService,
-        private readonly ProfileByOrderEntity $profileByOrderEntitySearchService
+        private readonly ProfileByOrderEntity $profileByOrderEntitySearchService,
+        private readonly SecciService $secciService,
+        private readonly SessionService $sessionService,
+        private readonly EntityRepository $orderTransactionRepository,
     ) {
     }
 
@@ -72,17 +81,35 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
     {
         $ratepayData = RequestHelper::getRatepayData($dataBag) ?: new ParameterBag();
 
+        $orderTransactionId = $transaction->getOrderTransaction()->getId();
+        $orderTransaction = $this->getOrderTransactionById($orderTransactionId, $salesChannelContext->getContext());
+
         $order = $this->getOrderWithAssociations($transaction->getOrder(), $salesChannelContext->getContext());
 
-        if (!$order instanceof OrderEntity || $ratepayData->count() === 0) {
-            throw $this->syncProcessInterrupted($transaction->getOrderTransaction()->getId(), 'unknown error during payment');
+        $paymentMethod = $order->getTransactions()->last()->getPaymentMethod();
+        $orderTransaction->setPaymentMethod($paymentMethod);
+
+        $customFields = $orderTransaction->getCustomFields() ?? [];
+        $customFields['ratepay_attestation_token'] = $this->secciService->getAttestationToken(
+            $order->getPrice()->getTotalPrice(),
+            $paymentMethod->getId(),
+            $order->getCurrencyId(),
+            $order->getLanguage()->getLocale()->getCode(),
+            $order->getBillingAddress()->getCountry()->getIso(),
+            $salesChannelContext,
+            $ratepayData->all()
+        );
+        $orderTransaction->setCustomFields($customFields);
+
+        if (!$order instanceof OrderEntity || count($ratepayData) === 0 || !$orderTransaction) {
+            throw $this->syncProcessInterrupted($orderTransaction->getId(), 'unknown error during payment');
         }
 
         try {
             $paymentRequestData = new PaymentRequestData(
                 $salesChannelContext,
                 $order,
-                $transaction->getOrderTransaction(),
+                $orderTransaction,
                 $dataBag,
                 $this->configService->isSendDiscountsAsCartItem(),
                 $this->configService->isSendShippingCostsAsCartItem()
@@ -175,6 +202,13 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
             ];
         }
 
+        if ($ratepayData->get('secciRequired') === true) {
+            $isMotoFlow = $this->sessionService->isAdminSession($salesChannelContext, $this->requestStack->getSession());
+            $validations['secci'] = [
+                $isMotoFlow ? new MotoSecciRequired() : new SecciRequired(),
+            ];
+        }
+
         /** @var ValidationDefinitionCollectEvent $event */
         $event = $this->eventDispatcher->dispatch(new ValidationDefinitionCollectEvent($validations, $requestDataBag, $salesChannelContext, $orderEntity));
 
@@ -197,5 +231,13 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
 
         // should never occur - just to be safe
         return new RuntimeException('payment interrupted: ' . $errorMessage, 0, $e);
+    }
+
+    private function getOrderTransactionById(string $orderTransactionId, Context $context): ?OrderTransactionEntity
+    {
+        $criteria = new Criteria([$orderTransactionId]);
+        $criteria->addAssociation('order');
+
+        return $this->orderTransactionRepository->search($criteria, $context::createDefaultContext())->first();
     }
 }
