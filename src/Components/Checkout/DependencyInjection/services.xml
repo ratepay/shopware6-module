@@ -55,6 +55,10 @@
             <tag name="shopware.cart.validator"/>
         </service>
 
+        <service id="Ratepay\RpayPayments\Components\Checkout\Cart\SecciCartProcessor" public="true">
+            <tag name="shopware.cart.processor"/>
+        </service>
+
     </services>
 
 </container>

@@ -8,32 +8,31 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
+namespace Ratepay\RpayPayments\Components\Checkout\Cart;
 
 use Ratepay\RpayPayments\Components\Checkout\Cart\Error\SecciExpiredError;
-use Shopware\Core\Checkout\Cart\Extension\CheckoutCartRuleLoaderExtension;
+use Shopware\Core\Checkout\Cart\Cart;
+use Shopware\Core\Checkout\Cart\CartBehavior;
+use Shopware\Core\Checkout\Cart\CartProcessorInterface;
+use Shopware\Core\Checkout\Cart\LineItem\CartDataCollection;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextService;
 use Shopware\Core\System\SalesChannel\SalesChannel\AbstractContextSwitchRoute;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Shopware\Core\System\SalesChannel\SalesChannel\ContextSwitchRoute;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class CartLoadingSubscriber implements EventSubscriberInterface
+class SecciCartProcessor implements CartProcessorInterface
 {
     public function __construct(
+        #[Autowire(service: ContextSwitchRoute::class)]
         private readonly AbstractContextSwitchRoute $contextSwitchRoute,
         private readonly RequestStack $requestStack,
     ) {
     }
 
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            CheckoutCartRuleLoaderExtension::NAME . '.post' => 'afterCartLoaded',
-        ];
-    }
-
-    public function afterCartLoaded(CheckoutCartRuleLoaderExtension $event): void
+    public function process(CartDataCollection $data, Cart $original, Cart $toCalculate, SalesChannelContext $context, CartBehavior $behavior): void
     {
         if (
             $this->requestStack->getMainRequest()?->request->has(SalesChannelContextService::PAYMENT_METHOD_ID)
@@ -43,16 +42,15 @@ class CartLoadingSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $cart = $event->result()->getCart();
-        if ($cart->getErrors()->has(SecciExpiredError::KEY)) {
+        if ($toCalculate->getErrors()->has(SecciExpiredError::KEY)) {
             // Switch payment method
-            $defaultPaymentMethodId = $event->getSalesChannelContext()->getSalesChannel()->getPaymentMethodId();
-            if ($event->getSalesChannelContext()->getPaymentMethod()->getId() !== $defaultPaymentMethodId) {
+            $defaultPaymentMethodId = $context->getSalesChannel()->getPaymentMethodId();
+            if ($context->getPaymentMethod()->getId() !== $defaultPaymentMethodId) {
                 $this->contextSwitchRoute->switchContext(
                     new RequestDataBag([
                         SalesChannelContextService::PAYMENT_METHOD_ID => $defaultPaymentMethodId,
                     ]),
-                    $event->getSalesChannelContext(),
+                    $context,
                 );
             }
         }
