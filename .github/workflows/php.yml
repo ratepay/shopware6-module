@@ -22,7 +22,7 @@ jobs:
             matrix:
                 php-version: [ '8.2', '8.3' ]
                 mysql-version: [ '8.0' ]
-                shopware-version: [ 'v6.6.0.0', 'v6.6.1.0', 'v6.6.2.0', 'v6.6.3.0', 'v6.6.4.0' ]
+                shopware-version: [ 'v6.6.0.0', 'v6.6.1.0', 'v6.6.2.0', 'v6.6.3.0', 'v6.6.4.0', 'v6.6.5.0', 'v6.6.6.0', 'v6.6.7.0', 'v6.6.8.0', 'v6.6.9.0', 'v6.6.10.0', 'v6.6.10.31' ]
             fail-fast: false
             max-parallel: 10
         services:
@@ -106,11 +106,10 @@ jobs:
 
                   # Workaround. The variables are required for shopware to work properly during unit-testing
             -   name: "Install Shopware for unit-testing"
-                env:
-                    # Older shopware versions use an older composer/composer version that fails to validate the new GitHub token format
-                    COMPOSER_AUTH: ''
-                    GITHUB_TOKEN: ''
+                # Older shopware versions use an older composer/composer version that fails to validate the new GitHub token format
                 run: |
+                    composer config --global --unset github-oauth.github.com || true
+                    rm -f ~/.composer/auth.json ~/.config/composer/auth.json
                     echo DATABASE_URL=${{ env.TEST_DATABASE_URL }} >> .env
                     echo MAILER_DSN=null://null >> .env
                     echo OPENSEARCH_URL=http://localhost:9200 >> .env
