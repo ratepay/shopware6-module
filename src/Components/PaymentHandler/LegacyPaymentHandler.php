@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Ratepay\RpayPayments\Components\PaymentHandler;
 
 use RuntimeException;
-use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\DefaultPayment;
+use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -20,7 +20,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
  * @deprecated
  * @internal
  */
-class LegacyPaymentHandler extends DefaultPayment
+class LegacyPaymentHandler implements SynchronousPaymentHandlerInterface
 {
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
