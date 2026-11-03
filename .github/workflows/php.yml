@@ -3,6 +3,7 @@ on:
         branches:
             - '*'
             - 'task/*'
+            - 'feature/*'
 
 env:
     MODULE_NAME: RpayPayments
