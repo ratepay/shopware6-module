@@ -23,7 +23,7 @@ jobs:
                 with:
                     node-version: '20'
 
-            -   run: shopware-cli extension zip . --disable-git --release
+            -   run: shopware-cli extension package . --disable-git --release
 
             -   uses: actions/upload-artifact@v4
                 with:
