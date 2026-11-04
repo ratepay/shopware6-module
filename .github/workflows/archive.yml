@@ -22,11 +22,11 @@ jobs:
                     cache: true
                     check-latest: true
 
-            -   run: go install github.com/FriendsOfShopware/shopware-cli@0.4.59
+            -   run: go install github.com/FriendsOfShopware/shopware-cli@latest
 
             -   uses: actions/setup-node@v3
                 with:
-                    node-version: '18'
+                    node-version: '20'
 
             -   run: shopware-cli extension zip . --disable-git --release
 
