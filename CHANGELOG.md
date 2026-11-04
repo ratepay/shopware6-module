@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 10.0.2 - Released on 2026-11-05
+
+* FC#0140022 - fix misplaced cascadedelete flags
+
 ## Version 10.0.1 - Released on 2026-10-29
 
 * FC#0137699 - Fix Shopware extension store code review errors
