@@ -34,19 +34,23 @@ export default class Secci extends window.PluginBaseClass {
         this._resetButtons.forEach(button => button.addEventListener('click', this._onReset.bind(this)));
 
         window.PluginManager.getPluginInstances('RatepayInstallment').forEach(plugin => {
-            plugin.$emitter.subscribe('RatepayInstallmentPlanUpdated', this._onReset.bind(this));
+            plugin.$emitter.subscribe('RatepayInstallmentPlanUpdated', () => {
+                this._onReset();
+                this._registerInstallmentPaymentSwitchEvents();
+            });
         });
 
+        this._registerInstallmentPaymentSwitchEvents();
+    }
+
+    _registerInstallmentPaymentSwitchEvents() {
         window.PluginManager.getPluginInstances('RatepayInstallmentPaymentSwitch').forEach(plugin => {
             plugin.$emitter.subscribe('RatepayInstallmentPaymentMethodSwitched', this._onReset.bind(this));
-        });
 
-        if (this._variant == 1) {
-            // With automatic SECCI delivery, email delivery must be triggered when customer switches between direct debit and bank transfer
-            window.PluginManager.getPluginInstances('RatepayInstallmentPaymentSwitch').forEach(plugin => {
+            if (this._variant == 1) {
                 plugin.$emitter.subscribe('RatepayInstallmentPaymentMethodSwitched', this._onVariant1InstallmentPaymentMethodSwitched.bind(this));
-            });
-        }
+            }
+        });
     }
 
     _onSubmit(event) {
