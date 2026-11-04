@@ -22,7 +22,7 @@ Shopware.Component.register('ratepay-choose-secci-variant', {
         'en-GB': enGB
     },
 
-    emits: ['update:value'],
+    emits: ['change'],
 
     props: {
         value: {
@@ -48,8 +48,8 @@ Shopware.Component.register('ratepay-choose-secci-variant', {
             salesChannelsWithSecciDefaultPaymentMethod: [],
             groupName: `ratepay-secci-${Shopware.Utils.createId()}`,
             variants: [
-                { value: '1', snippet: 'above', image: 'rpaypayments/administration/static/img/secci-above.svg' },
-                { value: '2', snippet: 'below', image: 'rpaypayments/administration/static/img/secci-below.svg' }
+                { value: '1', snippet: 'above', image: 'rpaypayments/static/img/secci-above.svg' },
+                { value: '2', snippet: 'below', image: 'rpaypayments/static/img/secci-below.svg' }
             ]
         };
     },
@@ -104,7 +104,7 @@ Shopware.Component.register('ratepay-choose-secci-variant', {
 
         selectVariant(value) {
             if (!this.disabled) {
-                this.$emit('update:value', value);
+                this.$emit('change', value);
             }
         }
     }
