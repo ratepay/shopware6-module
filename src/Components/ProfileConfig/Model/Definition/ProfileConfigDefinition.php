@@ -21,8 +21,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ListField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
@@ -77,13 +77,13 @@ class ProfileConfigDefinition extends EntityDefinition
                 ProfileConfigEntity::FIELD_ONLY_ADMIN_ORDERS
             ))->addFlags(new Required()/* , new PrimaryKey() */),
 
-            (new OneToOneAssociationField(
+            (new ManyToOneAssociationField(
                 ProfileConfigEntity::FIELD_SALES_CHANNEL,
                 'sales_channel_id',
-                'id',
                 SalesChannelDefinition::class,
+                'id',
                 false
-            ))->addFlags(new CascadeDelete()),
+            ))->addFlags(),
 
             (new FkField(
                 'sales_channel_id',
@@ -124,7 +124,7 @@ class ProfileConfigDefinition extends EntityDefinition
                 ProfileConfigMethodDefinition::class,
                 'profile_id',
                 ProfileConfigEntity::FIELD_ID
-            )),
+            ))->addFlags(new CascadeDelete()),
         ]);
     }
 }

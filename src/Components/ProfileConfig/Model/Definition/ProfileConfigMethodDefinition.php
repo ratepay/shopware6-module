@@ -62,7 +62,7 @@ class ProfileConfigMethodDefinition extends EntityDefinition
                 ProfileConfigDefinition::class,
                 'id',
                 false
-            ))->addFlags(new CascadeDelete()),
+            ))->addFlags(),
 
             (new FkField(
                 'profile_id',
@@ -76,7 +76,7 @@ class ProfileConfigMethodDefinition extends EntityDefinition
                 PaymentMethodDefinition::class,
                 'id',
                 false
-            ))->addFlags(/* new CascadeDelete() */),
+            ))->addFlags(),
 
             (new FkField(
                 'payment_method_id',
@@ -107,6 +107,11 @@ class ProfileConfigMethodDefinition extends EntityDefinition
             (new BoolField(
                 'allow_different_addresses',
                 ProfileConfigMethodEntity::FIELD_ALLOW_DIFFERENT_ADDRESSES
+            )),
+
+            (new BoolField(
+                'require_secci',
+                ProfileConfigMethodEntity::FIELD_REQUIRE_SECCI,
             )),
 
             (new OneToOneAssociationField(
