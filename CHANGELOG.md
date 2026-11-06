@@ -1,5 +1,11 @@
 # Changelog
 
+# Version 7.3.0 - Released on 2026-11-06
+
+This release is only for Shopware 6.5
+* FC#0140022 - fix misplaced cascadedelete flags
+* FC#0137699 - Implemented CCD2 compliance
+
 # Version 7.2.1 - Released on 2024-12-09
 
 This release is only for Shopware 6.5 and contains all changes from version 7.2.0
