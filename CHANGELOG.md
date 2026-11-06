@@ -1,6 +1,12 @@
 # Changelog
 
-## Version 7.2.0 - Released on 2024-12-09
+# Version 7.4.0 - Released on 2026-11-06
+
+This release is only for Shopware 6.6
+* FC#0140022 - fix misplaced cascadedelete flags
+* FC#0137699 - Implemented CCD2 compliance
+
+# Version 7.2.0 - Released on 2024-12-09
 
 * RATESWSX-320: dfp: remove validation & improve user-identification
 * RATESWSX-321: fix deletion of ratepay-data if payment-method got switched
