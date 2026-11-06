@@ -16,19 +16,14 @@ jobs:
         steps:
             -   uses: actions/checkout@v3
 
-            -   uses: actions/setup-go@v5
-                with:
-                    go-version: "1.23"
-                    cache: true
-                    check-latest: true
-
-            -   run: go install github.com/FriendsOfShopware/shopware-cli@0.4.59
+            -   name: Install shopware-cli
+                uses: shopware/shopware-cli-action@v3
 
             -   uses: actions/setup-node@v3
                 with:
-                    node-version: '18'
+                    node-version: '20'
 
-            -   run: shopware-cli extension zip . --disable-git --release
+            -   run: shopware-cli extension package . --disable-git --release
 
             -   uses: actions/upload-artifact@v4
                 with:

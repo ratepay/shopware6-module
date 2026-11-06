@@ -1,0 +1,7 @@
+{
+    "ratepay": {
+        "salesChannelDetail": {
+            "defaultPaymentMethodRequiresSecci": "Kreditbasierte Zahlungsmethoden, einschließlich BNPL, können nicht als Standard-Zahlungsart festgelegt werden, wenn CCD2 verwendet wird. Legen Sie stattdessen eine Zahlungsmethode ohne Kreditprüfung als Standard fest."
+        }
+    }
+}
