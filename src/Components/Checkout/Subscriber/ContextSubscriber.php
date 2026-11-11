@@ -12,6 +12,7 @@ namespace Ratepay\RpayPayments\Components\Checkout\Subscriber;
 
 use Shopware\Core\Framework\Routing\Event\SalesChannelContextResolvedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class ContextSubscriber implements EventSubscriberInterface
@@ -30,6 +31,10 @@ class ContextSubscriber implements EventSubscriberInterface
 
     public function onContextResolved(SalesChannelContextResolvedEvent $event): void
     {
+        if (!$this->requestStack->getMainRequest() instanceof Request) {
+            return;
+        }
+
         // Because context switches during normal shopware operations lead to losing the customer's locale, we save the locale in a request attribute
         if (!$this->requestStack->getMainRequest()->attributes->has('ratepay_saved_locale')) {
             $this->requestStack->getMainRequest()->attributes->set('ratepay_saved_locale', $event->getSalesChannelContext()->getLanguageInfo()->localeCode);

@@ -19,6 +19,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextService;
 use Shopware\Core\System\SalesChannel\Event\SalesChannelContextSwitchEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class ContextSwitchSubscriber implements EventSubscriberInterface
@@ -54,12 +55,17 @@ class ContextSwitchSubscriber implements EventSubscriberInterface
     {
         // Remove Secci failure session data if SECCI-relevant data is changing
         if (
-            $event->getRequestDataBag()->has(SalesChannelContextService::PAYMENT_METHOD_ID)
-            || $event->getRequestDataBag()->has(SalesChannelContextService::COUNTRY_ID)
-            || $event->getRequestDataBag()->has(SalesChannelContextService::CURRENCY_ID)
-            || $event->getRequestDataBag()->has(SalesChannelContextService::CUSTOMER_ID)
-            || $event->getRequestDataBag()->has(SalesChannelContextService::IMITATING_USER_ID)
+            (
+                $event->getRequestDataBag()->has(SalesChannelContextService::PAYMENT_METHOD_ID)
+                || $event->getRequestDataBag()->has(SalesChannelContextService::COUNTRY_ID)
+                || $event->getRequestDataBag()->has(SalesChannelContextService::CURRENCY_ID)
+                || $event->getRequestDataBag()->has(SalesChannelContextService::CUSTOMER_ID)
+                || $event->getRequestDataBag()->has(SalesChannelContextService::IMITATING_USER_ID)
             || $event->getRequestDataBag()->has(SalesChannelContextService::LANGUAGE_ID)
+            ) && (
+                $this->requestStack->getMainRequest() instanceof Request
+                && $this->requestStack->getMainRequest()->hasSession()
+            )
         ) {
             $this->requestStack->getSession()->remove('secciFailed');
         }
@@ -83,7 +89,12 @@ class ContextSwitchSubscriber implements EventSubscriberInterface
         $paymentMethod = $this->paymentMethodRepository->search(new Criteria([$paymentMethodId]), $salesChannelContext->getContext())->getEntities()->first();
         $cart = $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext);
 
-        if ($paymentMethod && $this->secciService->paymentMethodRequiresSecci($paymentMethod, $cart, $salesChannelContext)) {
+        if (
+            $paymentMethod instanceof PaymentMethodEntity
+            && $this->secciService->paymentMethodRequiresSecci($paymentMethod, $cart, $salesChannelContext)
+            && $this->requestStack->getMainRequest() instanceof Request
+            && $this->requestStack->getMainRequest()->hasSession()
+        ) {
             // Schedule SECCI delivery for when the confirm page is loaded. The current sales channel context does not reliably contain the correct language.
             $this->requestStack->getSession()->set('ratepay_trigger_secci', true);
         }

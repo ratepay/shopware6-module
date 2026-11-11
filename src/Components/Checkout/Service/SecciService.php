@@ -30,6 +30,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 
@@ -53,7 +54,13 @@ class SecciService
      */
     public function getSecciVariant(SalesChannelContext $context): int
     {
-        if ($this->sessionService->isAdminSession($context, $this->requestStack->getSession())) {
+        // In CLI/Messenger workers there is no main request/session; avoid accessing session in that case
+        $mainRequest = $this->requestStack->getMainRequest();
+        if (
+            $mainRequest instanceof Request
+            && $mainRequest->hasSession()
+            && $this->sessionService->isAdminSession($context, $mainRequest->getSession())
+        ) {
             return 3;
         }
 
@@ -149,6 +156,10 @@ class SecciService
 
     public function hasAttestationToken(): bool
     {
+        if (!$this->requestStack->getMainRequest() instanceof Request || !$this->requestStack->getMainRequest()->hasSession()) {
+            return false;
+        }
+
         return $this->requestStack->getSession()->has(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN);
     }
 
@@ -157,6 +168,10 @@ class SecciService
      */
     public function getAttestationTokenStorage(float $cartTotal, string $paymentMethodId, string $currencyId, string $locale, string $billingCountry, SalesChannelContext $context, array $ratepayParameters = []): ?array
     {
+        if (!$this->requestStack->getMainRequest() instanceof Request || !$this->requestStack->getMainRequest()->hasSession()) {
+            return null;
+        }
+
         $result = $this->requestStack->getSession()->get(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN);
         if (empty($result)) {
             return null;
@@ -205,11 +220,19 @@ class SecciService
 
     public function clearAttestationToken(): void
     {
+        if (!$this->requestStack->getMainRequest() instanceof Request || !$this->requestStack->getMainRequest()->hasSession()) {
+            return;
+        }
+
         $this->requestStack->getSession()->remove(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN);
     }
 
     private function saveAttestationToken(string $token, string $deliveryMethod, ?string $documentId, ?string $emailRecipient, float $cartTotal, string $paymentMethodId, string $currencyId, string $locale, string $billingCountry, array $ratepayParameters): void
     {
+        if (!$this->requestStack->getMainRequest() instanceof Request || !$this->requestStack->getMainRequest()->hasSession()) {
+            return;
+        }
+
         $this->requestStack->getSession()->set(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN, [
             'token' => $token,
             'deliveryMethod' => $deliveryMethod,
@@ -232,7 +255,7 @@ class SecciService
 
         $emailAddress = $sendMail ? $emailAddress ?? $salesChannelContext->getCustomer()->getEmail() : null;
 
-        $locale = $this->requestStack->getMainRequest()->attributes->get('ratepay_saved_locale') ?? $salesChannelContext->getLanguageInfo()->localeCode;
+        $locale = $this->requestStack->getMainRequest()?->attributes?->get('ratepay_saved_locale') ?? $salesChannelContext->getLanguageInfo()->localeCode;
         $billingCountry = $salesChannelContext->getCustomer()->getActiveBillingAddress()->getCountry()->getIso();
 
         $secciRequestData = new SecciRequestData(
@@ -252,6 +275,10 @@ class SecciService
         try {
             $requestBuilder = $this->secciRequestService->doRequest($secciRequestData);
         } catch (RatepayException $ratepayException) {
+            if (!$this->requestStack->getMainRequest() instanceof Request || !$this->requestStack->getMainRequest()->hasSession()) {
+                return null;
+            }
+
             $session = $this->requestStack->getSession();
             if ($session instanceof FlashBagAwareSessionInterface) {
                 $session->getFlashBag()->add(StorefrontController::DANGER, $ratepayException->getMessage());
@@ -282,6 +309,11 @@ class SecciService
         }
 
         $errorMessage = $this->translator->trans('ratepay.storefront.checkout.secci.complianceServiceErrorMessage');
+
+        if (!$this->requestStack->getMainRequest() instanceof Request || !$this->requestStack->getMainRequest()->hasSession()) {
+            return $response;
+        }
+
         $session = $this->requestStack->getSession();
         if ($session instanceof FlashBagAwareSessionInterface) {
             $session->getFlashBag()->add(StorefrontController::DANGER, $errorMessage);

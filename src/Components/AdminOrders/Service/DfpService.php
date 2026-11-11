@@ -37,6 +37,10 @@ class DfpService implements DfpServiceInterface
 
     public function isDfpRequired(SalesChannelContext $salesChannelContext, ?OrderEntity $orderEntity = null): bool
     {
+        if (!$this->requestStack->getMainRequest() instanceof Request || !$this->requestStack->getMainRequest()->hasSession()) {
+            return $this->decorated->isDfpRequired($salesChannelContext, $orderEntity);
+        }
+
         $session = $this->requestStack->getMainRequest()->getSession();
         if ($this->sessionService->isAdminSession($salesChannelContext, $session)) {
             return false;
