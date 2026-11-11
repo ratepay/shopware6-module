@@ -50,6 +50,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Throwable;
@@ -167,8 +168,11 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
                 $ratepayException->getPrevious() ?? $ratepayException
             ));
 
-            if (($session = $this->requestStack->getSession()) instanceof Session) {
-                $session->getFlashBag()->add(StorefrontController::DANGER, $ratepayException->getMessage());
+            if ($this->requestStack->getMainRequest() instanceof Request && $this->requestStack->getMainRequest()->hasSession()) {
+                $session = $this->requestStack->getSession();
+                if ($session instanceof Session) {
+                    $session->getFlashBag()->add(StorefrontController::DANGER, $ratepayException->getMessage());
+                }
             }
 
             throw $this->syncProcessInterrupted($transaction->getOrderTransaction()->getId(), $ratepayException->getMessage(), $ratepayException);
@@ -203,7 +207,12 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
         }
 
         if ($ratepayData->get('secciRequired') === true) {
-            $isMotoFlow = $this->sessionService->isAdminSession($salesChannelContext, $this->requestStack->getSession());
+            if (!$this->requestStack->getMainRequest() instanceof Request || !$this->requestStack->getMainRequest()->hasSession()) {
+                $isMotoFlow = false;
+            } else {
+                $isMotoFlow = $this->sessionService->isAdminSession($salesChannelContext, $this->requestStack->getSession());
+            }
+
             $validations['secci'] = [
                 $isMotoFlow ? new MotoSecciRequired() : new SecciRequired(),
             ];
