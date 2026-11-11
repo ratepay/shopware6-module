@@ -26,6 +26,7 @@ use Ratepay\RpayPayments\Core\PluginConfigService;
 use Ratepay\RpayPayments\Util\RequestHelper;
 use Shopware\Storefront\Event\RouteRequest\OrderRouteRequestEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -67,6 +68,10 @@ class DeviceFingerprintSubscriber implements EventSubscriberInterface
 
     public function addRatepayTemplateData(PaymentDataExtensionBuilt $event): void
     {
+        if (!$this->requestStack->getCurrentRequest() instanceof Request) {
+            return;
+        }
+
         $snippet = $this->dfpService->getDfpSnippet($this->requestStack->getCurrentRequest(), $event->getSalesChannelContext(), $event->getOrderEntity());
         if ($snippet) {
             $event->getExtension()->set('dfp', [
