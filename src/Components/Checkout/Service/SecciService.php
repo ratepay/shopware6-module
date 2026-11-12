@@ -160,7 +160,7 @@ class SecciService
             return false;
         }
 
-        return $this->requestStack->getSession()->has(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN);
+        return $this->requestStack->getMainRequest()->getSession()->has(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN);
     }
 
     /**
@@ -172,7 +172,7 @@ class SecciService
             return null;
         }
 
-        $result = $this->requestStack->getSession()->get(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN);
+        $result = $this->requestStack->getMainRequest()->getSession()->get(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN);
         if (empty($result)) {
             return null;
         }
@@ -224,7 +224,7 @@ class SecciService
             return;
         }
 
-        $this->requestStack->getSession()->remove(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN);
+        $this->requestStack->getMainRequest()->getSession()->remove(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN);
     }
 
     private function saveAttestationToken(string $token, string $deliveryMethod, ?string $documentId, ?string $emailRecipient, float $cartTotal, string $paymentMethodId, string $currencyId, string $locale, string $billingCountry, array $ratepayParameters): void
@@ -233,7 +233,7 @@ class SecciService
             return;
         }
 
-        $this->requestStack->getSession()->set(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN, [
+        $this->requestStack->getMainRequest()->getSession()->set(self::SESSION_ATTRIBUTE_RATEPAY_ATTESTATION_TOKEN, [
             'token' => $token,
             'deliveryMethod' => $deliveryMethod,
             'documentId' => $documentId,
@@ -279,7 +279,7 @@ class SecciService
                 return null;
             }
 
-            $session = $this->requestStack->getSession();
+            $session = $this->requestStack->getMainRequest()->getSession();
             if ($session instanceof FlashBagAwareSessionInterface) {
                 $session->getFlashBag()->add(StorefrontController::DANGER, $ratepayException->getMessage());
             }
@@ -314,7 +314,7 @@ class SecciService
             return $response;
         }
 
-        $session = $this->requestStack->getSession();
+        $session = $this->requestStack->getMainRequest()->getSession();
         if ($session instanceof FlashBagAwareSessionInterface) {
             $session->getFlashBag()->add(StorefrontController::DANGER, $errorMessage);
         }

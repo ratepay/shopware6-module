@@ -67,7 +67,7 @@ class ContextSwitchSubscriber implements EventSubscriberInterface
                 && $this->requestStack->getMainRequest()->hasSession()
             )
         ) {
-            $this->requestStack->getSession()->remove('secciFailed');
+            $this->requestStack->getMainRequest()->getSession()->remove('secciFailed');
         }
     }
 
@@ -96,7 +96,7 @@ class ContextSwitchSubscriber implements EventSubscriberInterface
             && $this->requestStack->getMainRequest()->hasSession()
         ) {
             // Schedule SECCI delivery for when the confirm page is loaded. The current sales channel context does not reliably contain the correct language.
-            $this->requestStack->getSession()->set('ratepay_trigger_secci', true);
+            $this->requestStack->getMainRequest()->getSession()->set('ratepay_trigger_secci', true);
         }
     }
 }
