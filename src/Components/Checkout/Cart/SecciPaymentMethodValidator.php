@@ -19,6 +19,7 @@ use Shopware\Core\Checkout\Cart\CartValidatorInterface;
 use Shopware\Core\Checkout\Cart\Error\ErrorCollection;
 use Shopware\Core\Checkout\Cart\LineItem\CartDataCollection;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class SecciPaymentMethodValidator implements CartProcessorInterface, CartValidatorInterface
@@ -35,7 +36,14 @@ class SecciPaymentMethodValidator implements CartProcessorInterface, CartValidat
 
     public function validate(Cart $cart, ErrorCollection $errors, SalesChannelContext $context): void
     {
-        $locale = $this->requestStack->getMainRequest()->attributes->get('ratepay_saved_locale') ?? $context->getLanguageInfo()->localeCode;
+        $request = $this->requestStack->getMainRequest();
+        // In CLI/Messenger workers there is no main request or session – exit early
+        if (!$request instanceof Request || !$request->hasSession()) {
+            return;
+        }
+
+        // Use saved locale from request if available, otherwise fall back to language locale
+        $locale = $request->attributes->get('ratepay_saved_locale') ?? $context->getLanguageInfo()->localeCode;
 
         if (
             $this->secciService->getSecciVariant($context) === 1

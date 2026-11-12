@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 10.0.3 - Released on 2026-11-12
+
+* FC#0140878 - prevent errors due to missing request/session when accessing services in worker context
+
 ## Version 10.0.2 - Released on 2026-11-05
 
 * FC#0140022 - fix misplaced cascadedelete flags

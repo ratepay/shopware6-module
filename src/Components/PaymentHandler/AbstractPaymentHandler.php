@@ -186,8 +186,11 @@ abstract class AbstractPaymentHandler extends \Shopware\Core\Checkout\Payment\Ca
                 $ratepayException->getPrevious() ?? $ratepayException
             ));
 
-            if (($session = $this->requestStack->getSession()) instanceof Session) {
-                $session->getFlashBag()->add(StorefrontController::DANGER, $ratepayException->getMessage());
+            if ($this->requestStack->getMainRequest() instanceof Request && $this->requestStack->getMainRequest()->hasSession()) {
+                $session = $this->requestStack->getMainRequest()->getSession();
+                if ($session instanceof Session) {
+                    $session->getFlashBag()->add(StorefrontController::DANGER, $ratepayException->getMessage());
+                }
             }
 
             throw $this->syncProcessInterrupted($orderTransactionId, $ratepayException->getMessage(), $ratepayException);
@@ -224,7 +227,12 @@ abstract class AbstractPaymentHandler extends \Shopware\Core\Checkout\Payment\Ca
         }
 
         if ($ratepayData->get('secciRequired') === true) {
-            $isMotoFlow = $this->sessionService->isAdminSession($salesChannelContext, $this->requestStack->getSession());
+            if ($this->requestStack->getMainRequest() instanceof Request && $this->requestStack->getMainRequest()->hasSession()) {
+                $isMotoFlow = $this->sessionService->isAdminSession($salesChannelContext, $this->requestStack->getMainRequest()->getSession());
+            } else {
+                $isMotoFlow = false;
+            }
+
             $validations['secci'] = [
                 $isMotoFlow ? new MotoSecciRequired() : new SecciRequired(),
             ];

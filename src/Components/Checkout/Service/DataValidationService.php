@@ -73,7 +73,7 @@ class DataValidationService
     private function addSecciRequirement(DataBag $dataBag, string $handlerIdentifier, string $paymentMethodId, Cart $cart, SalesChannelContext $salesChannelContext): void
     {
         if ($this->secciService->paymentMethodIdRequiresSecci($handlerIdentifier, $paymentMethodId, $cart, $salesChannelContext)) {
-            $locale = $this->requestStack->getMainRequest()->attributes->get('ratepay_saved_locale') ?? $salesChannelContext->getLanguageInfo()->localeCode;
+            $locale = $this->requestStack->getMainRequest()?->attributes?->get('ratepay_saved_locale') ?? $salesChannelContext->getLanguageInfo()->localeCode;
 
             $dataBag->get(RequestHelper::RATEPAY_DATA_KEY)->set('secciRequired', true);
             $attestationToken = $this->secciService->getAttestationToken(
