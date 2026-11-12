@@ -2,6 +2,7 @@
 
 # Version 7.4.1 - Released on 2026-11-12
 
+This release is only for Shopware 6.6
 * FC#0140878 - prevent errors due to missing request/session when accessing services in worker context
 
 # Version 7.4.0 - Released on 2026-11-06
