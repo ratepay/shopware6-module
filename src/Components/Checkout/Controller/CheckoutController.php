@@ -135,9 +135,9 @@ class CheckoutController extends AbstractCheckoutController
         }
 
         if ($responseData['success']) {
-            $this->requestStack->getSession()->remove('secciFailed');
+            $this->requestStack->getMainRequest()->getSession()->remove('secciFailed');
         } else {
-            $this->requestStack->getSession()->set('secciFailed', true);
+            $this->requestStack->getMainRequest()->getSession()->set('secciFailed', true);
         }
 
         return new JsonResponse($responseData);

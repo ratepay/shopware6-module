@@ -169,7 +169,7 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
             ));
 
             if ($this->requestStack->getMainRequest() instanceof Request && $this->requestStack->getMainRequest()->hasSession()) {
-                $session = $this->requestStack->getSession();
+                $session = $this->requestStack->getMainRequest()->getSession();
                 if ($session instanceof Session) {
                     $session->getFlashBag()->add(StorefrontController::DANGER, $ratepayException->getMessage());
                 }
@@ -207,10 +207,10 @@ abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterf
         }
 
         if ($ratepayData->get('secciRequired') === true) {
-            if (!$this->requestStack->getMainRequest() instanceof Request || !$this->requestStack->getMainRequest()->hasSession()) {
-                $isMotoFlow = false;
+            if ($this->requestStack->getMainRequest() instanceof Request && $this->requestStack->getMainRequest()->hasSession()) {
+                $isMotoFlow = $this->sessionService->isAdminSession($salesChannelContext, $this->requestStack->getMainRequest()->getSession());
             } else {
-                $isMotoFlow = $this->sessionService->isAdminSession($salesChannelContext, $this->requestStack->getSession());
+                $isMotoFlow = false;
             }
 
             $validations['secci'] = [
