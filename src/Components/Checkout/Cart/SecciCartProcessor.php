@@ -21,6 +21,7 @@ use Shopware\Core\System\SalesChannel\SalesChannel\AbstractContextSwitchRoute;
 use Shopware\Core\System\SalesChannel\SalesChannel\ContextSwitchRoute;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class SecciCartProcessor implements CartProcessorInterface
@@ -34,9 +35,16 @@ class SecciCartProcessor implements CartProcessorInterface
 
     public function process(CartDataCollection $data, Cart $original, Cart $toCalculate, SalesChannelContext $context, CartBehavior $behavior): void
     {
+        $mainRequest = $this->requestStack->getMainRequest();
+
+        // In CLI/Messenger workers there is no main request; exit early
+        if (!$mainRequest instanceof Request) {
+            return;
+        }
+
         if (
-            $this->requestStack->getMainRequest()?->request->has(SalesChannelContextService::PAYMENT_METHOD_ID)
-            || $this->requestStack->getMainRequest()->query->has(SalesChannelContextService::PAYMENT_METHOD_ID)
+            $mainRequest->request->has(SalesChannelContextService::PAYMENT_METHOD_ID)
+            || $mainRequest->query->has(SalesChannelContextService::PAYMENT_METHOD_ID)
         ) {
             // Payment method is being changed, do not interfere
             return;

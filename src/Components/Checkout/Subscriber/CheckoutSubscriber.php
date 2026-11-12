@@ -74,10 +74,10 @@ class CheckoutSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if ($this->requestStack->getSession()->remove('ratepay_trigger_secci')) {
+        if ($this->requestStack->getMainRequest()->getSession()->remove('ratepay_trigger_secci')) {
             $result = $this->secciService->triggerSecciEmail(new RequestDataBag(), $event->getPage()->getCart(), $salesChannelContext);
             if (!$result) {
-                $this->requestStack->getSession()->set('secciFailed', true);
+                $this->requestStack->getMainRequest()->getSession()->set('secciFailed', true);
             }
         }
     }
@@ -112,7 +112,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
             $motoEmail = $attestationTokenStorage['emailRecipient'] ?? null;
         }
 
-        $secciFailed = $this->requestStack->getSession()->get('secciFailed') ?? false;
+        $secciFailed = $this->requestStack->getMainRequest()->getSession()->get('secciFailed') ?? false;
 
         $extension->assign([
             'showSecciBanner' => $showSecciBanner,
